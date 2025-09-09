@@ -1,0 +1,19 @@
+#pragma once
+
+#include "../Component.h"
+
+namespace BlackBoxEngine
+{
+	class ComponentName : public Component
+	{
+	public:
+		ID_FROM_NAME("ComponentName");
+
+	private:
+
+	public:
+		ComponentName(Actor* pOwner) : Component(pOwner) {/*EMPTY*/ }
+	};
+}
+
+

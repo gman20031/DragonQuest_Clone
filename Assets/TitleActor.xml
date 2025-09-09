@@ -1,0 +1,14 @@
+<TitleActor>
+    <Component Name="TransformComponent">
+        <Position>
+            <X>625</X>
+            <Y>475</Y>
+        </Position>
+        <Rotation>true</Rotation>
+    </Component>
+    <Component Name="SpriteComponent">
+        <width>200</width>
+        <height>200</height>
+        <filePath>../Assets/BlackBoxEngineTitle.png</filePath>
+    </Component>
+</TitleActor>

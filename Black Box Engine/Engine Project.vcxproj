@@ -1,0 +1,444 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{f5bafd06-38b7-4dc7-a13c-12508036bd0e}</ProjectGuid>
+    <RootNamespace>Engine_Project</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>EngineProject</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)\BlackBoxEngine_Build\$(Configuration)\BlackBox\lib\</OutDir>
+    <IntDir>$(SolutionDir)\BlackBoxEngine_Build\$(Configuration)\BlackBox\Intermediate\</IntDir>
+    <IncludePath>$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\</IncludePath>
+    <TargetName>BlackBoxEngine</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)\BlackBoxEngine_Build\$(Configuration)\BlackBox\lib\</OutDir>
+    <IntDir>$(SolutionDir)\BlackBoxEngine_Build\$(Configuration)\BlackBox\Intermediate\</IntDir>
+    <IncludePath>$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\</IncludePath>
+    <TargetName>BlackBoxEngine</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)\BlackBoxEngine_Build\$(Configuration)\BlackBox\lib\</OutDir>
+    <IntDir>$(SolutionDir)\BlackBoxEngine_Build\$(Configuration)\BlackBox\Intermediate\</IntDir>
+    <IncludePath>$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\</IncludePath>
+    <TargetName>BlackBoxEngine</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)\BlackBoxEngine_Build\$(Configuration)\BlackBox\lib\</OutDir>
+    <IntDir>$(SolutionDir)\BlackBoxEngine_Build\$(Configuration)\BlackBox\Intermediate\</IntDir>
+    <IncludePath>$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\</IncludePath>
+    <TargetName>BlackBoxEngine</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp23</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <AdditionalIncludeDirectories>$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3;$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3_image;$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3_ttf;$(solutiondir)Black Box Engine\libraries\Lua-4.5.7\src;$(solutiondir)Black Box Engine\libraries\zlib-1.3.1\include</AdditionalIncludeDirectories>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <UseFullPaths>false</UseFullPaths>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)\SDL_2.30.7\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2_image.lib;SDL2_ttf.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <Lib>
+      <AdditionalDependencies>SDL3.lib;SDL3_test.lib;SDL3_image.lib;SDL3_ttf.lib;zlibstat.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\lib\x86;$(solutiondir)Black Box Engine\libraries\zlib-1.3.1\x86\$(configuration)</AdditionalLibraryDirectories>
+      <Name>BlackBox</Name>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp23</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <AdditionalIncludeDirectories>$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3;$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3_image;$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3_ttf;$(solutiondir)Black Box Engine\libraries\Lua-4.5.7\src;$(solutiondir)Black Box Engine\libraries\zlib-1.3.1\include</AdditionalIncludeDirectories>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <UseFullPaths>false</UseFullPaths>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)\SDL_2.30.7\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2_image.lib;SDL2_ttf.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <Lib>
+      <AdditionalDependencies>SDL3.lib;SDL3_test.lib;SDL3_image.lib;SDL3_ttf.lib;zlibstat.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\lib\x86;$(solutiondir)Black Box Engine\libraries\zlib-1.3.1\x86\$(configuration)</AdditionalLibraryDirectories>
+      <Name>BlackBox</Name>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp23</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <AdditionalIncludeDirectories>$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3;$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3_image;$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3_ttf;$(solutiondir)Black Box Engine\libraries\Lua-4.5.7\src;$(solutiondir)Black Box Engine\libraries\zlib-1.3.1\include</AdditionalIncludeDirectories>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <UseFullPaths>false</UseFullPaths>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)\SDL_2.30.7\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2_image.lib;SDL2_ttf.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <Lib>
+      <AdditionalDependencies>SDL3.lib;SDL3_test.lib;SDL3_image.lib;SDL3_ttf.lib;zlibstat.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\lib\x64;$(solutiondir)Black Box Engine\libraries\zlib-1.3.1\x64\$(configuration)</AdditionalLibraryDirectories>
+      <Name>BlackBox</Name>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp23</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <AdditionalIncludeDirectories>$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3;$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3_image;$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3_ttf;$(solutiondir)Black Box Engine\libraries\Lua-4.5.7\src;$(solutiondir)Black Box Engine\libraries\zlib-1.3.1\include</AdditionalIncludeDirectories>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <UseFullPaths>false</UseFullPaths>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)\SDL_2.30.7\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2_image.lib;SDL2_ttf.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <Lib>
+      <AdditionalDependencies>SDL3.lib;SDL3_test.lib;SDL3_image.lib;SDL3_ttf.lib;zlibstat.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\lib\x64;$(solutiondir)Black Box Engine\libraries\zlib-1.3.1\x64\$(configuration)</AdditionalLibraryDirectories>
+      <Name>BlackBox</Name>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Actors\ActorManager.cpp" />
+    <ClCompile Include="Actors\Actor.cpp" />
+    <ClCompile Include="Actors\Collision\AABBColliderComponent.cpp" />
+    <ClCompile Include="Actors\Collision\BoundingBox.cpp" />
+    <ClCompile Include="Actors\Collision\ColliderBorder.cpp" />
+    <ClCompile Include="Actors\Collision\CollisionManager.cpp" />
+    <ClCompile Include="Actors\ComponentFactory.cpp" />
+    <ClCompile Include="Actors\EngineComponents\LuaScriptComponent.cpp" />
+    <ClCompile Include="Actors\EngineComponents\MovementBlocker.cpp" />
+    <ClCompile Include="Actors\EngineComponents\MoverComponent.cpp" />
+    <ClCompile Include="Actors\EngineComponents\ColliderDebugRenderer.cpp" />
+    <ClCompile Include="Actors\EngineComponents\ColliderDebugRenderer.h" />
+    <ClCompile Include="Actors\EngineComponents\SpriteComponent.cpp" />
+    <ClCompile Include="Actors\EngineComponents\TransformComponent.cpp" />
+    <ClCompile Include="Actors\EngineComponents\TransformComponent.h" />
+    <ClCompile Include="Graphics\Scene.cpp" />
+    <ClCompile Include="Input\InputManager.cpp" />
+    <ClCompile Include="Input\KeyCodes.cpp" />
+    <ClCompile Include="Input\KeyCodes.h" />
+    <ClCompile Include="libraries\Lua-4.5.7\src\lapi.c" />
+    <ClCompile Include="libraries\Lua-4.5.7\src\lauxlib.c" />
+    <ClCompile Include="libraries\Lua-4.5.7\src\lbaselib.c" />
+    <ClCompile Include="libraries\Lua-4.5.7\src\lcode.c" />
+    <ClCompile Include="libraries\Lua-4.5.7\src\lcorolib.c" />
+    <ClCompile Include="libraries\Lua-4.5.7\src\lctype.c" />
+    <ClCompile Include="libraries\Lua-4.5.7\src\ldblib.c" />
+    <ClCompile Include="libraries\Lua-4.5.7\src\ldebug.c" />
+    <ClCompile Include="libraries\Lua-4.5.7\src\ldo.c" />
+    <ClCompile Include="libraries\Lua-4.5.7\src\ldump.c" />
+    <ClCompile Include="libraries\Lua-4.5.7\src\lfunc.c" />
+    <ClCompile Include="libraries\Lua-4.5.7\src\lgc.c" />
+    <ClCompile Include="libraries\Lua-4.5.7\src\linit.c" />
+    <ClCompile Include="libraries\Lua-4.5.7\src\liolib.c" />
+    <ClCompile Include="libraries\Lua-4.5.7\src\llex.c" />
+    <ClCompile Include="libraries\Lua-4.5.7\src\lmathlib.c" />
+    <ClCompile Include="libraries\Lua-4.5.7\src\lmem.c" />
+    <ClCompile Include="libraries\Lua-4.5.7\src\loadlib.c" />
+    <ClCompile Include="libraries\Lua-4.5.7\src\lobject.c" />
+    <ClCompile Include="libraries\Lua-4.5.7\src\lopcodes.c" />
+    <ClCompile Include="libraries\Lua-4.5.7\src\loslib.c" />
+    <ClCompile Include="libraries\Lua-4.5.7\src\lparser.c" />
+    <ClCompile Include="libraries\Lua-4.5.7\src\lstate.c" />
+    <ClCompile Include="libraries\Lua-4.5.7\src\lstring.c" />
+    <ClCompile Include="libraries\Lua-4.5.7\src\lstrlib.c" />
+    <ClCompile Include="libraries\Lua-4.5.7\src\ltable.c" />
+    <ClCompile Include="libraries\Lua-4.5.7\src\ltablib.c" />
+    <ClCompile Include="libraries\Lua-4.5.7\src\ltm.c" />
+    <ClCompile Include="libraries\Lua-4.5.7\src\lua.c" />
+    <ClCompile Include="libraries\Lua-4.5.7\src\luac.c" />
+    <ClCompile Include="libraries\Lua-4.5.7\src\lundump.c" />
+    <ClCompile Include="libraries\Lua-4.5.7\src\lutf8lib.c" />
+    <ClCompile Include="libraries\Lua-4.5.7\src\lvm.c" />
+    <ClCompile Include="libraries\Lua-4.5.7\src\lzio.c" />
+    <ClCompile Include="Resources\XML\DataFactory.cpp" />
+    <ClCompile Include="Resources\ResourceManager.cpp" />
+    <ClCompile Include="Resources\ScriptResources\ScriptFactory.cpp" />
+    <ClCompile Include="Resources\XML\BlackBoxXMLParser.cpp" />
+    <ClCompile Include="Resources\XML\tinyxml2.cpp" />
+    <ClCompile Include="Scripting\LuaController.cpp" />
+    <ClCompile Include="System\ConsoleManip.cpp" />
+    <ClCompile Include="Math\FVector2.cpp" />
+    <ClCompile Include="System\Log.cpp" />
+    <ClCompile Include="BlackBoxManager.cpp" />
+    <ClCompile Include="Graphics\Renderer.cpp" />
+    <ClCompile Include="Graphics\RenderingStructs.h" />
+    <ClCompile Include="Graphics\Texture.cpp" />
+    <ClCompile Include="Resources\TextureFactory.cpp" />
+    <ClCompile Include="Graphics\Window.cpp" />
+    <ClCompile Include="System\MessageManager.cpp" />
+    <ClCompile Include="System\SimpleTimingSystem.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Actors\ActorManager.h" />
+    <ClInclude Include="Actors\Actor.h" />
+    <ClInclude Include="Actors\Collision\AABBColliderComponent.h" />
+    <ClInclude Include="Actors\Collision\BoundingBox.h" />
+    <ClInclude Include="Actors\Collision\CollisionManager.h" />
+    <ClInclude Include="Actors\Component.h" />
+    <ClInclude Include="Actors\ComponentFactory.h" />
+    <ClInclude Include="Actors\Collision\ColliderBorder.h" />
+    <ClInclude Include="Actors\EngineComponents\LuaScriptComponent.h" />
+    <ClInclude Include="Actors\EngineComponents\MovementBlocker.h" />
+    <ClInclude Include="Actors\EngineComponents\MoverComponent.h" />
+    <ClInclude Include="Actors\EngineComponents\SpriteComponent.h" />
+    <ClInclude Include="Graphics\Scene.h" />
+    <ClInclude Include="Input\InputManager.h" />
+    <ClInclude Include="libraries\Lua-4.5.7\src\lapi.h" />
+    <ClInclude Include="libraries\Lua-4.5.7\src\lauxlib.h" />
+    <ClInclude Include="libraries\Lua-4.5.7\src\lcode.h" />
+    <ClInclude Include="libraries\Lua-4.5.7\src\lctype.h" />
+    <ClInclude Include="libraries\Lua-4.5.7\src\ldebug.h" />
+    <ClInclude Include="libraries\Lua-4.5.7\src\ldo.h" />
+    <ClInclude Include="libraries\Lua-4.5.7\src\lfunc.h" />
+    <ClInclude Include="libraries\Lua-4.5.7\src\lgc.h" />
+    <ClInclude Include="libraries\Lua-4.5.7\src\ljumptab.h" />
+    <ClInclude Include="libraries\Lua-4.5.7\src\llex.h" />
+    <ClInclude Include="libraries\Lua-4.5.7\src\llimits.h" />
+    <ClInclude Include="libraries\Lua-4.5.7\src\lmem.h" />
+    <ClInclude Include="libraries\Lua-4.5.7\src\lobject.h" />
+    <ClInclude Include="libraries\Lua-4.5.7\src\lopcodes.h" />
+    <ClInclude Include="libraries\Lua-4.5.7\src\lopnames.h" />
+    <ClInclude Include="libraries\Lua-4.5.7\src\lparser.h" />
+    <ClInclude Include="libraries\Lua-4.5.7\src\lprefix.h" />
+    <ClInclude Include="libraries\Lua-4.5.7\src\lstate.h" />
+    <ClInclude Include="libraries\Lua-4.5.7\src\lstring.h" />
+    <ClInclude Include="libraries\Lua-4.5.7\src\ltable.h" />
+    <ClInclude Include="libraries\Lua-4.5.7\src\ltm.h" />
+    <ClInclude Include="libraries\Lua-4.5.7\src\lua.h" />
+    <ClInclude Include="libraries\Lua-4.5.7\src\lua.hpp" />
+    <ClInclude Include="libraries\Lua-4.5.7\src\luaconf.h" />
+    <ClInclude Include="libraries\Lua-4.5.7\src\lualib.h" />
+    <ClInclude Include="libraries\Lua-4.5.7\src\lundump.h" />
+    <ClInclude Include="libraries\Lua-4.5.7\src\lvm.h" />
+    <ClInclude Include="libraries\Lua-4.5.7\src\lzio.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_assert.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_asyncio.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_atomic.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_audio.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_begin_code.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_bits.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_blendmode.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_camera.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_clipboard.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_close_code.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_copying.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_cpuinfo.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_dialog.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_egl.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_endian.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_error.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_events.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_filesystem.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_gamepad.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_gpu.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_guid.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_haptic.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_hidapi.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_hints.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_init.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_intrin.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_iostream.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_joystick.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_keyboard.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_keycode.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_loadso.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_locale.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_log.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_main.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_main_impl.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_messagebox.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_metal.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_misc.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_mouse.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_mutex.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_oldnames.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_opengl.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_opengles.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_opengles2.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_opengles2_gl2.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_opengles2_gl2ext.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_opengles2_gl2platform.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_opengles2_khrplatform.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_opengl_glext.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_pen.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_pixels.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_platform.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_platform_defines.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_power.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_process.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_properties.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_rect.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_render.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_revision.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_scancode.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_sensor.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_stdinc.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_storage.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_surface.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_system.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_test.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_test_assert.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_test_common.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_test_compare.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_test_crc32.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_test_font.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_test_fuzzer.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_test_harness.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_test_log.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_test_md5.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_test_memory.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_thread.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_time.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_timer.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_touch.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_tray.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_version.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_video.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_vulkan.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3_image\SDL_image.h" />
+    <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3_ttf\SDL_ttf.h" />
+    <ClInclude Include="Resources\ScriptResources\LuaScript.h" />
+    <ClInclude Include="Resources\ScriptResources\PythonScript.h" />
+    <ClInclude Include="Resources\XML\DataFactory.h" />
+    <ClInclude Include="Resources\ResourceManager.h" />
+    <ClInclude Include="Resources\ScriptResources\ScriptFactory.h" />
+    <ClInclude Include="Resources\XML\BlackBoxXMLParser.h" />
+    <ClInclude Include="Resources\XML\tinyxml2.h" />
+    <ClInclude Include="Scripting\LuaController.h" />
+    <ClInclude Include="System\ConsoleManip.h" />
+    <ClInclude Include="Math\FVector2.h" />
+    <ClInclude Include="System\Debugging.h" />
+    <ClInclude Include="System\MessageManager.h" />
+    <ClInclude Include="System\Observer.h" />
+    <ClInclude Include="System\Log.h" />
+    <ClInclude Include="Math\NumericalConcepts.h" />
+    <ClInclude Include="Math\Random.h" />
+    <ClInclude Include="System\SimpleTimingSystem.h" />
+    <ClInclude Include="System\StringHash.h" />
+    <ClInclude Include="BlackBoxManager.h" />
+    <ClInclude Include="Graphics\Color.h" />
+    <ClInclude Include="Graphics\Renderer.h" />
+    <ClInclude Include="Graphics\Texture.h" />
+    <ClInclude Include="Resources\TextureFactory.h" />
+    <ClInclude Include="Graphics\Window.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
