@@ -18,7 +18,6 @@ namespace BlackBoxEngine
 
     class LevelXMLParser
     {
-        inline static constexpr const char* kActorElementName = "Actor";
         inline static constexpr const char* kSeperateFileAttribute = "SeperateFile";
         inline static constexpr const char* kFilePathElement = "FilePath";
         inline static constexpr const char* kLevelFilePath = "../Assets/Actors/";
@@ -40,7 +39,8 @@ namespace BlackBoxEngine
         tinyxml2::XMLElement* m_pComponentElement = nullptr;
     public:
         inline static constexpr bool kPrintSavedActors = false;
-        inline static constexpr const char* kComponentAttribute = "Name";
+        inline static constexpr const char* kActorElementName = "Actor";
+        inline static constexpr const char* kNameAttribute = "Name";
         inline static constexpr const char* kComponentElementName = "Component";
         inline static constexpr const char* kActorFilePath = "../Assets/Actors/";
 

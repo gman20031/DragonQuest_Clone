@@ -46,7 +46,7 @@ namespace BlackBoxEngine
             retVal = ResourceManager::GetActorXMLData(pFilePath);
         }
 
-        m_pNextElement = m_pNextElement->NextSiblingElement(kActorElementName);
+        m_pNextElement = m_pNextElement->NextSiblingElement(ActorXMLParser::kActorElementName);
 
         return retVal;
     }
@@ -80,21 +80,23 @@ namespace BlackBoxEngine
                                    std::filesystem::path filePath)
     {
         tinyxml2::XMLDocument saveDoc;
-        auto* pRootElement = saveDoc.NewElement(pActorName);
+        auto* pRootElement = saveDoc.NewElement(kActorElementName);
         saveDoc.InsertFirstChild(pRootElement);
+        pRootElement->SetAttribute(kNameAttribute, pActorName);
 
         for (auto& [id, pComponet] : pActor->m_componentMap)
         {
             XMLElementParser componetParser(pRootElement->InsertNewChildElement(kComponentElementName));
-            componetParser.GetTinyXML()->SetAttribute(kComponentAttribute, pComponet->Name());
+            componetParser.GetTinyXML()->SetAttribute(kNameAttribute, pComponet->Name());
             pComponet->Save(componetParser);
         }
         
         if (filePath.empty())
         {
             filePath = std::filesystem::path(kActorFilePath) / pActorName;
-            filePath.replace_extension(".xml");
+            BB_LOG(LogType::kWarning, "filePath was empty, creating new path");
         }
+        filePath.replace_extension(".xml");
 
         if constexpr ( kPrintSavedActors )
             saveDoc.Print();

@@ -2,7 +2,6 @@
 
 #include <Actors/Component.h>
 
-
 class ExampleComponent : public BlackBoxEngine::Component
 {
     GENERATE_ID("ExampleComponent");

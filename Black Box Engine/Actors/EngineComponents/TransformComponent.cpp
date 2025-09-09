@@ -28,7 +28,7 @@ namespace BlackBoxEngine
         pPosition.NewChildVariable("X", m_position.x);
         pPosition.NewChildVariable("Y", m_position.y);
 
-        parser.NewChildVariable("Rotation", &m_rotation);
+        parser.NewChildVariable("Rotation", m_rotation);
 
         if(m_prevPosition.x > 0 && m_prevPosition.y > 0)
         {

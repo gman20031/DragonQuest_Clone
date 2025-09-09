@@ -1,10 +1,10 @@
-<TitleActor>
+<Actor Name="TitleActor">
     <Component Name="TransformComponent">
         <Position>
             <X>625</X>
             <Y>475</Y>
         </Position>
-        <Rotation>true</Rotation>
+        <Rotation>0</Rotation>
     </Component>
     <Component Name="SpriteComponent">
         <width>200</width>
@@ -16,4 +16,4 @@
         <m_baz>Baz</m_baz>
         <m_foo>foo</m_foo>
     </Component>
-</TitleActor>
+</Actor>
