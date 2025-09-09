@@ -1143,15 +1143,15 @@ extern "C" {
 #define SDL_HINT_IME_IMPLEMENTED_UI "SDL_IME_IMPLEMENTED_UI"
 
 /**
- * A variable controlling whether the home indicator bar on iPhone X should be
+ * A variable controlling whether the home indicator m_bar on iPhone X should be
  * hidden.
  *
  * The variable can be set to the following values:
  *
- * - "0": The indicator bar is not hidden. (default for windowed applications)
- * - "1": The indicator bar is hidden and is shown when the screen is touched
+ * - "0": The indicator m_bar is not hidden. (default for windowed applications)
+ * - "1": The indicator m_bar is hidden and is shown when the screen is touched
  *   (useful for movie playback applications).
- * - "2": The indicator bar is dim and the first swipe makes it visible and
+ * - "2": The indicator m_bar is dim and the first swipe makes it visible and
  *   the second swipe performs the "home" action. (default for fullscreen
  *   applications)
  *
@@ -2792,7 +2792,7 @@ extern "C" {
  * - "0": SDL will not send an SDL_EVENT_QUIT event when the last window is
  *   requesting to close. Note that in this case, there are still other
  *   legitimate reasons one might get an SDL_EVENT_QUIT event: choosing "Quit"
- *   from the macOS menu bar, sending a SIGINT (ctrl-c) on Unix, etc.
+ *   from the macOS menu m_bar, sending a SIGINT (ctrl-c) on Unix, etc.
  * - "1": SDL will send a quit event when the last window is requesting to
  *   close. (default)
  *
@@ -3377,7 +3377,7 @@ extern "C" {
  * - "auto": The menu will be hidden if fullscreen mode was toggled on
  *   programmatically via `SDL_SetWindowFullscreen()`, and accessible if
  *   fullscreen was entered via the "fullscreen" button on the window title
- *   bar. (default)
+ *   m_bar. (default)
  *
  * This hint can be set anytime.
  *
@@ -3942,7 +3942,7 @@ extern "C" {
 #define SDL_HINT_WINDOW_ALLOW_TOPMOST "SDL_WINDOW_ALLOW_TOPMOST"
 
 /**
- * A variable controlling whether the window frame and title bar are
+ * A variable controlling whether the window frame and title m_bar are
  * interactive when the cursor is hidden.
  *
  * The variable can be set to the following values:

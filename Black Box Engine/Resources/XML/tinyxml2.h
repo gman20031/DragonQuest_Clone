@@ -1297,13 +1297,13 @@ public:
     	match. This allow you to write code:
 
     	@verbatim
-    	if ( ele->Attribute( "foo", "bar" ) ) callFooIsBar();
+    	if ( ele->Attribute( "foo", "m_bar" ) ) callFooIsBar();
     	@endverbatim
 
     	rather than:
     	@verbatim
     	if ( ele->Attribute( "foo" ) ) {
-    		if ( strcmp( ele->Attribute( "foo" ), "bar" ) == 0 ) callFooIsBar();
+    		if ( strcmp( ele->Attribute( "foo" ), "m_bar" ) == 0 ) callFooIsBar();
     	}
     	@endverbatim
     */
@@ -2233,7 +2233,7 @@ private:
 	@verbatim
 	XMLPrinter printer( fp );
 	printer.OpenElement( "foo" );
-	printer.PushAttribute( "foo", "bar" );
+	printer.PushAttribute( "foo", "m_bar" );
 	printer.CloseElement();
 	@endverbatim
 */

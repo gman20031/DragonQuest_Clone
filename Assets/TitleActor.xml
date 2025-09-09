@@ -11,4 +11,9 @@
         <height>200</height>
         <filePath>../Assets/BlackBoxEngineTitle.png</filePath>
     </Component>
+    <Component Name="ExampleComponent">
+        <m_bar>25</m_bar>
+        <m_baz>Baz</m_baz>
+        <m_foo>foo</m_foo>
+    </Component>
 </TitleActor>

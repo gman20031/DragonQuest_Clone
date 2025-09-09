@@ -185,10 +185,13 @@ copy "$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\lib\x64\SDL3_ttf.dll" 
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BlackBoxGame.cpp" />
+    <ClCompile Include="ExampleComponent.cpp" />
+    <ClCompile Include="GameComponentRegistrar.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BlackBoxGame.h" />
+    <ClInclude Include="ExampleComponent.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

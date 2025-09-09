@@ -2070,7 +2070,7 @@ XMLUnknown* XMLElement::InsertNewUnknown(const char* text)
 
 //
 //	<ele></ele>
-//	<ele>foo<b>bar</b></ele>
+//	<ele>foo<b>m_bar</b></ele>
 //
 char* XMLElement::ParseDeep( char* p, StrPair* parentEndTag, int* curLineNumPtr )
 {

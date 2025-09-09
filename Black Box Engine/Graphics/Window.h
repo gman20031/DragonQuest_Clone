@@ -31,7 +31,7 @@ namespace BlackBoxEngine
         static constexpr WindowFlags kWindowFlag_MouseCaptured      = 0x00000000004000; //  window has mouse captured (unrelated to MOUSE_GRABBED)
         static constexpr WindowFlags kWindowFlag_MouseRelative      = 0x00000000008000; //  window has relative mode enabled
         static constexpr WindowFlags kWindowFlag_AlwaysOnTop        = 0x00000000010000; //  window should always be above others
-        static constexpr WindowFlags kWindowFlag_Utility            = 0x00000000020000; //  window should be treated as a utility window, not showing in the task bar and window list
+        static constexpr WindowFlags kWindowFlag_Utility            = 0x00000000020000; //  window should be treated as a utility window, not showing in the task m_bar and window list
         static constexpr WindowFlags kWindowFlag_Tooptip            = 0x00000000040000; //  window should be treated as a tooltip and does not get mouse or keyboard focus, requires a parent windo
         static constexpr WindowFlags kWindowFlag_PopupMenu          = 0x00000000080000; //  window should be treated as a popup menu, requires a parent window
         static constexpr WindowFlags kWindowFlag_KeyboardGrabbed    = 0x00000000100000; //  window has grabbed keyboard input

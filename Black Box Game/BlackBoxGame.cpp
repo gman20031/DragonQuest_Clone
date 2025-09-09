@@ -5,6 +5,8 @@ using namespace BlackBoxEngine;
 #include <Actors/EngineComponents/SpriteComponent.h>
 #include <Resources/ResourceManager.h>
 
+#include "ExampleComponent.h"
+
 void BlackBoxGame::InitGame()
 {
 	BB_LOG(LogType::kMessage, "Game starting");
@@ -17,6 +19,8 @@ void BlackBoxGame::InitGame()
     int width = kDefaultWidth / 2;
     int height = kDefaultHeight / 2;
     pActor->GetComponent<TransformComponent>()->m_position = FVector2(width, height);
+
+    pActor->AddComponent<ExampleComponent>();
 
     ActorXMLParser::SaveActor(pActor, "TitleActor", "../Assets/TitleActor.xml");
 }

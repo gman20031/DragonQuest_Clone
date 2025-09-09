@@ -17,19 +17,6 @@ namespace BlackBoxEngine
         return nullptr;
     }
 
-    //LevelXMLParser::LevelXMLParser(const char* pFilePath)
-    //{
-    //    m_pXmlDoc = std::make_unique<tinyxml2::XMLDocument>();
-    //    int error = m_pXmlDoc->LoadFile(pFilePath);
-    //    if (error != tinyxml2::XML_SUCCESS)
-    //        BB_LOG(LogType::kFailure, "Couldnt load LevelXML file : ", pFilePath, " - ", m_pXmlDoc->ErrorName());
-    //    auto* pRoot = m_pXmlDoc->FirstChildElement("Actor");
-    //    m_pNextElement = pRoot->FirstChildElement(kActorElementName); // Get next actor
-
-    //    if (!m_pNextElement)
-    //        BB_LOG(LogType::kError, "Level file didnt have any actors \"", pFilePath, '\"');
-    //}
-
     LevelXMLParser::LevelXMLParser(tinyxml2::XMLDocument* pDocument)
     {
         if (pDocument->Error())
@@ -67,15 +54,6 @@ namespace BlackBoxEngine
     //------------------------------------------------------------------------------------------------------------
     // Actor Xml Parser
     //------------------------------------------------------------------------------------------------------------
-    //ActorXMLParser::ActorXMLParser(const char* pFileName)
-    //{
-    //    m_pXmlDoc = std::make_unique<tinyxml2::XMLDocument>();
-    //    int error = m_pXmlDoc->LoadFile(pFileName);
-    //    if (error != tinyxml2::XML_SUCCESS)
-    //        BB_LOG(LogType::kFailure, "Couldnt load ActorXML file : ", pFileName, " - " , m_pXmlDoc->ErrorName() );
-    //    auto* pRoot = m_pXmlDoc->FirstChildElement("Actor");
-    //    m_pComponentElement = pRoot->FirstChildElement(kComponentElementName);
-    //}
 
     ActorXMLParser::ActorXMLParser(tinyxml2::XMLElement* pRootElement)
         : m_pComponentElement(pRootElement->FirstChildElement(kComponentElementName))
@@ -149,6 +127,17 @@ namespace BlackBoxEngine
     XMLElementParser XMLElementParser::GetChildElement(const char* pName) const
     {
         return XMLElementParser(m_pRootElement->FirstChildElement(pName));
+    }
+
+    void XMLElementParser::GetChildVariable(const char* pName, std::string* savedVariable) const
+    {
+        XMLElementParser child = GetChildElement(pName);
+        if (!child)
+        {
+            BB_LOG(LogType::kError, '\"', pName, '\"', " not found");
+            return;
+        }
+        *savedVariable = child->GetText();
     }
 
     void XMLElementParser::GetChildVariable(const char* pName, const char** savedVariable) const
@@ -304,6 +293,11 @@ namespace BlackBoxEngine
     XMLElementParser XMLElementParser::InsertNewChild(const char* pName)
     {
         return XMLElementParser(m_pRootElement->InsertNewChildElement(pName));
+    }
+
+    void XMLElementParser::NewChildVariable(const char* pName, const std::string& savedVariable)
+    {
+        m_pRootElement->InsertNewChildElement(pName)->SetText(savedVariable.c_str());
     }
 
     void XMLElementParser::NewChildVariable(const char* pName, const char* savedVariable)

@@ -16,7 +16,6 @@ namespace BlackBoxEngine
     class ActorXMLParser;
     class Actor;
 
-    // Pure loading class wrapper
     class LevelXMLParser
     {
         inline static constexpr const char* kActorElementName = "Actor";
@@ -35,18 +34,17 @@ namespace BlackBoxEngine
         bool HasActors() const { return m_pNextElement; };
     };
 
-    // Pure loading class wraper
     class ActorXMLParser
     {
+
         tinyxml2::XMLElement* m_pComponentElement = nullptr;
     public:
-        inline static constexpr bool kPrintSavedActors = true;
+        inline static constexpr bool kPrintSavedActors = false;
         inline static constexpr const char* kComponentAttribute = "Name";
         inline static constexpr const char* kComponentElementName = "Component";
         inline static constexpr const char* kActorFilePath = "../Assets/Actors/";
 
         ActorXMLParser() = default;
-        //ActorXMLParser(const char* fileName);
         ActorXMLParser(tinyxml2::XMLElement* pRootElement);
         ActorXMLParser(tinyxml2::XMLDocument* pDocument);
 
@@ -75,6 +73,7 @@ namespace BlackBoxEngine
 
         const char* GetComponentName() const;
         XMLElementParser GetChildElement(const char* pName = nullptr) const;
+        void GetChildVariable(const char* pName, std::string* savedVariable) const;
         void GetChildVariable(const char* pName, const char** savedVariable) const;
         void GetChildVariable(const char* pName, int* savedVariable) const;
         void GetChildVariable(const char* pName, unsigned* savedVariable) const;
@@ -91,6 +90,7 @@ namespace BlackBoxEngine
         /// Saving interface 
 
         XMLElementParser InsertNewChild(const char* pName); 
+        void NewChildVariable(const char* pName, const std::string& savedVariable);
         void NewChildVariable(const char* pName, const char* savedVariable);
         void NewChildVariable(const char* pName, int savedVariable);
         void NewChildVariable(const char* pName, unsigned savedVariable);

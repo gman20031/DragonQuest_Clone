@@ -85,7 +85,6 @@ namespace BlackBoxEngine
 
         while (m_keepRunning)
         {
-            //BB_LOG(LogType::kMessage, "NEW UPDATE CYCLE");
             m_deltaTime = timer.GetDeltaTime();
             timer.StartTimer();
 

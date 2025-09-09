@@ -203,7 +203,7 @@ typedef Uint64 SDL_WindowFlags;
 #define SDL_WINDOW_MOUSE_CAPTURE        SDL_UINT64_C(0x0000000000004000)    /**< window has mouse captured (unrelated to MOUSE_GRABBED) */
 #define SDL_WINDOW_MOUSE_RELATIVE_MODE  SDL_UINT64_C(0x0000000000008000)    /**< window has relative mode enabled */
 #define SDL_WINDOW_ALWAYS_ON_TOP        SDL_UINT64_C(0x0000000000010000)    /**< window should always be above others */
-#define SDL_WINDOW_UTILITY              SDL_UINT64_C(0x0000000000020000)    /**< window should be treated as a utility window, not showing in the task bar and window list */
+#define SDL_WINDOW_UTILITY              SDL_UINT64_C(0x0000000000020000)    /**< window should be treated as a utility window, not showing in the task m_bar and window list */
 #define SDL_WINDOW_TOOLTIP              SDL_UINT64_C(0x0000000000040000)    /**< window should be treated as a tooltip and does not get mouse or keyboard focus, requires a parent window */
 #define SDL_WINDOW_POPUP_MENU           SDL_UINT64_C(0x0000000000080000)    /**< window should be treated as a popup menu, requires a parent window */
 #define SDL_WINDOW_KEYBOARD_GRABBED     SDL_UINT64_C(0x0000000000100000)    /**< window has grabbed keyboard input */
@@ -671,7 +671,7 @@ extern SDL_DECLSPEC bool SDLCALL SDL_GetDisplayBounds(SDL_DisplayID displayID, S
  *
  * This is the same area as SDL_GetDisplayBounds() reports, but with portions
  * reserved by the system removed. For example, on Apple's macOS, this
- * subtracts the area occupied by the menu bar and dock.
+ * subtracts the area occupied by the menu m_bar and dock.
  *
  * Setting a window to be fullscreen generally bypasses these unusable areas,
  * so these are good guidelines for the maximum space available to a
@@ -1063,7 +1063,7 @@ extern SDL_DECLSPEC SDL_Window ** SDLCALL SDL_GetWindows(int *count);
  *   MOUSE_GRABBED)
  * - `SDL_WINDOW_ALWAYS_ON_TOP`: window should always be above others
  * - `SDL_WINDOW_UTILITY`: window should be treated as a utility window, not
- *   showing in the task bar and window list
+ *   showing in the task m_bar and window list
  * - `SDL_WINDOW_TOOLTIP`: window should be treated as a tooltip and does not
  *   get mouse or keyboard focus, requires a parent window
  * - `SDL_WINDOW_POPUP_MENU`: window should be treated as a popup menu,
@@ -1230,7 +1230,7 @@ extern SDL_DECLSPEC SDL_Window * SDLCALL SDL_CreatePopupWindow(SDL_Window *paren
  *   transparent in the areas with alpha of 0
  * - `SDL_PROP_WINDOW_CREATE_TOOLTIP_BOOLEAN`: true if the window is a tooltip
  * - `SDL_PROP_WINDOW_CREATE_UTILITY_BOOLEAN`: true if the window is a utility
- *   window, not showing in the task bar and window list
+ *   window, not showing in the task m_bar and window list
  * - `SDL_PROP_WINDOW_CREATE_VULKAN_BOOLEAN`: true if the window will be used
  *   with Vulkan rendering
  * - `SDL_PROP_WINDOW_CREATE_WIDTH_NUMBER`: the m_width of the window
@@ -2708,10 +2708,10 @@ typedef SDL_HitTestResult (SDLCALL *SDL_HitTest)(SDL_Window *win,
  * Provide a callback that decides if a window region has special properties.
  *
  * Normally windows are dragged and resized by decorations provided by the
- * system window manager (a title bar, borders, etc), but for some apps, it
+ * system window manager (a title m_bar, borders, etc), but for some apps, it
  * makes sense to drag them from somewhere else inside the window itself; for
  * example, one might have a borderless window that wants to be draggable from
- * any part, or simulate its own title bar, etc.
+ * any part, or simulate its own title m_bar, etc.
  *
  * This function lets the app provide a callback that designates pieces of a
  * given window as special. This callback is run during event processing if we

@@ -363,7 +363,7 @@ extern SDL_DECLSPEC bool SDLCALL SDL_RunOnMainThread(SDL_MainThreadCallback call
  * required, but strongly encouraged.
  *
  * There are several locations where SDL can make use of metadata (an "About"
- * box in the macOS menu bar, the name of the app can be shown on some audio
+ * box in the macOS menu m_bar, the name of the app can be shown on some audio
  * mixers, etc). Any piece of metadata can be left as NULL, if a specific
  * detail doesn't make sense for the app.
  *
@@ -401,7 +401,7 @@ extern SDL_DECLSPEC bool SDLCALL SDL_SetAppMetadata(const char *appname, const c
  * required, but strongly encouraged.
  *
  * There are several locations where SDL can make use of metadata (an "About"
- * box in the macOS menu bar, the name of the app can be shown on some audio
+ * box in the macOS menu m_bar, the name of the app can be shown on some audio
  * mixers, etc). Any piece of metadata can be left out, if a specific detail
  * doesn't make sense for the app.
  *
