@@ -10,6 +10,9 @@
 *.userosscache
 *.sln.docstates
 
+# Black Box Engine Build folder
+BlackBoxEngine_Build
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
