@@ -1,7 +1,9 @@
 #pragma once
 
-#include "Actor.h"
 #include <unordered_map>
+#include <filesystem>
+
+#include "Actor.h"
 
 namespace BlackBoxEngine
 {
@@ -30,6 +32,8 @@ namespace BlackBoxEngine
         void Update();
         void Start(); // where the hell should I call this?
         void Render();
+        
+        static void SaveActor(const std::unique_ptr<Actor>& pActor, const char* pActorName, std::filesystem::path filePath = {});
     };
 
 };

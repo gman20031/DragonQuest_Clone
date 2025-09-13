@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include "RenderingStructs.h"
 
 struct SDL_Window;
 
@@ -66,6 +67,7 @@ namespace BlackBoxEngine
         int SetPosition(int x, int y);
         
         const char* GetTitle() const { return m_pTitle; }
+        BB_IntRectangle GetDimensions() const { return { m_xPos,m_yPos,m_width,m_height }; }
         int GetWidth() const { return m_width; }
         int GetHeight() const { return m_height; }
         int GetXPos() const { return m_xPos; }
@@ -73,6 +75,8 @@ namespace BlackBoxEngine
 
         BB_Renderer* const GetRenderer() const { return m_pRenderer; }
         BB_TextRenderer* const GetTextRenderer() const { return m_pTextRenderer; }
+
+        void NotifyWindowResized(int newWidth, int newHeight);
 
 		int StartWindow();
 		int StopWindow();

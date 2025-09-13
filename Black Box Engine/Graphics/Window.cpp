@@ -1,5 +1,6 @@
 #include "Window.h"
 
+#include "../BlackBoxManager.h"
 #include "../System/Log.h"
 #include "SDL.h"
 #include "Renderer.h"
@@ -62,6 +63,14 @@ namespace BlackBoxEngine
         m_width = x;
         m_height = y;
         return 0;
+    }
+
+    void BB_Window::NotifyWindowResized([[maybe_unused]]int newWidth, [[maybe_unused]] int newHeight)
+    {
+        //int w = 0, h = 0;
+        //SDL_GetWindowSizeInPixels(m_pSdlWindow, &w, &h);
+        SetDimensions(newWidth, newHeight);
+        BlackBoxManager::Get()->m_pMessagingManager->EnqueueMessage("WindowSizeChanged", nullptr);
     }
 
     int BB_Window::StartWindow()

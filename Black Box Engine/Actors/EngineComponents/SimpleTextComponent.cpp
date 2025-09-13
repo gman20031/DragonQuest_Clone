@@ -59,9 +59,9 @@ namespace BlackBoxEngine
         const char* ptextString = nullptr;
         float textSize = 0;
 
-        parser.GetChildVariable("Font File Path", &pfilePath);
-        parser.GetChildVariable("Text contents",  &ptextString);
-        parser.GetChildVariable("Text Size", &textSize);
+        parser.GetChildVariable("FontFilePath", &pfilePath);
+        parser.GetChildVariable("Textcontents",  &ptextString);
+        parser.GetChildVariable("TextSize", &textSize);
 
         SetFont(pfilePath, textSize);
         SetText(ptextString);
@@ -69,9 +69,9 @@ namespace BlackBoxEngine
 
     void SimpleTextComponent::Save(XMLElementParser parser)
     {
-        parser.NewChildVariable("Font File Path", m_pFont->GetFontFilePath() );
-        parser.NewChildVariable("Text contents", m_pText->GetString() );
-        parser.NewChildVariable("Text Size", m_pFont->GetFontSize() );
+        parser.NewChildVariable("FontFilePath", m_pFont->GetFontFilePath() );
+        parser.NewChildVariable("Textcontents", m_pText->GetString() );
+        parser.NewChildVariable("TextSize", m_pFont->GetFontSize() );
     }
 
     void SimpleTextComponent::Render()

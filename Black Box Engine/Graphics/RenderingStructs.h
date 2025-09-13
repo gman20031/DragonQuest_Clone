@@ -31,10 +31,10 @@ namespace BlackBoxEngine
 
     struct BB_IntRectangle
     {
-        float x;
-        float y;
-        float w;
-        float h;
+        int x;
+        int y;
+        int w;
+        int h;
     };
 
 	enum class BB_FlipVal

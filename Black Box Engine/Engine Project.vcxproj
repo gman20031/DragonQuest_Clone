@@ -457,7 +457,6 @@
     <ClCompile Include="Graphics\Window.cpp" />
     <ClCompile Include="System\MessageManager.cpp" />
     <ClCompile Include="System\SimpleTimingSystem.cpp" />
-    <ClCompile Include="TileManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actors\ActorManager.h" />
@@ -618,7 +617,6 @@
     <ClInclude Include="Graphics\Texture.h" />
     <ClInclude Include="Resources\TextureFactory.h" />
     <ClInclude Include="Graphics\Window.h" />
-    <ClInclude Include="TileManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="libraries\Lua-4.5.7\src\Makefile" />

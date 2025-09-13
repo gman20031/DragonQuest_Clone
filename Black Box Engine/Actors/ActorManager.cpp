@@ -56,6 +56,13 @@ namespace BlackBoxEngine
         }
     }
 
+    void ActorManager::SaveActor(const std::unique_ptr<Actor>& pActor,
+                                const char* pActorName,
+                                std::filesystem::path filePath)
+    {
+        ActorXMLParser::SaveActor(pActor, pActorName, filePath);
+    }
+
     Actor::Id ActorManager::NextId()
     {
         if (m_unsuedIds.empty())

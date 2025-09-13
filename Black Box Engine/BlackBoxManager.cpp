@@ -29,7 +29,6 @@ namespace BlackBoxEngine
     }
 #endif // _DEBUG
 
-
     BlackBoxManager::~BlackBoxManager()
     {
         if (m_pActorManager)
@@ -54,6 +53,9 @@ namespace BlackBoxEngine
                 break;
             case SDL_EVENT_KEY_UP:
                 m_pInputManager->RemoveKeyDown((KeyCode)event.key.scancode);
+                break;
+            case SDL_EVENT_WINDOW_RESIZED:
+                m_pWindow->NotifyWindowResized(event.window.data1, event.window.data2);
                 break;
             case SDL_EVENT_QUIT:
                 m_keepRunning = false;

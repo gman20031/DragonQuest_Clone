@@ -1,0 +1,14 @@
+<Actor Name="HelloText">
+    <Component Name="TransformComponent">
+        <Position>
+            <X>0</X>
+            <Y>0</Y>
+        </Position>
+        <Rotation>0</Rotation>
+    </Component>
+    <Component Name="SimpleTextComponent">
+        <FontFilePath>../Assets/Fonts/nes-font.ttf</FontFilePath>
+        <Textcontents>Hello, World!</Textcontents>
+        <TextSize>24</TextSize>
+    </Component>
+</Actor>

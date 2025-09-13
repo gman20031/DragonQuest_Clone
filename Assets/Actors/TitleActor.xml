@@ -16,4 +16,8 @@
         <m_baz>Baz</m_baz>
         <m_foo>foo</m_foo>
     </Component>
+    <Component Name="ScreenCentered">
+		<xOffset>-100</xOffset>
+		<yOffset>-100</yOffset>
+	</Component>
 </Actor>

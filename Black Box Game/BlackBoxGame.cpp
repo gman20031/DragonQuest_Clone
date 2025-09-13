@@ -4,19 +4,13 @@ using namespace BlackBoxEngine;
 
 #include <Actors/EngineComponents/SpriteComponent.h>
 #include <Actors/EngineComponents/SimpleTextComponent.h>
+#include "ScreenCentered.h"
 
 void BlackBoxGame::InitGame()
 {
 	BB_LOG(LogType::kMessage, "Game starting");
 
-    m_pEngineManager->m_pActorManager->LoadActor("../Assets/TitleActor.xml");
-
-    const auto& pActor = m_pEngineManager->m_pActorManager->NewActor();
-    auto* pTransform = pActor->AddComponent<TransformComponent>();
-    auto* pTextComponent = pActor->AddComponent<SimpleTextComponent>();
-    pTextComponent->SetFont("../Assets/Fonts/nes-font.ttf" , 24);
-    pTextComponent->SetText("Hello, World!");
-    pTransform->m_position = { 100,100 };
+    m_pEngineManager->m_pActorManager->LoadLevel("../Assets/Levels/ExampleLevel.xml");
 }
 
 BlackBoxGame::BlackBoxGame()
@@ -24,7 +18,7 @@ BlackBoxGame::BlackBoxGame()
 {
     m_pEngineManager->CreateWindow(
         "BalatroClone", kDefaultXPos, kDefaultYPos, kDefaultWidth, kDefaultHeight,
-        BB_Window::kWindowFlag_Resizable | BB_Window::kWindowFlag_Maximized
+        BB_Window::kWindowFlag_Resizable
     );
     
     BB_LOG(LogType::kMessage, "Window Created");

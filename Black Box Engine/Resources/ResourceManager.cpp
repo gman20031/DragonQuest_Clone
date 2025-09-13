@@ -46,7 +46,6 @@ namespace BlackBoxEngine
 
     ActorXMLParser ResourceManager::GetActorXMLData(const char* pFilePath)
     {
-
         return GetXMLFactory()->CreateActorFromFile(pFilePath);
     }
 

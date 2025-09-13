@@ -5,9 +5,13 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ExampleComponent.cpp" />
     <ClCompile Include="GameComponentRegistrar.cpp" />
+    <ClCompile Include="TileManager.cpp" />
+    <ClCompile Include="ScreenCentered.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BlackBoxGame.h" />
     <ClInclude Include="ExampleComponent.h" />
+    <ClInclude Include="TileManager.h" />
+    <ClInclude Include="ScreenCentered.h" />
   </ItemGroup>
 </Project>
