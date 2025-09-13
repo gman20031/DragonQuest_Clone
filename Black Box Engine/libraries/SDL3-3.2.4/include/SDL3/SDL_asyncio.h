@@ -37,7 +37,7 @@
  *
  * The general usage pattern for async I/O is:
  *
- * - Create one or more SDL_AsyncIOQueue objects.
+ * - CreateFont one or more SDL_AsyncIOQueue objects.
  * - Open files with SDL_AsyncIOFromFile.
  * - Start I/O tasks to the files with SDL_ReadAsyncIO or SDL_WriteAsyncIO,
  *   putting those tasks into one of the queues.
@@ -193,7 +193,7 @@ typedef struct SDL_AsyncIOQueue SDL_AsyncIOQueue;
  *   truncate existing ones.
  * - "r+": Open a file for update both reading and writing. The file must
  *   exist.
- * - "w+": Create an empty file for both reading and writing. If a file with
+ * - "w+": CreateFont an empty file for both reading and writing. If a file with
  *   the same name already exists its content is erased and the file is
  *   treated as a new empty file.
  *
@@ -363,7 +363,7 @@ extern SDL_DECLSPEC bool SDLCALL SDL_WriteAsyncIO(SDL_AsyncIO *asyncio, void *pt
 extern SDL_DECLSPEC bool SDLCALL SDL_CloseAsyncIO(SDL_AsyncIO *asyncio, bool flush, SDL_AsyncIOQueue *queue, void *userdata);
 
 /**
- * Create a task queue for tracking multiple I/O operations.
+ * CreateFont a task queue for tracking multiple I/O operations.
  *
  * Async I/O operations are assigned to a queue when started. The queue can be
  * checked for completed tasks thereafter.

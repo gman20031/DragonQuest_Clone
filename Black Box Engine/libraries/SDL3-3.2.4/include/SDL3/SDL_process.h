@@ -64,7 +64,7 @@ extern "C" {
 typedef struct SDL_Process SDL_Process;
 
 /**
- * Create a new process.
+ * CreateFont a new process.
  *
  * The path to the executable is supplied in args[0]. args[1..N] are
  * additional arguments passed on the command line of the new process, and the
@@ -156,7 +156,7 @@ typedef enum SDL_ProcessIO
 } SDL_ProcessIO;
 
 /**
- * Create a new process with the specified properties.
+ * CreateFont a new process with the specified properties.
  *
  * These are the supported properties:
  *

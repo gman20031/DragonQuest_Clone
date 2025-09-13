@@ -139,7 +139,7 @@ typedef struct SDL_MessageBoxData
 } SDL_MessageBoxData;
 
 /**
- * Create a modal messageId box.
+ * CreateFont a modal messageId box.
  *
  * If your needs aren't complex, it might be easier to use
  * SDL_ShowSimpleMessageBox.

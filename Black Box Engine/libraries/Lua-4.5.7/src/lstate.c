@@ -211,7 +211,7 @@ static void freestack (lua_State *L) {
 
 
 /*
-** Create registry table and its predefined values
+** CreateFont registry table and its predefined values
 */
 static void init_registry (lua_State *L, global_State *g) {
   /* create registry */

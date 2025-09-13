@@ -1039,7 +1039,7 @@ extern SDL_DECLSPEC SDL_PixelFormat SDLCALL SDL_GetWindowPixelFormat(SDL_Window 
 extern SDL_DECLSPEC SDL_Window ** SDLCALL SDL_GetWindows(int *count);
 
 /**
- * Create a window with the specified dimensions and flags.
+ * CreateFont a window with the specified dimensions and flags.
  *
  * `flags` may be any of the following OR'd together:
  *
@@ -1125,7 +1125,7 @@ extern SDL_DECLSPEC SDL_Window ** SDLCALL SDL_GetWindows(int *count);
 extern SDL_DECLSPEC SDL_Window * SDLCALL SDL_CreateWindow(const char *title, int w, int h, SDL_WindowFlags flags);
 
 /**
- * Create a child popup window of the specified parent window.
+ * CreateFont a child popup window of the specified parent window.
  *
  * The flags parameter **must** contain at least one of the following:
  *
@@ -1187,7 +1187,7 @@ extern SDL_DECLSPEC SDL_Window * SDLCALL SDL_CreateWindow(const char *title, int
 extern SDL_DECLSPEC SDL_Window * SDLCALL SDL_CreatePopupWindow(SDL_Window *parent, int offset_x, int offset_y, int w, int h, SDL_WindowFlags flags);
 
 /**
- * Create a window with the specified properties.
+ * CreateFont a window with the specified properties.
  *
  * These are the supported properties:
  *
@@ -3059,7 +3059,7 @@ extern SDL_DECLSPEC bool SDLCALL SDL_GL_SetAttribute(SDL_GLAttr attr, int value)
 extern SDL_DECLSPEC bool SDLCALL SDL_GL_GetAttribute(SDL_GLAttr attr, int *value);
 
 /**
- * Create an OpenGL context for an OpenGL window, and make it current.
+ * CreateFont an OpenGL context for an OpenGL window, and make it current.
  *
  * Windows users new to OpenGL should note that, for historical reasons, GL
  * functions added after OpenGL version 1.1 are not available by default.

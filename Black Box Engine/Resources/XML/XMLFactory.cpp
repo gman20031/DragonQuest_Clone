@@ -1,4 +1,4 @@
-#include "DataFactory.h"
+#include "XMLFactory.h"
 
 #include "../../System/StringHash.h"
 #include "../../System/Log.h"
@@ -12,7 +12,7 @@ namespace BlackBoxEngine
     //    ClearCache();
     //}
 
-    LevelXMLParser XMLFactory::CreateLevel(const char* pFilePath)
+    LevelXMLParser XMLFactory::CreateLevelFromFile(const char* pFilePath)
     {
         HashType hash = StringHash(pFilePath);
 

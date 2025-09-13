@@ -1,32 +1,42 @@
 #include "ResourceManager.h"
 
-#include "../Graphics/Renderer.h"
-#include "XML/DataFactory.h"
+#include <cassert>
 
+#include "../Graphics/Renderer.h"
+#include "TextureFactory.h"
+#include "XML/XMLFactory.h"
+#include "ScriptResources/ScriptFactory.h"
+#include "FontFactory.h"
 
 namespace BlackBoxEngine
 {
     inline TextureFactory* ResourceManager::GetTextureFactory()
     {
-        static TextureFactory pTexFactory; //= new TextureFactory;
-        return &pTexFactory;
+        static TextureFactory texFactory; //= new TextureFactory;
+        return &texFactory;
     }
 
     inline XMLFactory* ResourceManager::GetXMLFactory()
     {
-        static XMLFactory pTexFactory; //= new XMLFactory;
-        return &pTexFactory;
+        static XMLFactory xmlFactory; //= new XMLFactory;
+        return &xmlFactory;
     }
 
     inline ScriptFactory* ResourceManager::GetScriptFactory()
     {
-        static ScriptFactory pScriptFactory; //= new ScriptFactory;
-        return &pScriptFactory;
+        static ScriptFactory scriptFactory; //= new scriptFactory;
+        return &scriptFactory;
+    }
+
+    inline TextFactory* ResourceManager::GetTextFactory()
+    {
+        static TextFactory textFactory;
+        return &textFactory;
     }
 
     std::shared_ptr<BB_Texture> ResourceManager::GetTexture(BB_Renderer* pRenderer, const char* pFilepath)
     {
-        return GetTextureFactory()->Create(pRenderer, pFilepath);
+        return GetTextureFactory()->CreateFont(pRenderer, pFilepath);
     }
 
     std::shared_ptr<LuaScript> ResourceManager::GetLuaScript(const char* pFilePath)
@@ -42,7 +52,25 @@ namespace BlackBoxEngine
 
     LevelXMLParser ResourceManager::GetLevelXMLData(const char* pFilePath)
     {
-        return GetXMLFactory()->CreateLevel(pFilePath);
+        return GetXMLFactory()->CreateLevelFromFile(pFilePath);
+    }
+
+    std::shared_ptr<BB_Font> ResourceManager::GetFont(const char* pFilePath, float size)
+    {
+        return GetTextFactory()->CreateFont(pFilePath, size);
+    }
+
+    std::shared_ptr<BB_Text> ResourceManager::GetText(const char* pString, const char* pFontFilePath, float size)
+    {
+        assert(pString);
+        std::shared_ptr<BB_Font> pFont = GetFont(pFontFilePath, size);
+        return GetTextFactory()->CreateText(pString, std::strlen(pString) , pFont  );
+    }
+
+    std::shared_ptr<BB_Text> ResourceManager::GetText(const char* pString, std::shared_ptr<BB_Font> pFont)
+    {
+        assert(pString);
+        return GetTextFactory()->CreateText(pString, std::strlen(pString), pFont);
     }
 
 }

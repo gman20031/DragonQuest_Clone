@@ -10,7 +10,7 @@
 namespace BlackBoxEngine
 {
     std::shared_ptr<BB_Texture>
-        TextureFactory::Create(const BB_RendererPtr pRenderer, const char* pImageFilePath)
+        TextureFactory::CreateFont(const BB_RendererPtr pRenderer, const char* pImageFilePath)
     {
         HashType hash = StringHash(pImageFilePath);
 
@@ -21,6 +21,8 @@ namespace BlackBoxEngine
             auto& weakPtr = it->second;
             if (!weakPtr.expired())
                 return weakPtr.lock();
+            else
+                m_textureCache.erase(it);
         }
 
         // create new texture

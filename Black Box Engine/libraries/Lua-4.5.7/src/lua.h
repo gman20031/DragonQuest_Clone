@@ -5,7 +5,6 @@
 ** See Copyright Notice at the end of this file
 */
 
-
 #ifndef lua_h
 #define lua_h
 
@@ -521,3 +520,4 @@ struct lua_Debug {
 
 
 #endif
+

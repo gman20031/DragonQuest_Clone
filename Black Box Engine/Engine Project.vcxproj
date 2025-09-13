@@ -103,7 +103,7 @@
       <LanguageStandard>stdcpp23</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <AdditionalIncludeDirectories>$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3;$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3_image;$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3_ttf;$(solutiondir)Black Box Engine\libraries\Lua-4.5.7\src;$(solutiondir)Black Box Engine\libraries\zlib-1.3.1\include</AdditionalIncludeDirectories>
-      <TreatWarningAsError>false</TreatWarningAsError>
+      <TreatWarningAsError>true</TreatWarningAsError>
       <UseFullPaths>false</UseFullPaths>
     </ClCompile>
     <Link>
@@ -132,7 +132,7 @@
       <LanguageStandard>stdcpp23</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <AdditionalIncludeDirectories>$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3;$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3_image;$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3_ttf;$(solutiondir)Black Box Engine\libraries\Lua-4.5.7\src;$(solutiondir)Black Box Engine\libraries\zlib-1.3.1\include</AdditionalIncludeDirectories>
-      <TreatWarningAsError>false</TreatWarningAsError>
+      <TreatWarningAsError>true</TreatWarningAsError>
       <UseFullPaths>false</UseFullPaths>
     </ClCompile>
     <Link>
@@ -161,7 +161,7 @@
       <LanguageStandard>stdcpp23</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <AdditionalIncludeDirectories>$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3;$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3_image;$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3_ttf;$(solutiondir)Black Box Engine\libraries\Lua-4.5.7\src;$(solutiondir)Black Box Engine\libraries\zlib-1.3.1\include</AdditionalIncludeDirectories>
-      <TreatWarningAsError>false</TreatWarningAsError>
+      <TreatWarningAsError>true</TreatWarningAsError>
       <UseFullPaths>false</UseFullPaths>
     </ClCompile>
     <Link>
@@ -190,7 +190,7 @@
       <LanguageStandard>stdcpp23</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <AdditionalIncludeDirectories>$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3;$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3_image;$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3_ttf;$(solutiondir)Black Box Engine\libraries\Lua-4.5.7\src;$(solutiondir)Black Box Engine\libraries\zlib-1.3.1\include</AdditionalIncludeDirectories>
-      <TreatWarningAsError>false</TreatWarningAsError>
+      <TreatWarningAsError>true</TreatWarningAsError>
       <UseFullPaths>false</UseFullPaths>
     </ClCompile>
     <Link>
@@ -224,48 +224,223 @@
     <ClCompile Include="Actors\EngineComponents\MoverComponent.cpp" />
     <ClCompile Include="Actors\EngineComponents\ColliderDebugRenderer.cpp" />
     <ClCompile Include="Actors\EngineComponents\ColliderDebugRenderer.h" />
+    <ClCompile Include="Actors\EngineComponents\SimpleTextComponent.cpp" />
     <ClCompile Include="Actors\EngineComponents\SpriteComponent.cpp" />
     <ClCompile Include="Actors\EngineComponents\TransformComponent.cpp" />
     <ClCompile Include="Actors\EngineComponents\TransformComponent.h" />
+    <ClCompile Include="Graphics\Text Rendering\Font.cpp" />
     <ClCompile Include="Graphics\Scene.cpp" />
+    <ClCompile Include="Graphics\Text Rendering\Text.cpp" />
+    <ClCompile Include="Graphics\Text Rendering\TextRenderer.cpp" />
     <ClCompile Include="Input\InputManager.cpp" />
     <ClCompile Include="Input\KeyCodes.cpp" />
     <ClCompile Include="Input\KeyCodes.h" />
-    <ClCompile Include="libraries\Lua-4.5.7\src\lapi.c" />
-    <ClCompile Include="libraries\Lua-4.5.7\src\lauxlib.c" />
-    <ClCompile Include="libraries\Lua-4.5.7\src\lbaselib.c" />
-    <ClCompile Include="libraries\Lua-4.5.7\src\lcode.c" />
-    <ClCompile Include="libraries\Lua-4.5.7\src\lcorolib.c" />
-    <ClCompile Include="libraries\Lua-4.5.7\src\lctype.c" />
-    <ClCompile Include="libraries\Lua-4.5.7\src\ldblib.c" />
-    <ClCompile Include="libraries\Lua-4.5.7\src\ldebug.c" />
-    <ClCompile Include="libraries\Lua-4.5.7\src\ldo.c" />
-    <ClCompile Include="libraries\Lua-4.5.7\src\ldump.c" />
-    <ClCompile Include="libraries\Lua-4.5.7\src\lfunc.c" />
-    <ClCompile Include="libraries\Lua-4.5.7\src\lgc.c" />
-    <ClCompile Include="libraries\Lua-4.5.7\src\linit.c" />
-    <ClCompile Include="libraries\Lua-4.5.7\src\liolib.c" />
-    <ClCompile Include="libraries\Lua-4.5.7\src\llex.c" />
-    <ClCompile Include="libraries\Lua-4.5.7\src\lmathlib.c" />
-    <ClCompile Include="libraries\Lua-4.5.7\src\lmem.c" />
-    <ClCompile Include="libraries\Lua-4.5.7\src\loadlib.c" />
-    <ClCompile Include="libraries\Lua-4.5.7\src\lobject.c" />
-    <ClCompile Include="libraries\Lua-4.5.7\src\lopcodes.c" />
-    <ClCompile Include="libraries\Lua-4.5.7\src\loslib.c" />
-    <ClCompile Include="libraries\Lua-4.5.7\src\lparser.c" />
-    <ClCompile Include="libraries\Lua-4.5.7\src\lstate.c" />
-    <ClCompile Include="libraries\Lua-4.5.7\src\lstring.c" />
-    <ClCompile Include="libraries\Lua-4.5.7\src\lstrlib.c" />
-    <ClCompile Include="libraries\Lua-4.5.7\src\ltable.c" />
-    <ClCompile Include="libraries\Lua-4.5.7\src\ltablib.c" />
-    <ClCompile Include="libraries\Lua-4.5.7\src\ltm.c" />
-    <ClCompile Include="libraries\Lua-4.5.7\src\lua.c" />
-    <ClCompile Include="libraries\Lua-4.5.7\src\luac.c" />
-    <ClCompile Include="libraries\Lua-4.5.7\src\lundump.c" />
-    <ClCompile Include="libraries\Lua-4.5.7\src\lutf8lib.c" />
-    <ClCompile Include="libraries\Lua-4.5.7\src\lvm.c" />
-    <ClCompile Include="libraries\Lua-4.5.7\src\lzio.c" />
-    <ClCompile Include="Resources\XML\DataFactory.cpp" />
+    <ClCompile Include="libraries\Lua-4.5.7\src\lapi.c">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="libraries\Lua-4.5.7\src\lauxlib.c">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="libraries\Lua-4.5.7\src\lbaselib.c">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="libraries\Lua-4.5.7\src\lcode.c">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="libraries\Lua-4.5.7\src\lcorolib.c">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="libraries\Lua-4.5.7\src\lctype.c">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="libraries\Lua-4.5.7\src\ldblib.c">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="libraries\Lua-4.5.7\src\ldebug.c">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="libraries\Lua-4.5.7\src\ldo.c">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="libraries\Lua-4.5.7\src\ldump.c">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="libraries\Lua-4.5.7\src\lfunc.c">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="libraries\Lua-4.5.7\src\lgc.c">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="libraries\Lua-4.5.7\src\linit.c">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="libraries\Lua-4.5.7\src\liolib.c">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="libraries\Lua-4.5.7\src\llex.c">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="libraries\Lua-4.5.7\src\lmathlib.c">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="libraries\Lua-4.5.7\src\lmem.c">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="libraries\Lua-4.5.7\src\loadlib.c">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="libraries\Lua-4.5.7\src\lobject.c">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="libraries\Lua-4.5.7\src\lopcodes.c">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="libraries\Lua-4.5.7\src\loslib.c">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="libraries\Lua-4.5.7\src\lparser.c">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="libraries\Lua-4.5.7\src\lstate.c">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="libraries\Lua-4.5.7\src\lstring.c">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="libraries\Lua-4.5.7\src\lstrlib.c">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="libraries\Lua-4.5.7\src\ltable.c">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="libraries\Lua-4.5.7\src\ltablib.c">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="libraries\Lua-4.5.7\src\ltm.c">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="libraries\Lua-4.5.7\src\lua.c">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="libraries\Lua-4.5.7\src\luac.c">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="libraries\Lua-4.5.7\src\lundump.c">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="libraries\Lua-4.5.7\src\lutf8lib.c">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="libraries\Lua-4.5.7\src\lvm.c">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="libraries\Lua-4.5.7\src\lzio.c">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="Resources\FontFactory.cpp" />
+    <ClCompile Include="Resources\XML\XMLFactory.cpp" />
     <ClCompile Include="Resources\ResourceManager.cpp" />
     <ClCompile Include="Resources\ScriptResources\ScriptFactory.cpp" />
     <ClCompile Include="Resources\XML\BlackBoxXMLParser.cpp" />
@@ -295,8 +470,12 @@
     <ClInclude Include="Actors\EngineComponents\LuaScriptComponent.h" />
     <ClInclude Include="Actors\EngineComponents\MovementBlocker.h" />
     <ClInclude Include="Actors\EngineComponents\MoverComponent.h" />
+    <ClInclude Include="Actors\EngineComponents\SimpleTextComponent.h" />
     <ClInclude Include="Actors\EngineComponents\SpriteComponent.h" />
+    <ClInclude Include="Graphics\Text Rendering\Font.h" />
     <ClInclude Include="Graphics\Scene.h" />
+    <ClInclude Include="Graphics\Text Rendering\Text.h" />
+    <ClInclude Include="Graphics\Text Rendering\TextRenderer.h" />
     <ClInclude Include="Input\InputManager.h" />
     <ClInclude Include="libraries\Lua-4.5.7\src\lapi.h" />
     <ClInclude Include="libraries\Lua-4.5.7\src\lauxlib.h" />
@@ -413,9 +592,10 @@
     <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_vulkan.h" />
     <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3_image\SDL_image.h" />
     <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3_ttf\SDL_ttf.h" />
+    <ClInclude Include="Resources\FontFactory.h" />
     <ClInclude Include="Resources\ScriptResources\LuaScript.h" />
     <ClInclude Include="Resources\ScriptResources\PythonScript.h" />
-    <ClInclude Include="Resources\XML\DataFactory.h" />
+    <ClInclude Include="Resources\XML\XMLFactory.h" />
     <ClInclude Include="Resources\ResourceManager.h" />
     <ClInclude Include="Resources\ScriptResources\ScriptFactory.h" />
     <ClInclude Include="Resources\XML\BlackBoxXMLParser.h" />
@@ -437,6 +617,9 @@
     <ClInclude Include="Graphics\Texture.h" />
     <ClInclude Include="Resources\TextureFactory.h" />
     <ClInclude Include="Graphics\Window.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="libraries\Lua-4.5.7\src\Makefile" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

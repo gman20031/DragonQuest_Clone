@@ -1639,7 +1639,7 @@ typedef struct SDL_Environment SDL_Environment;
 extern SDL_DECLSPEC SDL_Environment * SDLCALL SDL_GetEnvironment(void);
 
 /**
- * Create a set of environment variables
+ * CreateFont a set of environment variables
  *
  * \param populated true to initialize it from the C runtime environment,
  *                  false to create an empty environment.

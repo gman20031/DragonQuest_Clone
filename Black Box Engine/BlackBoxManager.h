@@ -50,7 +50,7 @@ namespace BlackBoxEngine
         [[nodiscard("index not caught after creating window")]] void CreateWindow
             (const char* title, int xPos, int yPos, int width, int height, BB_Window::WindowFlags flags);
         double GetDeltaTime() const { return m_deltaTime; }
-		bool IsSystemEnabled(EngineInitOptions option);
+		bool IsSystemEnabled(EngineInitOptions option) const;
 
         int RunEngine();
         int InitEngine(EngineInitOptions options = kUseAll);

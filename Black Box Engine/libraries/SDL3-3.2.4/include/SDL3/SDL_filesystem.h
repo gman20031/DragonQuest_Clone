@@ -272,7 +272,7 @@ typedef Uint32 SDL_GlobFlags;
 #define SDL_GLOB_CASEINSENSITIVE (1u << 0)
 
 /**
- * Create a directory, and any missing parent directories.
+ * CreateFont a directory, and any missing parent directories.
  *
  * This reports success if `path` already exists as a directory.
  *

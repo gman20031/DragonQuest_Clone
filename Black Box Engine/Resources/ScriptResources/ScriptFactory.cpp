@@ -18,6 +18,8 @@ namespace BlackBoxEngine
             auto& weakPtr = it->second;
             if (!weakPtr.expired())
                 return weakPtr.lock();
+            else
+                m_luaCache.erase(it);
         }
 
         // otherwise create new texture

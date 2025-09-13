@@ -2,6 +2,7 @@
 #include "BlackBoxManager.h"
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL3_ttf/SDL_ttf.h>
 
 #include <algorithm>
 
@@ -66,7 +67,7 @@ namespace BlackBoxEngine
         m_pWindow = std::make_unique<BB_Window>(pWindowTitle, xPos, yPos, width, height, flags);
     }
 
-	bool BlackBoxManager::IsSystemEnabled(EngineInitOptions option)
+	bool BlackBoxManager::IsSystemEnabled(EngineInitOptions option) const
 	{
 		return m_engineOptions | option;
 	}
@@ -127,6 +128,7 @@ namespace BlackBoxEngine
 		}
 
         m_keepRunning = true;
+        TTF_Init();
 
         assert(m_pWindow);
         if (m_pWindow->StartWindow() != 0)

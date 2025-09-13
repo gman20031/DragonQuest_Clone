@@ -82,7 +82,7 @@ typedef struct SDLTest_TextWindow
 } SDLTest_TextWindow;
 
 /*
- *  Create a multi-line text output window
+ *  CreateFont a multi-line text output window
  *
  *  \param x The X coordinate of the upper left corner of the window.
  *  \param y The Y coordinate of the upper left corner of the window.

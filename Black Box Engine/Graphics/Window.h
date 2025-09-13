@@ -10,6 +10,7 @@ namespace BlackBoxEngine
 	{
 		SDL_Window* m_pSdlWindow = nullptr;
 		friend class BB_Renderer;
+        friend class BB_TextRenderer;
     public:
         // Copied from SDL_3 Window Flags -- https://wiki.libsdl.org/SDL3/SDL_WindowFlags
         using WindowFlags = uint64_t;
@@ -42,6 +43,7 @@ namespace BlackBoxEngine
          
 	private:                                                       
 		BB_Renderer* m_pRenderer = nullptr;
+        BB_TextRenderer* m_pTextRenderer = nullptr;
 
 		const char* m_pTitle = nullptr;
 		int m_xPos = 0;
@@ -69,7 +71,8 @@ namespace BlackBoxEngine
         int GetXPos() const { return m_xPos; }
         int GetYPos() const { return m_xPos; }
 
-		BB_Renderer* const GetRenderer() const { return m_pRenderer; }
+        BB_Renderer* const GetRenderer() const { return m_pRenderer; }
+        BB_TextRenderer* const GetTextRenderer() const { return m_pTextRenderer; }
 
 		int StartWindow();
 		int StopWindow();

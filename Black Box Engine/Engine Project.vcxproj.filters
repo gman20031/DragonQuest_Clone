@@ -90,7 +90,7 @@
     <ClCompile Include="Resources\ResourceManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Resources\XML\DataFactory.cpp">
+    <ClCompile Include="Resources\XML\XMLFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Resources\XML\BlackBoxXMLParser.cpp">
@@ -114,13 +114,25 @@
     <ClCompile Include="Actors\EngineComponents\ColliderDebugRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Scripting\LuaController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Resources\ScriptResources\ScriptFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Actors\EngineComponents\LuaScriptComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Text Rendering\TextRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripting\LuaController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Text Rendering\Font.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Resources\FontFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Text Rendering\Text.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="libraries\Lua-4.5.7\src\lapi.c">
@@ -223,6 +235,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="libraries\Lua-4.5.7\src\lzio.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Actors\EngineComponents\SimpleTextComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -569,7 +584,7 @@
     <ClInclude Include="Resources\ResourceManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Resources\XML\DataFactory.h">
+    <ClInclude Include="Resources\XML\XMLFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Resources\XML\BlackBoxXMLParser.h">
@@ -587,9 +602,6 @@
     <ClInclude Include="Actors\Collision\ColliderBorder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Scripting\LuaController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Resources\ScriptResources\ScriptFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -600,6 +612,24 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Actors\EngineComponents\LuaScriptComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Text Rendering\TextRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripting\LuaController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\Lua-4.5.7\src\lua.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\FontFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Text Rendering\Font.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Text Rendering\Text.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="libraries\Lua-4.5.7\src\lapi.h">
@@ -668,9 +698,6 @@
     <ClInclude Include="libraries\Lua-4.5.7\src\lua.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="libraries\Lua-4.5.7\src\lua.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="libraries\Lua-4.5.7\src\luaconf.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -686,5 +713,11 @@
     <ClInclude Include="libraries\Lua-4.5.7\src\lzio.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Actors\EngineComponents\SimpleTextComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="libraries\Lua-4.5.7\src\Makefile" />
   </ItemGroup>
 </Project>

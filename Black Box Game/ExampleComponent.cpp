@@ -22,7 +22,7 @@ void ExampleComponent::Render()
 
 }
 
-void ExampleComponent::OnCollide(Actor* pOtherActor)
+void ExampleComponent::OnCollide([[maybe_unused]] Actor* pOtherActor)
 {
     // if this actor has a collider, and walks into another actor with a collider
     BB_LOG(LogType::kMessage, "Example Component Collided");

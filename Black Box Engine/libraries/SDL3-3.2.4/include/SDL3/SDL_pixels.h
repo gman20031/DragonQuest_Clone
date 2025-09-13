@@ -1224,7 +1224,7 @@ extern SDL_DECLSPEC bool SDLCALL SDL_GetMasksForPixelFormat(SDL_PixelFormat form
 extern SDL_DECLSPEC SDL_PixelFormat SDLCALL SDL_GetPixelFormatForMasks(int bpp, Uint32 Rmask, Uint32 Gmask, Uint32 Bmask, Uint32 Amask);
 
 /**
- * Create an SDL_PixelFormatDetails structure corresponding to a pixel format.
+ * CreateFont an SDL_PixelFormatDetails structure corresponding to a pixel format.
  *
  * Returned structure may come from a shared global cache (i.e. not newly
  * allocated), and hence should not be modified, especially the palette. Weird
@@ -1241,7 +1241,7 @@ extern SDL_DECLSPEC SDL_PixelFormat SDLCALL SDL_GetPixelFormatForMasks(int bpp, 
 extern SDL_DECLSPEC const SDL_PixelFormatDetails * SDLCALL SDL_GetPixelFormatDetails(SDL_PixelFormat format);
 
 /**
- * Create a palette structure with the specified number of color entries.
+ * CreateFont a palette structure with the specified number of color entries.
  *
  * The palette entries are initialized to white.
  *

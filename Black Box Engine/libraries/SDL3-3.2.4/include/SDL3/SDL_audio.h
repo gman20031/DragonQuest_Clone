@@ -1039,7 +1039,7 @@ extern SDL_DECLSPEC void SDLCALL SDL_UnbindAudioStream(SDL_AudioStream *stream);
 extern SDL_DECLSPEC SDL_AudioDeviceID SDLCALL SDL_GetAudioStreamDevice(SDL_AudioStream *stream);
 
 /**
- * Create a new audio stream.
+ * CreateFont a new audio stream.
  *
  * \param src_spec the format details of the input audio.
  * \param dst_spec the format details of the output audio.

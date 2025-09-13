@@ -275,7 +275,7 @@ typedef enum SDL_FileDialogType
 } SDL_FileDialogType;
 
 /**
- * Create and launch a file dialog with the specified properties.
+ * CreateFont and launch a file dialog with the specified properties.
  *
  * These are the supported properties:
  *

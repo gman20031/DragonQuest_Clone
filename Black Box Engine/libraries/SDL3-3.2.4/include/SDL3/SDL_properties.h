@@ -91,7 +91,7 @@ typedef enum SDL_PropertyType
 extern SDL_DECLSPEC SDL_PropertiesID SDLCALL SDL_GetGlobalProperties(void);
 
 /**
- * Create a group of properties.
+ * CreateFont a group of properties.
  *
  * All properties are automatically destroyed when SDL_Quit() is called.
  *

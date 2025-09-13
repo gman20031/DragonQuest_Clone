@@ -187,7 +187,7 @@ static int registerlocalvar (LexState *ls, FuncState *fs, TString *varname) {
 
 
 /*
-** Create a new local variable with the given 'name'. Return its index
+** CreateFont a new local variable with the given 'name'. Return its index
 ** in the function.
 */
 static int new_localvar (LexState *ls, TString *name) {
@@ -261,7 +261,7 @@ static LocVar *localdebuginfo (FuncState *fs, int vidx) {
 
 
 /*
-** Create an expression representing variable 'vidx'
+** CreateFont an expression representing variable 'vidx'
 */
 static void init_var (FuncState *fs, expdesc *e, int vidx) {
   e->f = e->t = NO_JUMP;
@@ -599,7 +599,7 @@ static int solvegotos (LexState *ls, Labeldesc *lb) {
 
 
 /*
-** Create a new label with the given 'name' at the given 'line'.
+** CreateFont a new label with the given 'name' at the given 'line'.
 ** 'last' tells whether label is the last non-op statement in its
 ** block. Solves all pending gotos to this new label and adds
 ** a close instruction if necessary.

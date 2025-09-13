@@ -172,7 +172,7 @@ static void print_version (void) {
 
 
 /*
-** Create the 'arg' table, which stores all arguments from the
+** CreateFont the 'arg' table, which stores all arguments from the
 ** command line ('argv'). It should be aligned so that, at index 0,
 ** it has 'argv[script]', which is the script name. The arguments
 ** to the script (everything after 'script') go to positive indices;

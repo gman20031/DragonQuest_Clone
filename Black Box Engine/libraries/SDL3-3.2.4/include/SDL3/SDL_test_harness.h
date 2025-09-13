@@ -115,7 +115,7 @@ char * SDLCALL SDLTest_GenerateRunSeed(char *buffer, int length);
 typedef struct SDLTest_TestSuiteRunner SDLTest_TestSuiteRunner;
 
 /*
- * Create a new test suite runner, that will execute the given test suites.
+ * CreateFont a new test suite runner, that will execute the given test suites.
  * It will register the harness cli arguments to the common SDL state.
  *
  * \param state Common SDL state on which to register CLI arguments.

@@ -12,6 +12,7 @@ namespace BlackBoxEngine
     class BB_Renderer
     {
         friend class TextureFactory;
+        friend class BB_TextRenderer;
     private: // variables
         SDL_Renderer* m_pSdlRenderer = nullptr;
         const BB_Window* m_pAttachedWindow = nullptr;

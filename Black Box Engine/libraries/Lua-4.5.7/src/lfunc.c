@@ -59,7 +59,7 @@ void luaF_initupvals (lua_State *L, LClosure *cl) {
 
 
 /*
-** Create a new upvalue at the given level, and link it to the list of
+** CreateFont a new upvalue at the given level, and link it to the list of
 ** open upvalues of 'L' after entry 'prev'.
 **/
 static UpVal *newupval (lua_State *L, StkId level, UpVal **prev) {

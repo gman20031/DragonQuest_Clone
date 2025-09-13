@@ -14,10 +14,8 @@ namespace BlackBoxEngine
         using HashType = uint32_t;
         std::unordered_map<HashType, tinyxml2::XMLDocument* > m_XMLDocMap;
 
-        XMLFactory() = default;
-
         ActorXMLParser CreateActorFromFile(const char* pFilePath);
-        LevelXMLParser CreateLevel(const char* pFilePath);
+        LevelXMLParser CreateLevelFromFile(const char* pFilePath);
        
         void ClearCache();
     };

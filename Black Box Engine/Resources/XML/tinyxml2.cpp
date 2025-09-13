@@ -1703,7 +1703,6 @@ const char* XMLElement::GetText() const
     return 0;
 }
 
-
 void	XMLElement::SetText( const char* inText )
 {
 	if ( FirstChild() && FirstChild()->ToText() )

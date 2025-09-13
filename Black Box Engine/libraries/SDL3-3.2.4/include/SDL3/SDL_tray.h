@@ -97,7 +97,7 @@ typedef Uint32 SDL_TrayEntryFlags;
 typedef void (SDLCALL *SDL_TrayCallback)(void *userdata, SDL_TrayEntry *entry);
 
 /**
- * Create an icon to be placed in the operating system's tray, or equivalent.
+ * CreateFont an icon to be placed in the operating system's tray, or equivalent.
  *
  * Many platforms advise not using a system tray unless persistence is a
  * necessary feature. Avoid needlessly creating a tray icon, as the user may
@@ -151,7 +151,7 @@ extern SDL_DECLSPEC void SDLCALL SDL_SetTrayIcon(SDL_Tray *tray, SDL_Surface *ic
 extern SDL_DECLSPEC void SDLCALL SDL_SetTrayTooltip(SDL_Tray *tray, const char *tooltip);
 
 /**
- * Create a menu for a system tray.
+ * CreateFont a menu for a system tray.
  *
  * This should be called at most once per tray icon.
  *
@@ -175,7 +175,7 @@ extern SDL_DECLSPEC void SDLCALL SDL_SetTrayTooltip(SDL_Tray *tray, const char *
 extern SDL_DECLSPEC SDL_TrayMenu * SDLCALL SDL_CreateTrayMenu(SDL_Tray *tray);
 
 /**
- * Create a submenu for a system tray entry.
+ * CreateFont a submenu for a system tray entry.
  *
  * This should be called at most once per tray entry.
  *

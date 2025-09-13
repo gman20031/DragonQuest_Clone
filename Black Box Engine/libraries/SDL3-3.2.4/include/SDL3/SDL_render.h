@@ -189,7 +189,7 @@ extern SDL_DECLSPEC int SDLCALL SDL_GetNumRenderDrivers(void);
 extern SDL_DECLSPEC const char * SDLCALL SDL_GetRenderDriver(int index);
 
 /**
- * Create a window and default renderer.
+ * CreateFont a window and default renderer.
  *
  * \param title the title of the window, in UTF-8 encoding.
  * \param m_width the m_width of the window.
@@ -211,7 +211,7 @@ extern SDL_DECLSPEC const char * SDLCALL SDL_GetRenderDriver(int index);
 extern SDL_DECLSPEC bool SDLCALL SDL_CreateWindowAndRenderer(const char *title, int width, int height, SDL_WindowFlags window_flags, SDL_Window **window, SDL_Renderer **renderer);
 
 /**
- * Create a 2D rendering context for a window.
+ * CreateFont a 2D rendering context for a window.
  *
  * If you want a specific renderer, you can specify its name here. A list of
  * available renderers can be obtained by calling SDL_GetRenderDriver()
@@ -246,7 +246,7 @@ extern SDL_DECLSPEC bool SDLCALL SDL_CreateWindowAndRenderer(const char *title, 
 extern SDL_DECLSPEC SDL_Renderer * SDLCALL SDL_CreateRenderer(SDL_Window *window, const char *name);
 
 /**
- * Create a 2D rendering context for a window, with the specified properties.
+ * CreateFont a 2D rendering context for a window, with the specified properties.
  *
  * These are the supported properties:
  *
@@ -311,7 +311,7 @@ extern SDL_DECLSPEC SDL_Renderer * SDLCALL SDL_CreateRendererWithProperties(SDL_
 #define SDL_PROP_RENDERER_CREATE_VULKAN_PRESENT_QUEUE_FAMILY_INDEX_NUMBER   "SDL.renderer.create.vulkan.present_queue_family_index"
 
 /**
- * Create a 2D software rendering context for a surface.
+ * CreateFont a 2D software rendering context for a surface.
  *
  * Two other API which can be used to create SDL_Renderer:
  * SDL_CreateRenderer() and SDL_CreateWindowAndRenderer(). These can _also_
@@ -527,7 +527,7 @@ extern SDL_DECLSPEC bool SDLCALL SDL_GetRenderOutputSize(SDL_Renderer *renderer,
 extern SDL_DECLSPEC bool SDLCALL SDL_GetCurrentRenderOutputSize(SDL_Renderer *renderer, int *w, int *h);
 
 /**
- * Create a texture for a rendering context.
+ * CreateFont a texture for a rendering context.
  *
  * The contents of a texture when first created are not defined.
  *
@@ -552,7 +552,7 @@ extern SDL_DECLSPEC bool SDLCALL SDL_GetCurrentRenderOutputSize(SDL_Renderer *re
 extern SDL_DECLSPEC SDL_Texture * SDLCALL SDL_CreateTexture(SDL_Renderer *renderer, SDL_PixelFormat format, SDL_TextureAccess access, int w, int h);
 
 /**
- * Create a texture from an existing surface.
+ * CreateFont a texture from an existing surface.
  *
  * The surface is not modified or freed by this function.
  *
@@ -580,7 +580,7 @@ extern SDL_DECLSPEC SDL_Texture * SDLCALL SDL_CreateTexture(SDL_Renderer *render
 extern SDL_DECLSPEC SDL_Texture * SDLCALL SDL_CreateTextureFromSurface(SDL_Renderer *renderer, SDL_Surface *surface);
 
 /**
- * Create a texture for a rendering context with the specified properties.
+ * CreateFont a texture for a rendering context with the specified properties.
  *
  * These are the supported properties:
  *

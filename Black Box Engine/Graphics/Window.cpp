@@ -3,6 +3,7 @@
 #include "../System/Log.h"
 #include "SDL.h"
 #include "Renderer.h"
+#include "Text Rendering/TextRenderer.h"
 
 namespace BlackBoxEngine
 {
@@ -24,6 +25,8 @@ namespace BlackBoxEngine
             SDL_free(m_pSdlWindow);
         if (m_pRenderer)
             delete m_pRenderer;
+        if (m_pTextRenderer)
+            delete m_pTextRenderer;
     }
 
     int BB_Window::SetTitle(const char* title)
@@ -66,20 +69,27 @@ namespace BlackBoxEngine
         m_pSdlWindow = SDL_CreateWindow(m_pTitle, m_width, m_height, static_cast<uint64_t>(m_windowFlags) );
         if (!m_pSdlWindow)
         {
-            SimpleLog(SDL_GetError());
+            BB_LOG(LogType::kError, SDL_GetError());
             return 1;
         }
 
         if (!SDL_SetWindowPosition(m_pSdlWindow, m_xPos, m_yPos))
         {
-            SimpleLog(SDL_GetError());
+            BB_LOG(LogType::kError, SDL_GetError());
             return 1;
         }
 
         m_pRenderer = new BB_Renderer(this);
         if (!m_pRenderer)
         {
-            SimpleLog("Renderer not Created");
+            BB_LOG(LogType::kError, "Renderer not Created");
+            return 1;
+        }
+
+        m_pTextRenderer = new BB_TextRenderer(this);
+        if (!m_pRenderer)
+        {
+            BB_LOG(LogType::kError, "Renderer not Created");
             return 1;
         }
 

@@ -3,28 +3,20 @@
 using namespace BlackBoxEngine;
 
 #include <Actors/EngineComponents/SpriteComponent.h>
-#include <Resources/ResourceManager.h>
-
-#include "ExampleComponent.h"
+#include <Actors/EngineComponents/SimpleTextComponent.h>
 
 void BlackBoxGame::InitGame()
 {
 	BB_LOG(LogType::kMessage, "Game starting");
 
-    //auto& pActor = m_pEngineManager->m_pActorManager->NewActor();
-    //auto* pSpriteComponent = pActor->AddComponent<SpriteComponent>();
-    //pSpriteComponent->SetTexture("../Assets/BlackBoxEngineTitle.png"); // btw, visual studio will give you a preivew of the image if its a proper file path
-    //pSpriteComponent->SetDimensions(200, 200);
+    m_pEngineManager->m_pActorManager->LoadActor("../Assets/TitleActor.xml");
 
-    //int width = kDefaultWidth / 2;
-    //int height = kDefaultHeight / 2;
-    //pActor->GetComponent<TransformComponent>()->m_position = FVector2(width, height);
-
-    //pActor->AddComponent<ExampleComponent>();
-
-    //ActorXMLParser::SaveActor(pActor, "TitleActor", "../Assets/TitleActor.xml");
-
-    auto& pActor = m_pEngineManager->m_pActorManager->LoadActor("../Assets/TitleActor.xml");
+    const auto& pActor = m_pEngineManager->m_pActorManager->NewActor();
+    auto* pTransform = pActor->AddComponent<TransformComponent>();
+    auto* pTextComponent = pActor->AddComponent<SimpleTextComponent>();
+    pTextComponent->SetFont("../Assets/Fonts/nes-font.ttf" , 24);
+    pTextComponent->SetText("Hello, World!");
+    pTransform->m_position = { 100,100 };
 }
 
 BlackBoxGame::BlackBoxGame()

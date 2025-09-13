@@ -182,7 +182,7 @@ typedef int (SDLCALL *SDL_ThreadFunction) (void *data);
  */
 
 /**
- * Create a new thread with a default stack size.
+ * CreateFont a new thread with a default stack size.
  *
  * This is a convenience function, equivalent to calling
  * SDL_CreateThreadWithProperties with the following properties set:
@@ -215,7 +215,7 @@ typedef int (SDLCALL *SDL_ThreadFunction) (void *data);
 extern SDL_DECLSPEC SDL_Thread * SDLCALL SDL_CreateThread(SDL_ThreadFunction fn, const char *name, void *data);
 
 /**
- * Create a new thread with with the specified properties.
+ * CreateFont a new thread with with the specified properties.
  *
  * These are the supported properties:
  *

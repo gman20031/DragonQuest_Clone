@@ -294,7 +294,7 @@ typedef struct SDL_StorageInterface
     /* Write a file to storage, optional for read-only storage */
     bool (SDLCALL *write_file)(void *userdata, const char *path, const void *source, Uint64 length);
 
-    /* Create a directory, optional for read-only storage */
+    /* CreateFont a directory, optional for read-only storage */
     bool (SDLCALL *mkdir)(void *userdata, const char *path);
 
     /* Remove a file or empty directory, optional for read-only storage */
@@ -517,7 +517,7 @@ extern SDL_DECLSPEC bool SDLCALL SDL_ReadStorageFile(SDL_Storage *storage, const
 extern SDL_DECLSPEC bool SDLCALL SDL_WriteStorageFile(SDL_Storage *storage, const char *path, const void *source, Uint64 length);
 
 /**
- * Create a directory in a writable storage container.
+ * CreateFont a directory in a writable storage container.
  *
  * \param storage a storage container.
  * \param path the path of the directory to create.

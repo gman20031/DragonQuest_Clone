@@ -270,7 +270,7 @@ extern SDL_DECLSPEC bool SDLCALL SDL_SetSurfaceColorspace(SDL_Surface *surface, 
 extern SDL_DECLSPEC SDL_Colorspace SDLCALL SDL_GetSurfaceColorspace(SDL_Surface *surface);
 
 /**
- * Create a palette and associate it with a surface.
+ * CreateFont a palette and associate it with a surface.
  *
  * This function creates a palette compatible with the provided surface. The
  * palette is then returned for you to modify, and the surface will

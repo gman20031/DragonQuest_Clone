@@ -20,6 +20,7 @@ bool BlackBoxEngine::BB_Renderer::SetSDLDrawColor(const ColorValue& newColor)
 		newColor.r, newColor.g, newColor.b, newColor.a);
 }
 
+
 //////////////////////////////////////////////////////////////////
 ///  Public Functions
 //////////////////////////////////////////////////////////////////
@@ -117,16 +118,16 @@ const char* BlackBoxEngine::BB_Renderer::GetErrorStr()
 
 bool BlackBoxEngine::BB_Renderer::DrawTexture(
     BB_Texture* texture,
-    const BB_Rectangle* source,
-    const BB_Rectangle* dest,
+    const BB_Rectangle* pSource,
+    const BB_Rectangle* pDest,
     const double rot,
-    const BB_Point* center,
+    const BB_Point* pCenter,
     const BB_FlipVal& flip
 )
 {
-    const SDL_FRect* pSdlSource = (const SDL_FRect*)(source);       // tested, this is faster
-    const SDL_FRect* pSdlDest = (const SDL_FRect*)(dest);           // than doing static_cast
-    const SDL_FPoint* pSdlCenter = (const SDL_FPoint*)(center);     // 
+    const SDL_FRect* pSdlSource = (const SDL_FRect*)(pSource);       // tested, this is faster
+    const SDL_FRect* pSdlDest = (const SDL_FRect*)(pDest);           // than doing static_cast
+    const SDL_FPoint* pSdlCenter = (const SDL_FPoint*)(pCenter);     // 
     const SDL_FlipMode sdlFlip = static_cast<SDL_FlipMode>(flip);   // my code is copying Sdl, so I guarntee this to work
 
     assert(m_pSdlRenderer);
@@ -140,5 +141,4 @@ bool BlackBoxEngine::BB_Renderer::DrawTexture(
         pSdlCenter,
         sdlFlip
     );
-
 }

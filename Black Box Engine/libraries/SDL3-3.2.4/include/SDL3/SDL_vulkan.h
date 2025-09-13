@@ -200,7 +200,7 @@ extern SDL_DECLSPEC void SDLCALL SDL_Vulkan_UnloadLibrary(void);
 extern SDL_DECLSPEC char const * const * SDLCALL SDL_Vulkan_GetInstanceExtensions(Uint32 *count);
 
 /**
- * Create a Vulkan rendering surface for a window.
+ * CreateFont a Vulkan rendering surface for a window.
  *
  * The `window` must have been created with the `SDL_WINDOW_VULKAN` flag and
  * `instance` must have been created with extensions returned by

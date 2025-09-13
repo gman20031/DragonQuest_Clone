@@ -296,7 +296,7 @@ extern "C" {
 typedef struct SDL_Mutex SDL_Mutex;
 
 /**
- * Create a new mutex.
+ * CreateFont a new mutex.
  *
  * All newly-created mutexes begin in the _unlocked_ state.
  *
@@ -427,7 +427,7 @@ extern SDL_DECLSPEC void SDLCALL SDL_DestroyMutex(SDL_Mutex *mutex);
 typedef struct SDL_RWLock SDL_RWLock;
 
 /**
- * Create a new read/write lock.
+ * CreateFont a new read/write lock.
  *
  * A read/write lock is useful for situations where you have multiple threads
  * trying to access a resource that is rarely updated. All threads requesting
@@ -658,7 +658,7 @@ extern SDL_DECLSPEC void SDLCALL SDL_DestroyRWLock(SDL_RWLock *rwlock);
 typedef struct SDL_Semaphore SDL_Semaphore;
 
 /**
- * Create a semaphore.
+ * CreateFont a semaphore.
  *
  * This function creates a new semaphore and initializes it with the value
  * `initial_value`. Each wait operation on the semaphore will atomically
@@ -801,7 +801,7 @@ extern SDL_DECLSPEC Uint32 SDLCALL SDL_GetSemaphoreValue(SDL_Semaphore *sem);
 typedef struct SDL_Condition SDL_Condition;
 
 /**
- * Create a condition variable.
+ * CreateFont a condition variable.
  *
  * \returns a new condition variable or NULL on failure; call SDL_GetError()
  *          for more information.

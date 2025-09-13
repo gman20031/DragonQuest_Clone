@@ -1835,25 +1835,25 @@ public:
     virtual bool Accept( XMLVisitor* visitor ) const override;
 
     /**
-    	Create a new Element associated with
+    	CreateFont a new Element associated with
     	this Document. The memory for the Element
     	is managed by the Document.
     */
     XMLElement* NewElement( const char* name );
     /**
-    	Create a new Comment associated with
+    	CreateFont a new Comment associated with
     	this Document. The memory for the Comment
     	is managed by the Document.
     */
     XMLComment* NewComment( const char* comment );
     /**
-    	Create a new Text associated with
+    	CreateFont a new Text associated with
     	this Document. The memory for the Text
     	is managed by the Document.
     */
     XMLText* NewText( const char* text );
     /**
-    	Create a new Declaration associated with
+    	CreateFont a new Declaration associated with
     	this Document. The memory for the object
     	is managed by the Document.
 
@@ -1865,7 +1865,7 @@ public:
     */
     XMLDeclaration* NewDeclaration( const char* text=0 );
     /**
-    	Create a new Unknown associated with
+    	CreateFont a new Unknown associated with
     	this Document. The memory for the object
     	is managed by the Document.
     */
@@ -2055,10 +2055,10 @@ inline NodeType* XMLDocument::CreateUnlinkedNode( MemPoolT<PoolElementSize>& poo
 class TINYXML2_LIB XMLHandle
 {
 public:
-    /// Create a handle from any node (at any depth of the tree.) This can be a null pointer.
+    /// CreateFont a handle from any node (at any depth of the tree.) This can be a null pointer.
     explicit XMLHandle( XMLNode* node ) : _node( node ) {
     }
-    /// Create a handle from a node.
+    /// CreateFont a handle from a node.
     explicit XMLHandle( XMLNode& node ) : _node( &node ) {
     }
     /// Copy constructor

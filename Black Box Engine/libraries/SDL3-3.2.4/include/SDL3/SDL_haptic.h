@@ -30,7 +30,7 @@
  * - Open a haptic device.
  * - SDL_OpenHaptic() to open from index.
  * - SDL_OpenHapticFromJoystick() to open from an existing joystick.
- * - Create an effect (SDL_HapticEffect).
+ * - CreateFont an effect (SDL_HapticEffect).
  * - Upload the effect with SDL_CreateHapticEffect().
  * - Run the effect with SDL_RunHapticEffect().
  * - (optional) Free the effect with SDL_DestroyHapticEffect().
@@ -82,7 +82,7 @@
  *       return false;
  *    }
  *
- *    // Create the effect
+ *    // CreateFont the effect
  *    SDL_memset(&effect, 0, sizeof(SDL_HapticEffect)); // 0 is safe default
  *    effect.type = SDL_HAPTIC_SINE;
  *    effect.periodic.direction.type = SDL_HAPTIC_POLAR; // Polar coordinates
@@ -1179,7 +1179,7 @@ extern SDL_DECLSPEC int SDLCALL SDL_GetNumHapticAxes(SDL_Haptic *haptic);
 extern SDL_DECLSPEC bool SDLCALL SDL_HapticEffectSupported(SDL_Haptic *haptic, const SDL_HapticEffect *effect);
 
 /**
- * Create a new haptic effect on a specified device.
+ * CreateFont a new haptic effect on a specified device.
  *
  * \param haptic an SDL_Haptic device to create the effect on.
  * \param effect an SDL_HapticEffect structure containing the properties of

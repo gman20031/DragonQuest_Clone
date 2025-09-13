@@ -9,6 +9,18 @@ namespace BlackBoxEngine
 		float y;
 	};
 
+    struct BB_IntPoint
+    {
+        float x;
+        float y;
+    };
+
+	/**
+     * @brief X
+     * @brief Y
+     * @brief W
+     * @brief H
+	 */
 	struct BB_Rectangle
 	{
 		float x;
@@ -16,6 +28,14 @@ namespace BlackBoxEngine
 		float w;
 		float h;
 	};
+
+    struct BB_IntRectangle
+    {
+        float x;
+        float y;
+        float w;
+        float h;
+    };
 
 	enum class BB_FlipVal
 	{

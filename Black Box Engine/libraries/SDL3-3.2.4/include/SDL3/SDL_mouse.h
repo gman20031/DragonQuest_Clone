@@ -471,7 +471,7 @@ extern SDL_DECLSPEC bool SDLCALL SDL_GetWindowRelativeMouseMode(SDL_Window *wind
 extern SDL_DECLSPEC bool SDLCALL SDL_CaptureMouse(bool enabled);
 
 /**
- * Create a cursor using the specified bitmap data and mask (in MSB format).
+ * CreateFont a cursor using the specified bitmap data and mask (in MSB format).
  *
  * `mask` has to be in MSB (Most Significant Bit) format.
  *
@@ -520,7 +520,7 @@ extern SDL_DECLSPEC SDL_Cursor * SDLCALL SDL_CreateCursor(const Uint8 *data,
                                                      int hot_y);
 
 /**
- * Create a color cursor.
+ * CreateFont a color cursor.
  *
  * If this function is passed a surface with alternate representations, the
  * surface will be interpreted as the content to be used for 100% display
@@ -552,7 +552,7 @@ extern SDL_DECLSPEC SDL_Cursor * SDLCALL SDL_CreateColorCursor(SDL_Surface *surf
                                                           int hot_y);
 
 /**
- * Create a system cursor.
+ * CreateFont a system cursor.
  *
  * \param id an SDL_SystemCursor enum value.
  * \returns a cursor on success or NULL on failure; call SDL_GetError() for

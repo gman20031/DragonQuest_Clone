@@ -123,7 +123,7 @@ static Instruction *previousinstruction (FuncState *fs) {
 
 
 /*
-** Create a OP_LOADNIL instruction, but try to optimize: if the previous
+** CreateFont a OP_LOADNIL instruction, but try to optimize: if the previous
 ** instruction is also OP_LOADNIL and ranges are compatible, adjust
 ** range of previous instruction instead of emitting a new one. (For
 ** instance, 'local a; local b' will generate a single opcode.)
@@ -193,7 +193,7 @@ void luaK_concat (FuncState *fs, int *l1, int l2) {
 
 
 /*
-** Create a jump instruction and return its position, so its destination
+** CreateFont a jump instruction and return its position, so its destination
 ** can be fixed later (with 'fixjump').
 */
 int luaK_jump (FuncState *fs) {
@@ -1271,7 +1271,7 @@ static int isSCnumber (expdesc *e, int *pi, int *isfloat) {
 
 
 /*
-** Create expression 't[k]'. 't' must have its final result already in a
+** CreateFont expression 't[k]'. 't' must have its final result already in a
 ** register or upvalue. Upvalues can only be indexed by literal strings.
 ** Keys can be literal strings in the constant table or arbitrary
 ** values in registers.
@@ -1678,7 +1678,7 @@ void luaK_infix (FuncState *fs, BinOpr op, expdesc *v) {
 }
 
 /*
-** Create code for '(e1 .. e2)'.
+** CreateFont code for '(e1 .. e2)'.
 ** For '(e1 .. e2.1 .. e2.2)' (which is '(e1 .. (e2.1 .. e2.2))',
 ** because concatenation is right associative), merge both CONCATs.
 */

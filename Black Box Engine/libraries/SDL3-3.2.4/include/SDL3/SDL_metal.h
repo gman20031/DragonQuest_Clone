@@ -53,7 +53,7 @@ typedef void *SDL_MetalView;
 /* @{ */
 
 /**
- * Create a CAMetalLayer-backed NSView/UIView and attach it to the specified
+ * CreateFont a CAMetalLayer-backed NSView/UIView and attach it to the specified
  * window.
  *
  * On macOS, this does *not* associate a MTLDevice with the CAMetalLayer on
