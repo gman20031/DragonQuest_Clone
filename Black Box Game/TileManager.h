@@ -1,8 +1,11 @@
 #pragma once
 
 
-namespace BlackBoxEngine
-{
-	class TileManager;
 
-}
+class TileManager
+{
+
+public:
+	//void Load(const XMLElement& element);
+};
+
