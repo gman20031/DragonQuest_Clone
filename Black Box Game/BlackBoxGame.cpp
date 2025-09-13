@@ -11,6 +11,8 @@ void BlackBoxGame::InitGame()
 
     m_pEngineManager->m_pActorManager->LoadActor("../Assets/TitleActor.xml");
 
+    //here i should do ->m_pTileManager->LoadMap();
+
     const auto& pActor = m_pEngineManager->m_pActorManager->NewActor();
     auto* pTransform = pActor->AddComponent<TransformComponent>();
     auto* pTextComponent = pActor->AddComponent<SimpleTextComponent>();
