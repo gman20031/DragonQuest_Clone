@@ -238,6 +238,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Actors\EngineComponents\SimpleTextComponent.cpp">
+	    <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TileManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -719,5 +722,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="libraries\Lua-4.5.7\src\Makefile" />
+    <ClInclude Include="TileManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
