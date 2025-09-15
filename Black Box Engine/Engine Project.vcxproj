@@ -102,7 +102,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp23</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3;$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3_image;$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3_ttf;$(solutiondir)Black Box Engine\libraries\Lua-4.5.7\src;$(solutiondir)Black Box Engine\libraries\zlib-1.3.1\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3;$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3_image;$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3_ttf;$(solutiondir)Black Box Engine\libraries\Lua-4.5.7\src;$(solutiondir)Black Box Engine\libraries\zlib-1.3.1\include;$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3_mixer</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <UseFullPaths>false</UseFullPaths>
     </ClCompile>
@@ -131,7 +131,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp23</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3;$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3_image;$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3_ttf;$(solutiondir)Black Box Engine\libraries\Lua-4.5.7\src;$(solutiondir)Black Box Engine\libraries\zlib-1.3.1\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3;$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3_image;$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3_ttf;$(solutiondir)Black Box Engine\libraries\Lua-4.5.7\src;$(solutiondir)Black Box Engine\libraries\zlib-1.3.1\include;$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3_mixer</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <UseFullPaths>false</UseFullPaths>
     </ClCompile>
@@ -160,7 +160,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp23</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3;$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3_image;$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3_ttf;$(solutiondir)Black Box Engine\libraries\Lua-4.5.7\src;$(solutiondir)Black Box Engine\libraries\zlib-1.3.1\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3;$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3_image;$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3_ttf;$(solutiondir)Black Box Engine\libraries\Lua-4.5.7\src;$(solutiondir)Black Box Engine\libraries\zlib-1.3.1\include;$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3_mixer</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <UseFullPaths>false</UseFullPaths>
     </ClCompile>
@@ -189,7 +189,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp23</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3;$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3_image;$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3_ttf;$(solutiondir)Black Box Engine\libraries\Lua-4.5.7\src;$(solutiondir)Black Box Engine\libraries\zlib-1.3.1\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3;$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3_image;$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3_ttf;$(solutiondir)Black Box Engine\libraries\Lua-4.5.7\src;$(solutiondir)Black Box Engine\libraries\zlib-1.3.1\include;$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\SDL3_mixer</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <UseFullPaths>false</UseFullPaths>
     </ClCompile>
@@ -228,6 +228,7 @@
     <ClCompile Include="Actors\EngineComponents\SpriteComponent.cpp" />
     <ClCompile Include="Actors\EngineComponents\TransformComponent.cpp" />
     <ClCompile Include="Actors\EngineComponents\TransformComponent.h" />
+    <ClCompile Include="Audio\AudioManager.cpp" />
     <ClCompile Include="Graphics\Text Rendering\Font.cpp" />
     <ClCompile Include="Graphics\Scene.cpp" />
     <ClCompile Include="Graphics\Text Rendering\Text.cpp" />
@@ -472,6 +473,7 @@
     <ClInclude Include="Actors\EngineComponents\MoverComponent.h" />
     <ClInclude Include="Actors\EngineComponents\SimpleTextComponent.h" />
     <ClInclude Include="Actors\EngineComponents\SpriteComponent.h" />
+    <ClInclude Include="Audio\AudioManager.h" />
     <ClInclude Include="Graphics\Text Rendering\Font.h" />
     <ClInclude Include="Graphics\Scene.h" />
     <ClInclude Include="Graphics\Text Rendering\Text.h" />

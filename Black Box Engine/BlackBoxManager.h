@@ -7,6 +7,7 @@
 #include "Graphics/Window.h"
 #include "Graphics/Renderer.h"
 #include "Graphics/Scene.h"
+#include "Audio/AudioManager.h"
 #include "Actors/ActorManager.h"
 #include "Input/InputManager.h"
 #include "System/MessageManager.h"
@@ -18,12 +19,13 @@ namespace BlackBoxEngine
     public:
         using WindowPtr = std::unique_ptr<BB_Window>;
         using EngineInitOptions = uint8_t;
-        static constexpr EngineInitOptions kNone		  = 0b0000;
-        static constexpr EngineInitOptions kUseActors	  = 0b0001;
-        static constexpr EngineInitOptions kUseInput	  = 0b0010;
-        static constexpr EngineInitOptions kUseCollision  = 0b0100;
-		static constexpr EngineInitOptions kUseMessaging  = 0b1000;
-        static constexpr EngineInitOptions kUseAll	      = 0b1111;
+        static constexpr EngineInitOptions kNone		  = 0b00000;
+        static constexpr EngineInitOptions kUseActors	  = 0b00001;
+        static constexpr EngineInitOptions kUseInput	  = 0b00010;
+        static constexpr EngineInitOptions kUseCollision  = 0b00100;
+		static constexpr EngineInitOptions kUseMessaging  = 0b01000;
+		static constexpr EngineInitOptions kUseAudio      = 0b11000;
+        static constexpr EngineInitOptions kUseAll	      = 0b11111;
 
     private:
         inline static constexpr float kCollisionBufferSize = 0;
@@ -35,8 +37,9 @@ namespace BlackBoxEngine
     public:
         bool m_keepRunning = false;
         CollisionManager* m_pCollisionManager = nullptr;
-        ActorManager* m_pActorManager = nullptr;
-        InputManager* m_pInputManager = nullptr;
+        ActorManager*     m_pActorManager = nullptr;
+        InputManager*     m_pInputManager = nullptr;
+        AudioManager*     m_pAudioManager = nullptr;
         MessagingManager* m_pMessagingManager = nullptr;
 
     public:

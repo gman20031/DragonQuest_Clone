@@ -122,6 +122,8 @@ namespace BlackBoxEngine
 			m_pMessagingManager = new MessagingManager;
 		if(options & kUseActors)
 			m_pActorManager = new ActorManager;
+        if (options & kUseAudio)
+            m_pAudioManager = new AudioManager;
 		if(options & kUseCollision)
 		{
 			m_pCollisionManager = new CollisionManager(-kCollisionBufferSize, -kCollisionBufferSize,
@@ -139,16 +141,16 @@ namespace BlackBoxEngine
         return 0;
     }
 
-    BlackBoxManager* BlackBoxManager::Get()
-    {
-        assert(m_pSingletonManager);
-        return m_pSingletonManager;
-    }
-
     BlackBoxManager* BlackBoxManager::NewAndInitEngine(EngineInitOptions options)
     {
         NewSingleton();
         m_pSingletonManager->InitEngine(options);
+        return m_pSingletonManager;
+    }
+
+    BlackBoxManager* BlackBoxManager::Get()
+    {
+        assert(m_pSingletonManager);
         return m_pSingletonManager;
     }
 
