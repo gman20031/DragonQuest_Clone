@@ -129,7 +129,7 @@
     <ClCompile Include="Graphics\Text Rendering\Font.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Resources\FontFactory.cpp">
+    <ClCompile Include="Resources\TextFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\Text Rendering\Text.cpp">
@@ -623,7 +623,7 @@
     <ClInclude Include="libraries\Lua-4.5.7\src\lua.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Resources\FontFactory.h">
+    <ClInclude Include="Resources\TextFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\Text Rendering\Font.h">

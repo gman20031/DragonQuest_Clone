@@ -63,6 +63,18 @@ namespace BlackBoxEngine
         ActorXMLParser::SaveActor(pActor, pActorName, filePath);
     }
 
+    const ActorManager::ActorPtr& ActorManager::GetActor(Actor::Id id)
+    {
+        auto it = m_allActors.find(id);
+        if (it != m_allActors.end() )
+            return it->second;
+
+        BB_LOG(LogType::kError, "Attempted to get actor that does not exist. Making a temp empty actor, ID: " , id);
+        const auto& ret = NewActor();
+        DestroyActor(ret->GetId());
+        return ret;
+    }
+
     Actor::Id ActorManager::NextId()
     {
         if (m_unsuedIds.empty())

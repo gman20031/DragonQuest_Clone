@@ -439,7 +439,7 @@
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
     </ClCompile>
-    <ClCompile Include="Resources\FontFactory.cpp" />
+    <ClCompile Include="Resources\TextFactory.cpp" />
     <ClCompile Include="Resources\XML\XMLFactory.cpp" />
     <ClCompile Include="Resources\ResourceManager.cpp" />
     <ClCompile Include="Resources\ScriptResources\ScriptFactory.cpp" />
@@ -592,7 +592,7 @@
     <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_vulkan.h" />
     <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3_image\SDL_image.h" />
     <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3_ttf\SDL_ttf.h" />
-    <ClInclude Include="Resources\FontFactory.h" />
+    <ClInclude Include="Resources\TextFactory.h" />
     <ClInclude Include="Resources\ScriptResources\LuaScript.h" />
     <ClInclude Include="Resources\ScriptResources\PythonScript.h" />
     <ClInclude Include="Resources\XML\XMLFactory.h" />

@@ -29,6 +29,8 @@ namespace BlackBoxEngine
         void DestroyActor(Actor::Id id);
         void DestroyActor(Actor* pActor);
         
+        const ActorPtr& GetActor(Actor::Id id);
+
         void Update();
         void Start(); // where the hell should I call this?
         void Render();

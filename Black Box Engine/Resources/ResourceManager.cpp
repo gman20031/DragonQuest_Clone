@@ -6,7 +6,7 @@
 #include "TextureFactory.h"
 #include "XML/XMLFactory.h"
 #include "ScriptResources/ScriptFactory.h"
-#include "FontFactory.h"
+#include "TextFactory.h"
 
 namespace BlackBoxEngine
 {
