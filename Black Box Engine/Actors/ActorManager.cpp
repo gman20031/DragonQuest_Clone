@@ -79,9 +79,9 @@ namespace BlackBoxEngine
     {
         if (m_unsuedIds.empty())
         {
+            auto id = m_highestId;
             ++m_highestId;
-            return m_highestId;
-            
+            return id;
         }
         Actor::Id nextId = m_unsuedIds.back();
         m_unsuedIds.pop_back();

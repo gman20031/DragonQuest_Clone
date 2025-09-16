@@ -25,7 +25,7 @@ namespace BlackBoxEngine
                 BB_LOG(LogType::kError, "Width or height is zero");
                 return;
             }
-            m_pRenderer->DrawRectFilled(rect, m_renderColor);
+            m_pRenderer->DrawRectScreenFilled(rect, m_renderColor);
         }
     }
 

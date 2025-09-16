@@ -2,20 +2,25 @@
 
 #include <memory>
 
-#include "XML/BlackBoxXMLParser.h"
 #include "../Graphics/Renderer.h"
-
 
 namespace BlackBoxEngine
 {
-    class TextureFactory;
     class XMLFactory;
-    class ScriptFactory;
-    class TextFactory;
+    class XMLElementParser;
+    class ActorXMLParser;
+    class LevelXMLParser;
+
+    class TextureFactory;
     class BB_Texture;
+
+    class ScriptFactory;
     class LuaScript;
+
+    class TextFactory;
     class BB_Font;
     class BB_Text;
+
 
     class ResourceManager
     {
@@ -34,7 +39,7 @@ namespace BlackBoxEngine
         //static std::shared_ptr<PythonScript> GetPythonScript(const char* pFilePath);
         static ActorXMLParser GetActorXMLData(const char* pFilePath);
         static LevelXMLParser GetLevelXMLData(const char* pFilePath);
-
+        static XMLElementParser GetRawXMLDATA(const char* pFilePath);
     };
 
 

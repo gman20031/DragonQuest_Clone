@@ -74,25 +74,25 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)\BlackBoxEngine_Build\$(Configuration)\BlackBox\lib\</OutDir>
     <IntDir>$(SolutionDir)\BlackBoxEngine_Build\$(Configuration)\BlackBox\Intermediate\</IntDir>
-    <IncludePath>$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\</IncludePath>
     <TargetName>BlackBoxEngine</TargetName>
+    <IncludePath>$(projectDir)Libraries\SDL3-3.2.4\Include\</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)\BlackBoxEngine_Build\$(Configuration)\BlackBox\lib\</OutDir>
     <IntDir>$(SolutionDir)\BlackBoxEngine_Build\$(Configuration)\BlackBox\Intermediate\</IntDir>
-    <IncludePath>$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\</IncludePath>
     <TargetName>BlackBoxEngine</TargetName>
+    <IncludePath>$(projectDir)Libraries\SDL3-3.2.4\Include\</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)\BlackBoxEngine_Build\$(Configuration)\BlackBox\lib\</OutDir>
     <IntDir>$(SolutionDir)\BlackBoxEngine_Build\$(Configuration)\BlackBox\Intermediate\</IntDir>
-    <IncludePath>$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\</IncludePath>
+    <IncludePath>$(projectDir)Libraries\SDL3-3.2.4\Include\</IncludePath>
     <TargetName>BlackBoxEngine</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)\BlackBoxEngine_Build\$(Configuration)\BlackBox\lib\</OutDir>
     <IntDir>$(SolutionDir)\BlackBoxEngine_Build\$(Configuration)\BlackBox\Intermediate\</IntDir>
-    <IncludePath>$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\include\</IncludePath>
+    <IncludePath>$(projectDir)Libraries\SDL3-3.2.4\Include\</IncludePath>
     <TargetName>BlackBoxEngine</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -229,8 +229,8 @@
     <ClCompile Include="Actors\EngineComponents\TransformComponent.cpp" />
     <ClCompile Include="Actors\EngineComponents\TransformComponent.h" />
     <ClCompile Include="Audio\AudioManager.cpp" />
+    <ClCompile Include="Graphics\Camera.cpp" />
     <ClCompile Include="Graphics\Text Rendering\Font.cpp" />
-    <ClCompile Include="Graphics\Scene.cpp" />
     <ClCompile Include="Graphics\Text Rendering\Text.cpp" />
     <ClCompile Include="Graphics\Text Rendering\TextRenderer.cpp" />
     <ClCompile Include="Input\InputManager.cpp" />
@@ -474,8 +474,8 @@
     <ClInclude Include="Actors\EngineComponents\SimpleTextComponent.h" />
     <ClInclude Include="Actors\EngineComponents\SpriteComponent.h" />
     <ClInclude Include="Audio\AudioManager.h" />
+    <ClInclude Include="Graphics\Camera.h" />
     <ClInclude Include="Graphics\Text Rendering\Font.h" />
-    <ClInclude Include="Graphics\Scene.h" />
     <ClInclude Include="Graphics\Text Rendering\Text.h" />
     <ClInclude Include="Graphics\Text Rendering\TextRenderer.h" />
     <ClInclude Include="Input\InputManager.h" />

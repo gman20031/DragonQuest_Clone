@@ -74,6 +74,7 @@ namespace BlackBoxEngine
 		return m_engineOptions | option;
 	}
 
+
     int BlackBoxManager::RunEngine()
     {
 #ifdef _DEBUG
@@ -116,6 +117,7 @@ namespace BlackBoxEngine
     {
 		m_engineOptions = options;
 
+        // system inits
 		if(options & kUseInput)
 			m_pInputManager = new InputManager;
 		if(options & kUseMessaging)
@@ -131,9 +133,12 @@ namespace BlackBoxEngine
 				(float)m_pWindow->GetHeight() + kCollisionBufferSize);
 		}
 
-        m_keepRunning = true;
+        // other inits
         TTF_Init();
+        m_pMainCamera = new Camera;
 
+        // start the window
+        m_keepRunning = true;
         assert(m_pWindow);
         if (m_pWindow->StartWindow() != 0)
             m_keepRunning = false;

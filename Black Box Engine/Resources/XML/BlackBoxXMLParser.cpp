@@ -94,7 +94,7 @@ namespace BlackBoxEngine
         if (filePath.empty())
         {
             filePath = std::filesystem::path(kActorFilePath) / pActorName;
-            BB_LOG(LogType::kWarning, "filePath was empty, creating new path");
+            BB_LOG(LogType::kMessage, "filePath was empty, creating new path");
         }
         filePath.replace_extension(".xml");
 
@@ -119,6 +119,26 @@ namespace BlackBoxEngine
         : m_pRootElement(pElement)
     {
 
+    }
+
+    XMLElementParser XMLElementParser::FindSiblingElement(const char* pName)
+    {
+        return XMLElementParser(m_pRootElement->NextSiblingElement(pName));
+    }
+
+    XMLElementParser XMLElementParser::GetSibling()
+    {
+        return XMLElementParser(m_pRootElement->NextSiblingElement());
+    }
+
+    void XMLElementParser::GetElementName(const char** ppName)
+    {
+        *ppName = m_pRootElement->Value();
+    }
+
+    void XMLElementParser::GetText(const char** ppText)
+    {
+        *ppText = m_pRootElement->GetText();
     }
 
     const char* XMLElementParser::GetComponentName() const
@@ -291,6 +311,7 @@ namespace BlackBoxEngine
         if (m_pRootElement->ChildElementCount() > 0) // ensure the parser is empty.
             m_pRootElement->DeleteChildren();
     }
+
 
     XMLElementParser XMLElementParser::InsertNewChild(const char* pName)
     {

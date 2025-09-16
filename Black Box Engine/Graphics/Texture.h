@@ -24,8 +24,5 @@ namespace BlackBoxEngine
 
 		bool SetAlpha(uint8_t alpha);
 		bool SetColorMod(const ColorValue& colorMod);
-
 	};
-
-
 }

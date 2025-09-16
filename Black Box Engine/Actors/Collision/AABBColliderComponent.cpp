@@ -3,7 +3,6 @@
 #include "CollisionManager.h"
 #include "../../BlackBoxManager.h"
 #include "../../System/Log.h"
-#include "../../Graphics/Scene.h"
 
 namespace BlackBoxEngine
 {

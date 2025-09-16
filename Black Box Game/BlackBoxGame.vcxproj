@@ -189,13 +189,17 @@ copy "$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\lib\x64\SDL3_ttf.dll" 
     <ClCompile Include="GameComponentRegistrar.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ScreenCentered.cpp" />
-    <ClCompile Include="TileManager.cpp" />
+    <ClCompile Include="TileSystem\TileActorManager.cpp" />
+    <ClCompile Include="TileSystem\TileInfoComponent.cpp" />
+    <ClCompile Include="TileSystem\TileMapComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BlackBoxGame.h" />
     <ClInclude Include="ExampleComponent.h" />
     <ClInclude Include="ScreenCentered.h" />
-    <ClInclude Include="TileManager.h" />
+    <ClInclude Include="TileSystem\TileActorManager.h" />
+    <ClInclude Include="TileSystem\TileInfoComponent.h" />
+    <ClInclude Include="TileSystem\TileMapComponent.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

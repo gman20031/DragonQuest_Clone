@@ -2,6 +2,7 @@
 
 #include <cassert>
 
+#include "XML/BlackBoxXMLParser.h"
 #include "../Graphics/Renderer.h"
 #include "TextureFactory.h"
 #include "XML/XMLFactory.h"
@@ -52,6 +53,11 @@ namespace BlackBoxEngine
     LevelXMLParser ResourceManager::GetLevelXMLData(const char* pFilePath)
     {
         return GetXMLFactory()->CreateLevelFromFile(pFilePath);
+    }
+
+    XMLElementParser ResourceManager::GetRawXMLDATA(const char* pFilePath)
+    {
+        return GetXMLFactory()->CreateXMLFile(pFilePath);
     }
 
     std::shared_ptr<BB_Font> ResourceManager::GetFont(const char* pFilePath, float size)

@@ -11,18 +11,17 @@ namespace BlackBoxEngine
     {
     public:
         using ActorPtr = std::unique_ptr<Actor>;
-    private:
+    protected:
         std::unordered_map<Actor::Id , ActorPtr> m_allActors;
         std::vector<Actor::Id> m_unsuedIds;
         std::vector<Actor::Id> m_destroyQueue;
 
         Actor::Id m_highestId = 0;
 
-    private:
+    protected:
         Actor::Id NextId();
         void RemoveQueuedActors();
     public:
-
         const ActorPtr& NewActor();
         const ActorPtr& LoadActor(const char* filePath);
         void LoadLevel(const char* filePath);

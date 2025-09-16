@@ -38,26 +38,55 @@ namespace BlackBoxEngine
         bool SetBackgroundColor(const ColorValue& newBackgroundColor);
 
         // draw line
-        bool DrawLine(BB_Point start, BB_Point end);
+        bool DrawLineScreen(BB_Point start, BB_Point end);
 
         // draw rectangle
-        bool DrawRect(const BB_Rectangle& rec);
-        bool DrawRectFilled(const BB_Rectangle& rec);
-        bool DrawRect(const BB_Rectangle& rec , const ColorValue& color);
-        bool DrawRectFilled(const BB_Rectangle& rec, const ColorValue& color);
+        bool DrawRectScreen(const BB_Rectangle& rec);
+        bool DrawRectScreenFilled(const BB_Rectangle& rec);
+        bool DrawRectScreen(const BB_Rectangle& rec , const ColorValue& color);
+        bool DrawRectScreenFilled(const BB_Rectangle& rec, const ColorValue& color);
 
         const char* GetErrorStr();
         // draw texture
-        bool DrawTexture(
+        
+        /**
+         * @brief Draws a texture to the screen, using the coordinates based on the screen
+         * @param texture The texture you wish to draw
+         * @param source Where on the texture the render should source from, for sprite sheets, null for all
+         * @param dest Where on the screen you want to render to
+         * @param rot Rotation if you want any
+         * @param center The center of the rotation.
+         * @param flip Flip the image
+         * @return 
+         */
+        bool DrawTextureScreen(
             BB_Texture* texture,
-            const BB_Rectangle* source = nullptr,
-            const BB_Rectangle* dest = nullptr,
+            BB_Rectangle* source = nullptr,
+            BB_Rectangle* dest = nullptr,
             const double rot = 0,
             const BB_Point* center = nullptr,
             const BB_FlipVal& flip = BB_FlipVal::kNone
         );
 
-        // draw presetSprite
+        /**
+         * @brief Draws a texture to the screen, using the the game's coordinates and offset by the camera's position
+         * @param texture The texture you wish to draw
+         * @param source Where on the texture the render should source from, for sprite sheets, null for all
+         * @param dest Where in the game you wish to render too
+         * @param rot Rotation if you want any
+         * @param center The center of the rotation.
+         * @param flip Flip the image
+         * @return
+         */
+        bool DrawTextureGame(
+            BB_Texture* texture,
+            BB_Rectangle* source = nullptr,
+            BB_Rectangle* dest = nullptr,
+            const double rot = 0,
+            const BB_Point* center = nullptr,
+            const BB_FlipVal& flip = BB_FlipVal::kNone
+        );
+
     };
 
 };

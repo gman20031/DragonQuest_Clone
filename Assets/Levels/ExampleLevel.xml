@@ -1,8 +1,4 @@
-<!-- the title actor is saved in a seperate actor -->
-<Actor Name = "TitleActor" SeperateFile = "true">
-	<FilePath>../Assets/Actors/TitleActor.xml</FilePath>
-</Actor>
-<Actor Name="HelloText">
+<Actor Name="TileMapActor">
     <Component Name="TransformComponent">
         <Position>
             <X>0</X>
@@ -10,10 +6,10 @@
         </Position>
         <Rotation>0</Rotation>
     </Component>
-    <Component Name="SimpleTextComponent">
-        <FontFilePath>../Assets/Fonts/dragon-warrior-1.ttf</FontFilePath>
-        <Textcontents>King: We've been
-   waiting for your arrival.</Textcontents>
-        <TextSize>24</TextSize>
+    <Component Name="TileMapComponent">
+        <TileSize>16</TileSize>
+        <Width>25</Width>
+        <Height>25</Height>
+        <RawMap>GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGS����</RawMap>
     </Component>
 </Actor>

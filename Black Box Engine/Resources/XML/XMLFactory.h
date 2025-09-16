@@ -5,6 +5,8 @@
 
 #include "BlackBoxXMLParser.h"
 
+class tinyxml2::XMLDocument;
+
 namespace BlackBoxEngine
 {
     class XMLFactory
@@ -13,10 +15,12 @@ namespace BlackBoxEngine
 
         using HashType = uint32_t;
         std::unordered_map<HashType, tinyxml2::XMLDocument* > m_XMLDocMap;
-
+        
+        tinyxml2::XMLDocument* CreateNewXMLFile(HashType hash, const char* pFilePath);
         ActorXMLParser CreateActorFromFile(const char* pFilePath);
         LevelXMLParser CreateLevelFromFile(const char* pFilePath);
-       
+        XMLElementParser CreateXMLFile(const char* pFilePath);
+
         void ClearCache();
     };
 

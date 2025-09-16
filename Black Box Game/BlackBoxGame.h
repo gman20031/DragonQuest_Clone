@@ -2,21 +2,33 @@
 
 #include <BlackBoxManager.h>
 
+#include "TileSystem/TileActorManager.h"
+
 class BlackBoxGame
 {
     BlackBoxEngine::BlackBoxManager* m_pEngineManager;
 
 private:
+    inline static BlackBoxGame* s_pBlackBoxGame = nullptr;
+    
+    TileActorManager* m_pTileActorManager = nullptr;
+
     inline static constexpr int kDefaultXPos = 100;
     inline static constexpr int kDefaultYPos = 100;
-    inline static constexpr int kDefaultWidth = 900;
-    inline static constexpr int kDefaultHeight = 600;
-
-    void InitGame();
+    inline static constexpr int kDefaultWidth = (256 * 3);
+    inline static constexpr int kDefaultHeight = (256 * 3);
 
 public:
-    BlackBoxGame();
-    ~BlackBoxGame();
+    static BlackBoxGame* NewSingleton();
+    static BlackBoxGame* Get();
+    static void DeleteSingleton();
+    
+    TileActorManager* GetTileActorManager() const { return m_pTileActorManager; }
 
     void Launch();
+private:
+    void InitGame();
+
+    BlackBoxGame();
+    ~BlackBoxGame();
 };

@@ -1,9 +1,10 @@
 #include "Renderer.h"
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <assert.h>
 
 #include "../System/Log.h"
+#include "../BlackBoxManager.h"
 
 //////////////////////////////////////////////////////////////////
 ///  Private Functions
@@ -74,24 +75,24 @@ bool BlackBoxEngine::BB_Renderer::SetBackgroundColor(const ColorValue& newBackgr
 	return true;
 }
 
-bool BlackBoxEngine::BB_Renderer::DrawLine(BB_Point start, BB_Point end)
+bool BlackBoxEngine::BB_Renderer::DrawLineScreen(BB_Point start, BB_Point end)
 {
 	return SDL_RenderLine(m_pSdlRenderer, start.x, start.y, end.x, end.y);
 }
 
-bool BlackBoxEngine::BB_Renderer::DrawRect(const BB_Rectangle& rec)
+bool BlackBoxEngine::BB_Renderer::DrawRectScreen(const BB_Rectangle& rec)
 {
 	SDL_FRect sdlRect{ rec.x, rec.y , rec.w, rec.h };
 	return SDL_RenderRect(m_pSdlRenderer, &sdlRect);
 }
 
-bool BlackBoxEngine::BB_Renderer::DrawRectFilled(const BB_Rectangle& rec)
+bool BlackBoxEngine::BB_Renderer::DrawRectScreenFilled(const BB_Rectangle& rec)
 {
 	SDL_FRect sdlRect{ rec.x, rec.y , rec.w, rec.h };
 	return SDL_RenderFillRect(m_pSdlRenderer, &sdlRect);
 }
 
-bool BlackBoxEngine::BB_Renderer::DrawRect(const BB_Rectangle& rec, const ColorValue& color)
+bool BlackBoxEngine::BB_Renderer::DrawRectScreen(const BB_Rectangle& rec, const ColorValue& color)
 {
     auto startColor = m_currentDrawColor;
     SetDrawColor(color);
@@ -101,7 +102,7 @@ bool BlackBoxEngine::BB_Renderer::DrawRect(const BB_Rectangle& rec, const ColorV
     return good;
 }
 
-bool BlackBoxEngine::BB_Renderer::DrawRectFilled(const BB_Rectangle& rec, const ColorValue& color)
+bool BlackBoxEngine::BB_Renderer::DrawRectScreenFilled(const BB_Rectangle& rec, const ColorValue& color)
 {
     auto startColor = m_currentDrawColor;
     SetDrawColor(color);
@@ -116,10 +117,10 @@ const char* BlackBoxEngine::BB_Renderer::GetErrorStr()
 	return SDL_GetError();
 }
 
-bool BlackBoxEngine::BB_Renderer::DrawTexture(
+bool BlackBoxEngine::BB_Renderer::DrawTextureScreen(
     BB_Texture* texture,
-    const BB_Rectangle* pSource,
-    const BB_Rectangle* pDest,
+    BB_Rectangle* pSource,
+    BB_Rectangle* pDest,
     const double rot,
     const BB_Point* pCenter,
     const BB_FlipVal& flip
@@ -131,6 +132,42 @@ bool BlackBoxEngine::BB_Renderer::DrawTexture(
     const SDL_FlipMode sdlFlip = static_cast<SDL_FlipMode>(flip);   // my code is copying Sdl, so I guarntee this to work
 
     assert(m_pSdlRenderer);
+
+    return SDL_RenderTextureRotated(
+        m_pSdlRenderer,
+        texture->m_pSdlTexture,
+        pSdlSource,
+        pSdlDest,
+        rot,
+        pSdlCenter,
+        sdlFlip
+    );
+}
+
+bool BlackBoxEngine::BB_Renderer::DrawTextureGame(
+    BB_Texture* texture,
+    BB_Rectangle* pSource,
+    BB_Rectangle* pDest,
+    const double rot,
+    const BB_Point* pCenter,
+    const BB_FlipVal& flip
+)
+{
+
+    if(pDest)
+    {
+        FVector2 zoom = BlackBoxManager::Get()->m_pMainCamera->GetZoomMults(m_pAttachedWindow);
+        BlackBoxManager::Get()->m_pMainCamera->ZoomDestinationRect(pDest, zoom);
+        BlackBoxManager::Get()->m_pMainCamera->OffestGameCoords(&pDest->x, &pDest->y, zoom);
+    }
+    const SDL_FRect* pSdlSource = (const SDL_FRect*)(pSource);       // tested, this is faster
+    const SDL_FPoint* pSdlCenter = (const SDL_FPoint*)(pCenter);     // than doing static_cast 
+    const SDL_FRect* pSdlDest = (const SDL_FRect*)(pDest);
+    const SDL_FlipMode sdlFlip = static_cast<SDL_FlipMode>(flip);    // my code is copying Sdl, this is private, so I can guarntee this to work
+
+    assert(m_pSdlRenderer);
+
+
 
     return SDL_RenderTextureRotated(
         m_pSdlRenderer,

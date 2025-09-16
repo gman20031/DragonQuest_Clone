@@ -7,10 +7,23 @@
 
 namespace BlackBoxEngine
 {
-    //XMLFactory::~XMLFactory()
-    //{
-    //    ClearCache();
-    //}
+    tinyxml2::XMLDocument* XMLFactory::CreateNewXMLFile(HashType hash, const char* pFilePath)
+    {
+        // create the new xmlFile
+        tinyxml2::XMLDocument* pDocument = new tinyxml2::XMLDocument;
+        pDocument->LoadFile(pFilePath);
+        if (pDocument->Error())
+            BB_LOG(LogType::kError, "Error with document load : ", pDocument->ErrorName());
+        auto emplacePair = m_XMLDocMap.emplace(hash, pDocument);
+
+        // log errors
+        if (!emplacePair.second || !pDocument)
+            BB_LOG(LogType::kError, "Error importing xmlFile : \"", pFilePath, '\"');
+        else
+            BB_LOG(LogType::kMessage, pFilePath, " imported properly");
+
+        return pDocument;
+    }
 
     LevelXMLParser XMLFactory::CreateLevelFromFile(const char* pFilePath)
     {
@@ -23,21 +36,7 @@ namespace BlackBoxEngine
             return LevelXMLParser(it->second);
         }
 
-        // create the new xmlFile
-        tinyxml2::XMLDocument* pDocument = new tinyxml2::XMLDocument;
-        pDocument->LoadFile(pFilePath);
-        if (pDocument->Error())
-            BB_LOG(LogType::kError, "Error with document load : ", pDocument->ErrorName());
-
-        auto emplacePair = m_XMLDocMap.emplace(hash, pDocument);
-
-        // log errors
-        if (!emplacePair.second || !pDocument)
-            BB_LOG(LogType::kError, "Error importing xmlFile : \"", pFilePath, '\"');
-        else
-            BB_LOG(LogType::kMessage, pFilePath, " imported properly");
-
-        return LevelXMLParser(pDocument);
+        return LevelXMLParser(CreateNewXMLFile(hash, pFilePath));
     }
 
     ActorXMLParser XMLFactory::CreateActorFromFile(const char* pFilePath)
@@ -51,20 +50,22 @@ namespace BlackBoxEngine
             return ActorXMLParser(it->second);
         }
 
-        // create the new xmlFile
-        tinyxml2::XMLDocument* pDocument = new tinyxml2::XMLDocument;
-        pDocument->LoadFile(pFilePath);
-        if (pDocument->Error())
-            BB_LOG(LogType::kError, "Error with document load : ", pDocument->ErrorName());
-        auto emplacePair = m_XMLDocMap.emplace(hash, pDocument);
+        return ActorXMLParser(CreateNewXMLFile(hash, pFilePath));
+    }
 
-        // log errors
-        if (!emplacePair.second || !pDocument)
-            BB_LOG(LogType::kError, "Error importing xmlFile : \"", pFilePath, '\"');
-        else
-            BB_LOG(LogType::kMessage, pFilePath, " imported properly");
+    XMLElementParser XMLFactory::CreateXMLFile(const char* pFilePath)
+    {
+        HashType hash = StringHash(pFilePath);
 
-        return ActorXMLParser(pDocument);
+        // find if already in cache
+        auto it = m_XMLDocMap.find(hash);
+        if (it != m_XMLDocMap.end())
+        {
+            return XMLElementParser(it->second->RootElement());
+        }
+
+        auto* pDoc = CreateNewXMLFile(hash, pFilePath);
+        return XMLElementParser(pDoc->RootElement());
     }
 
     void XMLFactory::ClearCache()

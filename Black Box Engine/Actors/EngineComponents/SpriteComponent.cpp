@@ -59,7 +59,7 @@ namespace BlackBoxEngine
         float x = m_pTransform->m_position.x;
         float y = m_pTransform->m_position.y;
         auto dest = BB_Rectangle(x , y , m_width, m_height);
-        if ( !m_pRenderer->DrawTexture(m_pTexture.get() , nullptr , &dest ))
+        if ( !m_pRenderer->DrawTextureScreen(m_pTexture.get() , nullptr , &dest ))
             BB_LOG(LogType::kError, SDL_GetError());
     }
 }

@@ -2,9 +2,10 @@
 
 using namespace BlackBoxEngine;
 
-#include <Actors/EngineComponents/SpriteComponent.h>
-#include <Actors/EngineComponents/SimpleTextComponent.h>
-#include "ScreenCentered.h"
+#include <cassert>
+
+#include "TileSystem/TileInfoComponent.h"
+#include "TileSystem/TileMapComponent.h"
 
 void BlackBoxGame::InitGame()
 {
@@ -15,9 +16,10 @@ void BlackBoxGame::InitGame()
 
 BlackBoxGame::BlackBoxGame()
     : m_pEngineManager(BlackBoxManager::NewSingleton())
+    , m_pTileActorManager(new TileActorManager)
 {
     m_pEngineManager->CreateWindow(
-        "BalatroClone", kDefaultXPos, kDefaultYPos, kDefaultWidth, kDefaultHeight,
+        "Dragon Quest Clone", kDefaultXPos, kDefaultYPos, kDefaultWidth, kDefaultHeight,
         BB_Window::kWindowFlag_Resizable
     );
     
@@ -28,7 +30,8 @@ BlackBoxGame::~BlackBoxGame()
 {
     if (m_pEngineManager)
         m_pEngineManager->DeleteSingleton();
-
+    if (m_pTileActorManager)
+        delete m_pTileActorManager;
 }
 
 void BlackBoxGame::Launch()
@@ -36,5 +39,28 @@ void BlackBoxGame::Launch()
     assert(m_pEngineManager);
     m_pEngineManager->InitEngine();
     InitGame();
+    m_pTileActorManager->Start();
     m_pEngineManager->RunEngine();
+}
+
+BlackBoxGame* BlackBoxGame::NewSingleton()
+{
+    DeleteSingleton();
+    s_pBlackBoxGame = new BlackBoxGame;
+    return s_pBlackBoxGame;
+}
+
+BlackBoxGame* BlackBoxGame::Get()
+{
+    assert(s_pBlackBoxGame);
+    return s_pBlackBoxGame;
+}
+
+void BlackBoxGame::DeleteSingleton()
+{
+    if (s_pBlackBoxGame)
+    {
+        delete s_pBlackBoxGame;
+        s_pBlackBoxGame = nullptr;
+    }
 }

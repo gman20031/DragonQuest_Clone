@@ -69,9 +69,6 @@
     <ClCompile Include="Actors\ComponentFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\Scene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="System\SimpleTimingSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -241,6 +238,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Audio\AudioManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -563,9 +563,6 @@
     <ClInclude Include="Actors\ComponentFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\Scene.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="System\SimpleTimingSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -720,6 +717,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Audio\AudioManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -6,11 +6,12 @@
 
 #include "Graphics/Window.h"
 #include "Graphics/Renderer.h"
-#include "Graphics/Scene.h"
+#include "Graphics/Camera.h"
 #include "Audio/AudioManager.h"
 #include "Actors/ActorManager.h"
 #include "Input/InputManager.h"
 #include "System/MessageManager.h"
+#include "Actors/Collision/CollisionManager.h"
 
 namespace BlackBoxEngine
 {
@@ -41,7 +42,7 @@ namespace BlackBoxEngine
         InputManager*     m_pInputManager = nullptr;
         AudioManager*     m_pAudioManager = nullptr;
         MessagingManager* m_pMessagingManager = nullptr;
-
+        Camera*           m_pMainCamera = nullptr;
     public:
         ~BlackBoxManager();
         BlackBoxManager(const BlackBoxManager&) = delete;
@@ -50,19 +51,24 @@ namespace BlackBoxEngine
         void operator=(BlackBoxManager&&) = delete;
 
         const WindowPtr& GetWindow() { return m_pWindow; }
-        [[nodiscard("index not caught after creating window")]] void CreateWindow
-            (const char* title, int xPos, int yPos, int width, int height, BB_Window::WindowFlags flags);
+        [[nodiscard("index not caught after creating window")]] void CreateWindow(
+            const char* title,
+            int xPos, int yPos,
+            int width,
+            int height,
+            BB_Window::WindowFlags flags
+        );
         double GetDeltaTime() const { return m_deltaTime; }
 		bool IsSystemEnabled(EngineInitOptions option) const;
 
-        int RunEngine();
-        int InitEngine(EngineInitOptions options = kUseAll);
 
         [[nodiscard("Manager not being used")]] static BlackBoxManager* Get();
         static BlackBoxManager* NewAndInitEngine(EngineInitOptions options = kUseAll);
         static BlackBoxManager* NewSingleton();
         static void DeleteSingleton();
 
+        int RunEngine();
+        int InitEngine(EngineInitOptions options = kUseAll);
     private: // functions
         void HandleSdlEvents();
         void CheckEngineInitialized();
