@@ -1,0 +1,14 @@
+<Actor Name="PlayerActor">
+    <Component Name="TransformComponent">
+        <Position>
+            <X>0</X>
+            <Y>0</Y>
+        </Position>
+        <Rotation>0</Rotation>
+    </Component>
+    <Component Name="SpriteComponent">
+        <width>34</width>
+        <height>34</height>
+        <filePath>../Assets/Sprites/Player/Player_1.png</filePath>
+    </Component>
+</Actor>

@@ -6,12 +6,21 @@ using namespace BlackBoxEngine;
 
 #include "TileSystem/TileInfoComponent.h"
 #include "TileSystem/TileMapComponent.h"
+#include "../Black Box Engine/Actors/EngineComponents/SpriteComponent.h"
 
 void BlackBoxGame::InitGame()
 {
 	BB_LOG(LogType::kMessage, "Game starting");
 
     m_pEngineManager->m_pActorManager->LoadLevel("../Assets/Levels/ExampleLevel.xml");
+
+    //[[maybe_unused]] auto& pPlayerActor = m_pEngineManager->m_pActorManager->LoadActor("../Assets/Actors/PlayerActor.xml");
+
+   // [[maybe_unused]] const auto& pPlayerActor = m_pEngineManager->m_pActorManager->NewActor();
+   // auto* pComponent = pPlayerActor->AddComponent<SpriteComponent>();
+   // pComponent->SetTexture("../Assets/Sprites/Player/Player_1.png");
+   // pComponent->SetDimensions(34, 34);
+   // m_pEngineManager->m_pActorManager->SaveActor(pPlayerActor, "PlayerActor");
 }
 
 BlackBoxGame::BlackBoxGame()
