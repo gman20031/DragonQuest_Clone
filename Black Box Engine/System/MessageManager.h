@@ -48,6 +48,12 @@ namespace BlackBoxEngine
         CallbackIdType RegisterForAnyMessage(ListenerType&& listerFunction);
         void RemoveAnyMessageListener(CallbackIdType callbackId);
 
+        /**
+         * @brief 
+         * @param pMessage : The string you want to listen for
+         * @param listener : a void(Message&) function
+         * @return 
+         */
         CallbackIdType RegisterListenerString(const char* pMessage, ListenerType&& listener);
     };
 

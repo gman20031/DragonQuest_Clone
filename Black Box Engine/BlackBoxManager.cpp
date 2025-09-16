@@ -118,10 +118,10 @@ namespace BlackBoxEngine
 		m_engineOptions = options;
 
         // system inits
-		if(options & kUseInput)
-			m_pInputManager = new InputManager;
 		if(options & kUseMessaging)
 			m_pMessagingManager = new MessagingManager;
+		if(options & kUseInput)
+			m_pInputManager = new InputManager;
 		if(options & kUseActors)
 			m_pActorManager = new ActorManager;
         if (options & kUseAudio)

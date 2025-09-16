@@ -82,13 +82,14 @@ namespace BlackBoxEngine
         };
         
         QuadTreeNode* m_pRootNode;
-
         std::unordered_map < Actor*, QuadTreeNode*> m_actorMap;
+        uint64_t m_windowChangedCallback = 0;
 
         void Reset() const;
         void WriteNode(std::ostream& os, QuadTreeNode* pNode, int depth); // for debugging
         bool AtMaxDepth(const QuadTreeNode* pNode);
         const BoundingBox& GetBorderBox() const { return m_pRootNode->m_boundingBox; }
+        void SetDimensions(BB_Rectangle rect);
     public:
         CollisionManager(float x, float y, float w, float h);
         CollisionManager(BB_Rectangle bounds);
