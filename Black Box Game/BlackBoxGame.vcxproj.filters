@@ -9,6 +9,7 @@
     <ClCompile Include="ScreenCentered.cpp" />
     <ClCompile Include="TileSystem\TileActorManager.cpp" />
     <ClCompile Include="TileSystem\TileInfoComponent.cpp" />
+    <ClCompile Include="PlayerMovementComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BlackBoxGame.h" />
@@ -17,5 +18,6 @@
     <ClInclude Include="ScreenCentered.h" />
     <ClInclude Include="TileSystem\TileInfoComponent.h" />
     <ClInclude Include="TileSystem\TileActorManager.h" />
+    <ClInclude Include="PlayerMovementComponent.h" />
   </ItemGroup>
 </Project>

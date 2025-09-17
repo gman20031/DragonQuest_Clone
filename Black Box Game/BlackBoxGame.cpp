@@ -7,6 +7,8 @@ using namespace BlackBoxEngine;
 #include "TileSystem/TileInfoComponent.h"
 #include "TileSystem/TileMapComponent.h"
 #include "../Black Box Engine/Actors/EngineComponents/SpriteComponent.h"
+#include "PlayerMovementComponent.h"
+#include "../Black Box Engine/Actors/EngineComponents/MoverComponent.h"
 
 void BlackBoxGame::InitGame()
 {
@@ -14,13 +16,17 @@ void BlackBoxGame::InitGame()
 
     m_pEngineManager->m_pActorManager->LoadLevel("../Assets/Levels/ExampleLevel.xml");
 
-    //[[maybe_unused]] auto& pPlayerActor = m_pEngineManager->m_pActorManager->LoadActor("../Assets/Actors/PlayerActor.xml");
-
-   // [[maybe_unused]] const auto& pPlayerActor = m_pEngineManager->m_pActorManager->NewActor();
-   // auto* pComponent = pPlayerActor->AddComponent<SpriteComponent>();
-   // pComponent->SetTexture("../Assets/Sprites/Player/Player_1.png");
-   // pComponent->SetDimensions(34, 34);
-   // m_pEngineManager->m_pActorManager->SaveActor(pPlayerActor, "PlayerActor");
+   // [[maybe_unused]] auto& pPlayerActor = m_pEngineManager->m_pActorManager->LoadActor("../Assets/Actors/PlayerActor.xml");
+    
+    //[[maybe_unused]] const auto& pPlayerActor = m_pEngineManager->m_pActorManager->NewActor();
+    //auto* pComponent = pPlayerActor->AddComponent<SpriteComponent>();
+    //pComponent->SetTexture("../Assets/Sprites/Player/Player_1.png");
+    //pComponent->SetDimensions(34, 34);
+    //
+    //pPlayerActor->AddComponent<MoverComponent>();
+    //pPlayerActor->AddComponent<PlayerMovementComponent>();
+    //
+    //m_pEngineManager->m_pActorManager->SaveActor(pPlayerActor, "PlayerActor");
 }
 
 BlackBoxGame::BlackBoxGame()

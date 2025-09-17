@@ -6,6 +6,13 @@
         </Position>
         <Rotation>0</Rotation>
     </Component>
+        <Component Name="MoverComponent">
+        <Velocity>
+            <X>true</X>
+            <Y>true</Y>
+        </Velocity>
+    </Component>
+    <Component Name="PlayerMovementComponent"/>
     <Component Name="SpriteComponent">
         <width>34</width>
         <height>34</height>
