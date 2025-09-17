@@ -9,6 +9,7 @@
 #include "EngineComponents/ColliderDebugRenderer.h"
 #include "EngineComponents/LuaScriptComponent.h"
 #include "EngineComponents/SimpleTextComponent.h"
+#include "EngineComponents/PlayerCameraComponent.h"
 #include "Collision/AABBColliderComponent.h"
 
 namespace BlackBoxEngine
@@ -22,7 +23,8 @@ namespace BlackBoxEngine
         ComponentFactory::Registrar<ColliderDebugRenderer>,
         ComponentFactory::Registrar<MovementBlocker>,
         ComponentFactory::Registrar<LuaScriptComponent>,
-        ComponentFactory::Registrar<SimpleTextComponent>
+        ComponentFactory::Registrar<SimpleTextComponent>,
+        ComponentFactory::Registrar<PlayerCameraComponent>
     > EngineRegistrar;
 
     Component* ComponentFactory::NewComponent(Component::Id id, Actor* pOwner)

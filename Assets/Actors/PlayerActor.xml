@@ -1,8 +1,8 @@
 <Actor Name="PlayerActor">
     <Component Name="TransformComponent">
         <Position>
-            <X>0</X>
-            <Y>0</Y>
+            <X>150</X>
+            <Y>150</Y>
         </Position>
         <Rotation>0</Rotation>
     </Component>
@@ -12,10 +12,17 @@
             <Y>0</Y>
         </Velocity>
     </Component>
-    <Component Name="PlayerMovementComponent"/>
+    <Component Name="PlayerMovementComponent">
+		<Speed>90</Speed>
+    </Component>
     <Component Name="SpriteComponent">
-        <width>34</width>
-        <height>34</height>
+        <width>16</width>
+        <height>16</height>
+		<UseFullImage>true</UseFullImage>
+		<TextureOffset>
+
+		</TextureOffset>
         <filePath>../Assets/Sprites/Player/Player_1.png</filePath>
     </Component>
+	<Component Name="PlayerCameraComponent"/>
 </Actor>
