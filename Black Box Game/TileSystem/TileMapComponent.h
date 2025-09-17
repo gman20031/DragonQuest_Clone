@@ -5,6 +5,7 @@
 
 #include <Actors/Component.h>
 #include <BlackBoxManager.h>
+#include <Graphics/RenderingStructs.h>
 
 #include "TileActorManager.h"
 
@@ -18,7 +19,10 @@ private:
     BlackBoxEngine::TransformComponent* m_pTransform = nullptr;
     BlackBoxEngine::BB_Renderer* m_pRenderer = nullptr;
     TileActorManager* m_pTileActorManager = nullptr;
-    char* m_pRawMap = nullptr; 
+
+    std::string m_rawMap;
+
+    BlackBoxEngine::BB_AnchorPoint m_anchorPoint = BlackBoxEngine::BB_AnchorPoint::kTopLeft;
     uint32_t m_mapSize  = 0;
     uint32_t m_height   = 0;
     uint32_t m_width    = 0;
@@ -30,6 +34,8 @@ private:
 
     void RenderTileAt(uint32_t x, uint32_t y);
     void FreeTileMap();
+    void SaveMap(BlackBoxEngine::XMLElementParser parser);
+    void LoadMap(BlackBoxEngine::XMLElementParser parser);
 public:
     TileMapComponent(BlackBoxEngine::Actor* pActor);
     ~TileMapComponent();
@@ -41,8 +47,17 @@ public:
     uint32_t GetTileSize() const { return m_tileSize; }
     uint32_t GetMapWidth() const { return m_width; }
     uint32_t GetMapHeight() const { return m_height; }
+    BlackBoxEngine::BB_AnchorPoint GetAnchorPoint() const { return m_anchorPoint; }
     const ActorPtr& GetTileAt(uint32_t x, uint32_t y);
     
+    /**
+     * @brief Sets the anchor point of this tilemap. The anchor point is the point where the 
+     * transform components pos will coorilate to on this map. Top Left means this actors pos
+     * is the topleft of the tilemap, CenterTrue means this actors pos is directly in the center
+     * of the tilemap.
+     */
+    void SetAnchorPoint(BlackBoxEngine::BB_AnchorPoint anchor) { m_anchorPoint = anchor; }
+
     /**
      * @brief Simply changes the size of each tile in the tileMap
      */

@@ -230,6 +230,7 @@
     <ClCompile Include="Actors\EngineComponents\TransformComponent.h" />
     <ClCompile Include="Audio\AudioManager.cpp" />
     <ClCompile Include="Graphics\Camera.cpp" />
+    <ClCompile Include="Graphics\RenderingStructs.cpp" />
     <ClCompile Include="Graphics\Text Rendering\Font.cpp" />
     <ClCompile Include="Graphics\Text Rendering\Text.cpp" />
     <ClCompile Include="Graphics\Text Rendering\TextRenderer.cpp" />

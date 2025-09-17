@@ -46,6 +46,11 @@ namespace BlackBoxEngine
     {
         parser.NewChildVariable("width", m_width);
         parser.NewChildVariable("height", m_height);
+        if (!m_pFilePath)
+        {
+            BB_LOG(LogType::kError, "Attempted to save sprite component with no texture");
+            return;
+        }
         parser.NewChildVariable("filePath", m_pFilePath);
     }
 

@@ -18,8 +18,6 @@ TileMapComponent::TileMapComponent(BlackBoxEngine::Actor* pActor)
 
 TileMapComponent::~TileMapComponent()
 {
-    if (m_pRawMap)
-        delete m_pRawMap;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -31,6 +29,25 @@ BlackBoxEngine::FVector2 TileMapComponent::GetGameCoordsFromTilePos(uint32_t x, 
     FVector2 offset = m_pTransform->m_position;
     offset.x += x * m_tileSize;
     offset.y += y * m_tileSize;
+
+    float totalWidth  = static_cast<float>(m_width * m_tileSize);
+    float totalHeight = static_cast<float>(m_height * m_tileSize);
+
+    using enum BB_AnchorPoint;
+    // offset this position to be different based on the anchor point
+    switch (m_anchorPoint)
+    {
+    case kTopLeft:                                                               break;
+    case kTopMiddle:   offset.x -= totalWidth  / 2;                              break;
+    case kTopRight:    offset.x -= totalWidth;                                   break;
+    case kCenterLeft:                               offset.y -= totalHeight / 2; break;
+    case kCenterTrue:  offset.x -= totalWidth  / 2; offset.y -= totalHeight / 2; break;
+    case kCenterRight: offset.x -= totalWidth;      offset.y -= totalHeight / 2; break;
+    case kBotLeft:                                  offset.y -= totalHeight;     break;
+    case kBotmiddle:   offset.x -= totalWidth / 2;  offset.y -= totalHeight;     break;
+    case kBotRight:    offset.x -= totalWidth;      offset.y -= totalHeight;     break;
+    }
+
     return offset;
 }
 
@@ -44,7 +61,7 @@ void TileMapComponent::RenderTileAt(uint32_t x, uint32_t y)
     if (m_tileSize == 0)
         BB_LOG(LogType::kWarning, "Tile Size is zero, nothing is being drawn");
 
-    Actor::Id id = m_pRawMap[GetIndex(x, y)];
+    Actor::Id id = m_rawMap[GetIndex(x, y)];
     const auto& pActor = m_pTileActorManager->GetActor(id);
     auto* pInfo = pActor->GetComponent<TileInfoComponent>();
     std::shared_ptr<BB_Texture> pTexture = pInfo->GetTexture();
@@ -62,8 +79,40 @@ void TileMapComponent::RenderTileAt(uint32_t x, uint32_t y)
 
 void TileMapComponent::FreeTileMap()
 {
-    if (m_pRawMap)
-        delete[] m_pRawMap;
+    m_rawMap.clear();
+}
+
+void TileMapComponent::SaveMap([[maybe_unused]]BlackBoxEngine::XMLElementParser parser)
+{
+    const char rowName[] = "row";
+    char* pSavedRowString = new char[m_width];
+    for (size_t i = 0; i < m_height; ++i)
+    {
+        std::memcpy(pSavedRowString, m_rawMap.c_str() + (i * m_width), m_width);
+        parser.NewChildVariable(rowName, pSavedRowString);
+    }
+    delete[] pSavedRowString;
+}
+
+void TileMapComponent::LoadMap([[maybe_unused]]BlackBoxEngine::XMLElementParser parser)
+{
+    auto element = parser.GetChildElement("row");
+    const char* pNextRow = nullptr;
+    size_t height = 0;
+    size_t width = 0;
+
+    while (element)
+    {
+        ++height;
+        element.GetText(&pNextRow);
+        m_rawMap.append(pNextRow);
+        if (width == 0)
+            width = m_rawMap.length();
+        element = element.GetSibling();
+    }
+
+    m_width = static_cast<uint32_t>(width);
+    m_height = static_cast<uint32_t>(height);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -72,7 +121,7 @@ void TileMapComponent::FreeTileMap()
 
 const TileMapComponent::ActorPtr& TileMapComponent::GetTileAt(uint32_t x, uint32_t y)
 {
-    char id = m_pRawMap[GetIndex(x, y)];
+    char id = m_rawMap[GetIndex(x, y)];
     return BlackBoxGame::Get()->GetTileActorManager()->GetActor(static_cast<uint32_t>(id));
 }
 
@@ -85,34 +134,34 @@ void TileMapComponent::SetNewWidth(uint32_t newWidth, char padTile)
         return;
     }
     uint32_t newSize = m_height * newWidth;
-    char* pNewMap = new char[newSize];
+    std::string newMap;
+    newMap.resize(newSize);
     if (newWidth < m_width)
     {
-        for (uint32_t x = 0; x < newWidth; ++x)
+        for (uint32_t x = 0 ; x < newWidth; ++x)
         {
-            for (uint32_t y = 0; y < m_height; ++y)
+            for(uint32_t y = 0; y < m_height; ++y)
             {
                 uint32_t newIndex = (x + newWidth * y);
                 uint32_t oldIndex = GetIndex(x, y);
-                pNewMap[newIndex] = m_pRawMap[oldIndex];
+                newMap[newIndex] = m_rawMap[oldIndex];
             }
         }
     }
     else
     {
-        std::memcpy(pNewMap, m_pRawMap, m_mapSize);
-        for (uint32_t x = m_width; m_width < newWidth; ++x)
+        newMap = m_rawMap;
+        for (uint32_t x = m_width; x < newWidth; ++x)
         {
             for (uint32_t y = 0; y < m_height; ++y)
             {
-                uint32_t index = (x + newWidth * y);
-                pNewMap[index] = padTile;
+                uint32_t newIndex = (x + newWidth * y);
+                newMap[newIndex] = padTile;
             }
         }
     }
     m_width = newWidth;
-    FreeTileMap();
-    m_pRawMap = pNewMap;
+    m_rawMap = newMap;
 }
 
 void TileMapComponent::SetNewHeight(uint32_t newHeight, char padTile)
@@ -125,7 +174,8 @@ void TileMapComponent::SetNewHeight(uint32_t newHeight, char padTile)
     }
 
     uint32_t newSize = newHeight * m_width;
-    char* pNewMap = new char[newSize];
+    std::string newMap;
+    newMap.resize(newSize);
 
     if (newHeight < m_height)
     {
@@ -135,25 +185,24 @@ void TileMapComponent::SetNewHeight(uint32_t newHeight, char padTile)
             {
                 uint32_t newIndex = (x + m_width * y);
                 uint32_t oldIndex = GetIndex(x, y);
-                pNewMap[newIndex] = m_pRawMap[oldIndex];
+                newMap[newIndex] = m_rawMap[oldIndex];
             }
         }
     }
     else
     {
-        std::memcpy(pNewMap, m_pRawMap, m_mapSize);
+        newMap = m_rawMap;
         for (uint32_t x = 0; x < m_width; ++x)
         {
             for (uint32_t y = m_height; y < newHeight; ++y)
             {
                 uint32_t index = (x + m_width * y);
-                pNewMap[index] = padTile;
+                newMap[index] = padTile;
             }
         }
     }
     m_height = newHeight;
-    FreeTileMap();
-    m_pRawMap = pNewMap;
+    m_rawMap = newMap;
 }
 
 void TileMapComponent::SetNewTileMap(uint32_t height, uint32_t width, uint32_t tileSize, char* pTileMap)
@@ -163,7 +212,7 @@ void TileMapComponent::SetNewTileMap(uint32_t height, uint32_t width, uint32_t t
     m_width = width;
     m_tileSize = tileSize;
     m_mapSize = width * height;
-    m_pRawMap = pTileMap;
+    m_rawMap = pTileMap;
 }
 
 void TileMapComponent::SetNewTileMap(uint32_t height, uint32_t width, uint32_t tileSize, char tile)
@@ -173,14 +222,12 @@ void TileMapComponent::SetNewTileMap(uint32_t height, uint32_t width, uint32_t t
     m_width = width;
     m_tileSize = tileSize;
     m_mapSize = width * height;
-    m_pRawMap = new char[m_mapSize];
-    for (size_t i = 0; i < m_mapSize; ++i)
-        m_pRawMap[i] = tile;
+    m_rawMap.resize(m_mapSize, tile);
 }   
 
 void TileMapComponent::SetTileAt(uint32_t x, uint32_t y, char tile)
 {
-    m_pRawMap[GetIndex(x, y)] = tile;
+    m_rawMap[GetIndex(x, y)] = tile;
 }
 
 void TileMapComponent::Render()
@@ -197,22 +244,18 @@ void TileMapComponent::Render()
 void TileMapComponent::Save(BlackBoxEngine::XMLElementParser parser)
 {
     parser.NewChildVariable("TileSize", m_tileSize);
-    parser.NewChildVariable("Width", m_width);
-    parser.NewChildVariable("Height", m_height);
-    parser.NewChildVariable("RawMap", m_pRawMap);
+    parser.NewChildVariable("AnchorPoint", m_anchorPoint);
+    auto element = parser.InsertNewChild("TileMap");
+    SaveMap(element);
 }
 
 void TileMapComponent::Load(const BlackBoxEngine::XMLElementParser parser)
 {
-    parser.GetChildVariable("TileSize", &m_tileSize);
-    parser.GetChildVariable("Width",   &m_width);
-    parser.GetChildVariable("Height",  &m_height);
-
-    m_mapSize = m_width * m_height;
-    m_pRawMap = new char[m_mapSize];
-    const char* temp = nullptr;
-    parser.GetChildVariable("RawMap", &temp);
-    std::memcpy(m_pRawMap, temp, m_mapSize);
+    parser.GetChildVariable("TileSize",   &m_tileSize);
+    parser.GetChildVariable("AnchorPoint",&m_anchorPoint);
+    auto element = parser.GetChildElement("TileMap");
+    LoadMap(element);
+    std::cout << "test";
 }
 
 void TileMapComponent::Start()
