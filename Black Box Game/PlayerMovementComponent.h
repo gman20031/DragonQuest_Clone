@@ -18,7 +18,7 @@ class PlayerMovementComponent : public BlackBoxEngine::Component
     static constexpr BlackBoxEngine::KeyCode kDownKey = BlackBoxEngine::KeyCode::kDown;
     static constexpr BlackBoxEngine::KeyCode kRightKey = BlackBoxEngine::KeyCode::kRight;
 
-    float m_playerSpeed = 180;
+    static constexpr float kPlayerSpeed = 180;
 
 public:
     PlayerMovementComponent(BlackBoxEngine::Actor* pOwner);
