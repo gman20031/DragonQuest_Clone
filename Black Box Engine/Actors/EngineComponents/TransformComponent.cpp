@@ -8,9 +8,11 @@ namespace BlackBoxEngine
     void TransformComponent::Load(const XMLElementParser parser)
     {
         auto pPosition = parser.GetChildElement("Position");
-
-        pPosition.GetChildVariable("X", &m_position.x);
-        pPosition.GetChildVariable("Y", &m_position.y);
+        if(pPosition)
+        {
+            pPosition.GetChildVariable("X", &m_position.x);
+            pPosition.GetChildVariable("Y", &m_position.y);
+        }
 
         parser.GetChildVariable("Rotation", &m_rotation);
 
