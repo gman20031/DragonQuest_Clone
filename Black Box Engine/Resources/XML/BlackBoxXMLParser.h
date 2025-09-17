@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <filesystem>
 
+#include "../../Graphics/RenderingStructs.h"
+
 namespace tinyxml2
 {
     class XMLDocument;
@@ -50,6 +52,7 @@ namespace BlackBoxEngine
         void GetChildVariable(const char* pName, bool* savedVariable) const;
         void GetChildVariable(const char* pName, double* savedVariable) const;
         void GetChildVariable(const char* pName, float* savedVariable) const;
+        void GetChildVariable(const char* pName, BB_AnchorPoint* savedVariable) const;
 
         /// Saving interface 
 
@@ -67,6 +70,7 @@ namespace BlackBoxEngine
         void NewChildVariable(const char* pName, bool savedVariable);
         void NewChildVariable(const char* pName, double savedVariable);
         void NewChildVariable(const char* pName, float savedVariable);
+        void NewChildVariable(const char* pName, BB_AnchorPoint savedVariable);
 
     };
 

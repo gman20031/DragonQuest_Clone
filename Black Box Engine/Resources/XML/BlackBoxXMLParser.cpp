@@ -4,10 +4,10 @@
 #include "../ResourceManager.h"
 #include "../../System/Log.h"
 #include "../../Actors/Actor.h"
+#include "../../System/StringHash.h"
 
 namespace BlackBoxEngine
 {
-
     //------------------------------------------------------------------------------------------------------------
     // Level Xml Parser
     //------------------------------------------------------------------------------------------------------------
@@ -145,6 +145,21 @@ namespace BlackBoxEngine
     {
         return m_pRootElement->FirstAttribute()->Value();
     }
+
+    void XMLElementParser::ClearChildElements()
+    {
+        if (m_pRootElement->ChildElementCount() > 0) // ensure the parser is empty.
+            m_pRootElement->DeleteChildren();
+    }
+
+    XMLElementParser XMLElementParser::InsertNewChild(const char* pName)
+    {
+        return XMLElementParser(m_pRootElement->InsertNewChildElement(pName));
+    }
+
+    //////////////////////////////////////////////////////////////////
+    // loading
+    //////////////////////////////////////////////////////////////////
 
     XMLElementParser XMLElementParser::GetChildElement(const char* pName) const
     {
@@ -306,17 +321,26 @@ namespace BlackBoxEngine
         }
     }
 
-    void XMLElementParser::ClearChildElements()
+    void XMLElementParser::GetChildVariable(const char* pName, BB_AnchorPoint* savedVariable) const
     {
-        if (m_pRootElement->ChildElementCount() > 0) // ensure the parser is empty.
-            m_pRootElement->DeleteChildren();
+        const char* pSaveString;
+        GetChildVariable(pName, &pSaveString);
+        auto hash = StringHash(pSaveString);
+        for (size_t i = 0; i < (size_t)BB_AnchorPoint::kCount; ++i)
+        {
+            if( hash == StructHelpers::s_gAnchorpointStringHash[i] )
+            {
+                *savedVariable = static_cast<BB_AnchorPoint>(i);
+                return;
+            }
+        }
+        BB_LOG(LogType::kError, "Attempted to load BB_AnchorPoint, but could not find any related anchor point");
     }
 
 
-    XMLElementParser XMLElementParser::InsertNewChild(const char* pName)
-    {
-        return XMLElementParser(m_pRootElement->InsertNewChildElement(pName));
-    }
+    //////////////////////////////////////////////////////////////////
+    // Saving
+    //////////////////////////////////////////////////////////////////
 
     void XMLElementParser::NewChildVariable(const char* pName, const std::string& savedVariable)
     {
@@ -381,6 +405,12 @@ namespace BlackBoxEngine
     void XMLElementParser::NewChildVariable(const char* pName, float savedVariable)
     {
         m_pRootElement->InsertNewChildElement(pName)->SetText(savedVariable);
+    }
+
+    void XMLElementParser::NewChildVariable(const char* pName, BB_AnchorPoint savedVariable)
+    {
+        const char* pSaveString = StructHelpers::s_gAnchorPointToString[static_cast<size_t>(savedVariable)];
+        NewChildVariable(pName, &pSaveString);
     }
 
 }
