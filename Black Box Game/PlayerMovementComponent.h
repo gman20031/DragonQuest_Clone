@@ -13,10 +13,10 @@ class PlayerMovementComponent : public BlackBoxEngine::Component
     BlackBoxEngine::TransformComponent* m_pTransform;
 
     uint64_t m_callbackCodes[8] = {};
-    static constexpr BlackBoxEngine::KeyCode kUpKey = BlackBoxEngine::KeyCode::kUp;
-    static constexpr BlackBoxEngine::KeyCode kLeftKey = BlackBoxEngine::KeyCode::kLeft;
-    static constexpr BlackBoxEngine::KeyCode kDownKey = BlackBoxEngine::KeyCode::kDown;
-    static constexpr BlackBoxEngine::KeyCode kRightKey = BlackBoxEngine::KeyCode::kRight;
+    static constexpr BlackBoxEngine::KeyCode kUpKey = BlackBoxEngine::KeyCode::kW;
+    static constexpr BlackBoxEngine::KeyCode kLeftKey = BlackBoxEngine::KeyCode::kA;
+    static constexpr BlackBoxEngine::KeyCode kDownKey = BlackBoxEngine::KeyCode::kS;
+    static constexpr BlackBoxEngine::KeyCode kRightKey = BlackBoxEngine::KeyCode::kD;
 
     static constexpr float kPlayerSpeed = 180;
 
