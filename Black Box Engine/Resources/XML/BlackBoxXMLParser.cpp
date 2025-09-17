@@ -323,8 +323,11 @@ namespace BlackBoxEngine
 
     void XMLElementParser::GetChildVariable(const char* pName, BB_AnchorPoint* savedVariable) const
     {
-        const char* pSaveString;
+        const char* pSaveString = nullptr;
         GetChildVariable(pName, &pSaveString);
+        if (!pSaveString)
+            return;
+
         auto hash = StringHash(pSaveString);
         for (size_t i = 0; i < (size_t)BB_AnchorPoint::kCount; ++i)
         {

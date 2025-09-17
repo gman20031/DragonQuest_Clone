@@ -255,7 +255,6 @@ void TileMapComponent::Load(const BlackBoxEngine::XMLElementParser parser)
     parser.GetChildVariable("AnchorPoint",&m_anchorPoint);
     auto element = parser.GetChildElement("TileMap");
     LoadMap(element);
-    std::cout << "test";
 }
 
 void TileMapComponent::Start()
