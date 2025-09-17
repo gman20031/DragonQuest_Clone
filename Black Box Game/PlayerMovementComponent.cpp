@@ -33,36 +33,36 @@ void PlayerMovementComponent::Start()
 
     // Key Down
     m_callbackCodes[index++] = pInputManager->SubscribeToKey(kUpKey, kKeyDown,
-        [this]() {m_pMover->m_velocity.y -= m_playerSpeed; }
+        [this]() {m_pMover->m_velocity.y -= kPlayerSpeed; }
     );
 
     m_callbackCodes[index++] = pInputManager->SubscribeToKey(kDownKey, kKeyDown,
-        [this]() {m_pMover->m_velocity.y += m_playerSpeed; }
+        [this]() {m_pMover->m_velocity.y += kPlayerSpeed; }
     );
 
     m_callbackCodes[index++] = pInputManager->SubscribeToKey(kRightKey, kKeyDown,
-        [this]() {m_pMover->m_velocity.x += m_playerSpeed; }
+        [this]() {m_pMover->m_velocity.x += kPlayerSpeed; }
     );
 
     m_callbackCodes[index++] = pInputManager->SubscribeToKey(kLeftKey, kKeyDown,
-        [this]() {m_pMover->m_velocity.x -= m_playerSpeed; }
+        [this]() {m_pMover->m_velocity.x -= kPlayerSpeed; }
     );
 
     // Key Up
     m_callbackCodes[index++] = pInputManager->SubscribeToKey(kUpKey, kKeyUp,
-        [this]() {m_pMover->m_velocity.y += m_playerSpeed; }
+        [this]() {m_pMover->m_velocity.y += kPlayerSpeed; }
     );
 
     m_callbackCodes[index++] = pInputManager->SubscribeToKey(kDownKey, kKeyUp,
-        [this]() {m_pMover->m_velocity.y -= m_playerSpeed; }
+        [this]() {m_pMover->m_velocity.y -= kPlayerSpeed; }
     );
 
     m_callbackCodes[index++] = pInputManager->SubscribeToKey(kRightKey, kKeyUp,
-        [this]() {m_pMover->m_velocity.x -= m_playerSpeed; }
+        [this]() {m_pMover->m_velocity.x -= kPlayerSpeed; }
     );
 
     m_callbackCodes[index++] = pInputManager->SubscribeToKey(kLeftKey, kKeyUp,
-        [this]() {m_pMover->m_velocity.x += m_playerSpeed; }
+        [this]() {m_pMover->m_velocity.x += kPlayerSpeed; }
     );
 }
 
@@ -80,12 +80,10 @@ void PlayerMovementComponent::OnCollide([[maybe_unused]] BlackBoxEngine::Actor* 
 
 void PlayerMovementComponent::Save([[maybe_unused]] BlackBoxEngine::XMLElementParser parser)
 {
-    parser.NewChildVariable("Speed", m_playerSpeed);
 }
 
 void PlayerMovementComponent::Load([[maybe_unused]] const BlackBoxEngine::XMLElementParser parser)
 {
-    parser.GetChildVariable("Speed", &m_playerSpeed);
 }
 
 

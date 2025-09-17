@@ -15,21 +15,17 @@ namespace BlackBoxEngine
         GENERATE_ID("SpriteComponent");
 
     private:
+        float m_width = 0;
+        float m_height = 0;
         const char* m_pFilePath = nullptr;
         std::shared_ptr<BB_Texture> m_pTexture = nullptr;
         BB_Renderer* m_pRenderer = nullptr;
         TransformComponent* m_pTransform = nullptr;
 
-        bool m_useFullImage = true;
-        BB_Rectangle m_textureOffset{ 0,0,0,0 };
-
-        float m_width = 0;
-        float m_height = 0;
     public:
         SpriteComponent(Actor* pOwner);
 
         void SetTexture(const char* pTexturePath);
-        void SetTextureOffset(BB_Rectangle offset);
         void SetDimensions(const float width, const float height);
         const BB_Point GetDimensions() const { return { m_width, m_height }; }
 

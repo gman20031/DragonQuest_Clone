@@ -23,11 +23,6 @@ namespace BlackBoxEngine
         m_pTexture = ResourceManager::GetTexture(m_pRenderer, pTexturePath);
     }
 
-    void SpriteComponent::SetTextureOffset(BB_Rectangle offset)
-    {
-        m_textureOffset = offset;
-    }
-
     void SpriteComponent::SetDimensions(const float width, const float height)
     {
         m_width = width;
@@ -40,16 +35,6 @@ namespace BlackBoxEngine
         
         parser.GetChildVariable("width",  &m_width);
         parser.GetChildVariable("height", &m_height);
-        parser.GetChildVariable("UseFullImage", &m_useFullImage);
-        if (!m_useFullImage)
-        {
-            auto element = parser.GetChildElement("TextureOffset");
-            element.GetChildVariable("X", &m_textureOffset.x);
-            element.GetChildVariable("Y", &m_textureOffset.y);
-            element.GetChildVariable("W", &m_textureOffset.w);
-            element.GetChildVariable("H", &m_textureOffset.h);
-        }
-
         parser.GetChildVariable("filePath", &m_pFilePath);
 
         if (!m_pFilePath)
@@ -61,15 +46,6 @@ namespace BlackBoxEngine
     {
         parser.NewChildVariable("width", m_width);
         parser.NewChildVariable("height", m_height);
-        parser.NewChildVariable("UseFullImage", m_useFullImage);
-        if (!m_useFullImage)
-        {
-            auto element = parser.InsertNewChild("TextureOffset");
-            element.NewChildVariable("X", m_textureOffset.x);
-            element.NewChildVariable("Y", m_textureOffset.y);
-            element.NewChildVariable("W", m_textureOffset.w);
-            element.NewChildVariable("H", m_textureOffset.h);
-        }
         if (!m_pFilePath)
         {
             BB_LOG(LogType::kError, "Attempted to save sprite component with no texture");
@@ -88,17 +64,7 @@ namespace BlackBoxEngine
         float x = m_pTransform->m_position.x;
         float y = m_pTransform->m_position.y;
         auto dest = BB_Rectangle(x , y , m_width, m_height);
-
-        BB_Rectangle* pDest = nullptr;
-        if (!m_useFullImage)
-            pDest = &m_textureOffset;
-        
-        if (!m_pRenderer->DrawTextureGame(
-            m_pTexture.get(),
-            pDest,
-            &dest )  )
-        {
+        if ( !m_pRenderer->DrawTextureScreen(m_pTexture.get() , nullptr , &dest ))
             BB_LOG(LogType::kError, SDL_GetError());
-        }
     }
 }
