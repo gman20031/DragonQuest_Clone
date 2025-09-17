@@ -19,8 +19,7 @@ namespace BlackBoxEngine
         if (!m_pTransform || !m_pGameCamera)
             return;
 
-        m_pGameCamera->m_screenXPos = m_pTransform->m_position.x;
-        m_pGameCamera->m_screenYPos = m_pTransform->m_position.y;
+        m_pGameCamera->SetCenterPoint(m_pTransform->m_position);
     }
 
     void PlayerCameraComponent::Start()

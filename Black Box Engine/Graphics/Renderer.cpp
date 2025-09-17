@@ -151,23 +151,17 @@ bool BlackBoxEngine::BB_Renderer::DrawTextureGame(
     const double rot,
     const BB_Point* pCenter,
     const BB_FlipVal& flip
-)
+    )
 {
-
     if(pDest)
-    {
-        FVector2 zoom = BlackBoxManager::Get()->m_pMainCamera->GetZoomMults(m_pAttachedWindow);
-        BlackBoxManager::Get()->m_pMainCamera->ZoomDestinationRect(pDest, zoom);
-        BlackBoxManager::Get()->m_pMainCamera->OffestGameCoords(&pDest->x, &pDest->y, zoom);
-    }
+        *pDest = BlackBoxManager::Get()->m_pMainCamera->ConvertToScreenPos(*pDest);
+    
     const SDL_FRect* pSdlSource = (const SDL_FRect*)(pSource);       // tested, this is faster
     const SDL_FPoint* pSdlCenter = (const SDL_FPoint*)(pCenter);     // than doing static_cast 
-    const SDL_FRect* pSdlDest = (const SDL_FRect*)(pDest);
-    const SDL_FlipMode sdlFlip = static_cast<SDL_FlipMode>(flip);    // my code is copying Sdl, this is private, so I can guarntee this to work
+    const SDL_FRect* pSdlDest = (const SDL_FRect*)(pDest);           // 
+    const SDL_FlipMode sdlFlip = static_cast<SDL_FlipMode>(flip);    // my code is copying Sdl, this is private code, so I can guarntee this to work
 
     assert(m_pSdlRenderer);
-
-
 
     return SDL_RenderTextureRotated(
         m_pSdlRenderer,
