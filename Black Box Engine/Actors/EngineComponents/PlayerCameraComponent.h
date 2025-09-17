@@ -6,7 +6,7 @@
 namespace BlackBoxEngine
 {
     class TransformComponent;
-    class Camera;
+    class BB_Camera;
 
     class PlayerCameraComponent : public Component
     {
@@ -14,7 +14,7 @@ namespace BlackBoxEngine
         GENERATE_ID("PlayerCameraComponent");
     private:
         TransformComponent* m_pTransform = nullptr;
-        Camera* m_pGameCamera = nullptr;
+        BB_Camera* m_pGameCamera = nullptr;
         
     public:
         PlayerCameraComponent(Actor* pActor);

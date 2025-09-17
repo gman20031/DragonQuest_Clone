@@ -4,6 +4,7 @@
 #include "Color.h"
 #include "Window.h"
 #include "Texture.h"
+#include "Camera.h"
 
 struct SDL_Renderer;
 
@@ -16,6 +17,7 @@ namespace BlackBoxEngine
     private: // variables
         SDL_Renderer* m_pSdlRenderer = nullptr;
         const BB_Window* m_pAttachedWindow = nullptr;
+        const BB_Camera* m_pGameCamera = nullptr;
 
         // default renderer background color
         inline static constexpr ColorValue kDefaultBackgroundColor = ColorPresets::black;
@@ -33,12 +35,14 @@ namespace BlackBoxEngine
         ~BB_Renderer();
         void Clear();
         void Present();
+        const char* GetErrorStr();
 
         bool SetDrawColor(const ColorValue& newDrawColor);
         bool SetBackgroundColor(const ColorValue& newBackgroundColor);
 
         // draw line
         bool DrawLineScreen(BB_Point start, BB_Point end);
+        bool DrawLineGame(BB_Point start, BB_Point end);
 
         // draw rectangle
         bool DrawRectScreen(const BB_Rectangle& rec);
@@ -46,7 +50,11 @@ namespace BlackBoxEngine
         bool DrawRectScreen(const BB_Rectangle& rec , const ColorValue& color);
         bool DrawRectScreenFilled(const BB_Rectangle& rec, const ColorValue& color);
 
-        const char* GetErrorStr();
+        bool DrawRectGame(const BB_Rectangle& rec);
+        bool DrawRectGameFilled(const BB_Rectangle& rec);
+        bool DrawRectGame(const BB_Rectangle& rec, const ColorValue& color);
+        bool DrawRectGameFilled(const BB_Rectangle& rec, const ColorValue& color);
+
         // draw texture
         
         /**

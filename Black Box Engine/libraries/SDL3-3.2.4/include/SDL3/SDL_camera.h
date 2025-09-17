@@ -24,7 +24,7 @@
  *
  * Video capture for the SDL library.
  *
- * This API lets apps read input from video sources, like webcams. Camera
+ * This API lets apps read input from video sources, like webcams. BB_Camera
  * devices can be enumerated, queried, and opened. Once opened, it will
  * provide SDL_Surface objects as new frames of video come in. These surfaces
  * can be uploaded to an SDL_Texture or processed as pixels in memory.
@@ -48,7 +48,7 @@
  * the camera. In any case, recorded audio will be available through SDL's
  * audio API no matter what hardware provides the microphone.
  *
- * ## Camera gotchas
+ * ## BB_Camera gotchas
  *
  * Consumer-level camera hardware tends to take a little while to warm up,
  * once the device has been opened. Generally most camera apps have some sort

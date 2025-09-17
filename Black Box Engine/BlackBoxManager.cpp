@@ -135,7 +135,7 @@ namespace BlackBoxEngine
 
         // other inits
         TTF_Init();
-        m_pMainCamera = new Camera;
+        m_pMainCamera = new BB_Camera;
 
         // start the window
         m_keepRunning = true;

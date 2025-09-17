@@ -32,7 +32,8 @@ BlackBoxEngine::BB_Renderer::BB_Renderer(BB_Window* pWindow)
 	, m_currentDrawColor(kDefaultDrawColor)
 {
 	assert(pWindow);
-
+    
+    m_pGameCamera = BlackBoxManager::Get()->m_pMainCamera;
 	m_pSdlRenderer = SDL_CreateRenderer(pWindow->m_pSdlWindow, NULL);
 	if (!m_pSdlRenderer)
 		SimpleLog(SDL_GetError());
@@ -75,21 +76,45 @@ bool BlackBoxEngine::BB_Renderer::SetBackgroundColor(const ColorValue& newBackgr
 	return true;
 }
 
+const char* BlackBoxEngine::BB_Renderer::GetErrorStr()
+{
+    return SDL_GetError();
+}
+
+//////////////////////////////////////////////////////////////////
+/// Drawing Function
+//////////////////////////////////////////////////////////////////
+
+//////////////// Lines ////////////////
+
 bool BlackBoxEngine::BB_Renderer::DrawLineScreen(BB_Point start, BB_Point end)
 {
 	return SDL_RenderLine(m_pSdlRenderer, start.x, start.y, end.x, end.y);
 }
 
+bool BlackBoxEngine::BB_Renderer::DrawLineGame(BB_Point start, BB_Point end)
+{
+    if (!m_pGameCamera)
+        return false;
+
+    FVector2 zoom = m_pGameCamera->GetXYZoom(m_pAttachedWindow);
+    m_pGameCamera->ConvertToScreenPos(&start.x, &start.y, zoom);
+    m_pGameCamera->ConvertToScreenPos(&end.x, &end.y, zoom);
+    return SDL_RenderLine(m_pSdlRenderer, start.x, start.y, end.x, end.y);
+}
+
+//////////////// Rects ////////////////
+
 bool BlackBoxEngine::BB_Renderer::DrawRectScreen(const BB_Rectangle& rec)
 {
-	SDL_FRect sdlRect{ rec.x, rec.y , rec.w, rec.h };
-	return SDL_RenderRect(m_pSdlRenderer, &sdlRect);
+    SDL_FRect sdlRect{ rec.x, rec.y , rec.w, rec.h };
+    return SDL_RenderRect(m_pSdlRenderer, &sdlRect);
 }
 
 bool BlackBoxEngine::BB_Renderer::DrawRectScreenFilled(const BB_Rectangle& rec)
 {
-	SDL_FRect sdlRect{ rec.x, rec.y , rec.w, rec.h };
-	return SDL_RenderFillRect(m_pSdlRenderer, &sdlRect);
+    SDL_FRect sdlRect{ rec.x, rec.y , rec.w, rec.h };
+    return SDL_RenderFillRect(m_pSdlRenderer, &sdlRect);
 }
 
 bool BlackBoxEngine::BB_Renderer::DrawRectScreen(const BB_Rectangle& rec, const ColorValue& color)
@@ -112,10 +137,41 @@ bool BlackBoxEngine::BB_Renderer::DrawRectScreenFilled(const BB_Rectangle& rec, 
     return good;
 }
 
-const char* BlackBoxEngine::BB_Renderer::GetErrorStr()
+bool BlackBoxEngine::BB_Renderer::DrawRectGame(const BB_Rectangle& rec)
 {
-	return SDL_GetError();
+    if (!m_pGameCamera)
+        return false;
+    const BB_Rectangle newRect = m_pGameCamera->ConvertToScreenPos(rec);
+    return DrawRectScreen(newRect);
 }
+
+bool BlackBoxEngine::BB_Renderer::DrawRectGameFilled(const BB_Rectangle& rec)
+{
+    if (!m_pGameCamera)
+        return false;
+    const BB_Rectangle newRect = m_pGameCamera->ConvertToScreenPos(rec);
+    return DrawRectScreenFilled(newRect);
+}
+
+bool BlackBoxEngine::BB_Renderer::DrawRectGame(const BB_Rectangle& rec, const ColorValue& color)
+{
+    if (!m_pGameCamera)
+        return false;
+    const BB_Rectangle newRect = m_pGameCamera->ConvertToScreenPos(rec);
+    return DrawRectScreen(newRect, color);
+}
+
+bool BlackBoxEngine::BB_Renderer::DrawRectGameFilled(const BB_Rectangle& rec, const ColorValue& color)
+{
+    if (!m_pGameCamera)
+        return false;
+    const BB_Rectangle newRect = m_pGameCamera->ConvertToScreenPos(rec);
+    return DrawRectScreenFilled(newRect, color);
+}
+
+//////////////////////////////////////////////////////////////////
+/// Rendering Textures
+//////////////////////////////////////////////////////////////////
 
 bool BlackBoxEngine::BB_Renderer::DrawTextureScreen(
     BB_Texture* texture,
@@ -151,10 +207,13 @@ bool BlackBoxEngine::BB_Renderer::DrawTextureGame(
     const double rot,
     const BB_Point* pCenter,
     const BB_FlipVal& flip
-    )
+)
 {
-    if(pDest)
-        *pDest = BlackBoxManager::Get()->m_pMainCamera->ConvertToScreenPos(*pDest);
+    if (!m_pGameCamera)
+        return false;
+
+    if (pDest)
+        *pDest = m_pGameCamera->ConvertToScreenPos(*pDest);
     
     const SDL_FRect* pSdlSource = (const SDL_FRect*)(pSource);       // tested, this is faster
     const SDL_FPoint* pSdlCenter = (const SDL_FPoint*)(pCenter);     // than doing static_cast 

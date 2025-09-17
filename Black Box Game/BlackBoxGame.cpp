@@ -4,17 +4,14 @@ using namespace BlackBoxEngine;
 
 #include <cassert>
 
-#include "TileSystem/TileInfoComponent.h"
-#include "TileSystem/TileMapComponent.h"
-#include "../Black Box Engine/Actors/EngineComponents/SpriteComponent.h"
-#include "PlayerMovementComponent.h"
-#include "../Black Box Engine/Actors/EngineComponents/MoverComponent.h"
+#include <Graphics/Color.h>
 
 void BlackBoxGame::InitGame()
 {
 	BB_LOG(LogType::kMessage, "Game starting");
 
     m_pEngineManager->m_pActorManager->LoadLevel("../Assets/Levels/ExampleLevel.xml");
+
 }
 
 BlackBoxGame::BlackBoxGame()

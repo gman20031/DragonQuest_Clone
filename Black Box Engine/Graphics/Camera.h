@@ -8,13 +8,14 @@ namespace BlackBoxEngine
     class BB_Window;
     struct FVector2;
 
-    class Camera
+    class BB_Camera
     {
         static constexpr float kDefaultWidth = 256;
         static constexpr float kDefaultHeight = 256;
 
         BB_Rectangle m_screenInfoRect = { 0,0, kDefaultWidth, kDefaultHeight };
         FVector2 m_centerPointCache   = { kDefaultWidth / 2 , kDefaultHeight / 2 };
+        FVector2 m_screenZoom{ 1,1 };
     public:
         void SetCenterPoint(FVector2 centerPos);
         /**

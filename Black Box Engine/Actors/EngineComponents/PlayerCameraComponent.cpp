@@ -28,8 +28,8 @@ namespace BlackBoxEngine
         m_pGameCamera = BlackBoxManager::Get()->m_pMainCamera;
 
         if (!m_pTransform)
-            BB_LOG(LogType::kError, "Player Camera component can not find a transform component");
+            BB_LOG(LogType::kError, "Player BB_Camera component can not find a transform component");
         if (!m_pGameCamera)
-            BB_LOG(LogType::kError, "Player Camera component can not find a camera attached to the engine");
+            BB_LOG(LogType::kError, "Player BB_Camera component can not find a camera attached to the engine");
     }
 }

@@ -42,7 +42,7 @@ namespace BlackBoxEngine
         InputManager*     m_pInputManager = nullptr;
         AudioManager*     m_pAudioManager = nullptr;
         MessagingManager* m_pMessagingManager = nullptr;
-        Camera*           m_pMainCamera = nullptr;
+        BB_Camera*           m_pMainCamera = nullptr;
     public:
         ~BlackBoxManager();
         BlackBoxManager(const BlackBoxManager&) = delete;

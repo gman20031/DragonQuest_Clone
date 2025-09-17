@@ -244,7 +244,7 @@ typedef enum SDL_EventType
     SDL_EVENT_PEN_MOTION,                 /**< Pressure-sensitive pen is moving on the tablet */
     SDL_EVENT_PEN_AXIS,                   /**< Pressure-sensitive pen angle/pressure/etc changed */
 
-    /* Camera hotplug events */
+    /* BB_Camera hotplug events */
     SDL_EVENT_CAMERA_DEVICE_ADDED = 0x1400,  /**< A new camera device is available */
     SDL_EVENT_CAMERA_DEVICE_REMOVED,         /**< A camera device has been removed. */
     SDL_EVENT_CAMERA_DEVICE_APPROVED,        /**< A camera device has been approved for use by the user. */
@@ -717,7 +717,7 @@ typedef struct SDL_AudioDeviceEvent
 } SDL_AudioDeviceEvent;
 
 /**
- * Camera device event structure (event.cdevice.*)
+ * BB_Camera device event structure (event.cdevice.*)
  *
  * \since This struct is available since SDL 3.2.0.
  */
@@ -1010,7 +1010,7 @@ typedef union SDL_Event
     SDL_GamepadTouchpadEvent gtouchpad;     /**< Gamepad touchpad event data */
     SDL_GamepadSensorEvent gsensor;         /**< Gamepad sensor event data */
     SDL_AudioDeviceEvent adevice;           /**< Audio device event data */
-    SDL_CameraDeviceEvent cdevice;          /**< Camera device event data */
+    SDL_CameraDeviceEvent cdevice;          /**< BB_Camera device event data */
     SDL_SensorEvent sensor;                 /**< Sensor event data */
     SDL_QuitEvent quit;                     /**< Quit request event data */
     SDL_UserEvent user;                     /**< Custom event data */
