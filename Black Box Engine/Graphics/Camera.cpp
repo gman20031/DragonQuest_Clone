@@ -70,8 +70,8 @@ namespace BlackBoxEngine
 
     void Camera::ConvertToScreenPos(float* pX, float* pY, FVector2 zoom) const
     {
-        *pX = (*pX * zoom.x) + (m_screenInfoRect.x * zoom.x);
-        *pY = (*pY * zoom.y) + (m_screenInfoRect.y * zoom.y);
+        *pX = (*pX * zoom.x) - (m_screenInfoRect.x * zoom.x);
+        *pY = (*pY * zoom.y) - (m_screenInfoRect.y * zoom.y);
     }
 
     ////////////////////////////////////////////////////////////////
