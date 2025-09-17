@@ -246,6 +246,9 @@
     <ClCompile Include="Graphics\RenderingStructs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Actors\EngineComponents\PlayerCameraComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="System\ConsoleManip.h">
@@ -723,6 +726,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Actors\EngineComponents\PlayerCameraComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

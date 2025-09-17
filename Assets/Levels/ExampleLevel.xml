@@ -34,3 +34,7 @@
 		</TileMap>
     </Component>
 </Actor>
+  <!-- Player -->
+<Actor SeperateFile = "true">
+    <FilePath>../Assets/Actors/PlayerActor.xml</FilePath>
+</Actor>

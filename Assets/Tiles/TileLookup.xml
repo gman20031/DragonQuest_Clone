@@ -1,3 +1,3 @@
-<G>../Assets/Actors/GrassTileActor.xml</G>
-<S>../Assets/Actors/SandTileActor.xml</S>
-<C>../Assets/Actors/CastleTileActor.xml</C>
+<G>../Assets/Actors/Tiles/GrassTileActor.xml</G>
+<S>../Assets/Actors/Tiles/SandTileActor.xml</S>
+<C>../Assets/Actors/Tiles/CastleTileActor.xml</C>

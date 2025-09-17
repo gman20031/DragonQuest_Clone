@@ -9,8 +9,8 @@ namespace BlackBoxEngine
     class Camera
     {
     public:
-        int m_screenXPos = 0;
-        int m_screenYPos = 0;
+        float m_screenXPos = 0;
+        float m_screenYPos = 0;
         float m_width   = 256;
         float m_height  = 256;
 
