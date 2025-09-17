@@ -9,7 +9,8 @@ using namespace BlackBoxEngine;
 PlayerMovementComponent::PlayerMovementComponent(BlackBoxEngine::Actor* pOwner)
 	: Component(pOwner)
 {
-
+	m_pTransform = pOwner->GetComponent<TransformComponent>();
+	m_pMover = pOwner->GetComponent<MoverComponent>();
 }
 
 PlayerMovementComponent::~PlayerMovementComponent()
@@ -25,8 +26,6 @@ PlayerMovementComponent::~PlayerMovementComponent()
 
 void PlayerMovementComponent::Start()
 {
-    m_pTransform = m_pOwner->GetComponent<TransformComponent>();
-    m_pMover = m_pOwner->GetComponent<MoverComponent>();
     auto* pInputManager = BlackBoxManager::Get()->m_pInputManager;
     using enum InputManager::InputType;
     int index = 0;
