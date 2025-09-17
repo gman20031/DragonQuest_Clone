@@ -331,29 +331,43 @@ namespace BlackBoxEngine
         );
     }
 
+    void CollisionManager::SetDimensions(BB_Rectangle bounds)
+    {
+        m_minimumHeight = (size_t)bounds.h;
+        m_minimumWidth = (size_t)bounds.w;
+        for (size_t i = 0; i < kMaximumDepth; ++i)
+        {
+            m_minimumHeight /= 2;
+            m_minimumWidth /= 2;
+        }
+    }
+
     /////////////// public
 
     CollisionManager::CollisionManager(BB_Rectangle bounds)
         : m_pRootNode( new QuadTreeNode(bounds, nullptr, this) )
     {
-        m_minimumHeight = (size_t) bounds.h;
-        m_minimumWidth  = (size_t) bounds.w;
-        //miniums = MaxSize / ( 2 ^ maximum depth);
-        for (size_t i = 0; i < kMaximumDepth; ++i)
-        {
-            m_minimumHeight /= 2;
-            m_minimumWidth  /= 2;
-        }
+        //auto resetCollisionBounds = [this](Message& message) -> void
+        //    {
+        //        BB_IntRectangle dims = BlackBoxManager::Get()->GetWindow()->GetDimensions();
+        //    };
+        //m_windowChangedCallback = BlackBoxManager::Get()->m_pMessagingManager->RegisterListenerString
+        //("WindowSizeChanged", resetCollisionBounds);
+
+        SetDimensions(bounds);
     }
+
     CollisionManager::CollisionManager(float x, float y, float w, float h)
-        : CollisionManager( BB_Rectangle{x,y,w,h})
+        : CollisionManager( BB_Rectangle{x,y,w,h} )
     {
+
     }
 
     CollisionManager::~CollisionManager()
     {
         assert(m_pRootNode);
         delete m_pRootNode;
+        BlackBoxManager::Get()->m_pMessagingManager->RemoveListener(m_windowChangedCallback);
     }
 
     void CollisionManager::RegisterActor(Actor * pActor)
