@@ -8,6 +8,7 @@
 
 #include "ConsoleManip.h"
 
+#ifdef _DEBUG
 /**
  * @brief Will log the message with additional information and formatting depending on log type.
  * @brief kMessage Appends nothing                      : "messageId"
@@ -17,6 +18,12 @@
  * THEN ABORTS PROGRAM
  */
 #define BB_LOG(type, ...) BlackBoxEngine::ComplexLog(type, std::source_location::current() , __VA_ARGS__ )
+#else
+/** 
+*  @brief This macro does nothing in release mode
+*/
+#define BB_LOG(type, ...) ;
+#endif
 
 namespace BlackBoxEngine
 {
@@ -58,7 +65,6 @@ namespace BlackBoxEngine
 		Logger::AppendToLogFile(args...);
 	}
 
-#ifdef _DEBUG
     /**
      * @brief Will log the messageId with additional information and formatting depending on log type. 
      * @brief kMessage Appends nothing : "messageId"
@@ -98,14 +104,6 @@ namespace BlackBoxEngine
         
         ConsoleManip::ChangeConsoleFormatting(TEXT_DEF);
     }
-#else // _DEBUG
-
-    template<StreamOverloaded ...Args>
-    void ComplexLog(
-        [[maybe_unused]] const LogType type,
-        [[maybe_unused]] const std::source_location location,
-        [[maybe_unused]] const Args & ...args)  {};
-#endif
     
     template<StreamOverloaded ...Args>
 	inline void Logger::AppendToLogFile(const Args&... args)

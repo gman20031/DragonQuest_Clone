@@ -72,6 +72,7 @@ namespace BlackBoxEngine
     private: // functions
         void HandleSdlEvents();
         void CheckEngineInitialized();
+        void UpdateSubsytems();
         BlackBoxManager() = default;
     };
 }
