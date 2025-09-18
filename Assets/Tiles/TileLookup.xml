@@ -1,3 +1,3 @@
-<G>../Assets/Actors/Tiles/GrassTileActor.xml</G>
-<S>../Assets/Actors/Tiles/SandTileActor.xml</S>
-<C>../Assets/Actors/Tiles/CastleTileActor.xml</C>
+<tile id = 'G'>../Assets/Actors/Tiles/GrassTileActor.xml</tile>
+<tile id = 'S'>../Assets/Actors/Tiles/SandTileActor.xml</tile>
+<tile id = '@'>../Assets/Actors/Tiles/CastleTileActor.xml</tile>

@@ -141,7 +141,7 @@ namespace BlackBoxEngine
         *ppText = m_pRootElement->GetText();
     }
 
-    const char* XMLElementParser::GetComponentName() const
+    const char* XMLElementParser::GetFirstAttribute() const
     {
         return m_pRootElement->FirstAttribute()->Value();
     }
