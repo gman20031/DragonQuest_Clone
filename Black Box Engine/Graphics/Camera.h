@@ -23,6 +23,7 @@ namespace BlackBoxEngine
          * @brief The size of the camera is indepenant from the size of the screen.
          */
         void Resize(float width, float height);
+        void SetScreenDimensions(BB_Rectangle newDimensions);
         
         FVector2 GetCenterPoint() const;
         FVector2 GetDimensions() const;

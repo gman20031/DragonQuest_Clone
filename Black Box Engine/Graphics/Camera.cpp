@@ -25,6 +25,14 @@ namespace BlackBoxEngine
         m_screenInfoRect.y = m_centerPointCache.y - (m_screenInfoRect.h / 2);
     }
 
+    void BB_Camera::SetScreenDimensions(BB_Rectangle newDimensions)
+    {
+        m_screenInfoRect = newDimensions;
+        m_centerPointCache.x = newDimensions.x + (newDimensions.w / 2);
+        m_centerPointCache.y = newDimensions.y + (newDimensions.h / 2);
+        m_screenZoom = GetXYZoom(BlackBoxManager::Get()->GetWindow());
+    }
+
     FVector2 BB_Camera::GetCenterPoint() const
     {
         return m_centerPointCache;
