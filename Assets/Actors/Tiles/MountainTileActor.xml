@@ -1,0 +1,11 @@
+<Actor Name="MountainTileActor">
+    <Component Name="TileInfoComponent">
+        <TextureFilePath>../Assets/Tiles/FullTileSheet.png</TextureFilePath>
+        <ImageSource>
+            <X>68</X>
+            <Y>17</Y>
+            <W>16</W>
+            <H>16</H>
+        </ImageSource>
+    </Component>
+</Actor>

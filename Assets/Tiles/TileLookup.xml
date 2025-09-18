@@ -1,3 +1,10 @@
-<G>../Assets/Actors/Tiles/GrassTileActor.xml</G>
-<S>../Assets/Actors/Tiles/SandTileActor.xml</S>
-<C>../Assets/Actors/Tiles/CastleTileActor.xml</C>
+<tile id = 'G'>../Assets/Actors/Tiles/GrassTileActor.xml</tile>
+<tile id = 'S'>../Assets/Actors/Tiles/SandTileActor.xml</tile>
+<tile id = 'C'>../Assets/Actors/Tiles/CastleTileActor.xml</tile>
+<tile id = 'F'>../Assets/Actors/Tiles/ForestTileActor.xml</tile>
+<tile id = 'M'>../Assets/Actors/Tiles/MountainTileActor.xml</tile>
+<tile id = 'T'>../Assets/Actors/Tiles/TownTileActor.xml</tile>
+<tile id = 'P'>../Assets/Actors/Tiles/PeakTileActor.xml</tile>
+<tile id = 'E'>../Assets/Actors/Tiles/EntranceCaveTileActor.xml</tile>
+<tile id = 'W'>../Assets/Actors/Tiles/Water_1TileActor.xml</tile>
+<tile id = '@'>../Assets/Actors/Tiles/Water_2TileActor.xml</tile>

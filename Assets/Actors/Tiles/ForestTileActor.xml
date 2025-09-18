@@ -1,0 +1,11 @@
+<Actor Name="ForestTileActor">
+    <Component Name="TileInfoComponent">
+        <TextureFilePath>../Assets/Tiles/FullTileSheet.png</TextureFilePath>
+        <ImageSource>
+            <X>51</X>
+            <Y>17</Y>
+            <W>16</W>
+            <H>16</H>
+        </ImageSource>
+    </Component>
+</Actor>
