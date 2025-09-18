@@ -1,5 +1,5 @@
-
 #include "BlackBoxManager.h"
+
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL3_ttf/SDL_ttf.h>
@@ -7,6 +7,7 @@
 #include <algorithm>
 
 #include "System/SimpleTimingSystem.h"
+#include "System/Debugging.h"
 #include "Actors/ActorManager.h"
 
 namespace BlackBoxEngine
@@ -27,6 +28,7 @@ namespace BlackBoxEngine
         if (!m_pWindow)
             BB_LOG(LogType::kFailure, "Machine has no window");
     }
+
 #endif // _DEBUG
 
     BlackBoxManager::~BlackBoxManager()
@@ -71,17 +73,39 @@ namespace BlackBoxEngine
 
 	bool BlackBoxManager::IsSystemEnabled(EngineInitOptions option) const
 	{
-		return m_engineOptions | option;
+		return m_engineOptions & option;
 	}
 
+    void BlackBoxManager::UpdateSubsytems()
+    {
+        /// Update global Systems
+        HandleSdlEvents();
+
+        if (IsSystemEnabled(kUseInput) ) 
+            m_pInputManager->Update();
+
+        if (IsSystemEnabled(kUseActors) ) 
+        {
+            m_pActorManager->Update();
+            m_pActorManager->Render();
+        }
+        if constexpr (kDebug)
+        {
+            if (m_engineOptions & kUseCollision) 
+                m_pCollisionManager->DebugDraw();
+        }
+        if (IsSystemEnabled(kUseMessaging)) 
+            m_pMessagingManager->SendQueuedMessages();
+    }
 
     int BlackBoxManager::RunEngine()
     {
-#ifdef _DEBUG
-        BB_LOG(LogType::kMessage, "Game started in debug mode");
-        CheckEngineInitialized();
-#endif _DEBUG
-        // Start all the actors in every active scene
+        if constexpr (kDebug)
+        {
+            BB_LOG(LogType::kMessage, "Game started in debug mode");
+            CheckEngineInitialized();
+        }
+
         m_pActorManager->Start();
 
         SimpleTimer timer;
@@ -92,20 +116,10 @@ namespace BlackBoxEngine
             m_deltaTime = timer.GetDeltaTime();
             timer.StartTimer();
 
-            /// Update global Systems
-            HandleSdlEvents();
-            m_pInputManager->Update();
-
             auto* pRenderer = m_pWindow->GetRenderer();
             pRenderer->Clear();
 
-            m_pActorManager->Update();
-            m_pActorManager->Render();
-#ifdef _DEBUG
-			if(m_engineOptions & kUseCollision)
-				m_pCollisionManager->DebugDraw();
-#endif _DEBUG
-            m_pMessagingManager->SendQueuedMessages();
+            UpdateSubsytems();
 
             pRenderer->Present();
         }
