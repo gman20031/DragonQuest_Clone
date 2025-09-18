@@ -1,0 +1,11 @@
+<Actor Name="Water_8TileActor">
+    <Component Name="TileInfoComponent">
+        <TextureFilePath>../Assets/Tiles/FullTileSheet.png</TextureFilePath>
+        <ImageSource>
+            <X>119</X>
+            <Y>85</Y>
+            <W>16</W>
+            <H>16</H>
+        </ImageSource>
+    </Component>
+</Actor>
