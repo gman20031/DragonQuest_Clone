@@ -36,11 +36,11 @@ namespace BlackBoxEngine
             return false;
 
         if constexpr (kLogSuccess)
-            BB_LOG(LogType::kMessage, "Adding component : " , componentParser.GetComponentName() );
-        Component* pComponent = AddComponent( StringHash(componentParser.GetComponentName() ) );
+            BB_LOG(LogType::kMessage, "Adding component : " , componentParser.GetFirstAttribute() );
+        Component* pComponent = AddComponent( StringHash(componentParser.GetFirstAttribute() ) );
 
         if (!pComponent)
-            BB_LOG(LogType::kError, "Component creation failed, ", componentParser.GetComponentName());
+            BB_LOG(LogType::kError, "Component creation failed, ", componentParser.GetFirstAttribute());
         
         pComponent->Load(componentParser);
         return true;

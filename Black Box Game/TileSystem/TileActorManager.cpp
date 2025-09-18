@@ -21,6 +21,7 @@ TileActorManager::TileActorManager()
     XMLElementParser elementParser = ResourceManager::GetRawXMLDATA(kTileLookupPath);
 
     const char* pFilePath = nullptr;
+    elementParser.GetChildElement("tile");
     while (elementParser)
     {
         elementParser.GetText(&pFilePath);
@@ -30,9 +31,8 @@ TileActorManager::TileActorManager()
             break;
         }
 
-        const char* pName = nullptr;
-        elementParser.GetElementName(&pName);
-        m_highestId = static_cast<Actor::Id>(*pName);
+        const char* pName = elementParser.GetFirstAttribute();
+        m_highestId = static_cast<Actor::Id>(pName[0]);
         const auto& pActor = LoadActor(pFilePath);
         CheckForTileComponent(pActor);
 

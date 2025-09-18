@@ -37,7 +37,7 @@ namespace BlackBoxEngine
 
         /// Loading interface
 
-        const char* GetComponentName() const;
+        const char* GetFirstAttribute() const;
         XMLElementParser GetChildElement(const char* pName = nullptr) const;
         void GetChildVariable(const char* pName, std::string* savedVariable) const;
         void GetChildVariable(const char* pName, const char** savedVariable) const;
