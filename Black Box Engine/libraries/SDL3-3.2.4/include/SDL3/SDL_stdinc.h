@@ -272,7 +272,7 @@ void *alloca(size_t);
 #define SDL_reinterpret_cast(type, expression) reinterpret_cast<type>(expression)  /* or `((type)(expression))` in C */
 
 /**
- * Handle a Static Cast properly whether using C or C++.
+ * Handle a Statics Cast properly whether using C or C++.
  *
  * If compiled as C++, this macro offers a proper C++ static_cast<>.
  *
@@ -2422,19 +2422,19 @@ extern SDL_DECLSPEC Uint32 SDLCALL SDL_crc32(Uint32 crc, const void *data, size_
  *
  * https://en.wikipedia.org/wiki/MurmurHash
  *
- * A seed may be specified, which changes the final results consistently, but
+ * A m_seed may be specified, which changes the final results consistently, but
  * this does not work like SDL_crc16 and SDL_crc32: you can't feed a previous
- * result from this function back into itself as the next seed value to
+ * result from this function back into itself as the next m_seed value to
  * calculate a hash in chunks; it won't produce the same hash as it would if
  * the same data was provided in a single call.
  *
- * If you aren't sure what to provide for a seed, zero is fine. Murmur3 is not
+ * If you aren't sure what to provide for a m_seed, zero is fine. Murmur3 is not
  * cryptographically secure, so it shouldn't be used for hashing top-secret
  * data.
  *
  * \param data the data to be hashed.
  * \param len the size of data, in bytes.
- * \param seed a value that alters the final hash value.
+ * \param m_seed a value that alters the final hash value.
  * \returns a Murmur3 32-bit hash value.
  *
  * \threadsafety It is safe to call this function from any thread.
@@ -4243,10 +4243,10 @@ extern SDL_DECLSPEC int SDLCALL SDL_vasprintf(char **strp, SDL_PRINTF_FORMAT_STR
 /**
  * Seeds the pseudo-random number generator.
  *
- * Reusing the seed number will cause SDL_rand_*() to repeat the same stream
+ * Reusing the m_seed number will cause SDL_rand_*() to repeat the same stream
  * of 'random' numbers.
  *
- * \param seed the value to use as a random number seed, or 0 to use
+ * \param m_seed the value to use as a random number m_seed, or 0 to use
  *             SDL_GetPerformanceCounter().
  *
  * \threadsafety This should be called on the same thread that calls

@@ -10,10 +10,10 @@
 
 /**
  * @brief Will log the message with additional information and formatting depending on log type.
- * @brief kMessage Appends nothing : "messageId"
- * @brief kWarning Colors console text to yellow and Appends : "'WARNING' FUNCTION(LINE:COLLUMN) | messageId"
- * @brief kError   Colors console text to orange and Appends : "'ERROR' FUNCTION(LINE:COLLUMN) |  messageId"
- * @brief kFailure Colors console text to red and Appends : "'FAIL' FUNCTION(LINE:COLLUMN) |  messageId"
+ * @brief kMessage Appends nothing                      : "messageId"
+ * @brief kWarning Colors text to yellow and Appends    : "'WARNING' FUNCTION(LINE:COLLUMN) | messageId"
+ * @brief kError   Colors text to orange and Appends    : "'ERROR' FUNCTION(LINE:COLLUMN) |  messageId"
+ * @brief kFailure Colors text to red and Appends       : "'FAIL' FUNCTION(LINE:COLLUMN) |  messageId"
  * THEN ABORTS PROGRAM
  */
 #define BB_LOG(type, ...) BlackBoxEngine::ComplexLog(type, std::source_location::current() , __VA_ARGS__ )

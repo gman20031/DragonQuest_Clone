@@ -99,13 +99,13 @@ typedef struct SDLTest_TestSuiteReference {
 
 
 /*
- * Generates a random run seed string for the harness. The generated seed
+ * Generates a random run m_seed string for the harness. The generated m_seed
  * will contain alphanumeric characters (0-9A-Z).
  *
- * \param buffer Buffer in which to generate the random seed. Must have a capacity of at least length + 1 characters.
+ * \param buffer Buffer in which to generate the random m_seed. Must have a capacity of at least length + 1 characters.
  * \param length Number of alphanumeric characters to write to buffer, must be >0
  *
- * \returns A null-terminated seed string and equal to the in put buffer on success, NULL on failure
+ * \returns A null-terminated m_seed string and equal to the in put buffer on success, NULL on failure
  */
 char * SDLCALL SDLTest_GenerateRunSeed(char *buffer, int length);
 
@@ -134,7 +134,7 @@ SDLTest_TestSuiteRunner * SDLCALL SDLTest_CreateTestSuiteRunner(SDLTest_CommonSt
 void SDLCALL SDLTest_DestroyTestSuiteRunner(SDLTest_TestSuiteRunner *runner);
 
 /*
- * Execute a test suite, using the configured run seed, execution key, filter, etc.
+ * Execute a test suite, using the configured run m_seed, execution key, filter, etc.
  *
  * \param runner The runner that should be executed.
  *

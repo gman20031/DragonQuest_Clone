@@ -4,9 +4,9 @@
 
 namespace BlackBoxEngine
 {
-	template <typename data_t>
-	concept NumericalValue = std::integral<data_t> || std::floating_point<data_t>;
+	template <typename dataType>
+	concept NumericalValue = std::integral<dataType> || std::floating_point<dataType>;
 
-	template <typename data_t>
-	concept NonNumericalValue = !std::integral<data_t> && !std::floating_point<data_t>;
+	template <typename dataType>
+	concept NonNumericalValue = !std::integral<dataType> && !std::floating_point<dataType>;
 }

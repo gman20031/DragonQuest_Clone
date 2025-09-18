@@ -614,14 +614,14 @@ static void setseed (lua_State *L, Rand64 *state,
   state[2] = Int2I(n2);
   state[3] = Int2I(0);
   for (i = 0; i < 16; i++)
-    nextrand(state);  /* discard initial values to "spread" seed */
+    nextrand(state);  /* discard initial values to "spread" m_seed */
   lua_pushinteger(L, n1);
   lua_pushinteger(L, n2);
 }
 
 
 /*
-** Set a "random" seed. To get some randomness, use the current time
+** Set a "random" m_seed. To get some randomness, use the current time
 ** and the address of 'L' (in case the machine does address space layout
 ** randomization).
 */
@@ -658,7 +658,7 @@ static const luaL_Reg randfuncs[] = {
 */
 static void setrandfunc (lua_State *L) {
   RanState *state = (RanState *)lua_newuserdatauv(L, sizeof(RanState), 0);
-  randseed(L, state);  /* initialize with a "random" seed */
+  randseed(L, state);  /* initialize with a "random" m_seed */
   lua_pop(L, 2);  /* remove pushed seeds */
   luaL_setfuncs(L, randfuncs, 1);
 }

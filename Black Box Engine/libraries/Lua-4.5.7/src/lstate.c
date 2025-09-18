@@ -52,15 +52,15 @@ typedef struct LG {
 
 
 /*
-** A macro to create a "random" seed when a state is created;
-** the seed is used to randomize string hashes.
+** A macro to create a "random" m_seed when a state is created;
+** the m_seed is used to randomize string hashes.
 */
 #if !defined(luai_makeseed)
 
 #include <time.h>
 
 /*
-** Compute an initial seed with some level of randomness.
+** Compute an initial m_seed with some level of randomness.
 ** Rely on Address Space Layout Randomization (if present) and
 ** current time.
 */

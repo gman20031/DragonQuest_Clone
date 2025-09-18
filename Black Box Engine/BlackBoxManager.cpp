@@ -17,15 +17,15 @@ namespace BlackBoxEngine
     void BlackBoxManager::CheckEngineInitialized()
     {
         if (m_engineOptions & kUseActors && !m_pActorManager)
-            BB_LOG(LogType::kFailure, "Engine has no actor Manager");
+            BB_LOG(LogType::kFailure, "Machine has no actor Manager");
         if (m_engineOptions & kUseInput && !m_pInputManager)
-			BB_LOG(LogType::kFailure, "Engine has no input Manager");
+			BB_LOG(LogType::kFailure, "Machine has no input Manager");
 		if (m_engineOptions & kUseMessaging && !m_pMessagingManager)
-			BB_LOG(LogType::kFailure, "Engine has no message Manager");
+			BB_LOG(LogType::kFailure, "Machine has no message Manager");
 		if (m_engineOptions & kUseCollision && !m_pCollisionManager)
-            BB_LOG(LogType::kFailure, "Engine has no collision Manager");
+            BB_LOG(LogType::kFailure, "Machine has no collision Manager");
         if (!m_pWindow)
-            BB_LOG(LogType::kFailure, "Engine has no window");
+            BB_LOG(LogType::kFailure, "Machine has no window");
     }
 #endif // _DEBUG
 
