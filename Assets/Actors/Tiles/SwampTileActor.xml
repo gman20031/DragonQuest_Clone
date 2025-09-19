@@ -1,9 +1,9 @@
-<Actor Name="Water_6TileActor">
+<Actor Name="SwampTileActor">
     <Component Name="TileInfoComponent">
         <TextureFilePath>../Assets/Tiles/FullTileSheet.png</TextureFilePath>
         <ImageSource>
-            <X>85</X>
-            <Y>85</Y>
+            <X>153</X>
+            <Y>17</Y>
             <W>16</W>
             <H>16</H>
         </ImageSource>
