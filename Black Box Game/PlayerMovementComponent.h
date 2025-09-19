@@ -4,6 +4,7 @@
 #include <Actors/EngineComponents/MoverComponent.h>
 #include <Actors/EngineComponents/TransformComponent.h>
 #include <Input/InputManager.h>
+#include "../Black Box Engine/Math/FVector2.h"
 
 class PlayerMovementComponent : public BlackBoxEngine::Component
 {
@@ -19,6 +20,9 @@ class PlayerMovementComponent : public BlackBoxEngine::Component
     static constexpr BlackBoxEngine::KeyCode kRightKey = BlackBoxEngine::KeyCode::kRight;
 
     float m_playerSpeed = 180;
+    bool m_isMoving = false;
+    BlackBoxEngine::FVector2 m_targetPosition; // in world coordinates
+    const float TILE_SIZE = 16.0f;
 
 public:
     PlayerMovementComponent(BlackBoxEngine::Actor* pOwner);
@@ -31,5 +35,6 @@ public:
     virtual void Save([[maybe_unused]] BlackBoxEngine::XMLElementParser parser) override; // for when this actor is called to be saved
     virtual void Load([[maybe_unused]] const BlackBoxEngine::XMLElementParser parser) override; // for when this actor is called to be loaded
 
+    void TryMove(const BlackBoxEngine::FVector2& direction);
 };
 

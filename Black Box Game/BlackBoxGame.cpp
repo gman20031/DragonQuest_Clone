@@ -1,4 +1,5 @@
 #include "BlackBoxGame.h"
+#include "../Black Box Engine/Actors/EngineComponents/SpriteComponent.h"
 
 using namespace BlackBoxEngine;
 
@@ -12,6 +13,15 @@ void BlackBoxGame::InitGame()
 
     m_pEngineManager->m_pActorManager->LoadLevel("../Assets/Levels/ExampleLevel.xml");
 
+    //auto& pPlayer = m_pEngineManager->m_pActorManager->LoadActor("../Assets/Actors/PlayerActor.xml");
+    //
+    //pPlayer->AddComponent<SpriteComponent>();
+    //
+    //auto* pCompoenet = pPlayer->GetComponent<SpriteComponent>();
+    //
+    //pCompoenet->SetTextureOffset({ 0, 0, 16, 16 });
+    //
+    //m_pEngineManager->m_pActorManager->SaveActor(pPlayer, "PlayerActor");
 }
 
 BlackBoxGame::BlackBoxGame()
