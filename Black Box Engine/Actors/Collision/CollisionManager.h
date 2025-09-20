@@ -89,10 +89,10 @@ namespace BlackBoxEngine
         void WriteNode(std::ostream& os, QuadTreeNode* pNode, int depth); // for debugging
         bool AtMaxDepth(const QuadTreeNode* pNode);
         const BoundingBox& GetBorderBox() const { return m_pRootNode->m_boundingBox; }
-        void SetDimensions(BB_Rectangle rect);
+        void SetDimensions(BB_FRectangle rect);
     public:
         CollisionManager(float x, float y, float w, float h);
-        CollisionManager(BB_Rectangle bounds);
+        CollisionManager(BB_FRectangle bounds);
         ~CollisionManager();
         CollisionManager(const CollisionManager&) = delete;
         void operator=(const CollisionManager&) = delete;

@@ -19,7 +19,7 @@ namespace BlackBoxEngine
     {
         if constexpr (kDebug)
         {
-            BB_Rectangle rect = m_pCollider->GetCollider().m_rect;
+            BB_FRectangle rect = m_pCollider->GetCollider().m_rect;
             if (rect.w == 0 || rect.h == 0)
             {
                 BB_LOG(LogType::kError, "Width or height is zero");

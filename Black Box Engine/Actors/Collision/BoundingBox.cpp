@@ -9,7 +9,7 @@ namespace BlackBoxEngine
     /// BoundingBox
     ////////////////////////////////////////////////////////////////////
 
-    BoundingBox::BoundingBox(BB_Rectangle rect)
+    BoundingBox::BoundingBox(BB_FRectangle rect)
         : m_rect(rect)
     {
     }

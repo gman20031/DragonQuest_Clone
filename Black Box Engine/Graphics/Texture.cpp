@@ -10,12 +10,19 @@ BlackBoxEngine::BB_Texture::BB_Texture(SDL_Texture* pTexture)
 {
 	if (!m_pSdlTexture)
 		BB_LOG(LogType::kError , "Texture not found when wrapping SDL_Texture");
+
+    SetScaleMode(kDefaultScaleMode);
 }
 
 BlackBoxEngine::BB_Texture::~BB_Texture()
 {
 	if(m_pSdlTexture)
 		SDL_free(m_pSdlTexture);
+}
+
+bool BlackBoxEngine::BB_Texture::SetScaleMode(ScaleMode mode)
+{
+    return SDL_SetTextureScaleMode(m_pSdlTexture, static_cast<SDL_ScaleMode>(mode));
 }
 
 bool BlackBoxEngine::BB_Texture::SetAlpha(uint8_t alpha)

@@ -23,7 +23,7 @@ namespace BlackBoxEngine
         m_pTexture = ResourceManager::GetTexture(m_pRenderer, pTexturePath);
     }
 
-    void SpriteComponent::SetTextureOffset(BB_Rectangle offset)
+    void SpriteComponent::SetTextureOffset(BB_FRectangle offset)
     {
         m_textureOffset = offset;
     }
@@ -87,9 +87,9 @@ namespace BlackBoxEngine
         }
         float x = m_pTransform->m_position.x;
         float y = m_pTransform->m_position.y;
-        auto dest = BB_Rectangle(x , y , m_width, m_height);
+        auto dest = BB_FRectangle(x , y , m_width, m_height);
 
-        BB_Rectangle* pDest = nullptr;
+        BB_FRectangle* pDest = nullptr;
         if (!m_useFullImage)
             pDest = &m_textureOffset;
         

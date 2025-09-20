@@ -25,7 +25,7 @@ namespace BlackBoxEngine
         m_screenInfoRect.y = m_centerPointCache.y - (m_screenInfoRect.h / 2);
     }
 
-    void BB_Camera::SetScreenDimensions(BB_Rectangle newDimensions)
+    void BB_Camera::SetScreenDimensions(BB_FRectangle newDimensions)
     {
         m_screenInfoRect = newDimensions;
         m_centerPointCache.x = newDimensions.x + (newDimensions.w / 2);
@@ -47,10 +47,10 @@ namespace BlackBoxEngine
     // Screen offsetting
     ////////////////////////////////////////////////////////////////
 
-    BB_Rectangle BB_Camera::ConvertToScreenPos(const BB_Rectangle gameRect) const
+    BB_FRectangle BB_Camera::ConvertToScreenPos(const BB_FRectangle gameRect) const
     {
         const auto& pWindow = BlackBoxManager::Get()->GetWindow();
-        BB_Rectangle outputRect = gameRect;
+        BB_FRectangle outputRect = gameRect;
         FVector2 zoom = GetXYZoom(pWindow);
         ConvertToScreenPos(&outputRect.x, &outputRect.y, zoom);
         ZoomDestinationRect(&outputRect, zoom);
@@ -86,7 +86,7 @@ namespace BlackBoxEngine
     // Statics Members
     ////////////////////////////////////////////////////////////////
     
-    void BB_Camera::ZoomDestinationRect(BB_Rectangle* pDest, FVector2 zoom)
+    void BB_Camera::ZoomDestinationRect(BB_FRectangle* pDest, FVector2 zoom)
     {
         pDest->w *= zoom.x;
         pDest->h *= zoom.y;

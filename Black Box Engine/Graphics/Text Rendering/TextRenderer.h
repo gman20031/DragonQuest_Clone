@@ -33,10 +33,10 @@ namespace BlackBoxEngine
         BB_TextRenderer(BB_Window* pWindow);
         ~BB_TextRenderer();
 
-        bool DrawTextBlended(std::shared_ptr<BB_Font> pFont, const char* pText, size_t length, ColorValue foregroundColor, BB_Rectangle destination);
-        bool DrawTextSolid(std::shared_ptr<BB_Font> pFont, const char* pText, size_t length, ColorValue foregroundColor, BB_Rectangle destination);
-        bool DrawTextShaded(std::shared_ptr<BB_Font> pFont, const char* pText, size_t length, ColorValue foregroundColor, ColorValue backgroundColor, BB_Rectangle destination);
-        bool DrawTextLCD(std::shared_ptr<BB_Font> pFont, const char* pText, size_t length, ColorValue foregroundColor, ColorValue backgroundColor, BB_Rectangle destination);
+        bool DrawTextBlended(std::shared_ptr<BB_Font> pFont, const char* pText, size_t length, ColorValue foregroundColor, BB_FRectangle destination);
+        bool DrawTextSolid(std::shared_ptr<BB_Font> pFont, const char* pText, size_t length, ColorValue foregroundColor, BB_FRectangle destination);
+        bool DrawTextShaded(std::shared_ptr<BB_Font> pFont, const char* pText, size_t length, ColorValue foregroundColor, ColorValue backgroundColor, BB_FRectangle destination);
+        bool DrawTextLCD(std::shared_ptr<BB_Font> pFont, const char* pText, size_t length, ColorValue foregroundColor, ColorValue backgroundColor, BB_FRectangle destination);
 
         bool RenderText(std::shared_ptr<BB_Text> text, float x, float y);
 

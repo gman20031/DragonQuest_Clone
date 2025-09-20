@@ -87,12 +87,12 @@ const char* BlackBoxEngine::BB_Renderer::GetErrorStr()
 
 //////////////// Lines ////////////////
 
-bool BlackBoxEngine::BB_Renderer::DrawLineScreen(BB_Point start, BB_Point end)
+bool BlackBoxEngine::BB_Renderer::DrawLineScreen(BB_FPoint start, BB_FPoint end)
 {
 	return SDL_RenderLine(m_pSdlRenderer, start.x, start.y, end.x, end.y);
 }
 
-bool BlackBoxEngine::BB_Renderer::DrawLineGame(BB_Point start, BB_Point end)
+bool BlackBoxEngine::BB_Renderer::DrawLineGame(BB_FPoint start, BB_FPoint end)
 {
     if (!m_pGameCamera)
         return false;
@@ -105,19 +105,19 @@ bool BlackBoxEngine::BB_Renderer::DrawLineGame(BB_Point start, BB_Point end)
 
 //////////////// Rects ////////////////
 
-bool BlackBoxEngine::BB_Renderer::DrawRectScreen(const BB_Rectangle& rec)
+bool BlackBoxEngine::BB_Renderer::DrawRectScreen(const BB_FRectangle& rec)
 {
     SDL_FRect sdlRect{ rec.x, rec.y , rec.w, rec.h };
     return SDL_RenderRect(m_pSdlRenderer, &sdlRect);
 }
 
-bool BlackBoxEngine::BB_Renderer::DrawRectScreenFilled(const BB_Rectangle& rec)
+bool BlackBoxEngine::BB_Renderer::DrawRectScreenFilled(const BB_FRectangle& rec)
 {
     SDL_FRect sdlRect{ rec.x, rec.y , rec.w, rec.h };
     return SDL_RenderFillRect(m_pSdlRenderer, &sdlRect);
 }
 
-bool BlackBoxEngine::BB_Renderer::DrawRectScreen(const BB_Rectangle& rec, const ColorValue& color)
+bool BlackBoxEngine::BB_Renderer::DrawRectScreen(const BB_FRectangle& rec, const ColorValue& color)
 {
     auto startColor = m_currentDrawColor;
     SetDrawColor(color);
@@ -127,7 +127,7 @@ bool BlackBoxEngine::BB_Renderer::DrawRectScreen(const BB_Rectangle& rec, const 
     return good;
 }
 
-bool BlackBoxEngine::BB_Renderer::DrawRectScreenFilled(const BB_Rectangle& rec, const ColorValue& color)
+bool BlackBoxEngine::BB_Renderer::DrawRectScreenFilled(const BB_FRectangle& rec, const ColorValue& color)
 {
     auto startColor = m_currentDrawColor;
     SetDrawColor(color);
@@ -137,35 +137,35 @@ bool BlackBoxEngine::BB_Renderer::DrawRectScreenFilled(const BB_Rectangle& rec, 
     return good;
 }
 
-bool BlackBoxEngine::BB_Renderer::DrawRectGame(const BB_Rectangle& rec)
+bool BlackBoxEngine::BB_Renderer::DrawRectGame(const BB_FRectangle& rec)
 {
     if (!m_pGameCamera)
         return false;
-    const BB_Rectangle newRect = m_pGameCamera->ConvertToScreenPos(rec);
+    const BB_FRectangle newRect = m_pGameCamera->ConvertToScreenPos(rec);
     return DrawRectScreen(newRect);
 }
 
-bool BlackBoxEngine::BB_Renderer::DrawRectGameFilled(const BB_Rectangle& rec)
+bool BlackBoxEngine::BB_Renderer::DrawRectGameFilled(const BB_FRectangle& rec)
 {
     if (!m_pGameCamera)
         return false;
-    const BB_Rectangle newRect = m_pGameCamera->ConvertToScreenPos(rec);
+    const BB_FRectangle newRect = m_pGameCamera->ConvertToScreenPos(rec);
     return DrawRectScreenFilled(newRect);
 }
 
-bool BlackBoxEngine::BB_Renderer::DrawRectGame(const BB_Rectangle& rec, const ColorValue& color)
+bool BlackBoxEngine::BB_Renderer::DrawRectGame(const BB_FRectangle& rec, const ColorValue& color)
 {
     if (!m_pGameCamera)
         return false;
-    const BB_Rectangle newRect = m_pGameCamera->ConvertToScreenPos(rec);
+    const BB_FRectangle newRect = m_pGameCamera->ConvertToScreenPos(rec);
     return DrawRectScreen(newRect, color);
 }
 
-bool BlackBoxEngine::BB_Renderer::DrawRectGameFilled(const BB_Rectangle& rec, const ColorValue& color)
+bool BlackBoxEngine::BB_Renderer::DrawRectGameFilled(const BB_FRectangle& rec, const ColorValue& color)
 {
     if (!m_pGameCamera)
         return false;
-    const BB_Rectangle newRect = m_pGameCamera->ConvertToScreenPos(rec);
+    const BB_FRectangle newRect = m_pGameCamera->ConvertToScreenPos(rec);
     return DrawRectScreenFilled(newRect, color);
 }
 
@@ -175,10 +175,10 @@ bool BlackBoxEngine::BB_Renderer::DrawRectGameFilled(const BB_Rectangle& rec, co
 
 bool BlackBoxEngine::BB_Renderer::DrawTextureScreen(
     BB_Texture* texture,
-    BB_Rectangle* pSource,
-    BB_Rectangle* pDest,
+    BB_FRectangle* pSource,
+    BB_FRectangle* pDest,
     const double rot,
-    const BB_Point* pCenter,
+    const BB_FPoint* pCenter,
     const BB_FlipVal& flip
 )
 {
@@ -202,10 +202,10 @@ bool BlackBoxEngine::BB_Renderer::DrawTextureScreen(
 
 bool BlackBoxEngine::BB_Renderer::DrawTextureGame(
     BB_Texture* texture,
-    BB_Rectangle* pSource,
-    BB_Rectangle* pDest,
+    BB_FRectangle* pSource,
+    BB_FRectangle* pDest,
     const double rot,
-    const BB_Point* pCenter,
+    const BB_FPoint* pCenter,
     const BB_FlipVal& flip
 )
 {

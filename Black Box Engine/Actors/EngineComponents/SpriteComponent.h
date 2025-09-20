@@ -21,7 +21,7 @@ namespace BlackBoxEngine
         TransformComponent* m_pTransform = nullptr;
 
         bool m_useFullImage = true;
-        BB_Rectangle m_textureOffset{ 0,0,0,0 };
+        BB_FRectangle m_textureOffset{ 0,0,0,0 };
 
         float m_width = 0;
         float m_height = 0;
@@ -29,9 +29,9 @@ namespace BlackBoxEngine
         SpriteComponent(Actor* pOwner);
 
         void SetTexture(const char* pTexturePath);
-        void SetTextureOffset(BB_Rectangle offset);
+        void SetTextureOffset(BB_FRectangle offset);
         void SetDimensions(const float width, const float height);
-        const BB_Point GetDimensions() const { return { m_width, m_height }; }
+        const BB_FPoint GetDimensions() const { return { m_width, m_height }; }
 
         virtual void Load(const XMLElementParser parser) override;
         virtual void Save(XMLElementParser parser) override;

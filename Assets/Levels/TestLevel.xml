@@ -1,11 +1,31 @@
+<Actor Name="TileMapActor">
+    <Component Name="TransformComponent">
+        <Position>
+            <X>0</X>
+            <Y>0</Y>
+        </Position>
+        <Rotation>0</Rotation>
+    </Component>
+    <Component Name="TileMapComponent">
+        <TileSize>16</TileSize>
+		<AnchorPoint>kTopLeft</AnchorPoint>
+		<TileMap>
+			<row>GGGGGGGGGGGGG</row>
+			<row>GGGGGGGGGGGGG</row>
+			<row>GGGGGGGGGGGGG</row>
+			<row>GGGGGGGGGGGGG</row>
+		</TileMap>
+    </Component>
+</Actor>
+  <!-- Player -->
 <Actor Name="PlayerActor">
     <Component Name="PlayerMovementComponent">
         <Speed>90</Speed>
     </Component>
     <Component Name="TransformComponent">
         <Position>
-            <X>448</X>
-            <Y>816</Y>
+            <X>0</X>
+            <Y>0</Y>
         </Position>
         <Rotation>0</Rotation>
     </Component>

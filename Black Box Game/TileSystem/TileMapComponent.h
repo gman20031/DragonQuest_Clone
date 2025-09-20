@@ -22,6 +22,9 @@ private:
 
     std::string m_rawMap;
 
+    float m_cachedXOffset = 0;
+    float m_cachedYOffset = 0;
+
     BlackBoxEngine::BB_AnchorPoint m_anchorPoint = BlackBoxEngine::BB_AnchorPoint::kTopLeft;
     uint32_t m_mapSize  = 0;
     uint32_t m_height   = 0;
@@ -56,7 +59,7 @@ public:
      * is the topleft of the tilemap, CenterTrue means this actors pos is directly in the center
      * of the tilemap.
      */
-    void SetAnchorPoint(BlackBoxEngine::BB_AnchorPoint anchor) { m_anchorPoint = anchor; }
+    void SetAnchorPoint(BlackBoxEngine::BB_AnchorPoint anchor);
 
     /**
      * @brief Simply changes the size of each tile in the tileMap

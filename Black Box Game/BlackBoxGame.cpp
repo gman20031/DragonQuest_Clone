@@ -12,16 +12,6 @@ void BlackBoxGame::InitGame()
 	BB_LOG(LogType::kMessage, "Game starting");
 
     m_pEngineManager->m_pActorManager->LoadLevel("../Assets/Levels/ExampleLevel.xml");
-
-    //auto& pPlayer = m_pEngineManager->m_pActorManager->LoadActor("../Assets/Actors/PlayerActor.xml");
-    //
-    //pPlayer->AddComponent<SpriteComponent>();
-    //
-    //auto* pCompoenet = pPlayer->GetComponent<SpriteComponent>();
-    //
-    //pCompoenet->SetTextureOffset({ 0, 0, 16, 16 });
-    //
-    //m_pEngineManager->m_pActorManager->SaveActor(pPlayer, "PlayerActor");
 }
 
 BlackBoxGame::BlackBoxGame()

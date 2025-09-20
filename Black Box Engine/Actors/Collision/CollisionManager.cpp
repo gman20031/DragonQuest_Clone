@@ -331,7 +331,7 @@ namespace BlackBoxEngine
         );
     }
 
-    void CollisionManager::SetDimensions(BB_Rectangle bounds)
+    void CollisionManager::SetDimensions(BB_FRectangle bounds)
     {
         m_minimumHeight = (size_t)bounds.h;
         m_minimumWidth = (size_t)bounds.w;
@@ -344,7 +344,7 @@ namespace BlackBoxEngine
 
     /////////////// public
 
-    CollisionManager::CollisionManager(BB_Rectangle bounds)
+    CollisionManager::CollisionManager(BB_FRectangle bounds)
         : m_pRootNode( new QuadTreeNode(bounds, nullptr, this) )
     {
         //auto resetCollisionBounds = [this](Message& message) -> void
@@ -358,7 +358,7 @@ namespace BlackBoxEngine
     }
 
     CollisionManager::CollisionManager(float x, float y, float w, float h)
-        : CollisionManager( BB_Rectangle{x,y,w,h} )
+        : CollisionManager( BB_FRectangle{x,y,w,h} )
     {
 
     }

@@ -23,7 +23,7 @@ namespace BlackBoxEngine
         TTF_DestroyRendererTextEngine(m_pTtfEngine);
     }
 
-    bool BB_TextRenderer::DrawTextBlended(std::shared_ptr<BB_Font> pFont, const char* pText, size_t length, ColorValue foregroundColor, BB_Rectangle destination)
+    bool BB_TextRenderer::DrawTextBlended(std::shared_ptr<BB_Font> pFont, const char* pText, size_t length, ColorValue foregroundColor, BB_FRectangle destination)
     {
         SDL_Surface* pSurface = TTF_RenderText_Blended(pFont->m_pTtfFont, pText, length, SDL_Color{foregroundColor.r, foregroundColor.g, foregroundColor.b, foregroundColor.a} );
         if (!pSurface)
@@ -41,7 +41,7 @@ namespace BlackBoxEngine
         return good;
     }
 
-    bool BB_TextRenderer::DrawTextSolid(std::shared_ptr<BB_Font> pFont, const char* pText, size_t length, ColorValue foregroundColor, BB_Rectangle destination)
+    bool BB_TextRenderer::DrawTextSolid(std::shared_ptr<BB_Font> pFont, const char* pText, size_t length, ColorValue foregroundColor, BB_FRectangle destination)
     {
         SDL_Surface* pSurface = TTF_RenderText_Solid(pFont->m_pTtfFont, pText, length, SDL_Color{ foregroundColor.r, foregroundColor.g, foregroundColor.b, foregroundColor.a });
         if (!pSurface)
@@ -58,7 +58,7 @@ namespace BlackBoxEngine
         return good;
     }
 
-    bool BB_TextRenderer::DrawTextShaded(std::shared_ptr<BB_Font> pFont, const char* pText, size_t length, ColorValue foregroundColor, ColorValue backgroundColor, BB_Rectangle destination)
+    bool BB_TextRenderer::DrawTextShaded(std::shared_ptr<BB_Font> pFont, const char* pText, size_t length, ColorValue foregroundColor, ColorValue backgroundColor, BB_FRectangle destination)
     {
         SDL_Surface* pSurface = TTF_RenderText_Shaded(pFont->m_pTtfFont, pText, length,
             SDL_Color{ foregroundColor.r, foregroundColor.g, foregroundColor.b, foregroundColor.a },
@@ -78,7 +78,7 @@ namespace BlackBoxEngine
         return good;
     }
 
-    bool BB_TextRenderer::DrawTextLCD(std::shared_ptr<BB_Font> pFont, const char* pText, size_t length, ColorValue foregroundColor, ColorValue backgroundColor, BB_Rectangle destination)
+    bool BB_TextRenderer::DrawTextLCD(std::shared_ptr<BB_Font> pFont, const char* pText, size_t length, ColorValue foregroundColor, ColorValue backgroundColor, BB_FRectangle destination)
     {
         SDL_Surface* pSurface = TTF_RenderText_LCD(pFont->m_pTtfFont, pText, length,
             SDL_Color{ foregroundColor.r, foregroundColor.g, foregroundColor.b, foregroundColor.a },
@@ -121,7 +121,7 @@ namespace BlackBoxEngine
         const char pTextLCD[] =     { "TTF_RenderText_LCD" };
         //const char pRenderText[] =  { "TTF_DrawRendererText" };
 
-        BB_Rectangle destination = { 0,0,100,100 };
+        BB_FRectangle destination = { 0,0,100,100 };
 
         DrawTextBlended(pBBFont, pTextBlended, std::size(pTextBlended), color, destination);
         destination.y += 100;

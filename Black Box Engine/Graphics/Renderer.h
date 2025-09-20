@@ -41,19 +41,19 @@ namespace BlackBoxEngine
         bool SetBackgroundColor(const ColorValue& newBackgroundColor);
 
         // draw line
-        bool DrawLineScreen(BB_Point start, BB_Point end);
-        bool DrawLineGame(BB_Point start, BB_Point end);
+        bool DrawLineScreen(BB_FPoint start, BB_FPoint end);
+        bool DrawLineGame(BB_FPoint start, BB_FPoint end);
 
         // draw rectangle
-        bool DrawRectScreen(const BB_Rectangle& rec);
-        bool DrawRectScreenFilled(const BB_Rectangle& rec);
-        bool DrawRectScreen(const BB_Rectangle& rec , const ColorValue& color);
-        bool DrawRectScreenFilled(const BB_Rectangle& rec, const ColorValue& color);
+        bool DrawRectScreen(const BB_FRectangle& rec);
+        bool DrawRectScreenFilled(const BB_FRectangle& rec);
+        bool DrawRectScreen(const BB_FRectangle& rec , const ColorValue& color);
+        bool DrawRectScreenFilled(const BB_FRectangle& rec, const ColorValue& color);
 
-        bool DrawRectGame(const BB_Rectangle& rec);
-        bool DrawRectGameFilled(const BB_Rectangle& rec);
-        bool DrawRectGame(const BB_Rectangle& rec, const ColorValue& color);
-        bool DrawRectGameFilled(const BB_Rectangle& rec, const ColorValue& color);
+        bool DrawRectGame(const BB_FRectangle& rec);
+        bool DrawRectGameFilled(const BB_FRectangle& rec);
+        bool DrawRectGame(const BB_FRectangle& rec, const ColorValue& color);
+        bool DrawRectGameFilled(const BB_FRectangle& rec, const ColorValue& color);
 
         // draw texture
         
@@ -69,10 +69,10 @@ namespace BlackBoxEngine
          */
         bool DrawTextureScreen(
             BB_Texture* texture,
-            BB_Rectangle* source = nullptr,
-            BB_Rectangle* dest = nullptr,
+            BB_FRectangle* source = nullptr,
+            BB_FRectangle* dest = nullptr,
             const double rot = 0,
-            const BB_Point* center = nullptr,
+            const BB_FPoint* center = nullptr,
             const BB_FlipVal& flip = BB_FlipVal::kNone
         );
 
@@ -88,10 +88,10 @@ namespace BlackBoxEngine
          */
         bool DrawTextureGame(
             BB_Texture* texture,
-            BB_Rectangle* source = nullptr,
-            BB_Rectangle* dest = nullptr,
+            BB_FRectangle* source = nullptr,
+            BB_FRectangle* dest = nullptr,
             const double rot = 0,
-            const BB_Point* center = nullptr,
+            const BB_FPoint* center = nullptr,
             const BB_FlipVal& flip = BB_FlipVal::kNone
         );
 

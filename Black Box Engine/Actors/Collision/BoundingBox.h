@@ -7,9 +7,9 @@ namespace BlackBoxEngine
 {
     struct BoundingBox
     {
-        BB_Rectangle m_rect;
+        BB_FRectangle m_rect;
 
-        BoundingBox(BB_Rectangle rect);
+        BoundingBox(BB_FRectangle rect);
         BoundingBox(float x, float y, float w, float h);
 
         float Right() const { return m_rect.x + m_rect.w; }

@@ -5,33 +5,60 @@
 
 namespace BlackBoxEngine
 {
+    template <std::unsigned_integral Type>
+    struct BB_TPoint
+    {
+        Type x;
+        Type y;
+    };
 
-	struct BB_Point
-	{
-		float x;
-		float y;
-	};
-
-    struct BB_IntPoint
+    struct BB_FPoint
     {
         float x;
         float y;
     };
 
-	/**
+    struct BB_IntPoint
+    {
+        int x;
+        int y;
+    };
+
+    /**
      * @brief X
      * @brief Y
      * @brief W
      * @brief H
-	 */
-	struct BB_Rectangle
-	{
-		float x;
-		float y;
-		float w;
-		float h;
-	};
+     */
+    template <std::unsigned_integral Type>
+    struct BB_TRectangle
+    {
+        Type x;
+        Type y;
+        Type w;
+        Type h;
+    };
 
+    /**
+     * @brief X
+     * @brief Y
+     * @brief W
+     * @brief H
+     */
+    struct BB_FRectangle
+    {
+        float x;
+        float y;
+        float w;
+        float h;
+    };
+
+    /**
+     * @brief X
+     * @brief Y
+     * @brief W
+     * @brief H
+     */
     struct BB_IntRectangle
     {
         int x;
@@ -40,12 +67,12 @@ namespace BlackBoxEngine
         int h;
     };
 
-	enum class BB_FlipVal
-	{
-		kNone,
-		kHorizontal,
-		kVericle,
-	};
+    enum class BB_FlipVal
+    {
+        kNone,
+        kHorizontal,
+        kVericle,
+    };
 
     enum class BB_AnchorPoint
     {

@@ -30,23 +30,8 @@ BlackBoxEngine::FVector2 TileMapComponent::GetGameCoordsFromTilePos(uint32_t x, 
     offset.x += x * m_tileSize;
     offset.y += y * m_tileSize;
 
-    float totalWidth  = static_cast<float>(m_width * m_tileSize);
-    float totalHeight = static_cast<float>(m_height * m_tileSize);
-
-    using enum BB_AnchorPoint;
-    // offset this position to be different based on the anchor point
-    switch (m_anchorPoint)
-    {
-    case kTopLeft:                                                               break;
-    case kTopMiddle:   offset.x -= totalWidth  / 2;                              break;
-    case kTopRight:    offset.x -= totalWidth;                                   break;
-    case kCenterLeft:                               offset.y -= totalHeight / 2; break;
-    case kCenterTrue:  offset.x -= totalWidth  / 2; offset.y -= totalHeight / 2; break;
-    case kCenterRight: offset.x -= totalWidth;      offset.y -= totalHeight / 2; break;
-    case kBotLeft:                                  offset.y -= totalHeight;     break;
-    case kBotmiddle:   offset.x -= totalWidth / 2;  offset.y -= totalHeight;     break;
-    case kBotRight:    offset.x -= totalWidth;      offset.y -= totalHeight;     break;
-    }
+    offset.x -= m_cachedXOffset;
+    offset.y -= m_cachedYOffset;
 
     return offset;
 }
@@ -65,12 +50,12 @@ void TileMapComponent::RenderTileAt(uint32_t x, uint32_t y)
     const auto& pActor = m_pTileActorManager->GetActor(id);
     auto* pInfo = pActor->GetComponent<TileInfoComponent>();
     std::shared_ptr<BB_Texture> pTexture = pInfo->GetTexture();
-    BB_Rectangle source = pInfo->GetSourceRectangle();
+    BB_FRectangle source = pInfo->GetSourceRectangle();
     if (!pTexture)
         return;
 
     FVector2 pos = GetGameCoordsFromTilePos(x, y);
-    BB_Rectangle dest(pos.x, pos.y, (float)m_tileSize, (float)m_tileSize);
+    BB_FRectangle dest(pos.x, pos.y, static_cast<float>(m_tileSize), static_cast<float>(m_tileSize) );
 
     m_pRenderer->DrawTextureGame(
         pTexture.get() , &source, &dest
@@ -123,6 +108,32 @@ const TileMapComponent::ActorPtr& TileMapComponent::GetTileAt(uint32_t x, uint32
 {
     char id = m_rawMap[GetIndex(x, y)];
     return BlackBoxGame::Get()->GetTileActorManager()->GetActor(static_cast<uint32_t>(id));
+}
+
+void TileMapComponent::SetAnchorPoint(BlackBoxEngine::BB_AnchorPoint anchor)
+{
+    m_anchorPoint = anchor;
+
+    float totalWidth = static_cast<float>(m_width * m_tileSize);
+    float totalHeight = static_cast<float>(m_height * m_tileSize);
+
+    m_cachedXOffset = 0;
+    m_cachedYOffset = 0;
+
+    using enum BB_AnchorPoint;
+    // offset this position to be different based on the anchor point
+    switch (m_anchorPoint)
+    {
+    case kTopLeft:                                                                          break;
+    case kTopMiddle:   m_cachedXOffset = totalWidth / 2;                                    break;
+    case kTopRight:    m_cachedXOffset = totalWidth;                                        break;
+    case kCenterLeft:                                    m_cachedYOffset = totalHeight / 2; break;
+    case kCenterTrue:  m_cachedXOffset = totalWidth / 2; m_cachedYOffset = totalHeight / 2; break;
+    case kCenterRight: m_cachedXOffset = totalWidth;     m_cachedYOffset = totalHeight / 2; break;
+    case kBotLeft:                                       m_cachedYOffset = totalHeight;     break;
+    case kBotmiddle:   m_cachedXOffset = totalWidth / 2; m_cachedYOffset = totalHeight;     break;
+    case kBotRight:    m_cachedXOffset = totalWidth;     m_cachedYOffset = totalHeight;     break;
+    }
 }
 
 void TileMapComponent::SetNewWidth(uint32_t newWidth, char padTile)
@@ -254,6 +265,7 @@ void TileMapComponent::Load(const BlackBoxEngine::XMLElementParser parser)
     parser.GetChildVariable("TileSize",   &m_tileSize);
     parser.GetChildVariable("AnchorPoint",&m_anchorPoint);
     auto element = parser.GetChildElement("TileMap");
+    SetAnchorPoint(m_anchorPoint);
     LoadMap(element);
 }
 

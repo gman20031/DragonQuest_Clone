@@ -9,11 +9,21 @@ struct SDL_Texture;
 
 namespace BlackBoxEngine
 {
+
 	/**
 	 * @brief Reprsentation of a image file within the engine.
 	 */
 	class BB_Texture
 	{
+    public:
+        enum class ScaleMode
+        {
+            kLinear,
+            kNearest,
+        };
+        inline static constexpr ScaleMode kDefaultScaleMode = ScaleMode::kLinear;
+
+    private:
 		friend class BB_Renderer;
 		SDL_Texture* m_pSdlTexture = nullptr;
 	public:
@@ -22,6 +32,7 @@ namespace BlackBoxEngine
 		BB_Texture(const BB_Texture&) = delete;
 		BB_Texture& operator=(const BB_Texture&) = delete;
 
+        bool SetScaleMode(ScaleMode mode);
 		bool SetAlpha(uint8_t alpha);
 		bool SetColorMod(const ColorValue& colorMod);
 	};

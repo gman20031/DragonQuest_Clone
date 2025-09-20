@@ -11,16 +11,16 @@ public:
 private:
     const char* m_pTexturePath = nullptr;
     TexturePtr m_pTexture = nullptr;
-    BlackBoxEngine::BB_Rectangle m_imageSource{ 0,0,0,0 };
+    BlackBoxEngine::BB_FRectangle m_imageSource{ 0,0,0,0 };
 
 public:
     TileInfoComponent(BlackBoxEngine::Actor* pActor);
 
     void SetTexture(const char* pFilePath);
-    void SetImageSource(BlackBoxEngine::BB_Rectangle source) { m_imageSource = source; }
+    void SetImageSource(BlackBoxEngine::BB_FRectangle source) { m_imageSource = source; }
 
     TexturePtr GetTexture() const { return m_pTexture; };
-    BlackBoxEngine::BB_Rectangle GetSourceRectangle() const{ return m_imageSource; }
+    BlackBoxEngine::BB_FRectangle GetSourceRectangle() const{ return m_imageSource; }
 
     virtual void Save(BlackBoxEngine::XMLElementParser parser) override;
     virtual void Load(const BlackBoxEngine::XMLElementParser parser) override;
