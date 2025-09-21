@@ -3,6 +3,7 @@
 #include <vector>
 #include <memory>
 #include <functional>
+#include <atomic>
 
 #include "Graphics/Window.h"
 #include "Graphics/Renderer.h"
@@ -60,7 +61,6 @@ namespace BlackBoxEngine
         );
         double GetDeltaTime() const { return m_deltaTime; }
 		bool IsSystemEnabled(EngineInitOptions option) const;
-
 
         [[nodiscard("Manager not being used")]] static BlackBoxManager* Get();
         static BlackBoxManager* NewAndInitEngine(EngineInitOptions options = kUseAll);

@@ -5,11 +5,18 @@ using namespace BlackBoxEngine;
 
 #include <cassert>
 
-#include <Graphics/Color.h>
+#include <System/Delay.h>
 
 void BlackBoxGame::InitGame()
 {
 	BB_LOG(LogType::kMessage, "Game starting");
+
+    DelayFunction callback = []([[maybe_unused]]void* pData, [[maybe_unused]] uint32_t timerId, [[maybe_unused]] uint32_t milisecondsElapsed)->uint32_t
+        {
+            BB_LOG(LogType::kMessage, "1 second elapsed");
+            return 1000;
+        };
+    BlackBoxEngine::Delay(1000, callback, nullptr);
 
     m_pEngineManager->m_pActorManager->LoadLevel("../Assets/Levels/ExampleLevel.xml");
 }

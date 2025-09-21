@@ -442,6 +442,7 @@
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
     </ClCompile>
+    <ClCompile Include="System\Delay.cpp" />
     <ClCompile Include="Math\Random.cpp" />
     <ClCompile Include="Math\RandomEngines.cpp" />
     <ClCompile Include="Resources\TextFactory.cpp" />
@@ -599,6 +600,7 @@
     <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_vulkan.h" />
     <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3_image\SDL_image.h" />
     <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3_ttf\SDL_ttf.h" />
+    <ClInclude Include="System\Delay.h" />
     <ClInclude Include="Math\RandomEngines.h" />
     <ClInclude Include="Resources\TextFactory.h" />
     <ClInclude Include="Resources\ScriptResources\LuaScript.h" />
