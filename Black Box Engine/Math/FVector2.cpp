@@ -2,23 +2,23 @@
 
 namespace BlackBoxEngine
 {
-    const FVector2& BlackBoxEngine::FVector2::GetUnitVector()
+    const FVector2& FVector2::GetUnitVector()
     {
         static FVector2 unitVector(1, 1);
         return unitVector;
     }
 
-    float BlackBoxEngine::FVector2::GetLength() const
+    float FVector2::GetLength() const
     {
         return std::sqrt(GetSquareLength());
     }
 
-    float BlackBoxEngine::FVector2::GetSquareLength() const
+    float FVector2::GetSquareLength() const
     {
         return (x * x) + (y * y);
     }
 
-    float BlackBoxEngine::FVector2::GetDotProduct(const FVector2& right) const
+    float FVector2::GetDotProduct(const FVector2& right) const
     {
         return (
             x * right.x +
@@ -26,6 +26,18 @@ namespace BlackBoxEngine
         );
     }
 
+    void FVector2::Normalize()
+    {
+        *this = *this / GetLength();
+    }
+
+    FVector2 FVector2::GetNormalizedVector() const
+    {
+        FVector2 temp = *this;
+        temp.Normalize();
+        return temp;
+    }
+    
     bool FVector2::operator==(const FVector2& other) const
     {
         return (

@@ -34,11 +34,14 @@ namespace BlackBoxEngine
         void SetColor(ColorValue color);
         void SetPosition(FVector2 position);
         void SetString(const char* pString, size_t length);
+        bool SetTextWrapWidthPixels(int pixels);
 
         ColorValue GetColor() const;
         FVector2 GetPosition() const;
         const char* GetString() const;
         float GetPointSize() const;
+        void GetPixelSize(int* pWidth, int* pHeight) const;
+        int GetTextWrapWidthPixels() const;
         std::shared_ptr<BB_Font> GetFont() const;
     };
 

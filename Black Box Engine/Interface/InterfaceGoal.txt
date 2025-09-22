@@ -1,0 +1,67 @@
+
+
+#include <Input/Interface>
+
+void StartUserInterface()
+{
+    using namespace BlackBoxEngine;
+    auto interfaceRoot = Interface::CreateInterface()
+    interfaceRoot.SetScreenPosition(100,100);
+
+    usging enum InterfaceHighlighter::Mode;
+    auto* pHighlighter = interfaceRoot.GetHighlight();
+    pHighlighter->SetParams({
+        .mode = KIcon | kUnderLine,
+        .m_pIconFile = "../Assets/UI/Icons/RightArrow.png",
+        .m_lineWidth = 2
+    });
+
+    Interface::ButtonParams buttomParams{
+        .mouseInteract = false,
+        .width = 200,
+        .height = 30,
+        .textured = false,
+        .color = ColorPreset::kRed,
+        .selectedColor = ColorValue(255,50,50,255),
+        .selectedColor = ColorPreset(100,255,50,255)
+    };
+
+    ButtonCallbackFunctionPtr callbacks[] = 
+    {
+        &Button1,
+        &Button2,
+        &Button3,
+        &Button4
+    };
+
+    std::vector<InterfaceNode*> m_nodes;
+    m_nodes.resize(4, nullptr);
+    float yPad = 30;
+    size_t buttonCount = std::size(callbacks);
+    for(size_t i = 0; i < buttonCount; ++i)
+    {
+        buttomParams.CallbackFunction = callbacks[i];
+        auto* pButton = interfaceRoot.AddNode<InterfaceButton>(0, yPad * i, buttomParams)
+        m_nodes[i] = pButton;
+        if( i == 0)
+            continue;
+        pButton->SetAdjacentNode(kUp, m_nodes[i-1]);
+        m_nodes[i-1]->SetAdjacentNode(kDown, pButton);
+    }
+    
+    InterfaceText::Params textParams{.pFontFile = "../Assets/Fonts/NES_Font.file", .color = ColorPresets::white};
+
+    textParams.pText = "First Button";
+    m_nodes[0]->AddChildNode<InterfaceText>(0,0, textParams);
+
+    textParams.pText = "Second Button";
+    m_nodes[0]->AddChildNode<InterfaceText>(0,0, textParams);
+
+    textParams.pText = "Third Button";
+    m_nodes[0]->AddChildNode<InterfaceText>(0,0, textParams);
+
+    textParams.pText = "Fourth Button";
+    m_nodes[0]->AddChildNode<InterfaceText>(0,0, textParams);
+
+    pHighlighter->SetTarget(m_nodes[0]);
+}

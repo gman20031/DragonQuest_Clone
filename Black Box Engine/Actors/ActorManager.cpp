@@ -77,14 +77,14 @@ namespace BlackBoxEngine
 
     Actor::Id ActorManager::NextId()
     {
-        if (m_unsuedIds.empty())
+        if (m_unused.empty())
         {
             auto id = m_highestId;
             ++m_highestId;
             return id;
         }
-        Actor::Id nextId = m_unsuedIds.back();
-        m_unsuedIds.pop_back();
+        Actor::Id nextId = m_unused.back();
+        m_unused.pop_back();
         return nextId;
     }
 
@@ -93,7 +93,7 @@ namespace BlackBoxEngine
         for (auto id : m_destroyQueue)
         {
             m_allActors.erase(id);
-            m_unsuedIds.push_back(id);
+            m_unused.push_back(id);
         }
     }
 

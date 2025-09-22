@@ -23,6 +23,11 @@ namespace BlackBoxEngine
         TTF_DestroyRendererTextEngine(m_pTtfEngine);
     }
 
+    BB_Renderer* BB_TextRenderer::GetStandardRenderer() const
+    {
+        return m_pAttachedWindow->GetRenderer();
+    }
+
     bool BB_TextRenderer::DrawTextBlended(std::shared_ptr<BB_Font> pFont, const char* pText, size_t length, ColorValue foregroundColor, BB_FRectangle destination)
     {
         SDL_Surface* pSurface = TTF_RenderText_Blended(pFont->m_pTtfFont, pText, length, SDL_Color{foregroundColor.r, foregroundColor.g, foregroundColor.b, foregroundColor.a} );

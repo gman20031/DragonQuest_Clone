@@ -33,6 +33,9 @@ namespace BlackBoxEngine
         float GetSquareLength() const;
         float GetDotProduct(const FVector2& right) const;
         bool Zero() const { return x == 0 && y == 0; }
+
+        void Normalize();
+        FVector2 GetNormalizedVector() const;
     };
 
     std::ostream& operator<<(std::ostream& os, const FVector2& vector);

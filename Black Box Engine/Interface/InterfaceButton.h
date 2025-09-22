@@ -1,0 +1,38 @@
+#pragma once
+
+#include <functional>
+
+#include "../Graphics/Color.h"
+#include "UserInterface.h"
+
+namespace BlackBoxEngine
+{
+    using ButtonCallbackFunctionPtr = std::function<void()>;
+
+    class InterfaceButton : public InterfaceNode
+    {
+    public:
+        struct Parameters
+        {
+            bool usable = false;
+            bool mouseInteractable = false;
+            const char* pTextureFile = nullptr;
+            ColorValue color = ColorPresets::blue;
+            ColorValue targetedColor = ColorPresets::red;
+            ColorValue interactColor = ColorPresets::white;
+            ButtonCallbackFunctionPtr callbackFunction;
+        };
+    private:
+        Parameters m_params;
+        std::shared_ptr<BB_Texture> m_pTexture = nullptr;
+        ColorValue m_buttonColor;
+
+        virtual void RenderThis(BB_Renderer* pRenderer, float rootX, float rootY) override;
+    public:
+        InterfaceButton(InterfaceNode* pParent, const char* pName, BB_FRectangle dimensions, const Parameters& params);
+    
+        virtual void OnTargeted() override;
+        virtual void OnInteracted() override;
+    };
+
+}

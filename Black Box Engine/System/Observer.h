@@ -40,17 +40,45 @@ namespace BlackBoxEngine
 
     public:
         // Registering
+        /**
+         * @brief Moves the callback function into the observer system, and will call the function when the coresponding
+         * event is pushed using PushEvent()
+         * @return The key used for listener lookup and removal.
+         */
         CallbackId RegisterListener(const Event& event , Listener&& callbackFunction);
 
         // Removal
+        /**
+         * @brief Loops through every function stored by the observer to remove the correct listener function
+         * @param callbackId : Id returned by RegisterListener(), tied to the listening function
+         */
         void RemoveListener(CallbackId callbackId);
+        /**
+         * @brief attempts to remove the function tied to callbackId, using event if the listening event is known.
+         * @param callbackId: Id returned by RegisterListener(), tied to the listening function
+         * @param event: event the function is tied to
+         */
         void RemoveListenerWithEvent(CallbackId callbackId, const Event& event);
+        /**
+         * @brief Removes every function that is currently listening with this observer.
+         * @brief RemoveListener() can be called after this without anything happening.
+         */
+        void ClearListeners();
 
         // Checking 
         bool IsListeningFor(const Event& event);
 
         // Sending
+        /**
+         * @brief Calls every function listening for event, passing in void.
+         * @param event : event functions are tied to with RegisterListener()
+         */
         void PushEvent(const Event& event);
+        /**
+         * @brief Calls every function listening for event, passing in all arguements after event.
+         * @param event : event functions are tied to with RegisterListener()
+         * @param args : arguments to be passed to the function call
+         */
         template<typename... Args> void PushEvent(const Event& event, Args&&... args);
     };
 
@@ -61,10 +89,7 @@ namespace BlackBoxEngine
         return m_currentId++;
     }
 
-    /**
-     * @brief Loops through every function stored by the observer to remove the correct listener function
-     * @param callbackId : Id returned by RegisterListener(), tied to the listening function
-     */
+
     template<class Listener, Comparable Event, std::integral CallbackId>
     inline void BB_Observer<Listener, Event, CallbackId>::RemoveListener(CallbackId callbackId)
     {
@@ -79,11 +104,6 @@ namespace BlackBoxEngine
         BB_LOG(LogType::kWarning, "Attempted to remove listener that doesnt exist ID: ", callbackId);
     }
 
-    /**
-     * @brief attempts to remove the function tied to callbackId, using event if the listening event is known.
-     * @param callbackId: Id returned by RegisterListener(), tied to the listening function
-     * @param event: event the function is tied to
-     */
     template<class Listener, Comparable Event, std::integral CallbackId>
     inline void BB_Observer<Listener, Event, CallbackId>::RemoveListenerWithEvent(CallbackId callbackId, const Event& event)
     {
@@ -102,10 +122,12 @@ namespace BlackBoxEngine
         it->second.erase(innerIt);
     }
 
-    /**
-     * @brief Calls every function listening for event, passing in void.
-     * @param event : event functions are tied to with RegisterListener()
-     */
+    template<class Listener, Comparable Event, std::integral CallbackId>
+    inline void BB_Observer<Listener, Event, CallbackId>::ClearListeners()
+    {
+        m_eventMap.clear();
+    }
+
     template<class Listener, Comparable Event, std::integral CallbackId>
     inline void BB_Observer<Listener, Event, CallbackId>::PushEvent(const Event& event)
     {
@@ -118,11 +140,6 @@ namespace BlackBoxEngine
         }
     }
 
-    /**
-     * @brief Calls every function listening for event, passing in all arguements after event.
-     * @param event : event functions are tied to with RegisterListener()
-     * @param args : all arguements to be passed to the function call
-     */
     template<class Listener, Comparable Event, std::integral CallbackId>
     template<typename ...Args>
     inline void BB_Observer<Listener, Event, CallbackId>::PushEvent(const Event& event, Args&& ...args)

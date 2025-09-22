@@ -12,6 +12,7 @@
 #include "Actors/ActorManager.h"
 #include "Input/InputManager.h"
 #include "System/MessageManager.h"
+#include "Interface/InterfaceManger.h"
 #include "Actors/Collision/CollisionManager.h"
 
 namespace BlackBoxEngine
@@ -21,20 +22,20 @@ namespace BlackBoxEngine
     public:
         using WindowPtr = std::unique_ptr<BB_Window>;
         using EngineInitOptions = uint8_t;
-        static constexpr EngineInitOptions kNone		  = 0b00000;
-        static constexpr EngineInitOptions kUseActors	  = 0b00001;
-        static constexpr EngineInitOptions kUseInput	  = 0b00010;
-        static constexpr EngineInitOptions kUseCollision  = 0b00100;
-		static constexpr EngineInitOptions kUseMessaging  = 0b01000;
-		static constexpr EngineInitOptions kUseAudio      = 0b11000;
-        static constexpr EngineInitOptions kUseAll	      = 0b11111;
+        static constexpr EngineInitOptions kNone        = 0b00000;
+        static constexpr EngineInitOptions kActorSystem = 0b00001;
+        static constexpr EngineInitOptions kInput	    = 0b00010;
+        static constexpr EngineInitOptions kCollision   = 0b00100;
+        static constexpr EngineInitOptions kMessaging   = 0b01000;
+        static constexpr EngineInitOptions kAudio       = 0b11000;
+        static constexpr EngineInitOptions kAll	        = 0b11111;
 
     private:
         inline static constexpr float kCollisionBufferSize = 0;
         static BlackBoxManager* m_pSingletonManager;
         WindowPtr m_pWindow;
         double m_deltaTime = 0;
-		EngineInitOptions m_engineOptions = kNone;
+        EngineInitOptions m_engineOptions = kNone;
 
     public:
         bool m_keepRunning = false;
@@ -43,7 +44,8 @@ namespace BlackBoxEngine
         InputManager*     m_pInputManager = nullptr;
         AudioManager*     m_pAudioManager = nullptr;
         MessagingManager* m_pMessagingManager = nullptr;
-        BB_Camera*           m_pMainCamera = nullptr;
+        InterfaceManager* m_pInterfaceManager = nullptr;
+        BB_Camera*        m_pMainCamera = nullptr;
     public:
         ~BlackBoxManager();
         BlackBoxManager(const BlackBoxManager&) = delete;
@@ -60,15 +62,15 @@ namespace BlackBoxEngine
             BB_Window::WindowFlags flags
         );
         double GetDeltaTime() const { return m_deltaTime; }
-		bool IsSystemEnabled(EngineInitOptions option) const;
+        bool IsSystemEnabled(EngineInitOptions option) const;
 
         [[nodiscard("Manager not being used")]] static BlackBoxManager* Get();
-        static BlackBoxManager* NewAndInitEngine(EngineInitOptions options = kUseAll);
+        static BlackBoxManager* NewAndInitEngine(EngineInitOptions options = kAll);
         static BlackBoxManager* NewSingleton();
         static void DeleteSingleton();
 
         int RunEngine();
-        int InitEngine(EngineInitOptions options = kUseAll);
+        int InitEngine(EngineInitOptions options = kAll);
     private: // functions
         void HandleSdlEvents();
         void CheckEngineInitialized();

@@ -13,7 +13,6 @@ struct TTF_TextEngine;
 namespace BlackBoxEngine
 {
     class BB_Renderer;
-
     /**
      * @brief Is the pText equivilant of the BB_Renderer class
      * @brief Where the Texture render pipeline is:
@@ -32,6 +31,8 @@ namespace BlackBoxEngine
     public:
         BB_TextRenderer(BB_Window* pWindow);
         ~BB_TextRenderer();
+
+        BB_Renderer* GetStandardRenderer() const;
 
         bool DrawTextBlended(std::shared_ptr<BB_Font> pFont, const char* pText, size_t length, ColorValue foregroundColor, BB_FRectangle destination);
         bool DrawTextSolid(std::shared_ptr<BB_Font> pFont, const char* pText, size_t length, ColorValue foregroundColor, BB_FRectangle destination);

@@ -4,12 +4,14 @@
 #include "RenderingStructs.h"
 
 struct SDL_Window;
+struct SDL_Surface;
 
 namespace BlackBoxEngine
 {
+    class UserInterface;
+
 	class BB_Window
 	{
-		SDL_Window* m_pSdlWindow = nullptr;
 		friend class BB_Renderer;
         friend class BB_TextRenderer;
     public:
@@ -42,7 +44,9 @@ namespace BlackBoxEngine
         static constexpr WindowFlags kWindowFlag_Transparent        = 0x00000040000000; //  window with transparent buffer
         static constexpr WindowFlags kWindowFlag_NotFocusable       = 0x00000080000000; //  window not focusable
          
-	private:                                                       
+	private:           
+        SDL_Window* m_pSdlWindow = nullptr;
+        SDL_Surface* m_pIconSurface = nullptr;
 		BB_Renderer* m_pRenderer = nullptr;
         BB_TextRenderer* m_pTextRenderer = nullptr;
 
@@ -65,7 +69,8 @@ namespace BlackBoxEngine
 		int SetTitle(const char* title);
         int SetDimensions(int width, int height);
         int SetPosition(int x, int y);
-        
+        bool SetWindowIcon(const char* pIconPath);
+
         const char* GetTitle() const { return m_pTitle; }
         BB_IntRectangle GetDimensions() const { return { m_xPos,m_yPos,m_width,m_height }; }
         int GetWidth() const { return m_width; }

@@ -10,6 +10,8 @@ struct SDL_Renderer;
 
 namespace BlackBoxEngine
 {
+    class BB_TextRenderer;
+
     class BB_Renderer
     {
         friend class TextureFactory;
@@ -36,6 +38,8 @@ namespace BlackBoxEngine
         void Clear();
         void Present();
         const char* GetErrorStr();
+
+        BB_TextRenderer* GetTextVariant() const;
 
         bool SetDrawColor(const ColorValue& newDrawColor);
         bool SetBackgroundColor(const ColorValue& newBackgroundColor);
@@ -68,9 +72,28 @@ namespace BlackBoxEngine
          * @return 
          */
         bool DrawTextureScreen(
+            const BB_Texture* texture,
+            const BB_FRectangle* source = nullptr,
+            const BB_FRectangle* dest = nullptr,
+            const double rot = 0,
+            const BB_FPoint* center = nullptr,
+            const BB_FlipVal& flip = BB_FlipVal::kNone
+        );
+        /**
+         * @brief Draws a texture to the screen, using the coordinates based on the screen
+         * @param texture The texture you wish to draw
+         * @param source Where on the texture the render should source from, for sprite sheets, null for all
+         * @param dest Where on the screen you want to render to
+         * @param rot Rotation if you want any
+         * @param center The center of the rotation.
+         * @param flip Flip the image
+         * @return 
+         */
+        bool DrawTextureScreenColored(
             BB_Texture* texture,
-            BB_FRectangle* source = nullptr,
-            BB_FRectangle* dest = nullptr,
+            const BB_FRectangle* source = nullptr,
+            const BB_FRectangle* dest = nullptr,
+            const ColorValue* pcolor = nullptr,
             const double rot = 0,
             const BB_FPoint* center = nullptr,
             const BB_FlipVal& flip = BB_FlipVal::kNone
@@ -87,14 +110,32 @@ namespace BlackBoxEngine
          * @return
          */
         bool DrawTextureGame(
-            BB_Texture* texture,
-            BB_FRectangle* source = nullptr,
-            BB_FRectangle* dest = nullptr,
+            const BB_Texture* texture,
+            const BB_FRectangle* source = nullptr,
+            const BB_FRectangle* dest = nullptr,
             const double rot = 0,
             const BB_FPoint* center = nullptr,
             const BB_FlipVal& flip = BB_FlipVal::kNone
         );
-
+        /**
+         * @brief Draws a texture to the screen, using the coordinates based on the screen
+         * @param texture The texture you wish to draw
+         * @param source Where on the texture the render should source from, for sprite sheets, null for all
+         * @param dest Where on the screen you want to render to
+         * @param rot Rotation if you want any
+         * @param center The center of the rotation.
+         * @param flip Flip the image
+         * @return 
+         */
+        bool DrawTextureGameColored(
+            BB_Texture* texture,
+            const BB_FRectangle* source = nullptr,
+            const BB_FRectangle* dest = nullptr,
+            const ColorValue* pcolor = nullptr,
+            const double rot = 0,
+            const BB_FPoint* center = nullptr,
+            const BB_FlipVal& flip = BB_FlipVal::kNone
+        );
     };
 
 };

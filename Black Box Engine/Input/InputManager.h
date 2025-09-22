@@ -12,10 +12,12 @@
 
 namespace BlackBoxEngine
 {
+    class UserInterface;
 
     class InputManager
     {
     public:
+        friend class UserInterface;
         enum class InputType
         {
             kKeyDown,
@@ -23,16 +25,24 @@ namespace BlackBoxEngine
             kKeyHeld,
             kCount,
         };
-
     private:
         using Callback = std::function<void()>;
         using CallBackId = uint64_t;
         using InputObserver = BB_Observer< Callback, KeyCode , CallBackId>;
         inline static constexpr bool kLogInputData = false;
 
-        std::unordered_set<KeyCode> m_keyCodes;
-        InputObserver m_observers[(size_t)InputType::kCount];
+        struct InputTarget
+        {
+            InputObserver m_keyDown;
+            InputObserver m_keyUp;
+            InputObserver m_keyHeld;
+        };
 
+        std::unordered_set<KeyCode> m_keyCodes;
+        InputTarget m_gameInputTarget;
+        InputTarget* m_pInputTarget;
+
+        bool m_inputCanOccur = true;
     public:
         InputManager();
 
@@ -47,6 +57,9 @@ namespace BlackBoxEngine
         void UnsubscribeKeyWithCode(CallBackId id, InputType type, KeyCode key);
         void Update();
 
-
+        void StopAllInput() { m_inputCanOccur = false; }
+        void ResumeInput() { m_inputCanOccur = true; } 
+        void SwapInputTargetToInterface( UserInterface* pInterface);
+        void SwapInputToGame();
     };
 };

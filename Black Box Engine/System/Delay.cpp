@@ -22,6 +22,7 @@ namespace BlackBoxEngine
         return SDL_AddTimer(static_cast<uint32_t>(milisecondDelay.count()), callbackFunction, userData);
     }
 
+
 }
 
 //CallbackMap& BlackBoxEngine::Delay::GetCallbacks()

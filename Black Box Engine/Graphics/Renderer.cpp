@@ -5,6 +5,7 @@
 
 #include "../System/Log.h"
 #include "../BlackBoxManager.h"
+#include "Text Rendering/TextRenderer.h"
 
 //////////////////////////////////////////////////////////////////
 ///  Private Functions
@@ -15,6 +16,7 @@
  * @param newColor 
  * @return Forwards return of SDL_SetRenderDrawColor()
  */
+
 bool BlackBoxEngine::BB_Renderer::SetSDLDrawColor(const ColorValue& newColor)
 {
 	return SDL_SetRenderDrawColor(m_pSdlRenderer,
@@ -79,6 +81,11 @@ bool BlackBoxEngine::BB_Renderer::SetBackgroundColor(const ColorValue& newBackgr
 const char* BlackBoxEngine::BB_Renderer::GetErrorStr()
 {
     return SDL_GetError();
+}
+
+BlackBoxEngine::BB_TextRenderer* BlackBoxEngine::BB_Renderer::GetTextVariant() const
+{
+    return m_pAttachedWindow->GetTextRenderer();
 }
 
 //////////////////////////////////////////////////////////////////
@@ -174,9 +181,9 @@ bool BlackBoxEngine::BB_Renderer::DrawRectGameFilled(const BB_FRectangle& rec, c
 //////////////////////////////////////////////////////////////////
 
 bool BlackBoxEngine::BB_Renderer::DrawTextureScreen(
-    BB_Texture* texture,
-    BB_FRectangle* pSource,
-    BB_FRectangle* pDest,
+    const BB_Texture* texture,
+    const BB_FRectangle* pSource,
+    const BB_FRectangle* pDest,
     const double rot,
     const BB_FPoint* pCenter,
     const BB_FlipVal& flip
@@ -200,10 +207,27 @@ bool BlackBoxEngine::BB_Renderer::DrawTextureScreen(
     );
 }
 
-bool BlackBoxEngine::BB_Renderer::DrawTextureGame(
+bool BlackBoxEngine::BB_Renderer::DrawTextureScreenColored(
     BB_Texture* texture,
-    BB_FRectangle* pSource,
-    BB_FRectangle* pDest,
+    const BB_FRectangle* source,
+    const BB_FRectangle* dest,
+    const ColorValue* pcolor,
+    const double rot,
+    const BB_FPoint* center,
+    const BB_FlipVal& flip)
+{
+    ColorValue preColor;
+    texture->GetColorMod(&preColor);
+    texture->SetColorMod(*pcolor);
+    bool good = DrawTextureScreen(texture, source, dest, rot, center, flip);
+    texture->SetColorMod(preColor);
+    return good;
+}
+
+bool BlackBoxEngine::BB_Renderer::DrawTextureGame(
+    const BB_Texture* texture,
+    const BB_FRectangle* pSource,
+    const BB_FRectangle* pDest,
     const double rot,
     const BB_FPoint* pCenter,
     const BB_FlipVal& flip
@@ -211,14 +235,20 @@ bool BlackBoxEngine::BB_Renderer::DrawTextureGame(
 {
     if (!m_pGameCamera)
         return false;
-
-    if (pDest)
-        *pDest = m_pGameCamera->ConvertToScreenPos(*pDest);
     
     const SDL_FRect* pSdlSource = (const SDL_FRect*)(pSource);       // tested, this is faster
     const SDL_FPoint* pSdlCenter = (const SDL_FPoint*)(pCenter);     // than doing static_cast 
-    const SDL_FRect* pSdlDest = (const SDL_FRect*)(pDest);           // 
     const SDL_FlipMode sdlFlip = static_cast<SDL_FlipMode>(flip);    // my code is copying Sdl, this is private code, so I can guarntee this to work
+
+    const SDL_FRect* pSdlDest = nullptr; 
+    BB_FRectangle gamePosRect{ 0,0,0,0 };
+    if (pDest)
+    {
+        gamePosRect = m_pGameCamera->ConvertToScreenPos(*pDest);
+        pSdlDest = (const SDL_FRect*)(&gamePosRect);
+    }
+    else
+        pSdlDest = (const SDL_FRect*)(pDest);
 
     assert(m_pSdlRenderer);
 
@@ -231,4 +261,21 @@ bool BlackBoxEngine::BB_Renderer::DrawTextureGame(
         pSdlCenter,
         sdlFlip
     );
+}
+
+bool BlackBoxEngine::BB_Renderer::DrawTextureGameColored(
+    BB_Texture* texture,
+    const BB_FRectangle* source,
+    const BB_FRectangle* dest,
+    const ColorValue* pcolor,
+    const double rot,
+    const BB_FPoint* center,
+    const BB_FlipVal& flip)
+{
+    ColorValue preColor;
+    texture->GetColorMod(&preColor);
+    texture->SetColorMod(*pcolor);
+    bool good = DrawTextureScreen(texture, source, dest, rot, center, flip);
+    texture->SetColorMod(preColor);
+    return good;
 }

@@ -34,6 +34,11 @@ namespace BlackBoxEngine
         TTF_SetTextString(m_pTtfText, pString, length);
     }
 
+    bool BB_Text::SetTextWrapWidthPixels(int pixels)
+    {
+        return TTF_SetTextWrapWidth(m_pTtfText, pixels);
+    }
+
     ColorValue BB_Text::GetColor() const
     {
         ColorValue color{};
@@ -56,6 +61,18 @@ namespace BlackBoxEngine
     float BB_Text::GetPointSize() const
     {
         return TTF_GetFontSize(m_pFont->m_pTtfFont);
+    }
+
+    void BB_Text::GetPixelSize(int* pWidth, int* pHeight) const
+    {
+        TTF_GetTextSize(m_pTtfText, pWidth, pHeight);
+    }
+
+    int BB_Text::GetTextWrapWidthPixels() const
+    {
+        int w;
+        TTF_GetTextWrapWidth(m_pTtfText, &w);
+        return w;
     }
 
     std::shared_ptr<BB_Font> BB_Text::GetFont() const

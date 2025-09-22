@@ -13,7 +13,7 @@ namespace BlackBoxEngine
         using ActorPtr = std::unique_ptr<Actor>;
     protected:
         std::unordered_map<Actor::Id , ActorPtr> m_allActors;
-        std::vector<Actor::Id> m_unsuedIds;
+        std::vector<Actor::Id> m_unused;
         std::vector<Actor::Id> m_destroyQueue;
 
         Actor::Id m_highestId = 0;

@@ -17,13 +17,13 @@ namespace BlackBoxEngine
 #ifdef _DEBUG
     void BlackBoxManager::CheckEngineInitialized()
     {
-        if (m_engineOptions & kUseActors && !m_pActorManager)
+        if (m_engineOptions & kActorSystem && !m_pActorManager)
             BB_LOG(LogType::kFailure, "Machine has no actor Manager");
-        if (m_engineOptions & kUseInput && !m_pInputManager)
+        if (m_engineOptions & kInput && !m_pInputManager)
 			BB_LOG(LogType::kFailure, "Machine has no input Manager");
-		if (m_engineOptions & kUseMessaging && !m_pMessagingManager)
+		if (m_engineOptions & kMessaging && !m_pMessagingManager)
 			BB_LOG(LogType::kFailure, "Machine has no message Manager");
-		if (m_engineOptions & kUseCollision && !m_pCollisionManager)
+		if (m_engineOptions & kCollision && !m_pCollisionManager)
             BB_LOG(LogType::kFailure, "Machine has no collision Manager");
         if (!m_pWindow)
             BB_LOG(LogType::kFailure, "Machine has no window");
@@ -81,21 +81,22 @@ namespace BlackBoxEngine
         /// Update global Systems
         HandleSdlEvents();
 
-        if (IsSystemEnabled(kUseInput) ) 
+        if (IsSystemEnabled(kInput) ) 
             m_pInputManager->Update();
 
-        if (IsSystemEnabled(kUseActors) ) 
+        if (IsSystemEnabled(kActorSystem) ) 
         {
             m_pActorManager->Update();
             m_pActorManager->Render();
         }
         if constexpr (kDebug)
         {
-            if (m_engineOptions & kUseCollision) 
+            if (m_engineOptions & kCollision) 
                 m_pCollisionManager->DebugDraw();
         }
-        if (IsSystemEnabled(kUseMessaging)) 
+        if (IsSystemEnabled(kMessaging)) 
             m_pMessagingManager->SendQueuedMessages();
+        m_pInterfaceManager->Render(m_pWindow->GetRenderer());
     }
 
     int BlackBoxManager::RunEngine()
@@ -132,15 +133,15 @@ namespace BlackBoxEngine
 		m_engineOptions = options;
 
         // system inits
-		if(options & kUseMessaging)
+		if(options & kMessaging)
 			m_pMessagingManager = new MessagingManager;
-		if(options & kUseInput)
+		if(options & kInput)
 			m_pInputManager = new InputManager;
-		if(options & kUseActors)
+		if(options & kActorSystem)
 			m_pActorManager = new ActorManager;
-        if (options & kUseAudio)
+        if (options & kAudio)
             m_pAudioManager = new AudioManager;
-		if(options & kUseCollision)
+		if(options & kCollision)
 		{
 			m_pCollisionManager = new CollisionManager(-kCollisionBufferSize, -kCollisionBufferSize,
 				(float)m_pWindow->GetWidth() + kCollisionBufferSize,
@@ -149,7 +150,9 @@ namespace BlackBoxEngine
 
         // other inits
         TTF_Init();
+        SDL_Init(SDL_INIT_VIDEO);
         m_pMainCamera = new BB_Camera;
+        m_pInterfaceManager = new InterfaceManager;
 
         // start the window
         m_keepRunning = true;

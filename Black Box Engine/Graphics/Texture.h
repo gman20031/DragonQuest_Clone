@@ -35,5 +35,9 @@ namespace BlackBoxEngine
         bool SetScaleMode(ScaleMode mode);
 		bool SetAlpha(uint8_t alpha);
 		bool SetColorMod(const ColorValue& colorMod);
+
+        bool GetScaleMode(ScaleMode* pMode) const;
+        bool GetAlpha(uint8_t* pAlpha) const;
+        bool GetColorMod(ColorValue* pColor) const;
 	};
 }

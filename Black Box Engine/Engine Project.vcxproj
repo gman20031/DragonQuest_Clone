@@ -238,6 +238,10 @@
     <ClCompile Include="Input\InputManager.cpp" />
     <ClCompile Include="Input\KeyCodes.cpp" />
     <ClCompile Include="Input\KeyCodes.h" />
+    <ClCompile Include="Interface\InterfaceButton.cpp" />
+    <ClCompile Include="Interface\InterfaceManger.cpp" />
+    <ClCompile Include="Interface\InterfaceText.cpp" />
+    <ClCompile Include="Interface\UserInterface.cpp" />
     <ClCompile Include="libraries\Lua-4.5.7\src\lapi.c">
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TurnOffAllWarnings</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">TurnOffAllWarnings</WarningLevel>
@@ -454,6 +458,7 @@
     <ClCompile Include="Scripting\LuaController.cpp" />
     <ClCompile Include="System\ConsoleManip.cpp" />
     <ClCompile Include="Math\FVector2.cpp" />
+    <ClCompile Include="System\Direction.cpp" />
     <ClCompile Include="System\Log.cpp" />
     <ClCompile Include="BlackBoxManager.cpp" />
     <ClCompile Include="Graphics\Renderer.cpp" />
@@ -485,6 +490,11 @@
     <ClInclude Include="Graphics\Text Rendering\Text.h" />
     <ClInclude Include="Graphics\Text Rendering\TextRenderer.h" />
     <ClInclude Include="Input\InputManager.h" />
+    <ClInclude Include="Interface\InterfaceButton.h" />
+    <ClInclude Include="Interface\InterfaceManger.h" />
+    <ClInclude Include="Interface\InterfaceText.h" />
+    <ClInclude Include="Interface\InterfaceTexture.h" />
+    <ClInclude Include="Interface\UserInterface.h" />
     <ClInclude Include="libraries\Lua-4.5.7\src\lapi.h" />
     <ClInclude Include="libraries\Lua-4.5.7\src\lauxlib.h" />
     <ClInclude Include="libraries\Lua-4.5.7\src\lcode.h" />
@@ -614,6 +624,7 @@
     <ClInclude Include="System\ConsoleManip.h" />
     <ClInclude Include="Math\FVector2.h" />
     <ClInclude Include="System\Debugging.h" />
+    <ClInclude Include="System\Direction.h" />
     <ClInclude Include="System\MessageManager.h" />
     <ClInclude Include="System\Observer.h" />
     <ClInclude Include="System\Log.h" />
@@ -630,6 +641,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="libraries\Lua-4.5.7\src\Makefile" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Interface\InterfaceGoal.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

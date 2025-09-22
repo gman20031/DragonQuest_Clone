@@ -1,13 +1,16 @@
+#include "InputManager.h"
+
 #include <SDL.h>
 
-#include "InputManager.h"
+#include "../Interface/UserInterface.h"
 
 namespace BlackBoxEngine
 {
     InputManager::InputManager()
     {
         m_keyCodes.reserve(static_cast<size_t>(KeyCode::kCount));
-}
+        m_pInputTarget = &m_gameInputTarget;
+    }
 
     void InputManager::AddKeyDown(KeyCode key)
     {
@@ -15,7 +18,10 @@ namespace BlackBoxEngine
             return;
 
         m_keyCodes.emplace(key);
-        m_observers[(size_t)InputType::kKeyDown].PushEvent(key);
+        if (!m_inputCanOccur)
+            return;
+
+        m_pInputTarget->m_keyDown.PushEvent(key);
         if constexpr (kLogInputData)
             BB_LOG(LogType::kMessage, "Key down : ", key);
     }
@@ -29,13 +35,18 @@ namespace BlackBoxEngine
         }
 
         m_keyCodes.erase(key);
-        m_observers[(size_t)InputType::kKeyUp].PushEvent(key);
+        if (!m_inputCanOccur)
+            return;
+
+        m_pInputTarget->m_keyUp.PushEvent(key);
         if constexpr (kLogInputData)
             BB_LOG(LogType::kMessage, "Key up : ", key);
     }
 
     bool InputManager::IsKeyDown(KeyCode key) const
     {
+        if (!m_inputCanOccur)
+            return false;
         return m_keyCodes.contains(key);
     }
 
@@ -48,27 +59,70 @@ namespace BlackBoxEngine
 
     InputManager::CallBackId InputManager::SubscribeToKey( KeyCode key, InputType type , Callback&& function)
     {
-        return m_observers[(size_t)type].RegisterListener( key , std::forward<Callback>(function));
+        switch (type)
+        {
+        case InputType::kKeyDown:
+            return m_pInputTarget->m_keyDown.RegisterListener(key, std::forward<Callback>(function) );
+        case InputType::kKeyUp:
+            return m_pInputTarget->m_keyUp.RegisterListener(key, std::forward<Callback>(function) );
+        case InputType::kKeyHeld:
+            return m_pInputTarget->m_keyHeld.RegisterListener(key, std::forward<Callback>(function) );
+        default:
+            return 0;
+        }
     }
 
     void InputManager::UnsubscribeKey(CallBackId id, InputType type)
     {
-        m_observers[(size_t)type].RemoveListener(id);
+        switch (type)
+        {
+        case InputType::kKeyDown:
+            m_pInputTarget->m_keyDown.RemoveListener(id);
+        case InputType::kKeyUp:
+            m_pInputTarget->m_keyUp.RemoveListener(id);
+        case InputType::kKeyHeld:
+            m_pInputTarget->m_keyHeld.RemoveListener(id);
+        default:
+            return;
+        }
     }
 
     void InputManager::UnsubscribeKeyWithCode(CallBackId id, InputType type, KeyCode key)
     {
-        m_observers[(size_t)type].RemoveListenerWithEvent(id, key);
+        switch (type)
+        {
+        case InputType::kKeyDown:
+            m_pInputTarget->m_keyDown.RemoveListenerWithEvent(id, key);
+        case InputType::kKeyUp:
+            m_pInputTarget->m_keyUp.RemoveListenerWithEvent(id, key);
+        case InputType::kKeyHeld:
+            m_pInputTarget->m_keyHeld.RemoveListenerWithEvent(id, key);
+        default:
+            return;
+        }
     }
 
     void InputManager::Update()
     {
+        if (!m_inputCanOccur)
+            return;
+
         for (KeyCode code : m_keyCodes)
         {
-            m_observers[(size_t)InputType::kKeyHeld].PushEvent(code);
+            m_pInputTarget->m_keyHeld.PushEvent(code);
             if constexpr (kLogInputData)
                 BB_LOG(LogType::kMessage, "Key held : ", code);
         }
+    }
+
+    void InputManager::SwapInputTargetToInterface(UserInterface* pInterface)
+    {
+        m_pInputTarget = pInterface->GetInputTarget();
+    }
+
+    void InputManager::SwapInputToGame()
+    {
+        m_pInputTarget = &m_gameInputTarget;
     }
 
 }

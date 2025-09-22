@@ -1,8 +1,10 @@
 #include "Window.h"
 
+#include <SDL3/SDL.h>
+#include <SDL3_image/SDL_image.h>
+
 #include "../BlackBoxManager.h"
 #include "../System/Log.h"
-#include "SDL.h"
 #include "Renderer.h"
 #include "Text Rendering/TextRenderer.h"
 
@@ -65,10 +67,29 @@ namespace BlackBoxEngine
         return 0;
     }
 
+    bool BB_Window::SetWindowIcon(const char* pIconPath)
+    {
+        if (m_pIconSurface)
+            SDL_free(m_pIconSurface);
+        m_pIconSurface = IMG_Load(pIconPath);
+        if (!m_pIconSurface)
+        {
+            BB_LOG(LogType::kError, "Icon failed to load , filePath = " , pIconPath);
+            return false;
+        }
+        if(!SDL_SetWindowIcon(m_pSdlWindow, m_pIconSurface) )
+        {
+            BB_LOG(LogType::kError, "error setting window icon : ", SDL_GetError());
+            return false;
+        }
+        return true;
+    }
+
     void BB_Window::NotifyWindowResized([[maybe_unused]]int newWidth, [[maybe_unused]] int newHeight)
     {
         SetDimensions(newWidth, newHeight);
-        BlackBoxManager::Get()->m_pMessagingManager->EnqueueMessage("WindowSizeChanged", nullptr);
+        if (BlackBoxManager::Get()->IsSystemEnabled(BlackBoxManager::kMessaging))
+            BlackBoxManager::Get()->m_pMessagingManager->EnqueueMessage("WindowSizeChanged", nullptr);
     }
 
     int BB_Window::StartWindow()

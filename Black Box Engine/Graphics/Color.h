@@ -6,10 +6,10 @@ namespace BlackBoxEngine
 {
 	struct ColorValue
 	{
-		uint8_t r;
-		uint8_t g;
-		uint8_t b;
-		uint8_t a;
+		uint8_t r = 0;
+		uint8_t g = 0;
+		uint8_t b = 0;
+		uint8_t a = 0;
 	};
 
 	namespace ColorPresets
@@ -20,6 +20,8 @@ namespace BlackBoxEngine
 		inline static constexpr ColorValue red   = {255,0  ,0  ,255};
 		inline static constexpr ColorValue green = {0  ,255,0  ,255};
 		inline static constexpr ColorValue blue  = {0  ,0  ,255,255};
+
+        inline static constexpr ColorValue purple = {50  ,0  ,255,255};
 	}
 
 }

@@ -3,6 +3,7 @@
 #include <BlackBoxManager.h>
 
 #include "TileSystem/TileActorManager.h"
+#include <Interface/UserInterface.h>
 
 class BlackBoxGame
 {
@@ -25,6 +26,9 @@ public:
     
     TileActorManager* GetTileActorManager() const { return m_pTileActorManager; }
 
+    void TestInterfaceStuff();
+    BlackBoxEngine::UserInterface m_interfaceRoot;
+    
     void Launch();
 private:
     void InitGame();
