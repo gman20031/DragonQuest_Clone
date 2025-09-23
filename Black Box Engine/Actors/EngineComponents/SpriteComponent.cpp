@@ -25,6 +25,7 @@ namespace BlackBoxEngine
 
     void SpriteComponent::SetTextureOffset(BB_FRectangle offset)
     {
+        m_useFullImage = false;
         m_textureOffset = offset;
     }
 

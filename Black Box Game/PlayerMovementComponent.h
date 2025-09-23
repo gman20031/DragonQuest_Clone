@@ -40,7 +40,7 @@ private:
 
 public:
     PlayerMovementComponent(BlackBoxEngine::Actor* pOwner);
-    ~PlayerMovementComponent();
+    virtual ~PlayerMovementComponent();
 
     virtual void Start() override; // only when this is created.
     virtual void Update() override; // every tick of the game
