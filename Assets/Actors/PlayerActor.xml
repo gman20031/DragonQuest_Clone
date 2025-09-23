@@ -4,7 +4,7 @@
     </Component>
     <Component Name="TransformComponent">
         <Position>
-            <X>448</X>
+            <X>416</X>
             <Y>816</Y>
         </Position>
         <Rotation>0</Rotation>

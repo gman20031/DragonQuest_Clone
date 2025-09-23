@@ -1,0 +1,31 @@
+<Actor Name="TileMapActor">
+    <Component Name="TransformComponent">
+        <Position>
+            <X>0</X>
+            <Y>0</Y>
+        </Position>
+        <Rotation>0</Rotation>
+    </Component>
+    <Component Name="TileMapComponent">
+        <TileSize>16</TileSize>
+		<AnchorPoint>kTopLeft</AnchorPoint>
+		<TileMap>
+			<row>%%%%%%%%%%%%</row>
+			<row>%BBBBBBBBBB%</row>
+			<row>%B%%%%%B%%%%</row>
+			<row>%BBBBB%B%BB%</row>
+			<row>%%%%B%%BBB$%</row>
+			<row>%BBBB%B%%BB%</row>
+			<row>%B%B%%B%B%%%</row>
+			<row>%B%%B%BBBBB%</row>
+			<row>%BBBB%%B%%B%</row>
+			<row>%%B%BB%B%BB%</row>
+			<row>%BBB%BBB%UB%</row>
+			<row>%%%%%%%%%%%%</row>
+		</TileMap>
+    </Component>
+</Actor>
+  <!-- Player -->
+<Actor SeperateFile = "true">
+    <FilePath>../Assets/Actors/PlayerActor.xml</FilePath>
+</Actor>
