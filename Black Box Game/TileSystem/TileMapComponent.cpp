@@ -122,7 +122,7 @@ const TileMapComponent::ActorPtr& TileMapComponent::GetTileAtGamePosition(uint32
     return GetTileAt(x, y);
 }
 
-const TileMapComponent::ActorPtr& TileMapComponent::GetTileAtGamePosition(FVector2 pos)
+const TileMapComponent::ActorPtr& TileMapComponent::GetTileAtGamePosition(const FVector2 pos)
 {
     uint32_t x = static_cast<uint32_t>(pos.x);
     uint32_t y = static_cast<uint32_t>(pos.y);

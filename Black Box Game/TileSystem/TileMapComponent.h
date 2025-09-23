@@ -54,7 +54,7 @@ public:
     BlackBoxEngine::BB_AnchorPoint GetAnchorPoint() const { return m_anchorPoint; }
     const ActorPtr& GetTileAt(uint32_t tileX, uint32_t tileY);
     const ActorPtr& GetTileAtGamePosition(uint32_t gameX, uint32_t gameY);
-    const ActorPtr& GetTileAtGamePosition(FVector2 pos);
+    const ActorPtr& GetTileAtGamePosition(const BlackBoxEngine::FVector2 pos);
     /**
      * @brief Sets the anchor point of this tilemap. The anchor point is the point where the 
      * transform components pos will coorilate to on this map. Top Left means this actors pos
