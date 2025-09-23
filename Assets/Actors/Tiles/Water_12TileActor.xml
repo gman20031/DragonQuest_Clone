@@ -1,6 +1,7 @@
 <Actor Name="Water_12TileActor">
     <Component Name="TileInfoComponent">
         <TextureFilePath>../Assets/Tiles/SpecialWaterTile.png</TextureFilePath>
+        <IsWalkable>false</IsWalkable>
         <ImageSource>
             <X>0</X>
             <Y>0</Y>

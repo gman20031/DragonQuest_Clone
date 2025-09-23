@@ -1,6 +1,7 @@
 <Actor Name="StairUpTileActor">
     <Component Name="TileInfoComponent">
         <TextureFilePath>../Assets/Tiles/FullTileSheet.png</TextureFilePath>
+        <IsWalkable>true</IsWalkable>
         <ImageSource>
             <X>119</X>
             <Y>0</Y>

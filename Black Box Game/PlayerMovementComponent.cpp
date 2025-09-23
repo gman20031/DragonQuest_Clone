@@ -3,7 +3,7 @@
 #include "../Black Box Engine/Input/InputManager.h"
 #include "../Black Box Engine/Actors/Collision/CollisionManager.h"
 #include "../Black Box Engine/Actors/EngineComponents/MovementBlocker.h"
-//#include "../Black Box Engine/Math/FVector2.h"
+#include "TileSystem/TileInfoComponent.h"
 
 using namespace BlackBoxEngine;
 
@@ -35,6 +35,8 @@ void PlayerMovementComponent::Start()
     using enum InputManager::InputType;
     int index = 0;
 
+    const auto& pTileActor = BlackBoxManager::Get()->m_pActorManager->GetActor(m_tileMapId);
+    m_pTileMap = pTileActor->GetComponent<TileMapComponent>();
     // insane monster of shit just to be able to make input delayed.
     const auto registerDownKey = [this, pInputManager, &index](KeyCode keyCode, float x, float y)
     {
@@ -106,11 +108,13 @@ void PlayerMovementComponent::OnCollide([[maybe_unused]] BlackBoxEngine::Actor* 
 void PlayerMovementComponent::Save([[maybe_unused]] BlackBoxEngine::XMLElementParser parser)
 {
     parser.NewChildVariable("Speed", m_playerSpeed);
+    parser.NewChildVariable("TileMapID", 0);
 }
 
 void PlayerMovementComponent::Load([[maybe_unused]] const BlackBoxEngine::XMLElementParser parser)
 {
     parser.GetChildVariable("Speed", &m_playerSpeed);
+    parser.GetChildVariable("TileMapID", &m_tileMapId);
 }
 
 void PlayerMovementComponent::TryMove(const FVector2& direction)
@@ -142,6 +146,36 @@ void PlayerMovementComponent::SetTargetTile()
     FVector2 currentPos = m_pTransform->m_position;
     FVector2 desiredTarget = currentPos + m_direction * TILE_SIZE;
 
+    uint32_t tileX = static_cast<uint32_t>(desiredTarget.x / TILE_SIZE);
+    uint32_t tileY = static_cast<uint32_t>(desiredTarget.y / TILE_SIZE);
+    
+    
+    if (!m_pTileMap)
+    {
+        StopMoving();
+        return;
+    }
+    
+    if (tileX >= m_pTileMap->GetMapWidth() || tileY >= m_pTileMap->GetMapHeight())
+    {
+        StopMoving();
+        return;
+    }
+
+    const auto& tileActor = m_pTileMap->GetTileAt(tileX, tileY);
+    if (!tileActor)
+    {
+        StopMoving();
+        return;
+    }
+    
+    auto tileInfo = tileActor->GetComponent<TileInfoComponent>();
+    if (!tileInfo || !tileInfo->IsWalkable())
+    {
+        StopMoving();
+        return;
+    }
+    
     m_targetPosition = desiredTarget;
     m_isMoving = true;
 

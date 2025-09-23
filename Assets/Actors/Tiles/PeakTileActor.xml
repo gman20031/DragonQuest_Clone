@@ -1,6 +1,7 @@
 <Actor Name="PeakTileActor">
     <Component Name="TileInfoComponent">
         <TextureFilePath>../Assets/Tiles/FullTileSheet.png</TextureFilePath>
+        <IsWalkable>false</IsWalkable>
         <ImageSource>
             <X>85</X>
             <Y>17</Y>

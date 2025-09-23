@@ -3,8 +3,11 @@
 #include <Actors/EngineComponents/MoverComponent.h>
 #include <Actors/EngineComponents/TransformComponent.h>
 #include <Input/InputManager.h>
+#include "TileSystem/TileMapComponent.h"
 
 #include "../Black Box Engine/Math/FVector2.h" // why are we using "../" here and not <>
+
+
 
 class PlayerMovementComponent : public BlackBoxEngine::Component
 {
@@ -12,6 +15,9 @@ class PlayerMovementComponent : public BlackBoxEngine::Component
 
     BlackBoxEngine::MoverComponent* m_pMover = nullptr;
     BlackBoxEngine::TransformComponent* m_pTransform = nullptr;
+
+    int m_tileMapId = 0;
+    TileMapComponent* m_pTileMap = nullptr;
 
     uint64_t m_callbackCodes[8] = {};
     static constexpr BlackBoxEngine::KeyCode kUpKey = BlackBoxEngine::KeyCode::kUp;

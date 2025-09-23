@@ -1,6 +1,7 @@
 <Actor Name="ForestTileActor">
     <Component Name="TileInfoComponent">
         <TextureFilePath>../Assets/Tiles/FullTileSheet.png</TextureFilePath>
+        <IsWalkable>true</IsWalkable>
         <ImageSource>
             <X>51</X>
             <Y>17</Y>

@@ -31,6 +31,7 @@ private:
     uint32_t m_width    = 0;
     uint32_t m_tileSize = 0;
 
+
 private:
     BlackBoxEngine::FVector2 GetGameCoordsFromTilePos(uint32_t x, uint32_t y);
     uint32_t GetIndex(uint32_t x, uint32_t y) const;

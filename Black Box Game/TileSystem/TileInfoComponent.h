@@ -13,6 +13,8 @@ private:
     TexturePtr m_pTexture = nullptr;
     BlackBoxEngine::BB_FRectangle m_imageSource{ 0,0,0,0 };
 
+    bool m_isWalkable = true;
+
 public:
     TileInfoComponent(BlackBoxEngine::Actor* pActor);
 
@@ -25,4 +27,6 @@ public:
     virtual void Save(BlackBoxEngine::XMLElementParser parser) override;
     virtual void Load(const BlackBoxEngine::XMLElementParser parser) override;
     virtual void Start() override;
+
+    bool IsWalkable() { return m_isWalkable; }
 };

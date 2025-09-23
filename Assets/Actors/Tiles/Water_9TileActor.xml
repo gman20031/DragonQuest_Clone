@@ -1,6 +1,7 @@
 <Actor Name="Water_9TileActor">
     <Component Name="TileInfoComponent">
         <TextureFilePath>../Assets/Tiles/FullTileSheet.png</TextureFilePath>
+        <IsWalkable>false</IsWalkable>
         <ImageSource>
             <X>136</X>
             <Y>85</Y>

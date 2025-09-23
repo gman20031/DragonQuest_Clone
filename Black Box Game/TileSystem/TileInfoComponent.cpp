@@ -21,6 +21,8 @@ void TileInfoComponent::SetTexture(const char* pFilePath)
 void TileInfoComponent::Save(XMLElementParser parser)
 {
     parser.NewChildVariable("TextureFilePath", m_pTexturePath);
+    parser.NewChildVariable("IsWalkable", m_isWalkable);
+
     auto element = parser.InsertNewChild("ImageSource");
     element.NewChildVariable("X", m_imageSource.x);
     element.NewChildVariable("Y", m_imageSource.y);
@@ -32,6 +34,10 @@ void TileInfoComponent::Save(XMLElementParser parser)
 void TileInfoComponent::Load(const XMLElementParser parser)
 {
     parser.GetChildVariable("TextureFilePath", &m_pTexturePath);
+
+    //m_isWalkable = true;
+    parser.GetChildVariable("IsWalkable", &m_isWalkable);
+
     auto element = parser.GetChildElement("ImageSource");
     if (element)
     {
