@@ -72,6 +72,13 @@ namespace BlackBoxEngine
         }
     }
 
+    void InputManager::UnsubscribeKey(CallBackId id)
+    {
+        m_pInputTarget->m_keyDown.RemoveListener(id);
+        m_pInputTarget->m_keyUp.RemoveListener(id);
+        m_pInputTarget->m_keyHeld.RemoveListener(id);
+    }
+
     void InputManager::UnsubscribeKey(CallBackId id, InputType type)
     {
         switch (type)

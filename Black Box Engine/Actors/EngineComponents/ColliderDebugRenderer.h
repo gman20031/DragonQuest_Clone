@@ -21,6 +21,7 @@ namespace BlackBoxEngine
 
     public:
         ColliderDebugRenderer(Actor* pActor);
+        virtual ~ColliderDebugRenderer() = default;
 
         void SetRenderColor(const ColorValue& color) { m_renderColor = color; }
         const ColorValue& getRenderColor() const { return m_renderColor; }

@@ -23,25 +23,27 @@ namespace BlackBoxEngine
         inline static constexpr uint8_t kModeNone      = 0b0000;
         struct Parameters
         {
-            uint8_t m_mode;
+            uint8_t m_mode = kModeColored;
+
             const char* m_pIconFile = nullptr;
             BB_FPoint m_iconOffset{ 0,0 };
             BB_FPoint m_iconSize{ 0,0 };
+
             ColorValue m_highlightColor{ 0,0,0,0 };
-            uint32_t m_lineWidth = 2;
+
+            float m_lineWidth = 2;
             ColorValue m_underlineColor{ 0,0,0,0 };
         };
     private:
         Parameters m_params;
-        BB_FRectangle m_iconPosition{ 0,0,0,0 };
-        BB_FRectangle m_renderPosition{ 0, 0, 0, 0 };
+        BB_FRectangle m_iconDestination{ 0,0,0,0 };
+        BB_FRectangle m_renderDestination{ 0, 0, 0, 0 };
 
         std::shared_ptr<BB_Texture> m_pIconTexture = nullptr;
         UserInterface* m_pAttachedInterface = nullptr;
         InterfaceNode* m_pHighlightedNode = nullptr;
     private:
-        void UpdateIconPosition();
-        void UpdateRenderPosition();
+        void UpdateRenderPosition(InterfaceNode* pNode);
 
         void RenderIcon(BB_Renderer* pRenderer) const;
         void RenderUnderline(BB_Renderer* pRenderer) const;
@@ -74,10 +76,11 @@ namespace BlackBoxEngine
         InputManager::InputTarget* m_pInputTarget = nullptr;
         InterfaceNode* m_pRootNode = nullptr;
         InterfaceNode* m_pCursorPosition = nullptr;
-        int32_t m_managerId = -1;;
+        int32_t m_managerId = -1;
 
         void MoveCursor(Direction dir);
         void SelectTargetedNode();
+        void DeSelectTargetNode();
         void SetupKeysForInputTarget();
     public:
         UserInterface();
@@ -110,14 +113,14 @@ namespace BlackBoxEngine
     class InterfaceNode
     {
     private:
-        InterfaceNode* m_adjacentNodes[3] = {};
+        InterfaceNode* m_adjacentNodes[4] = {};
     
     protected:
         InterfaceNode* m_pParent = nullptr;
         std::vector<InterfaceNode*> m_childNodes;
 
         uint32_t m_nameHash;
-        BB_FRectangle m_nodeDimensions;
+        BB_FRectangle m_nodeRenderRect;
 
         virtual void StartThis() {/*EMPTY*/};
         virtual void UpdateThis() {/*EMPTY*/};
@@ -131,8 +134,8 @@ namespace BlackBoxEngine
         InterfaceNode& operator=(const InterfaceNode&) = delete;
         InterfaceNode& operator=(InterfaceNode&&) = default;
 
-        BB_FRectangle GetDimensions() const { return m_nodeDimensions; }
-        void SetDimensions(const BB_FRectangle& dimensions) { m_nodeDimensions = dimensions; };
+        BB_FRectangle GetRenderBox() const { return m_nodeRenderRect; }
+        void SetDimensions(const BB_FRectangle& dimensions) { m_nodeRenderRect = dimensions; };
         void SetOffset(float x, float y);
         void SetSize(float w, float h);
 
@@ -148,8 +151,12 @@ namespace BlackBoxEngine
         InterfaceNode* GetChildNode(const char* pName);
         InterfaceNode* GetChildNode(uint32_t nameHash);
 
-        virtual void OnTargeted() { };
+        BB_FPoint GetScreenPosition();
+
+        virtual void OnTargeted() {};
+        virtual void OnTargetedStop() { };
         virtual void OnInteracted() { };
+        virtual void OnInteractStop() {};
     };
 
     //class DynamicInterfaceGroup : public InterfaceNode

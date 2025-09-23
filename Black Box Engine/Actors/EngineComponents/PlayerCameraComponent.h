@@ -18,6 +18,7 @@ namespace BlackBoxEngine
         
     public:
         PlayerCameraComponent(Actor* pActor);
+        virtual ~PlayerCameraComponent() = default;
 
         virtual void Update() override;
         virtual void Start() override;

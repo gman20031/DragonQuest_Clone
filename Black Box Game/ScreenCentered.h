@@ -17,6 +17,7 @@ private:
     void CenterActor() const;
 public:
     ScreenCentered(BlackBoxEngine::Actor* pOwner);
+    virtual ~ScreenCentered() = default;
 
     void SetOffset(BlackBoxEngine::FVector2 offset);
     void SetOffset(float xOffset, float yOffset);

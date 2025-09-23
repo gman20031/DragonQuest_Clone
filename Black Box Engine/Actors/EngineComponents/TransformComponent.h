@@ -10,7 +10,8 @@ namespace BlackBoxEngine
 		GENERATE_ID("TransformComponent");
 	public:
         TransformComponent(Actor* pOwner) : Component(pOwner) {/*EMPTY*/ }
-          
+        virtual ~TransformComponent() = default;
+
         FVector2 m_prevPosition = { 0,0 };
         FVector2 m_position = { 0,0 };
         float m_rotation = 0;

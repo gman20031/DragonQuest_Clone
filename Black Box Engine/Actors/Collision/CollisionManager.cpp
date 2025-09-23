@@ -349,7 +349,7 @@ namespace BlackBoxEngine
     {
         //auto resetCollisionBounds = [this](Message& message) -> void
         //    {
-        //        BB_IntRectangle dims = BlackBoxManager::Get()->GetWindow()->GetDimensions();
+        //        BB_IntRectangle dims = BlackBoxManager::Get()->GetWindow()->GetRenderBox();
         //    };
         //m_windowChangedCallback = BlackBoxManager::Get()->m_pMessagingManager->RegisterListenerString
         //("WindowSizeChanged", resetCollisionBounds);

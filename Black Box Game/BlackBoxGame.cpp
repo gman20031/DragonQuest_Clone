@@ -33,19 +33,22 @@ void BlackBoxGame::TestInterfaceStuff()
 
     auto* pHighlighter = m_interfaceRoot.GetHighlight();
     pHighlighter->SetParmeters({
-        .m_mode = InterfaceHighlighter::kModeColored | InterfaceHighlighter::kModeUnderline,
-        .m_highlightColor = {200,200,0,0},
-        .m_lineWidth = 2
+        .m_mode = InterfaceHighlighter::kModeUnderline | InterfaceHighlighter::kModeIcon,
+        .m_pIconFile = "../Assets/UI/Icons/RightArrowTest.png",
+        .m_iconOffset = {-9,0},
+        .m_iconSize = {8,8},
+        .m_lineWidth = 1,
+        .m_underlineColor = ColorPresets::white,
     });
 
-    BB_FRectangle buttonDimension{ 0,0,100,25 };
+    BB_FRectangle buttonDimension{ 0,0, 64,8 };
 
     InterfaceButton::Parameters buttomParams{
         .usable = true,
         .mouseInteractable = false,
-        .color = ColorPresets::red,
-        .targetedColor = ColorValue(255,50,50,255),
-        .interactColor = ColorValue(100,255,50,255)
+        .color =         ColorValue(255,0,0,0),
+        .targetedColor = ColorValue(200,50,50,255),
+        .interactColor = ColorValue(100,150,50,255)
     };
 
     ButtonCallbackFunctionPtr callbacks[] =
@@ -59,13 +62,13 @@ void BlackBoxGame::TestInterfaceStuff()
     std::vector<InterfaceNode*> m_nodes;
     m_nodes.resize(4, nullptr);
 
-    float yPad = 30;
+    float yPad = 1;
     size_t buttonCount = std::size(callbacks);
     for (size_t i = 0; i < buttonCount; ++i)
     {
         std::string name = "button_" + std::to_string(i);
         buttomParams.callbackFunction = callbacks[i];
-        buttonDimension.y = yPad * i;
+        buttonDimension.y = i * (buttonDimension.h + yPad);
         auto* pButton = m_interfaceRoot.AddNode<InterfaceButton>(name.c_str(), buttonDimension, buttomParams);
         m_nodes[i] = pButton;
 
@@ -74,6 +77,9 @@ void BlackBoxGame::TestInterfaceStuff()
         pButton->SetAdjacentNode(kUp, m_nodes[i - 1]);
         m_nodes[i - 1]->SetAdjacentNode(kDown, pButton);
     }
+    m_nodes[3]->SetAdjacentNode(kDown, m_nodes[0]);
+    m_nodes[0]->SetAdjacentNode(kUp, m_nodes[3]);
+
     buttonDimension.y = 0;
 
     InterfaceText::Parameters textParams{
@@ -107,6 +113,7 @@ void BlackBoxGame::InitGame()
     m_pEngineManager->GetWindow()->SetWindowIcon("../Assets/Sprites/DragonQuestIcon.png");
 
     //TestInterfaceStuff();
+    //m_pEngineManager->m_pActorManager->ClearLevel();
     m_pEngineManager->m_pActorManager->LoadLevel("../Assets/Levels/ExampleLevel.xml");
     //m_pEngineManager->m_pActorManager->LoadLevel("../Assets/Levels/Cave2Level.xml");
 

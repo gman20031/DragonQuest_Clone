@@ -12,6 +12,15 @@ namespace BlackBoxEngine
     class InterfaceButton : public InterfaceNode
     {
     public:
+        /**
+        * Usable
+        * uouseInteractable
+        * pTextureFile
+        * color
+        * targetedColor
+        * interactColor
+        * callbackFunction
+        */
         struct Parameters
         {
             bool usable = false;
@@ -27,12 +36,16 @@ namespace BlackBoxEngine
         std::shared_ptr<BB_Texture> m_pTexture = nullptr;
         ColorValue m_buttonColor;
 
+        virtual void UpdateThis();
         virtual void RenderThis(BB_Renderer* pRenderer, float rootX, float rootY) override;
     public:
         InterfaceButton(InterfaceNode* pParent, const char* pName, BB_FRectangle dimensions, const Parameters& params);
-    
+        virtual ~InterfaceButton() = default;
+
         virtual void OnTargeted() override;
+        virtual void OnTargetedStop() override;
         virtual void OnInteracted() override;
+        virtual void OnInteractStop() override;
     };
 
 }

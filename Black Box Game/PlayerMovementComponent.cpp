@@ -21,10 +21,10 @@ PlayerMovementComponent::~PlayerMovementComponent()
     using enum InputManager::InputType;
     // bad and annoying - remembering codes suck
     auto* pInputManager = BlackBoxManager::Get()->m_pInputManager;
-    for (int i = 0; i < 4; ++i)
-        pInputManager->UnsubscribeKey(m_callbackCodes[i], kKeyDown);
-    for (int i = 4; i < 8; ++i)
-        pInputManager->UnsubscribeKey(m_callbackCodes[i], kKeyUp);
+    for(auto id : m_keyDownCodes)
+        pInputManager->UnsubscribeKey(id, kKeyDown);
+    for (auto id : m_keyUpCodes)
+        pInputManager->UnsubscribeKey(id, kKeyUp);
 }
 
 void PlayerMovementComponent::Start()
@@ -40,7 +40,7 @@ void PlayerMovementComponent::Start()
     // insane monster of shit just to be able to make input delayed.
     const auto registerDownKey = [this, pInputManager, &index](KeyCode keyCode, float x, float y)
     {
-        m_callbackCodes[index++] = pInputManager->SubscribeToKey(keyCode, kKeyDown, [this,keyCode, x,y]()
+        uint64_t id = pInputManager->SubscribeToKey(keyCode, kKeyDown, [this,keyCode, x,y]()
         {
             SetTextureForDirection({x,y});
             Delay(200, [this, keyCode, x, y]()
@@ -50,6 +50,7 @@ void PlayerMovementComponent::Start()
                         TryMove({ x, y });
                 });
         } );
+        m_keyDownCodes.emplace_back(id);
     };
     registerDownKey(kUpKey, 0, -1);
     registerDownKey(kDownKey, 0, +1);
@@ -57,18 +58,18 @@ void PlayerMovementComponent::Start()
     registerDownKey(kRightKey, +1, 0);
 
     // Stop moving
-    m_callbackCodes[index++] = pInputManager->SubscribeToKey(kUpKey, kKeyUp, [this]() {
+    m_keyUpCodes.emplace_back(pInputManager->SubscribeToKey(kUpKey, kKeyUp, [this]() {
         StopMoving();
-    });
-    m_callbackCodes[index++] = pInputManager->SubscribeToKey(kDownKey, kKeyUp, [this]() {
+    }));
+    m_keyUpCodes.emplace_back(pInputManager->SubscribeToKey(kDownKey, kKeyUp, [this]() {
         StopMoving();
-    });
-    m_callbackCodes[index++] = pInputManager->SubscribeToKey(kLeftKey, kKeyUp, [this]() {
+    }));
+    m_keyUpCodes.emplace_back(pInputManager->SubscribeToKey(kLeftKey, kKeyUp, [this]() {
         StopMoving();
-    });
-    m_callbackCodes[index++] = pInputManager->SubscribeToKey(kRightKey, kKeyUp, [this]() {
+    }));
+    m_keyUpCodes.emplace_back(pInputManager->SubscribeToKey(kRightKey, kKeyUp, [this]() {
         StopMoving();
-    });
+    }));
 }
 
 void PlayerMovementComponent::Update()

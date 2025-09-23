@@ -43,6 +43,11 @@ namespace BlackBoxEngine
         return pActor;
     }
 
+    void ActorManager::ClearLevel()
+    {
+        m_allActors.clear();
+    }
+
     void ActorManager::LoadLevel(const char* filePath)
     {
         LevelXMLParser LevelParser = ResourceManager::GetLevelXMLData(filePath);

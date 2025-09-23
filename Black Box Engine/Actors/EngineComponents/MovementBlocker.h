@@ -11,6 +11,7 @@ namespace BlackBoxEngine
         TransformComponent* m_pThisActorsTransform;
     public:
         MovementBlocker(Actor* pActor);
+        virtual ~MovementBlocker() = default;
 
         virtual void OnCollide(Actor* pActor) override;
     };
