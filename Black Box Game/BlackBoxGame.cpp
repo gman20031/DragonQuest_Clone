@@ -115,6 +115,7 @@ void BlackBoxGame::InitGame()
     //TestInterfaceStuff();
     //m_pEngineManager->m_pActorManager->ClearLevel();
     m_pEngineManager->m_pActorManager->LoadLevel("../Assets/Levels/ExampleLevel.xml");
+    //m_pEngineManager->m_pActorManager->LoadLevel("../Assets/Levels/Cave2Level.xml");
 }
 
 BlackBoxGame::BlackBoxGame()
