@@ -143,40 +143,29 @@ void PlayerMovementComponent::SetTextureForDirection([[maybe_unused]]const Black
 
 void PlayerMovementComponent::SetTargetTile()
 {
-    // Calculate target position by moving one tile in the direction
-    FVector2 currentPos = m_pTransform->m_position;
-    FVector2 desiredTarget = currentPos + m_direction * TILE_SIZE;
-
-    uint32_t tileX = static_cast<uint32_t>(desiredTarget.x / TILE_SIZE);
-    uint32_t tileY = static_cast<uint32_t>(desiredTarget.y / TILE_SIZE);
-    
-    
     if (!m_pTileMap)
     {
-        StopMoving();
-        return;
-    }
-    
-    if (tileX >= m_pTileMap->GetMapWidth() || tileY >= m_pTileMap->GetMapHeight())
-    {
-        StopMoving();
+        BB_LOG(LogType::kError, "No tilemap attached to playerMovementComponent");
         return;
     }
 
-    const auto& tileActor = m_pTileMap->GetTileAt(tileX, tileY);
-    if (!tileActor)
+    // Calculate target position by moving one tile in the direction
+    float tileSize = static_cast<float>(m_pTileMap->GetTileSize());
+    FVector2 currentPos = m_pTransform->m_position;
+    FVector2 desiredTarget = (currentPos) + (m_direction * tileSize);
+
+    // check if we can walk on that tile
+    const auto& tileActor = m_pTileMap->GetTileAtGamePosition(desiredTarget);
+    auto* pTileInfo = tileActor->GetComponent<TileInfoComponent>();
+    if (!pTileInfo || !pTileInfo->IsWalkable())
     {
-        StopMoving();
+        m_isMoving = false;
+        m_targetPosition = m_pTransform->m_position;
+        m_pMover->m_velocity = { 0,0 };
         return;
     }
-    
-    auto tileInfo = tileActor->GetComponent<TileInfoComponent>();
-    if (!tileInfo || !tileInfo->IsWalkable())
-    {
-        StopMoving();
-        return;
-    }
-    
+
+    // set movement target
     m_targetPosition = desiredTarget;
     m_isMoving = true;
 

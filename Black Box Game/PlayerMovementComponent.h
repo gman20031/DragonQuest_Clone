@@ -16,8 +16,6 @@ class PlayerMovementComponent : public BlackBoxEngine::Component
     int m_tileMapId = 0;
     TileMapComponent* m_pTileMap = nullptr;
 
-    uint64_t m_callbackCodes[8] = {};
-
     std::vector<uint64_t> m_keyDownCodes;
     std::vector<uint64_t> m_keyUpCodes;
     static constexpr BlackBoxEngine::KeyCode kUpKey = BlackBoxEngine::KeyCode::kUp;
@@ -30,7 +28,6 @@ class PlayerMovementComponent : public BlackBoxEngine::Component
     bool m_stopMoving = false;
     BlackBoxEngine::FVector2 m_direction{ 0, 0 };
     BlackBoxEngine::FVector2 m_targetPosition; // in world coordinates
-    const float TILE_SIZE = 16.0f; // Not a macro,dont use all caps if its a member variable
 
 private:
     void SetTargetTile();

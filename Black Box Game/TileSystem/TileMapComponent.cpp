@@ -104,10 +104,29 @@ void TileMapComponent::LoadMap([[maybe_unused]]BlackBoxEngine::XMLElementParser 
 // Public
 //////////////////////////////////////////////////////////////////////
 
-const TileMapComponent::ActorPtr& TileMapComponent::GetTileAt(uint32_t x, uint32_t y)
+const TileMapComponent::ActorPtr& TileMapComponent::GetTileAt(uint32_t tileX, uint32_t tileY)
 {
-    char id = m_rawMap[GetIndex(x, y)];
+    char id = 0;
+    auto index = GetIndex(tileX, tileY);
+    if (index < 0 || index > m_rawMap.size())
+        BB_LOG(LogType::kError, "Attempted to get tile out of bounds");
+    else
+        id = m_rawMap[index];
     return BlackBoxGame::Get()->GetTileActorManager()->GetActor(static_cast<uint32_t>(id));
+}
+
+const TileMapComponent::ActorPtr& TileMapComponent::GetTileAtGamePosition(uint32_t gameX, uint32_t gameY)
+{
+    uint32_t x = gameX / m_tileSize;
+    uint32_t y = gameY / m_tileSize;
+    return GetTileAt(x, y);
+}
+
+const TileMapComponent::ActorPtr& TileMapComponent::GetTileAtGamePosition(const FVector2 pos)
+{
+    uint32_t x = static_cast<uint32_t>(pos.x);
+    uint32_t y = static_cast<uint32_t>(pos.y);
+    return GetTileAtGamePosition(x, y);
 }
 
 void TileMapComponent::SetAnchorPoint(BlackBoxEngine::BB_AnchorPoint anchor)
