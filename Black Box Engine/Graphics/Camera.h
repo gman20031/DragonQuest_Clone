@@ -28,13 +28,18 @@ namespace BlackBoxEngine
         FVector2 GetCenterPoint() const;
         FVector2 GetDimensions() const;
 
-        BB_FRectangle ConvertToScreenPos(const BB_FRectangle gameRect) const;
-        void ConvertToScreenPos(FVector2* pPos, FVector2* zoom) const;
-        void ConvertToScreenPos(float* pX, float* pY, FVector2 zoom) const;
-        FVector2 GetXYZoom(const BB_Window* pWindow) const;
-        FVector2 GetXYZoom(const std::unique_ptr<BB_Window>& pWindow) const ;
+        BB_FRectangle ConvertGameToScreen(const BB_FRectangle& gameRect) const;
+        BB_FRectangle OffsetScreenFromCamera(const BB_FRectangle& gameRect) const;
 
-        static void ZoomDestinationRect(BB_FRectangle* pDest, FVector2 zoom);
+        void ShiftGamePositionToScreen(FVector2* pPos, FVector2* zoom) const;
+        void ShiftGamePositionToScreen(float* pX, float* pY, FVector2 zoom) const;
+        FVector2 GetCameraWindowZoom(const BB_Window* pWindow) const;
+        FVector2 GetCameraWindowZoom(const std::unique_ptr<BB_Window>& pWindow) const ;
+
+        static void ScaleDestinationRectToScreen(BB_FRectangle* pDest, FVector2 zoom);
+        static void ScaleDestinationRectToScreen(float* pW, float* pH, FVector2 zoom);
+        static void OffsetDestinationToCamera(BB_FRectangle* pDest, FVector2 zoom);
+        static void OffsetDestinationToCamera(float* pX, float* pY, FVector2 zoom);
     };
 
 }

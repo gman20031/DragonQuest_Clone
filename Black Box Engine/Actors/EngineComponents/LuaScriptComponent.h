@@ -15,6 +15,7 @@ namespace BlackBoxEngine
 
     public:
         LuaScriptComponent(Actor* pOwner) : Component(pOwner) { /*Empty*/ };
+        virtual ~LuaScriptComponent() = default;
 
         void LoadScript(const char* filePath);
         void RunScript();

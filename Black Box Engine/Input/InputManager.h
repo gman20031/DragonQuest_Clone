@@ -53,6 +53,7 @@ namespace BlackBoxEngine
         FVector2 GetMousePosition() const;
 
         CallBackId SubscribeToKey(KeyCode key, InputType type, Callback&& function);
+        void UnsubscribeKey(CallBackId id);
         void UnsubscribeKey(CallBackId id, InputType type);
         void UnsubscribeKeyWithCode(CallBackId id, InputType type, KeyCode key);
         void Update();

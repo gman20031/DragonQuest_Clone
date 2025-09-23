@@ -25,6 +25,7 @@ namespace BlackBoxEngine
         const ActorPtr& NewActor();
         const ActorPtr& LoadActor(const char* filePath);
         void LoadLevel(const char* filePath);
+        void ClearLevel();
         void DestroyActor(Actor::Id id);
         void DestroyActor(Actor* pActor);
         

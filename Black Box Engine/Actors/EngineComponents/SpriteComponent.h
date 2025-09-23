@@ -27,6 +27,7 @@ namespace BlackBoxEngine
         float m_height = 0;
     public:
         SpriteComponent(Actor* pOwner);
+        virtual ~SpriteComponent() = default;
 
         void SetTexture(const char* pTexturePath);
         void SetTextureOffset(BB_FRectangle offset);

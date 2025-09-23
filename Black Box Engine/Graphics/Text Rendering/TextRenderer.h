@@ -12,6 +12,7 @@ struct TTF_TextEngine;
 
 namespace BlackBoxEngine
 {
+    class BB_Camera;
     class BB_Renderer;
     /**
      * @brief Is the pText equivilant of the BB_Renderer class
@@ -26,6 +27,7 @@ namespace BlackBoxEngine
         friend class BB_Font;
     private:
         const BB_Window* m_pAttachedWindow;
+        const BB_Camera* m_pGameCamera = nullptr;
         TTF_TextEngine* m_pTtfEngine = nullptr;
 
     public:

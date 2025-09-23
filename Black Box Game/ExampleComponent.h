@@ -12,7 +12,8 @@ class ExampleComponent : public BlackBoxEngine::Component
 
 public:
     ExampleComponent(BlackBoxEngine::Actor* pOwner) : Component(pOwner) { /*EMPTY*/ }
-    
+    virtual ~ExampleComponent() = default;
+
     virtual void Start() override; // only when this is created.
     virtual void Update() override; // every tick of the game
     virtual void Render() override; // just for rendering stuff

@@ -5,6 +5,7 @@
 #include <SDL3_ttf/SDL_ttf.h>
 
 #include "../../Resources/ResourceManager.h"
+#include "../../BlackBoxManager.h"
 #include "../../System/Log.h"
 #include "../Renderer.h"
 #include "Font.h"
@@ -16,6 +17,7 @@ namespace BlackBoxEngine
         :m_pAttachedWindow(pWindow)
     {
         m_pTtfEngine = TTF_CreateRendererTextEngine(pWindow->GetRenderer()->m_pSdlRenderer);
+        m_pGameCamera = BlackBoxManager::Get()->m_pMainCamera;
     }
 
     BB_TextRenderer::~BB_TextRenderer()
@@ -95,7 +97,7 @@ namespace BlackBoxEngine
             return false;
         }
         const SDL_Rect destRect((int)destination.x, (int)destination.y, (int)destination.w, (int)destination.h);
-    const SDL_PixelFormatDetails* pFormat = SDL_GetPixelFormatDetails(pSurface->format);
+        const SDL_PixelFormatDetails* pFormat = SDL_GetPixelFormatDetails(pSurface->format);
         bool good = SDL_FillSurfaceRect(pSurface, &destRect, SDL_MapRGBA(pFormat, nullptr, foregroundColor.r, foregroundColor.g, foregroundColor.b, foregroundColor.a));
     
         if (!good)
@@ -105,6 +107,7 @@ namespace BlackBoxEngine
 
     bool BB_TextRenderer::RenderText(std::shared_ptr<BB_Text> text, float x, float y)
     {
+        m_pGameCamera->OffsetDestinationToCamera(&x, &y, m_pGameCamera->GetCameraWindowZoom(m_pAttachedWindow));
         const bool good = TTF_DrawRendererText(text->m_pTtfText, x, y);
         if (!good)
             BB_LOG(LogType::kError, "Error rendering pTtfText : ", SDL_GetError());

@@ -13,7 +13,8 @@ class PlayerMovementComponent : public BlackBoxEngine::Component
     BlackBoxEngine::MoverComponent* m_pMover = nullptr;
     BlackBoxEngine::TransformComponent* m_pTransform = nullptr;
 
-    uint64_t m_callbackCodes[8] = {};
+    std::vector<uint64_t> m_keyDownCodes;
+    std::vector<uint64_t> m_keyUpCodes;
     static constexpr BlackBoxEngine::KeyCode kUpKey = BlackBoxEngine::KeyCode::kUp;
     static constexpr BlackBoxEngine::KeyCode kLeftKey = BlackBoxEngine::KeyCode::kLeft;
     static constexpr BlackBoxEngine::KeyCode kDownKey = BlackBoxEngine::KeyCode::kDown;

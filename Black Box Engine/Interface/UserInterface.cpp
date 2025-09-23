@@ -11,17 +11,14 @@ namespace BlackBoxEngine
     /// Interface Highlighter
     ////////////////////////////////////////////////////////////////
 
-
-    void InterfaceHighlighter::UpdateIconPosition()
+    void InterfaceHighlighter::UpdateRenderPosition(InterfaceNode* pNode)
     {
-        m_iconPosition.x = m_renderPosition.x + m_params.m_iconOffset.x;
-        m_iconPosition.y = m_renderPosition.y + m_params.m_iconOffset.y;
-    }
-
-    void InterfaceHighlighter::UpdateRenderPosition()
-    {
-        m_renderPosition.x = m_pHighlightedNode->GetDimensions().x;
-        m_renderPosition.y = m_pHighlightedNode->GetDimensions().y;
+        m_renderDestination = pNode->GetRenderBox();
+        BB_FPoint screenPos = pNode->GetScreenPosition();
+        m_renderDestination.x = screenPos.x;
+        m_renderDestination.y = screenPos.y;
+        m_iconDestination.x = m_renderDestination.x + m_params.m_iconOffset.x;
+        m_iconDestination.y = m_renderDestination.y + m_params.m_iconOffset.y;
     }
 
     void InterfaceHighlighter::RenderIcon(BB_Renderer* pRenderer) const
@@ -31,21 +28,20 @@ namespace BlackBoxEngine
             BB_LOG(LogType::kError, "Attempted to draw renderIcon without setting an icon texture");
             return;
         }
-        pRenderer->DrawTextureScreen(m_pIconTexture.get(), nullptr, &m_iconPosition);
+        pRenderer->DrawTextureScreen(m_pIconTexture.get(), nullptr, &m_iconDestination);
     }
 
     void InterfaceHighlighter::RenderUnderline(BB_Renderer* pRenderer) const
     {
-        BB_FRectangle dest{
-            m_renderPosition.x, m_renderPosition.y + m_renderPosition.h,
-            m_renderPosition.w, static_cast<float>(m_params.m_lineWidth)
-        };
+        BB_FRectangle dest = m_renderDestination;
+        dest.y += m_renderDestination.h - m_params.m_lineWidth;
+        dest.h = m_params.m_lineWidth;
         pRenderer->DrawRectScreenFilled(dest, m_params.m_underlineColor);
     }
 
     void InterfaceHighlighter::RenderColor(BB_Renderer* pRenderer) const
     {
-        pRenderer->DrawRectScreenFilled(m_renderPosition, m_params.m_highlightColor);
+        pRenderer->DrawRectScreenFilled(m_renderDestination, m_params.m_highlightColor);
     }
 
     InterfaceHighlighter::InterfaceHighlighter(UserInterface* pAttachedInterface)
@@ -66,14 +62,14 @@ namespace BlackBoxEngine
     void InterfaceHighlighter::SetTarget(InterfaceNode* pNode)
     {
         m_pHighlightedNode = pNode;
-        m_renderPosition = pNode->GetDimensions();
+        m_renderDestination = pNode->GetRenderBox();
+        UpdateRenderPosition(pNode);
     }
 
     void InterfaceHighlighter::SetMode(uint8_t mode)
     {
         m_params.m_mode = mode;
-        if (mode & kModeIcon)
-            UpdateIconPosition();
+        UpdateRenderPosition(m_pHighlightedNode);
     }
 
     void InterfaceHighlighter::SetParmeters(Parameters params)
@@ -82,6 +78,9 @@ namespace BlackBoxEngine
         auto* pRenderer = BlackBoxManager::Get()->GetWindow()->GetRenderer();
         if (params.m_pIconFile)
             m_pIconTexture = ResourceManager::GetTexture(pRenderer, params.m_pIconFile);
+        m_iconDestination.w = params.m_iconSize.x;
+        m_iconDestination.h = params.m_iconSize.y;
+        //UpdateRenderPosition(m_pHighlightedNode);
     }
 
     ////////////////////////////////////////////////////////////////
@@ -93,6 +92,7 @@ namespace BlackBoxEngine
         auto* pNode = m_pCursorPosition->GetAdjacentNode(dir);
         if (!pNode)
             return;
+        m_pCursorPosition->OnTargetedStop();
         m_pCursorPosition = pNode;
         pNode->OnTargeted();
         m_highlighter.SetTarget(pNode);
@@ -101,6 +101,11 @@ namespace BlackBoxEngine
     void UserInterface::SelectTargetedNode()
     {
         m_pCursorPosition->OnInteracted();
+    }
+
+    void UserInterface::DeSelectTargetNode()
+    {
+        m_pCursorPosition->OnInteractStop();
     }
 
     void UserInterface::SetupKeysForInputTarget()
@@ -114,6 +119,7 @@ namespace BlackBoxEngine
         m_pInputTarget->m_keyDown.RegisterListener(m_keycodes.m_right,[this]() {MoveCursor(kRight); });
         m_pInputTarget->m_keyDown.RegisterListener(m_keycodes.m_left, [this]() {MoveCursor(kLeft); });
         m_pInputTarget->m_keyDown.RegisterListener(m_keycodes.m_select, [this]() {SelectTargetedNode(); });
+        m_pInputTarget->m_keyUp.RegisterListener(m_keycodes.m_select, [this]() {DeSelectTargetNode(); });
     }
 
     UserInterface::UserInterface()
@@ -207,7 +213,7 @@ namespace BlackBoxEngine
 
     InterfaceNode::InterfaceNode(InterfaceNode* pParent, const char* pName, BB_FRectangle dimensions)
         : m_pParent(pParent)
-        , m_nodeDimensions(dimensions)
+        , m_nodeRenderRect(dimensions)
         , m_nameHash(StringHash(pName))
     {
 
@@ -221,14 +227,14 @@ namespace BlackBoxEngine
 
     void InterfaceNode::SetOffset(float x, float y)
     {
-        m_nodeDimensions.x = x;
-        m_nodeDimensions.y = y;
+        m_nodeRenderRect.x = x;
+        m_nodeRenderRect.y = y;
     }
 
     void InterfaceNode::SetSize(float w, float h)
     {
-        m_nodeDimensions.w = w;
-        m_nodeDimensions.h = h;
+        m_nodeRenderRect.w = w;
+        m_nodeRenderRect.h = h;
     }
 
     void InterfaceNode::Start()
@@ -249,7 +255,7 @@ namespace BlackBoxEngine
     {
         RenderThis(pRenderer, rootX, rootY);
         for (auto& node : m_childNodes)
-            node->Render(pRenderer, rootX + m_nodeDimensions.x, rootY + m_nodeDimensions.y);
+            node->Render(pRenderer, rootX + m_nodeRenderRect.x, rootY + m_nodeRenderRect.y);
     }
 
     InterfaceNode* InterfaceNode::GetAdjacentNode(Direction dir) const
@@ -282,5 +288,19 @@ namespace BlackBoxEngine
 
         // child node not attached
         return nullptr; 
+    }
+
+    BB_FPoint InterfaceNode::GetScreenPosition()
+    {
+        if (m_pParent)
+        {
+            BB_FPoint pos = m_pParent->GetScreenPosition();
+            pos.x += m_nodeRenderRect.x;
+            pos.y += m_nodeRenderRect.y;
+            return pos;
+        }
+        else
+            return { m_nodeRenderRect.x , m_nodeRenderRect.y };
+
     }
 }

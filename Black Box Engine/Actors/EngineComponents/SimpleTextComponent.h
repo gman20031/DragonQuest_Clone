@@ -25,6 +25,7 @@ namespace BlackBoxEngine
 
     public:
         SimpleTextComponent(Actor* pOwner);
+        virtual ~SimpleTextComponent() = default;
 
         void SetTextWithFont(const char* pText, const char* pFontFilePath, float textSize);
         void SetFont(const char* pFontFilePath, float size);

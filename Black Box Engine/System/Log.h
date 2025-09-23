@@ -22,7 +22,8 @@
 /** 
 *  @brief This macro does nothing in release mode
 */
-#define BB_LOG(type, ...) ;
+#pragma warning( disable : 4390)
+#define BB_LOG(type, ...)
 #endif
 
 namespace BlackBoxEngine

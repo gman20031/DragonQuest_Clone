@@ -8,11 +8,13 @@ namespace BlackBoxEngine
 {
     class MoverComponent : public Component
     {
+        GENERATE_ID("MoverComponent");
+    private:
         TransformComponent* pTransform;
 
     public:
-        GENERATE_ID("MoverComponent");
         MoverComponent(Actor* pOwner);
+        virtual ~MoverComponent() = default;
 
         FVector2 m_velocity = { 0,0 };
 

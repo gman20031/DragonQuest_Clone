@@ -89,11 +89,10 @@ namespace BlackBoxEngine
             m_pActorManager->Update();
             m_pActorManager->Render();
         }
-        if constexpr (kDebug)
-        {
-            if (m_engineOptions & kCollision) 
-                m_pCollisionManager->DebugDraw();
-        }
+#if _DEBUG
+        if (m_engineOptions & kCollision) 
+            m_pCollisionManager->DebugDraw();
+#endif
         if (IsSystemEnabled(kMessaging)) 
             m_pMessagingManager->SendQueuedMessages();
         m_pInterfaceManager->Render(m_pWindow->GetRenderer());

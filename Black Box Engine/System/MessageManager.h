@@ -20,6 +20,11 @@ namespace BlackBoxEngine
         inline static constexpr MessageIdType kAny = StringHash("Any");
     };
 
+    /**
+     * MessageIdType messageId
+     * Actor* pSender
+     * Actor* pReciever
+     */
     struct Message
     {
         MessageIdType messageId = 0;
