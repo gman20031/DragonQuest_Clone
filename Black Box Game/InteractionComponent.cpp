@@ -12,14 +12,14 @@ void InteractionComponent::Render()
 {
 }
 
-void InteractionComponent::OnCollide(BlackBoxEngine::Actor* pOtherActor)
+void InteractionComponent::OnCollide([[maybe_unused]]BlackBoxEngine::Actor* pOtherActor)
 {
 }
 
-void InteractionComponent::Save(BlackBoxEngine::XMLElementParser parser)
+void InteractionComponent::Save([[maybe_unused]] BlackBoxEngine::XMLElementParser parser)
 {
 }
 
-void InteractionComponent::Load(const BlackBoxEngine::XMLElementParser parser)
+void InteractionComponent::Load([[maybe_unused]] const BlackBoxEngine::XMLElementParser parser)
 {
 }

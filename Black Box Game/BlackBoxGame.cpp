@@ -8,6 +8,7 @@ using namespace BlackBoxEngine;
 #include <Interface/InterfaceText.h>
 
 #include "../Black Box Engine/Actors/EngineComponents/SpriteComponent.h"
+#include "../Black Box Engine/Actors/EngineComponents/TransformComponent.h"
 
 void ButtonOneCallback()
 {
@@ -118,7 +119,7 @@ void BlackBoxGame::InitGame()
     //m_pEngineManager->m_pActorManager->ClearLevel();
     m_pEngineManager->m_pActorManager->LoadLevel("../Assets/Levels/ExampleLevel.xml");
     //m_pEngineManager->m_pActorManager->LoadLevel("../Assets/Levels/Cave2Level.xml");
-    
+
 }
 
 BlackBoxGame::BlackBoxGame()

@@ -1,8 +1,8 @@
 <Actor Name="PlayerActor">
     <Component Name="TransformComponent">
         <Position>
-            <X>416</X>
-            <Y>816</Y>
+            <X>800</X>
+            <Y>686</Y>
         </Position>
         <Rotation>0</Rotation>
     </Component>

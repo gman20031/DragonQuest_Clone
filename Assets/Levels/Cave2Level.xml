@@ -14,16 +14,24 @@
 			<row>%BBBBBBBBBB%</row>
 			<row>%B%%%%%B%%%%</row>
 			<row>%BBBBB%B%BB%</row>
-			<row>%%%%B%%BBB$%</row>
+			<row>%%%%B%%BBBB%</row>
 			<row>%BBBB%B%%BB%</row>
 			<row>%B%B%%B%B%%%</row>
 			<row>%B%%B%BBBBB%</row>
 			<row>%BBBB%%B%%B%</row>
 			<row>%%B%BB%B%BB%</row>
-			<row>%BBB%BBB%UB%</row>
+			<row>%BBB%BBB%BB%</row>
 			<row>%%%%%%%%%%%%</row>
 		</TileMap>
     </Component>
+</Actor>
+  <!-- StairUp -->
+<Actor SeperateFile = "true">
+    <FilePath>../Assets/Actors/StairUp2Actor.xml</FilePath>
+</Actor>
+  <!-- Chest -->
+<Actor SeperateFile = "true">
+    <FilePath>../Assets/Actors/ChestActor.xml</FilePath>
 </Actor>
   <!-- Player -->
 <Actor SeperateFile = "true">

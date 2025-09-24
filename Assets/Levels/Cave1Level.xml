@@ -11,7 +11,7 @@
 		<AnchorPoint>kTopLeft</AnchorPoint>
 		<TileMap>
 			<row>%%%%%%%%%%%%</row>
-			<row>%UB%BBBB%%B%</row>
+			<row>%BB%BBBB%%B%</row>
 			<row>%%B%B%%BBBB%</row>
 			<row>%BBBBBBB%%B%</row>
 			<row>%%B%%%B%%BB%</row>
@@ -20,10 +20,18 @@
 			<row>%BBBBBB%B%B%</row>
 			<row>%%%B%B%%BBB%</row>
 			<row>%%BBBBB%B%B%</row>
-			<row>%%B%B%BBB%D%</row>
+			<row>%%B%B%BBB%B%</row>
 			<row>%%%%%%%%%%%%</row>
 		</TileMap>
     </Component>
+</Actor>
+  <!-- StairUp -->
+<Actor SeperateFile = "true">
+    <FilePath>../Assets/Actors/StairUp1Actor.xml</FilePath>
+</Actor>
+  <!-- StairDown -->
+<Actor SeperateFile = "true">
+    <FilePath>../Assets/Actors/StairDownActor.xml</FilePath>
 </Actor>
   <!-- Player -->
 <Actor SeperateFile = "true">

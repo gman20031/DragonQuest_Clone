@@ -1,0 +1,21 @@
+<Actor Name="CaveEntranceActor">
+    <Component Name="TransformComponent">
+        <Position>
+            <X>496</X>
+            <Y>224</Y>
+        </Position>
+        <Rotation>0</Rotation>
+    </Component>
+    <Component Name="SpriteComponent">
+        <width>16</width>
+        <height>16</height>
+        <UseFullImage>false</UseFullImage>
+        <TextureOffset>
+            <X>102</X>
+            <Y>17</Y>
+            <W>16</W>
+            <H>16</H>
+        </TextureOffset>
+        <filePath>../Assets/Tiles/FullTileSheet.png</filePath>
+    </Component>
+</Actor>

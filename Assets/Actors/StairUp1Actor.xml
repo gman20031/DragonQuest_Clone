@@ -1,0 +1,21 @@
+<Actor Name="StairUp1Actor">
+    <Component Name="TransformComponent">
+        <Position>
+            <X>16</X>
+            <Y>16</Y>
+        </Position>
+        <Rotation>0</Rotation>
+    </Component>
+    <Component Name="SpriteComponent">
+        <width>16</width>
+        <height>16</height>
+        <UseFullImage>false</UseFullImage>
+        <TextureOffset>
+            <X>119</X>
+            <Y>0</Y>
+            <W>16</W>
+            <H>16</H>
+        </TextureOffset>
+        <filePath>../Assets/Tiles/FullTileSheet.png</filePath>
+    </Component>
+</Actor>
