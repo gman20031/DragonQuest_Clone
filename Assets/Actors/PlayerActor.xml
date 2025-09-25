@@ -1,4 +1,8 @@
 <Actor Name="PlayerActor">
+    <Component Name="PlayerMovementComponent">
+        <Speed>90</Speed>
+        <TileMapID>0</TileMapID>
+    </Component>
     <Component Name="TransformComponent">
         <Position>
             <X>800</X>
@@ -6,16 +10,13 @@
         </Position>
         <Rotation>0</Rotation>
     </Component>
-    <Component Name="PlayerMovementComponent">
-        <Speed>90</Speed>
-        <TileMapID>0</TileMapID>
-    </Component>
     <Component Name="MoverComponent">
         <Velocity>
-            <X>0</X>
-            <Y>0</Y>
+            <X>true</X>
+            <Y>true</Y>
         </Velocity>
     </Component>
+    <Component Name="PlayerCameraComponent"/>
     <Component Name="SpriteComponent">
         <width>16</width>
         <height>16</height>
@@ -28,5 +29,5 @@
         </TextureOffset>
         <filePath>../Assets/Sprites/Player/CharacterSpriteSheet.png</filePath>
     </Component>
-    <Component Name="PlayerCameraComponent"/>
+    <Component Name="InteractionComponent"/>
 </Actor>
