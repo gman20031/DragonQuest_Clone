@@ -12,12 +12,11 @@ namespace BlackBoxEngine
         /**
          * @brief Concept to restrain the use of engines for prng machine without the need for inheritance. 
          * Name structure follows the STL for interchangability.
-         * @brief https://en.cppreference.com/w/cpp/named_req/RandomNumberEngine.html
          * @param Defined a result_type which is an unsigned integer
          * @param Operator() which returns the random number, of result_type
-         * @param seed(void) function
-         * @param seed(result_type) which will seed the engine
-         * @param discard(result_type) which will discard calls to the engine x number of times
+         * @param Seed(void) function
+         * @param Seed(result_type) which will Seed the engine
+         * @param Discard(result_type) which will Discard calls to the engine x number of times
          */
         template<typename engineType>
         concept PRNG_Engine =
@@ -25,11 +24,11 @@ namespace BlackBoxEngine
             requires(engineType engine, engineType::result_type integer)
         {
             { engine() } -> std::same_as<typename engineType::result_type>;
-            { engine.seed() };
-            { engine.seed(integer) };
-            { engine.discard(integer) };
-            { engine.max() } -> std::same_as<typename engineType::result_type>;
-            { engine.min() } -> std::same_as<typename engineType::result_type>;
+            { engine.Seed() };
+            { engine.Seed(integer) };
+            { engine.Discard(integer) };
+            { engine.Max() } -> std::same_as<typename engineType::result_type>;
+            { engine.Min() } -> std::same_as<typename engineType::result_type>;
         };
 
         template<typename engineType>
@@ -55,11 +54,11 @@ namespace BlackBoxEngine
             public:
                 SplitMix64();
                 SplitMix64(uint64_t startingSeed);
-                void seed();
-                void seed(uint64_t seed);
-                void discard(uint64_t amount);
-                uint64_t min();
-                uint64_t max();
+                void Seed();
+                void Seed(uint64_t Seed);
+                void Discard(uint64_t amount);
+                uint64_t Min();
+                uint64_t Max();
                 uint64_t operator()();
             };
 
@@ -77,18 +76,18 @@ namespace BlackBoxEngine
 
             private:
                 uint64_t Roll(uint64_t value, uint64_t shift);
-                void FillState(uint64_t seed);
+                void FillState(uint64_t Seed);
 
             public:
                 Xoshiro256();
                 Xoshiro256(uint64_t firstSeed);
 
-                void seed();
-                void seed(uint64_t seed);
-                void discard(uint64_t amount);
+                void Seed();
+                void Seed(uint64_t Seed);
+                void Discard(uint64_t amount);
                 bool Bool();
-                uint64_t min();
-                uint64_t max();
+                uint64_t Min();
+                uint64_t Max();
                 uint64_t operator()();
             };
 

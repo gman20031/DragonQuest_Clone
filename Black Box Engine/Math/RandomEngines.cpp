@@ -13,31 +13,31 @@ namespace BlackBoxEngine
 
             SplitMix64::SplitMix64()
             {
-                seed(kDefaultSeed);
+                Seed(kDefaultSeed);
             }
 
             SplitMix64::SplitMix64(uint64_t startingSeed)
             {
-                seed(startingSeed);
+                Seed(startingSeed);
             }
 
-            void SplitMix64::seed(uint64_t seed)
+            void SplitMix64::Seed(uint64_t Seed)
             {
-                m_state = seed;
+                m_state = Seed;
             }
 
-            void SplitMix64::discard(uint64_t amount)
+            void SplitMix64::Discard(uint64_t amount)
             {
                 for (size_t i = 0; i < amount; ++i)
                     this->operator()();
             }
 
-            uint64_t SplitMix64::min()
+            uint64_t SplitMix64::Min()
             {
                 return 0;
             }
 
-            uint64_t SplitMix64::max()
+            uint64_t SplitMix64::Max()
             {
                 return std::numeric_limits<uint64_t>::max();
             }
@@ -60,9 +60,9 @@ namespace BlackBoxEngine
                 return (value << shift) | (value >> (64 - shift));
             }
 
-            void Xoshiro256::FillState(uint64_t seed)
+            void Xoshiro256::FillState(uint64_t Seed)
             {
-                SplitMix64 splitMix(seed);
+                SplitMix64 splitMix(Seed);
                 m_state[0] = splitMix();
                 m_state[1] = splitMix();
                 m_state[2] = splitMix();
@@ -71,30 +71,30 @@ namespace BlackBoxEngine
 
             Xoshiro256::Xoshiro256()
             {
-                seed();
+                Seed();
             }
 
             Xoshiro256::Xoshiro256(uint64_t firstSeed)
             {
-                seed(firstSeed);
+                Seed(firstSeed);
             }
 
-            void Xoshiro256::seed()
+            void Xoshiro256::Seed()
             {
                 FillState(kDefaultSeed);
             }
 
-            void Xoshiro256::seed(uint64_t newSeed)
+            void Xoshiro256::Seed(uint64_t newSeed)
             {
                 FillState(newSeed);
             }
 
-            uint64_t Xoshiro256::min()
+            uint64_t Xoshiro256::Min()
             {
                 return 0;
             }
 
-            uint64_t Xoshiro256::max()
+            uint64_t Xoshiro256::Max()
             {
                 return std::numeric_limits<uint64_t>::max();
             }

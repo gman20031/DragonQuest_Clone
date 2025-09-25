@@ -7,21 +7,15 @@ namespace BlackBoxEngine
 {
     namespace Random
     {
-        namespace Statics
+        namespace Static_Machines
         {
-            MachineMT64& BB_MT64()
-            {
-                static MachineMT64 s_mt64;
-                return s_mt64;
-            }
-
-            MachineXoshiro256 BB_Xoshiro256()
+            MachineXoshiro256& BB_Xoshiro256()
             {
                 static MachineXoshiro256 s_xoshiro;
                 return s_xoshiro;
             }
 
-            MachineSplitMix64 BB_SplitMix64()
+            MachineSplitMix64& BB_SplitMix64()
             {
                 static MachineSplitMix64 s_splitMix;
                 return s_splitMix;
