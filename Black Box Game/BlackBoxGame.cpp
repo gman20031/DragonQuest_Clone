@@ -7,8 +7,7 @@ using namespace BlackBoxEngine;
 #include <Interface/InterfaceButton.h>
 #include <Interface/InterfaceText.h>
 
-#include "../Black Box Engine/Actors/EngineComponents/SpriteComponent.h"
-#include "../Black Box Engine/Actors/EngineComponents/TransformComponent.h"
+#include "InteractionComponent.h"
 
 void ButtonOneCallback()
 {
