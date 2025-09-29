@@ -84,7 +84,6 @@ namespace BlackBoxEngine
 
                 void Seed();
                 void Seed(uint64_t Seed);
-                void Discard(uint64_t amount);
                 bool Bool();
                 uint64_t Min();
                 uint64_t Max();

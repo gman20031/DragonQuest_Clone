@@ -160,12 +160,12 @@ namespace BlackBoxEngine
         /// Public Functions, For use with static Random Engines
         //////////////////////////////////////////////////////////////////////////////////////////
 
-        namespace StaticMachines
+        namespace Global
         {
             MachineXoshiro256& BB_Xoshiro256();
             MachineSplitMix64& BB_SplitMix64();
 
-        } // statics
+        } // Global
 
         void TestRNG();
 
