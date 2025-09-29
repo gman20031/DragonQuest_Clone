@@ -26,12 +26,6 @@ namespace BlackBoxEngine
                 m_state = Seed;
             }
 
-            void SplitMix64::Discard(uint64_t amount)
-            {
-                for (size_t i = 0; i < amount; ++i)
-                    this->operator()();
-            }
-
             uint64_t SplitMix64::Min()
             {
                 return 0;

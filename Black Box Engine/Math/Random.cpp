@@ -33,7 +33,7 @@ namespace BlackBoxEngine
             std::cout << "\n\nTesting RandomInRange(10,20)\n";
             for (size_t i = 0; i < 10; ++i)
                 std::cout << rngMachine.GetRandomInRange(10, 20) << ' ';
-            
+            rngMachine.
             std::cout << "\n\nTesting RandomInRange(10)\n";
             for (size_t i = 0; i < 10; ++i)
                 std::cout << rngMachine.GetRandomInRange(10) << ' ';

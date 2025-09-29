@@ -21,7 +21,7 @@ namespace BlackBoxEngine
         inline static constexpr uint8_t kModeUnderline = 0b0100;
         inline static constexpr uint8_t kModeAll       = 0b1111;
         inline static constexpr uint8_t kModeNone      = 0b0000;
-        struct Parameters
+        struct TextureInfo
         {
             uint8_t m_mode = kModeColored;
 
@@ -31,11 +31,11 @@ namespace BlackBoxEngine
 
             ColorValue m_highlightColor{ 0,0,0,0 };
 
-            float m_lineWidth = 2;
+            float m_lineWidth = 0;
             ColorValue m_underlineColor{ 0,0,0,0 };
         };
     private:
-        Parameters m_params;
+        TextureInfo m_params;
         BB_FRectangle m_iconDestination{ 0,0,0,0 };
         BB_FRectangle m_renderDestination{ 0, 0, 0, 0 };
 
@@ -54,7 +54,7 @@ namespace BlackBoxEngine
 
         void SetTarget(InterfaceNode* pNode);
         void SetMode(uint8_t mode);
-        void SetParmeters(Parameters params);
+        void SetParmeters(TextureInfo params);
     };
 
     class UserInterface

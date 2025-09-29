@@ -22,14 +22,12 @@ void BlackBoxEngine::MoverComponent::Load(const XMLElementParser parser)
 
     pVelocity.GetChildVariable("X", &m_velocity.x);
     pVelocity.GetChildVariable("Y", &m_velocity.y);
-
 }
 
 void BlackBoxEngine::MoverComponent::Save(XMLElementParser parser)
 {
     auto pVelocity = parser.InsertNewChild("Velocity");
 
-    pVelocity.NewChildVariable("X", &m_velocity.x);
-    pVelocity.NewChildVariable("Y", &m_velocity.y);
-
+    pVelocity.NewChildVariable("X", m_velocity.x);
+    pVelocity.NewChildVariable("Y", m_velocity.y);
 }

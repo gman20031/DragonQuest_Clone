@@ -48,6 +48,7 @@ void PlayerMovementComponent::Start()
                     auto* pInput = BlackBoxManager::Get()->m_pInputManager;
                     if (pInput->IsKeyDown(keyCode))
                         TryMove({ x, y });
+                    return 0;
                 });
         } );
         m_keyDownCodes.emplace_back(id);

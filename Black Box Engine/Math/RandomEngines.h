@@ -26,7 +26,6 @@ namespace BlackBoxEngine
             { engine() } -> std::same_as<typename engineType::result_type>;
             { engine.Seed() };
             { engine.Seed(integer) };
-            { engine.Discard(integer) };
             { engine.Max() } -> std::same_as<typename engineType::result_type>;
             { engine.Min() } -> std::same_as<typename engineType::result_type>;
         };
@@ -56,7 +55,6 @@ namespace BlackBoxEngine
                 SplitMix64(uint64_t startingSeed);
                 void Seed();
                 void Seed(uint64_t Seed);
-                void Discard(uint64_t amount);
                 uint64_t Min();
                 uint64_t Max();
                 uint64_t operator()();

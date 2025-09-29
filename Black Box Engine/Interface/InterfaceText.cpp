@@ -17,7 +17,7 @@ namespace BlackBoxEngine
         InterfaceNode* pParent,
         const char* pName,
         BB_FRectangle dimensions,
-        const Parameters& params)
+        const TextureInfo& params)
         : InterfaceNode(pParent, pName, dimensions)
         , m_params(params)
     {

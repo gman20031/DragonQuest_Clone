@@ -1,0 +1,184 @@
+#include "Sprite.h"
+
+#include <SDL3/SDL.h>
+#include <cassert>
+
+#include "../BlackBoxManager.h"
+#include "../System/Delay.h"
+#include "../System/Log.h"
+
+namespace BlackBoxEngine
+{
+    void Sprite::UpdateOffset()
+    {
+        m_textureOffset.w = m_spriteDimensions.x;
+        m_textureOffset.h = m_spriteDimensions.y;
+        const int spriteX = (m_spriteSheetIndex % (m_spriteXCount));
+        const int spriteY = (m_spriteSheetIndex / (m_spriteXCount));
+        m_textureOffset.x = spriteX * (m_spriteDimensions.x + 1 ) + (m_spriteXPad * spriteX);
+        m_textureOffset.y = spriteY * (m_spriteDimensions.y + 1 ) + (m_spriteYPad * spriteY);
+    }
+
+    Sprite::Sprite()
+    {
+        m_pRenderer = BlackBoxManager::Get()->GetWindow()->GetRenderer();
+    }
+
+    void Sprite::AnimateSprite( int framePerSecond, bool repeat )
+    {
+        constexpr uint64_t milisecondPerSecond = std::chrono::milliseconds::period::den;
+        double frameDelay = 1 / (double)framePerSecond;
+        uint32_t msDelay = static_cast<uint32_t>(frameDelay * milisecondPerSecond);
+
+        int totalFrameCount = m_spriteXCount * m_spriteYCount;
+
+        auto callback = [msDelay, totalFrameCount, repeat, this]() -> uint32_t
+            {
+                int spriteIndex = GetSpriteIndex();
+                ++spriteIndex;
+                if ( spriteIndex >= totalFrameCount )
+                    spriteIndex = 0;
+                assert( spriteIndex >= 0 && spriteIndex <= totalFrameCount );
+                SetSpriteIndex( spriteIndex );
+                if(repeat)
+                    return msDelay;
+                return 0;
+            };
+        m_callbackId = Delay( msDelay, callback);
+    }
+
+    void Sprite::StopAnimating()
+    {
+        if ( !m_animating )
+            return;
+        if ( ! StopDelay( m_callbackId ) )
+            BB_LOG( LogType::kWarning, "error when attempting to remove animation callback, SDL: ", SDL_GetError() );
+    }
+
+    void Sprite::Render(const BB_FRectangle& destRect )
+    {
+        if ( m_spriteDimensions.x <= 0 || m_spriteDimensions.y == 0 )
+        {
+            BB_LOG( LogType::kError, "Attempted to render sprite with either 0 height or width" );
+            return;
+        }
+
+        BB_FRectangle source = {};
+        BB_FRectangle* pSource = nullptr;
+        if ( !m_useFullImage )
+        {
+            source.x = static_cast<float>(m_textureOffset.x);
+            source.y = static_cast<float>(m_textureOffset.y);
+            source.w = static_cast<float>(m_textureOffset.w);
+            source.h = static_cast<float>(m_textureOffset.h);
+            pSource = &source;
+        }
+
+        if ( !m_pRenderer->DrawTextureGame(
+            m_pTexture.get(),
+            pSource,
+            &destRect ) )
+        {
+            BB_LOG( LogType::kError, SDL_GetError() );
+        }
+    }
+
+    void Sprite::SetTexture( const char* pTexturePath )
+    {
+        assert( pTexturePath );
+        m_pFilePath = pTexturePath;
+        m_pTexture = ResourceManager::GetTexture( m_pRenderer, pTexturePath );
+    }
+
+    void Sprite::SetSpriteIndex( int newIndex )
+    {
+        assert( newIndex <= static_cast<int>(m_spriteXCount * m_spriteYCount) && newIndex >= 0);
+        m_useFullImage = false;
+        m_spriteSheetIndex = newIndex;
+        UpdateOffset();
+    }
+
+    void Sprite::SetSpriteDimension( BB_TPoint<uint32_t> newDimensions )
+    {
+        assert( newDimensions.x > 0 && newDimensions.y > 0 );
+        m_spriteDimensions = newDimensions;
+        UpdateOffset();
+    }
+
+    void Sprite::SetSpriteXCount( uint32_t xCount )
+    {
+        m_spriteXCount = xCount;
+        UpdateOffset();
+    }
+
+    void Sprite::SetSpriteYCount( uint32_t yCount )
+    {
+        m_spriteYCount = yCount;
+        UpdateOffset();
+    }
+
+    void Sprite::SetSpriteXPad( uint32_t xPad )
+    {
+        m_spriteXPad = xPad;
+        UpdateOffset();
+    }
+
+    void Sprite::SetSpriteYPad( uint32_t yPad )
+    {
+        m_spriteYPad = yPad;
+        UpdateOffset();
+    }
+
+    void Sprite::SetAnimationStartIndex( int index )
+    {
+        assert( index > 0 && index < static_cast<int>(m_spriteXCount * m_spriteYCount) );
+        m_animStartIndex = index;
+    }
+
+    void Sprite::SetAnimationEndIndex( int index )
+    {
+        assert( index > 0 && index < static_cast<int>(m_spriteXCount * m_spriteYCount) );
+        m_animStartIndex = index;
+    }
+
+    void Sprite::Load( const XMLElementParser parser )
+    {
+        parser.GetChildVariable( "startingSpriteIndex", &m_spriteSheetIndex );
+
+        auto spriteDim = parser.GetChildElement( "spriteDimensions" );
+        spriteDim.GetChildVariable( "width", (float*)&m_spriteDimensions.x );
+        spriteDim.GetChildVariable( "height", (float*)&m_spriteDimensions.y );
+
+        parser.GetChildVariable( "sprite_x_count", &m_spriteXCount );
+        parser.GetChildVariable( "sprite_y_count", &m_spriteYCount );
+        parser.GetChildVariable( "sprite_x_pad", &m_spriteXPad );
+        parser.GetChildVariable( "sprite_y_pad", &m_spriteXPad );
+
+        UpdateOffset();
+    }
+
+    void Sprite::Save( XMLElementParser parser ) const
+    {
+        parser.NewChildVariable( "startingSpriteIndex", m_spriteSheetIndex );
+
+        parser.NewChildVariable( "UseFullImage", m_useFullImage );
+        if ( !m_useFullImage )
+        {
+            auto spriteDim = parser.InsertNewChild( "spriteDimensions" );
+            spriteDim.NewChildVariable( "width", (float)m_spriteDimensions.x );
+            spriteDim.NewChildVariable( "height", (float)m_spriteDimensions.y);
+        }
+        if ( !m_pFilePath )
+        {
+            BB_LOG( LogType::kError, "Attempted to save sprite with no texture" );
+            return;
+        }
+        parser.NewChildVariable( "filePath", m_pFilePath );
+
+        parser.NewChildVariable( "sprite_x_count", m_spriteXCount );
+        parser.NewChildVariable( "sprite_y_count", m_spriteYCount );
+        parser.NewChildVariable( "sprite_x_pad", m_spriteXPad );
+        parser.NewChildVariable( "sprite_y_pad", m_spriteXPad );
+    }
+
+}

@@ -8,6 +8,7 @@ using namespace BlackBoxEngine;
 #include <Interface/InterfaceText.h>
 
 #include "InteractionComponent.h"
+#include <Actors/EngineComponents/SpriteComponent.h>
 
 void ButtonOneCallback()
 {
@@ -35,22 +36,20 @@ void BlackBoxGame::TestInterfaceStuff()
 
     auto* pHighlighter = m_interfaceRoot.GetHighlight();
     pHighlighter->SetParmeters({
-        .m_mode = InterfaceHighlighter::kModeUnderline | InterfaceHighlighter::kModeIcon,
+        .m_mode = InterfaceHighlighter::kModeIcon,
         .m_pIconFile = "../Assets/UI/Icons/RightArrowTest.png",
-        .m_iconOffset = {-9,0},
-        .m_iconSize = {8,8},
-        .m_lineWidth = 1,
-        .m_underlineColor = ColorPresets::white,
+        .m_iconOffset = {-7,0},
+        .m_iconSize = {6,6},
     });
 
-    BB_FRectangle buttonDimension{ 0,0, 64,8 };
+    BB_FRectangle buttonDimension{ 0,0, 64, 6 };
 
-    InterfaceButton::Parameters buttomParams{
+    InterfaceButton::TextureInfo buttomParams{
         .usable = true,
         .mouseInteractable = false,
-        .color =         ColorValue(255,0,0,0),
-        .targetedColor = ColorValue(200,50,50,255),
-        .interactColor = ColorValue(100,150,50,255)
+        .color =         ColorValue(0,0,0,0),
+        .targetedColor = ColorValue(0,0,0,0),
+        .interactColor = ColorValue(0,0,0,0)
     };
 
     ButtonCallbackFunctionPtr callbacks[] =
@@ -61,8 +60,7 @@ void BlackBoxGame::TestInterfaceStuff()
         &ButtonFourCallback
     };
 
-    std::vector<InterfaceNode*> m_nodes;
-    m_nodes.resize(4, nullptr);
+    InterfaceNode* m_nodes[4] = {};
 
     float yPad = 1;
     size_t buttonCount = std::size(callbacks);
@@ -84,7 +82,7 @@ void BlackBoxGame::TestInterfaceStuff()
 
     buttonDimension.y = 0;
 
-    InterfaceText::Parameters textParams{
+    InterfaceText::TextureInfo textParams{
         .pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf",
         .textSize = 12,
         .color = ColorPresets::white
@@ -114,6 +112,15 @@ void BlackBoxGame::InitGame()
 	BB_LOG(LogType::kMessage, "Game starting");
     m_pEngineManager->GetWindow()->SetWindowIcon("../Assets/Sprites/DragonQuestIcon.png");
 
+    //auto* pComponent = m_pEngineManager->m_pActorManager->NewActor()->AddComponent<AnimatedSpriteComponent>();
+
+    //pComponent->Sprite().SetTexture( "../Assets/Sprites/Player/CharacterSpriteSheet.png" );
+    //pComponent->Sprite().SetSpriteXCount( 8 );
+    //pComponent->Sprite().SetSpriteYCount( 1 );
+    //pComponent->Sprite().SetSpriteDimension( {16, 16} );
+    //pComponent->Sprite().SetSpriteIndex( 0 );
+    //pComponent->SetDrawnDimensions( 16, 16 );
+    //pComponent->Sprite().AnimateSprite( 1, true );
     //TestInterfaceStuff();
     //m_pEngineManager->m_pActorManager->ClearLevel();
     m_pEngineManager->m_pActorManager->LoadLevel("../Assets/Levels/ExampleLevel.xml");

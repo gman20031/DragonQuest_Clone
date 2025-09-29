@@ -1,26 +1,37 @@
 #pragma once
 
+#include "../Graphics/Sprite.h"
 #include "../Graphics/Color.h"
+#include "../Math/FVector2.h"
 #include "UserInterface.h"
 
 namespace BlackBoxEngine
 {
-    //class InterfaceTexture : public InterfaceNode
-    //{
-    //public:
-    //    struct Parameters
-    //    {
-    //        float width = 200;
-    //        float height = 30;
-    //        const char* pTextureFile = nullptr;
-    //        ColorValue colorShift{ 0,0,0,0 };
-    //    };
-    //private:
-    //    Parameters m_params;
-    //
-    //    virtual void RenderThis() override;
-    //public:
-    //    InterfaceTexture(InterfaceNode* pParent, float xOff, float yOff, const Parameters& params);
+    class InterfaceTexture : public InterfaceNode
+    {
+    public:
+        Sprite* m_pSprite;
 
-    //};
+        struct TextureInfo
+        {
+            const char* pTextureFile = nullptr;
+            BB_TPoint<uint32_t> spriteDimensions{0,0};
+            bool useFullImage = true;
+            uint32_t spriteXCount = 0;
+            uint32_t spriteYCount = 0;
+            uint32_t spriteXPad = 0;
+            uint32_t spriteYPad = 0;
+            uint32_t callbackId = 0;
+            int spriteSheetIndex = 0;
+        };
+    private:
+        TextureInfo m_params;
+    
+        virtual void RenderThis( [[maybe_unused]] BB_Renderer* pRenderer, float rootX, float rootY ) override;
+    public:
+        InterfaceTexture(InterfaceNode* pParent, const char* pName, BB_FRectangle dimensions, const TextureInfo& params);
+        virtual ~InterfaceTexture() override;
+
+        const Sprite* GetSprite() { return m_pSprite; }
+    };
 }

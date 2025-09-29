@@ -42,8 +42,6 @@ namespace BlackBoxEngine
 			void Reset() { m_engine.seed(m_seed); }
             // @brief Reseeds the engine to the new m_seed value
 			void Reset(size_t newSeed);
-            // @brief Generates a new random value, but does not return it.
-            void Discard(size_t amount) { m_engine.discard(amount); }
             // @brief Generates and returns random value.
 			auto Max() { return EngineType::max(); }
 
