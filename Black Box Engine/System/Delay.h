@@ -14,9 +14,7 @@ namespace BlackBoxEngine
     uint32_t Delay(std::chrono::milliseconds milisecondDelay, DelayFunction callbackFunction, void* userData);
     uint32_t Delay(std::chrono::seconds secondDelay, DelayFunction callbackFunction, void* userData);
     
-    template<std::invocable Callable>
-    uint32_t Delay(uint32_t miliseconds, Callable function);
-
+    // Callable must return uint32_t for when it should be called next
     template<std::invocable Callable>
     uint32_t Delay(uint32_t miliseconds, Callable callback)
     {
@@ -26,8 +24,7 @@ namespace BlackBoxEngine
         DelayFunction function = [](void* pMap, [[maybe_unused]] uint32_t timerId, [[maybe_unused]] uint32_t interval) -> uint32_t
             {
                 TempMap* pTempMap = static_cast<TempMap*>(pMap);
-                pTempMap->at(timerId)();
-                return 0;
+                return pTempMap->at(timerId)();
             };
 
         auto id = Delay(miliseconds, function, &s_tempStorage);
@@ -35,5 +32,6 @@ namespace BlackBoxEngine
 
         return id;
     }
-
+ 
+    bool StopDelay( uint32_t id );
 }

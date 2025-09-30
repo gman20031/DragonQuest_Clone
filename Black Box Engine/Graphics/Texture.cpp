@@ -7,7 +7,6 @@
 
 namespace BlackBoxEngine
 {
-
     BB_Texture::BB_Texture(SDL_Texture* pTexture)
 	    : m_pSdlTexture(pTexture)
     {

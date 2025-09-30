@@ -3,7 +3,6 @@
 #include "../BlackBoxManager.h"
 #include "../Graphics/Renderer.h"
 #include "../Resources/ResourceManager.h"
-#include "../BlackBoxManager.h"
 
 namespace BlackBoxEngine
 {
@@ -72,7 +71,7 @@ namespace BlackBoxEngine
         UpdateRenderPosition(m_pHighlightedNode);
     }
 
-    void InterfaceHighlighter::SetParmeters(Parameters params)
+    void InterfaceHighlighter::SetParmeters(TextureInfo params)
     {
         m_params = params;
         auto* pRenderer = BlackBoxManager::Get()->GetWindow()->GetRenderer();

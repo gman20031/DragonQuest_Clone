@@ -18,6 +18,7 @@ namespace BlackBoxEngine
     <
         ComponentFactory::Registrar<AABBColliderComponent>,
         ComponentFactory::Registrar<TransformComponent>,
+        ComponentFactory::Registrar<AnimatedSpriteComponent>,
         ComponentFactory::Registrar<SpriteComponent>,
         ComponentFactory::Registrar<MoverComponent>,
         ComponentFactory::Registrar<ColliderDebugRenderer>,

@@ -241,6 +241,7 @@
     <ClCompile Include="Interface\InterfaceButton.cpp" />
     <ClCompile Include="Interface\InterfaceManger.cpp" />
     <ClCompile Include="Interface\InterfaceText.cpp" />
+    <ClCompile Include="Interface\InterfaceTexture.cpp" />
     <ClCompile Include="Interface\UserInterface.cpp" />
     <ClCompile Include="libraries\Lua-4.5.7\src\lapi.c">
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TurnOffAllWarnings</WarningLevel>
@@ -446,6 +447,7 @@
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
     </ClCompile>
+    <ClCompile Include="Graphics\Sprite.cpp" />
     <ClCompile Include="System\Delay.cpp" />
     <ClCompile Include="Math\Random.cpp" />
     <ClCompile Include="Math\RandomEngines.cpp" />
@@ -610,6 +612,7 @@
     <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3\SDL_vulkan.h" />
     <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3_image\SDL_image.h" />
     <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3_ttf\SDL_ttf.h" />
+    <ClInclude Include="Graphics\Sprite.h" />
     <ClInclude Include="System\Delay.h" />
     <ClInclude Include="Math\RandomEngines.h" />
     <ClInclude Include="Resources\TextFactory.h" />

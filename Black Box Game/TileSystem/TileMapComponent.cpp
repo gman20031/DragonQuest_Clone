@@ -38,7 +38,7 @@ BlackBoxEngine::FVector2 TileMapComponent::GetGameCoordsFromTilePos(uint32_t x, 
 
 uint32_t TileMapComponent::GetIndex(uint32_t x, uint32_t y) const
 {
-    return (x + m_width * y);
+    return x + (m_width * y);
 }
 
 void TileMapComponent::RenderTileAt(uint32_t x, uint32_t y)
