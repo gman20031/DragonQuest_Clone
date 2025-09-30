@@ -10,7 +10,7 @@ namespace BlackBoxEngine
     class InterfaceText : public InterfaceNode
     {
     public:
-        struct TextureInfo
+        struct Paremeters
         {
             const char* pFontFile;
             const char* pText;
@@ -18,13 +18,13 @@ namespace BlackBoxEngine
             ColorValue color = ColorPresets::white;
         };
     private:
-        TextureInfo m_params;
+        Paremeters m_params;
         std::shared_ptr<BB_Text> m_pText;
 
         virtual void RenderThis(BB_Renderer* pRenderer, float x, float y) override;
     public:
         virtual ~InterfaceText() = default;
-        InterfaceText(InterfaceNode* pParent, const char* pName, BB_FRectangle dimensions, const TextureInfo& params);
+        InterfaceText(InterfaceNode* pParent, const char* pName, BB_FRectangle dimensions, const Paremeters& params);
 
 
     };

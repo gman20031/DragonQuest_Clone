@@ -32,7 +32,7 @@ namespace BlackBoxEngine
         InterfaceNode* pParent,
         const char* pName,
         BB_FRectangle dimensions,
-        const TextureInfo& params
+        const ButtonParams& params
     )
         : InterfaceNode(pParent, pName, dimensions)
         , m_params(params)

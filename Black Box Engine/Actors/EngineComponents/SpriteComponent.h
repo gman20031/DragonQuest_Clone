@@ -41,6 +41,7 @@ namespace BlackBoxEngine
         virtual void Load(const XMLElementParser parser) override;
         virtual void Save(XMLElementParser parser) override;
         virtual void Render() override;
+        virtual void Start() override;
     };
 
     class SpriteComponent : public Component
