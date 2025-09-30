@@ -1,0 +1,18 @@
+<SpriteInfo>
+	<startingSpriteIndex>0</startingSpriteIndex>
+	<UseFullImage>false</UseFullImage>
+	<spriteDimensions>
+		<width>4</width>
+		<height>7</height>
+	</spriteDimensions>
+	<filePath>../Assets/UI/UI_Cursor.png</filePath>
+	<sprite_x_count>2</sprite_x_count>
+	<sprite_y_count>1</sprite_y_count>
+	<sprite_x_pad>0</sprite_x_pad>
+	<sprite_y_pad>0</sprite_y_pad>
+	<anim_start_index>0</anim_start_index>
+	<anim_end_index>1</anim_end_index>
+	<frames_per_second>3</frames_per_second>
+	<looping>true</looping>
+	<animated_on_start>true</animated_on_start>
+</SpriteInfo>

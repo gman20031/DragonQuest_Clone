@@ -6,6 +6,7 @@ using namespace BlackBoxEngine;
 
 #include <Interface/InterfaceButton.h>
 #include <Interface/InterfaceText.h>
+#include <Interface/InterfaceTexture.h>
 
 #include "InteractionComponent.h"
 #include <Actors/EngineComponents/SpriteComponent.h>
@@ -35,16 +36,30 @@ void BlackBoxGame::TestInterfaceStuff()
     m_interfaceRoot.GetRoot()->SetOffset(20, 20);
 
     auto* pHighlighter = m_interfaceRoot.GetHighlight();
-    pHighlighter->SetParmeters( {
-        .m_mode = InterfaceHighlighter::kModeIcon | InterfaceHighlighter::kModeUnderline,
-        .m_pIconFile = "../Assets/UI/Icons/RightArrowTest.png",
-        .m_iconOffset = {-7,0},
-        .m_iconSize = {6,6},
-        .m_lineWidth = 2,
-        .m_underlineColor = ColorPresets::green,
+    pHighlighter->SetParameters( {
+        .mode = InterfaceHighlighter::kModeIcon,
+        .pSpriteFile = "../Assets/UI/Icons/IconSpriteFile.xml",
+        .iconOffset{-5, -2},
+        .iconSize{ 4,7 }
     });
 
-    BB_FRectangle buttonDimension{ 0,0, 64, 6 };
+    //m_interfaceRoot.AddNode<InterfaceTexture>( "TextureTest", {50,0,16,16}, InterfaceTexture::TextureInfo{
+    //    .pTextureFile = "../Assets/Sprites/Player/Fixed_OffsetCharacterSheet.png",
+    //    .spriteDimensions = {16,16},
+    //    .useFullImage = false,
+    //    .animate = true,
+    //    .spriteXCount = 8,
+    //    .spriteYCount = 1,
+    //    .spriteXPad = 0,
+    //    .spriteYPad = 0,
+    //    .animationStartIndex = 0,
+    //    .animationEndIndex = 7,
+    //    .spriteSheetIndex = 0,
+    //    .framesPerSecond = 2,
+    //    .repeat = true
+    //} );
+
+    BB_FRectangle buttonDimension{ 0,0, 64, 7 };
 
     InterfaceButton::ButtonParams buttomParams{
         .usable = true,
@@ -102,6 +117,8 @@ void BlackBoxGame::TestInterfaceStuff()
     textParams.pText = "Fourth Button";
     m_nodes[3]->MakeChildNode<InterfaceText>("FourthButton Text", buttonDimension, textParams);
 
+
+
     pHighlighter->SetTarget(m_nodes[0]);
 
     m_interfaceRoot.SetCursorTarget(m_nodes[0]); // this will crash if you forget
@@ -115,9 +132,9 @@ void BlackBoxGame::InitGame()
 	BB_LOG(LogType::kMessage, "Game starting");
     m_pEngineManager->GetWindow()->SetWindowIcon("../Assets/Sprites/DragonQuestIcon.png");
 
-    //TestInterfaceStuff();
+    TestInterfaceStuff();
     //m_pEngineManager->m_pActorManager->ClearLevel();
-    m_pEngineManager->m_pActorManager->LoadLevel("../Assets/Levels/ExampleLevel.xml");
+    //m_pEngineManager->m_pActorManager->LoadLevel("../Assets/Levels/ExampleLevel.xml");
     //m_pEngineManager->m_pActorManager->LoadLevel("../Assets/Levels/Cave2Level.xml");
 
 }

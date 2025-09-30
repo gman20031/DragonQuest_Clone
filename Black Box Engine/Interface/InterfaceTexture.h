@@ -17,12 +17,16 @@ namespace BlackBoxEngine
             const char* pTextureFile = nullptr;
             BB_TPoint<uint32_t> spriteDimensions{0,0};
             bool useFullImage = true;
+            bool animate = false;
             uint32_t spriteXCount = 0;
             uint32_t spriteYCount = 0;
             uint32_t spriteXPad = 0;
             uint32_t spriteYPad = 0;
-            uint32_t callbackId = 0;
+            uint32_t animationStartIndex = 0;
+            uint32_t animationEndIndex = 0;
             int spriteSheetIndex = 0;
+            int framesPerSecond = 0;
+            float repeat = false;
         };
     private:
         TextureInfo m_params;
@@ -32,6 +36,7 @@ namespace BlackBoxEngine
         InterfaceTexture(InterfaceNode* pParent, const char* pName, BB_FRectangle dimensions, const TextureInfo& params);
         virtual ~InterfaceTexture() override;
 
-        const Sprite* GetSprite() { return m_pSprite; }
+        const Sprite* GetSprite() const { return m_pSprite; }
+        Sprite* Sprite() { return m_pSprite; }
     };
 }

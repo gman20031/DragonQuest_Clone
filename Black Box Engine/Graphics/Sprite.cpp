@@ -11,6 +11,8 @@ namespace BlackBoxEngine
 {
     void Sprite::UpdateOffset()
     {
+        if ( m_spriteXCount == 0 || m_spriteYCount == 0 )
+            return;
         m_textureOffset.w = m_spriteDimensions.x;
         m_textureOffset.h = m_spriteDimensions.y;
         const int spriteX = (m_spriteSheetIndex % (m_spriteXCount));
@@ -58,16 +60,15 @@ namespace BlackBoxEngine
 
     void Sprite::Render(const BB_FRectangle& destRect )
     {
-        if ( m_spriteDimensions.x <= 0 || m_spriteDimensions.y == 0 )
-        {
-            BB_LOG( LogType::kError, "Attempted to render sprite with either 0 height or width" );
-            return;
-        }
-
         BB_FRectangle source = {};
         BB_FRectangle* pSource = nullptr;
         if ( !m_useFullImage )
         {
+            if ( m_spriteDimensions.x <= 0 || m_spriteDimensions.y == 0 )
+            {
+                BB_LOG( LogType::kError, "Attempted to render sprite with either 0 height or width" );
+                return;
+            }
             source.x = static_cast<float>(m_textureOffset.x);
             source.y = static_cast<float>(m_textureOffset.y);
             source.w = static_cast<float>(m_textureOffset.w);
@@ -200,6 +201,7 @@ namespace BlackBoxEngine
 
     void Sprite::Start( )
     {
-        AnimateSprite( m_framesPerSecond, m_loopAnimation );
+        if( m_animateOnStart )
+            AnimateSprite( m_framesPerSecond, m_loopAnimation );
     }
 }

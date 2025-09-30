@@ -9,6 +9,7 @@
 
 namespace BlackBoxEngine
 {
+    class Sprite;
     class InterfaceNode;
     class BB_Renderer;
     class BB_Texture;
@@ -21,40 +22,48 @@ namespace BlackBoxEngine
         inline static constexpr uint8_t kModeUnderline = 0b0100;
         inline static constexpr uint8_t kModeAll       = 0b1111;
         inline static constexpr uint8_t kModeNone      = 0b0000;
-        struct TextureInfo
+        struct Parameters
         {
-            uint8_t m_mode = kModeColored;
+            uint8_t mode = kModeColored;
 
-            const char* m_pIconFile = nullptr;
-            BB_FPoint m_iconOffset{ 0,0 };
-            BB_FPoint m_iconSize{ 0,0 };
+            const char* pSpriteFile = nullptr;
+            BB_FPoint iconOffset{ 0,0 };
+            BB_FPoint iconSize{ 0,0 };
 
-            ColorValue m_highlightColor{ 0,0,0,0 };
+            ColorValue highlighterColor{ 0,0,0,0 };
 
-            float m_lineWidth = 0;
-            ColorValue m_underlineColor{ 0,0,0,0 };
+            float lineWidth = 0;
+            ColorValue underlineColor{ 0,0,0,0 };
         };
     private:
-        TextureInfo m_params;
+        Parameters m_params;
         BB_FRectangle m_iconDestination{ 0,0,0,0 };
         BB_FRectangle m_renderDestination{ 0, 0, 0, 0 };
 
-        std::shared_ptr<BB_Texture> m_pIconTexture = nullptr;
+        Sprite* m_pSprite = nullptr;
         UserInterface* m_pAttachedInterface = nullptr;
         InterfaceNode* m_pHighlightedNode = nullptr;
     private:
         void UpdateRenderPosition(InterfaceNode* pNode);
 
-        void RenderIcon(BB_Renderer* pRenderer) const;
         void RenderUnderline(BB_Renderer* pRenderer) const;
         void RenderColor(BB_Renderer* pRenderer) const;
     public:
         InterfaceHighlighter(UserInterface* pAttachedInterface);
+        ~InterfaceHighlighter();
+        const InterfaceHighlighter& operator=( InterfaceHighlighter&& ) = delete;
+        const InterfaceHighlighter& operator=( const InterfaceHighlighter& ) = delete;
+        InterfaceHighlighter( InterfaceHighlighter&& ) = delete;
+        InterfaceHighlighter( const InterfaceHighlighter& ) = delete;
+
         void Render(BB_Renderer* pRenderer) const;
+        void Start();
+        void Stop();
 
         void SetTarget(InterfaceNode* pNode);
         void SetMode(uint8_t mode);
-        void SetParmeters(TextureInfo params);
+        void SetParameters( const Parameters& params);
+        Sprite* GetSprite() { return m_pSprite; }
     };
 
     class UserInterface
@@ -82,6 +91,8 @@ namespace BlackBoxEngine
         void SelectTargetedNode();
         void DeSelectTargetNode();
         void SetupKeysForInputTarget();
+        void Start();
+        void Stop();
     public:
         UserInterface();
         ~UserInterface();
@@ -105,7 +116,6 @@ namespace BlackBoxEngine
         void AddToScreen();
         void RemoveFromScreen();
 
-        void Start();
         void Update();
         void Render(BB_Renderer* pRenderer);
     };
@@ -122,7 +132,10 @@ namespace BlackBoxEngine
         uint32_t m_nameHash;
         BB_FRectangle m_nodeRenderRect;
 
-        virtual void StartThis() {/*EMPTY*/};
+        // Called when the interface is added to screen
+        virtual void StartThis() {/*EMPTY*/ };
+        // Called when the interface is removed from screen
+        virtual void StopThis() {/*EMPTY*/};
         virtual void UpdateThis() {/*EMPTY*/};
         virtual void RenderThis([[maybe_unused]]BB_Renderer* pRenderer, [[maybe_unused]] float rootX, [[maybe_unused]] float rootY) {/*EMPTY*/};
     public:
@@ -139,7 +152,10 @@ namespace BlackBoxEngine
         void SetOffset(float x, float y);
         void SetSize(float w, float h);
 
+        // Called when the interface is added to screen
         void Start();
+        // Called when the interface is removed from screen
+        void Stop();
         void Update();
         void Render(BB_Renderer* pRenderer, float rootX, float rootY);
 

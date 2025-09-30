@@ -2,6 +2,7 @@
 
 #include "../BlackBoxManager.h"
 #include "../Graphics/Renderer.h"
+#include "../Graphics/Sprite.h"
 #include "../Resources/ResourceManager.h"
 
 namespace BlackBoxEngine
@@ -16,31 +17,21 @@ namespace BlackBoxEngine
         BB_FPoint screenPos = pNode->GetScreenPosition();
         m_renderDestination.x = screenPos.x;
         m_renderDestination.y = screenPos.y;
-        m_iconDestination.x = m_renderDestination.x + m_params.m_iconOffset.x;
-        m_iconDestination.y = m_renderDestination.y + m_params.m_iconOffset.y;
-    }
-
-    void InterfaceHighlighter::RenderIcon(BB_Renderer* pRenderer) const
-    {
-        if (!m_pIconTexture)
-        {
-            BB_LOG(LogType::kError, "Attempted to draw renderIcon without setting an icon texture");
-            return;
-        }
-        pRenderer->DrawTextureScreen(m_pIconTexture.get(), nullptr, &m_iconDestination);
+        m_iconDestination.x = m_renderDestination.x + m_params.iconOffset.x;
+        m_iconDestination.y = m_renderDestination.y + m_params.iconOffset.y;
     }
 
     void InterfaceHighlighter::RenderUnderline(BB_Renderer* pRenderer) const
     {
         BB_FRectangle dest = m_renderDestination;
-        dest.y += m_renderDestination.h - m_params.m_lineWidth;
-        dest.h = m_params.m_lineWidth;
-        pRenderer->DrawRectScreenFilled(dest, m_params.m_underlineColor);
+        dest.y += m_renderDestination.h - m_params.lineWidth;
+        dest.h = m_params.lineWidth;
+        pRenderer->DrawRectScreenFilled(dest, m_params.underlineColor);
     }
 
     void InterfaceHighlighter::RenderColor(BB_Renderer* pRenderer) const
     {
-        pRenderer->DrawRectScreenFilled(m_renderDestination, m_params.m_highlightColor);
+        pRenderer->DrawRectScreenFilled(m_renderDestination, m_params.highlighterColor);
     }
 
     InterfaceHighlighter::InterfaceHighlighter(UserInterface* pAttachedInterface)
@@ -48,14 +39,32 @@ namespace BlackBoxEngine
     {
     }
 
+    InterfaceHighlighter::~InterfaceHighlighter()
+    {
+        if ( m_pSprite )
+            delete m_pSprite;
+    }
+
     void InterfaceHighlighter::Render(BB_Renderer* pRenderer) const
     {
-        if (m_params.m_mode & kModeIcon)
-            RenderIcon(pRenderer);
-        if (m_params.m_mode & kModeColored)
-            RenderColor(pRenderer);
-        if (m_params.m_mode & kModeUnderline)
-            RenderUnderline(pRenderer);
+        if ( m_params.mode & kModeIcon )
+            m_pSprite->Render( m_iconDestination );
+        if ( m_params.mode & kModeColored )
+            RenderColor( pRenderer );
+        if ( m_params.mode & kModeUnderline )
+            RenderUnderline( pRenderer );
+    }
+
+    void InterfaceHighlighter::Start()
+    {
+        if ( m_pSprite )
+            m_pSprite->Start();
+    }
+    
+    void InterfaceHighlighter::Stop()
+    {
+        if ( m_pSprite )
+            m_pSprite->StopAnimating();
     }
 
     void InterfaceHighlighter::SetTarget(InterfaceNode* pNode)
@@ -67,19 +76,28 @@ namespace BlackBoxEngine
 
     void InterfaceHighlighter::SetMode(uint8_t mode)
     {
-        m_params.m_mode = mode;
+        m_params.mode = mode;
         UpdateRenderPosition(m_pHighlightedNode);
     }
 
-    void InterfaceHighlighter::SetParmeters(TextureInfo params)
+    void InterfaceHighlighter::SetParameters(const Parameters& params)
     {
         m_params = params;
-        auto* pRenderer = BlackBoxManager::Get()->GetWindow()->GetRenderer();
-        if (params.m_pIconFile)
-            m_pIconTexture = ResourceManager::GetTexture(pRenderer, params.m_pIconFile);
-        m_iconDestination.w = params.m_iconSize.x;
-        m_iconDestination.h = params.m_iconSize.y;
-        //UpdateRenderPosition(m_pHighlightedNode);
+        if ( params.mode & kModeIcon && !params.pSpriteFile )
+        {
+            m_params.mode |= ~kModeIcon;
+            BB_LOG( LogType::kError, "Set highlighter mode to icon without providing file" );
+        }
+
+        if ( m_params.mode & kModeIcon )
+        {
+            m_pSprite = new Sprite;
+            m_pSprite->Load( ResourceManager::GetRawXMLDATA(params.pSpriteFile) );
+            if ( params.iconSize.x == 0 || params.iconSize.y == 0 )
+                BB_LOG( LogType::kError, "Set highlight mode to icon without providing icon size, will not render" );
+            m_iconDestination.w = params.iconSize.x;
+            m_iconDestination.h = params.iconSize.y;
+        }
     }
 
     ////////////////////////////////////////////////////////////////
@@ -119,6 +137,18 @@ namespace BlackBoxEngine
         m_pInputTarget->m_keyDown.RegisterListener(m_keycodes.m_left, [this]() {MoveCursor(kLeft); });
         m_pInputTarget->m_keyDown.RegisterListener(m_keycodes.m_select, [this]() {SelectTargetedNode(); });
         m_pInputTarget->m_keyUp.RegisterListener(m_keycodes.m_select, [this]() {DeSelectTargetNode(); });
+    }
+
+    void UserInterface::Start()
+    {
+        m_pRootNode->Start();
+        m_highlighter.Start();
+    }
+
+    void UserInterface::Stop()
+    {
+        m_pRootNode->Stop();
+        m_highlighter.Stop();
     }
 
     UserInterface::UserInterface()
@@ -173,6 +203,7 @@ namespace BlackBoxEngine
     void UserInterface::AddToScreen()
     {
         m_managerId =  BlackBoxManager::Get()->m_pInterfaceManager->AddInterfaceToScreen(this);
+        Start();
     }
 
     void UserInterface::RemoveFromScreen()
@@ -181,11 +212,7 @@ namespace BlackBoxEngine
             return;
         BlackBoxManager::Get()->m_pInterfaceManager->RemoveInterface(m_managerId);
         m_managerId = -1;
-    }
-
-    void UserInterface::Start()
-    {
-        m_pRootNode->Start();
+        Stop();
     }
 
     void UserInterface::Update()
@@ -241,6 +268,13 @@ namespace BlackBoxEngine
         StartThis();
         for (auto& node : m_childNodes)
             node->Start();
+    }
+
+    void InterfaceNode::Stop()
+    {
+        StopThis();
+        for ( auto& node : m_childNodes )
+            node->Stop();
     }
 
     void InterfaceNode::Update()
