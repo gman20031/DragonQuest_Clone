@@ -48,6 +48,7 @@ void PlayerMovementComponent::Start()
                     auto* pInput = BlackBoxManager::Get()->m_pInputManager;
                     if (pInput->IsKeyDown(keyCode))
                         TryMove({ x, y });
+
                     return 0;
                 });
         } );
@@ -158,6 +159,7 @@ void PlayerMovementComponent::SetTargetTile()
     // check if we can walk on that tile
     const auto& tileActor = m_pTileMap->GetTileAtGamePosition(desiredTarget);
     auto* pTileInfo = tileActor->GetComponent<TileInfoComponent>();
+
     if (!pTileInfo || !pTileInfo->IsWalkable())
     {
         m_isMoving = false;
