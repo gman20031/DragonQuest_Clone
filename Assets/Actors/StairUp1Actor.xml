@@ -6,6 +6,12 @@
         </Position>
         <Rotation>0</Rotation>
     </Component>
+    <Component Name="AABBColliderComponent">
+        <width>0</width>
+        <height>0</height>
+        <blockable>false</blockable>
+        <enabled>true</enabled>
+    </Component>
     <Component Name="SpriteComponent">
         <width>16</width>
         <height>16</height>

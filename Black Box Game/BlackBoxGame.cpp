@@ -7,7 +7,7 @@ using namespace BlackBoxEngine;
 #include <Interface/InterfaceButton.h>
 #include <Interface/InterfaceText.h>
 
-#include "InteractionComponent.h"
+#include <../Black Box Engine/Actors/Collision/AABBColliderComponent.h>
 
 void ButtonOneCallback()
 {
@@ -118,7 +118,6 @@ void BlackBoxGame::InitGame()
     //m_pEngineManager->m_pActorManager->ClearLevel();
     m_pEngineManager->m_pActorManager->LoadLevel("../Assets/Levels/ExampleLevel.xml");
     //m_pEngineManager->m_pActorManager->LoadLevel("../Assets/Levels/Cave2Level.xml");
-
 }
 
 BlackBoxGame::BlackBoxGame()
