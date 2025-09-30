@@ -1,5 +1,5 @@
 #include "InteractionComponent.h"
-
+#include "../Black Box Engine/Actors/ActorManager.h"
 void InteractionComponent::Start()
 {
 }

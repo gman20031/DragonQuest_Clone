@@ -1,8 +1,8 @@
 <Actor Name="CaveEntranceActor">
     <Component Name="TransformComponent">
         <Position>
-            <X>496</X>
-            <Y>224</Y>
+            <X>576</X>
+            <Y>320</Y>
         </Position>
         <Rotation>0</Rotation>
     </Component>

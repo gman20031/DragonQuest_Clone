@@ -1,8 +1,8 @@
 <Actor Name="TownActor">
     <Component Name="TransformComponent">
         <Position>
-            <X>800</X>
-            <Y>686</Y>
+            <X>896</X>
+            <Y>782</Y>
         </Position>
         <Rotation>0</Rotation>
     </Component>
