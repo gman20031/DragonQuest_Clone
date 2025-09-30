@@ -74,6 +74,11 @@ namespace BlackBoxEngine
         m_sprite.Render( dest );
     }
 
+    void AnimatedSpriteComponent::Start()
+    {
+        m_sprite.Start();
+    }
+
     /////////////////////////////////////////////////////////////////
     /// Original SpriteComponent
     /////////////////////////////////////////////////////////////////

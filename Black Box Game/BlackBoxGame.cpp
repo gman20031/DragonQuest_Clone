@@ -35,18 +35,19 @@ void BlackBoxGame::TestInterfaceStuff()
     m_interfaceRoot.GetRoot()->SetOffset(20, 20);
 
     auto* pHighlighter = m_interfaceRoot.GetHighlight();
-    pHighlighter->SetParmeters({
-        .m_mode = InterfaceHighlighter::kModeIcon,
+    pHighlighter->SetParmeters( {
+        .m_mode = InterfaceHighlighter::kModeIcon | InterfaceHighlighter::kModeUnderline,
         .m_pIconFile = "../Assets/UI/Icons/RightArrowTest.png",
         .m_iconOffset = {-7,0},
         .m_iconSize = {6,6},
+        .m_lineWidth = 2,
+        .m_underlineColor = ColorPresets::green,
     });
 
     BB_FRectangle buttonDimension{ 0,0, 64, 6 };
 
-    InterfaceButton::TextureInfo buttomParams{
+    InterfaceButton::ButtonParams buttomParams{
         .usable = true,
-        .mouseInteractable = false,
         .color =         ColorValue(0,0,0,0),
         .targetedColor = ColorValue(0,0,0,0),
         .interactColor = ColorValue(0,0,0,0)
@@ -81,8 +82,9 @@ void BlackBoxGame::TestInterfaceStuff()
     m_nodes[0]->SetAdjacentNode(kUp, m_nodes[3]);
 
     buttonDimension.y = 0;
+    buttonDimension.x = 0;
 
-    InterfaceText::TextureInfo textParams{
+    InterfaceText::Paremeters textParams{
         .pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf",
         .textSize = 12,
         .color = ColorPresets::white
@@ -102,7 +104,8 @@ void BlackBoxGame::TestInterfaceStuff()
 
     pHighlighter->SetTarget(m_nodes[0]);
 
-    m_interfaceRoot.SetCursorTarget(m_nodes[0]);
+    m_interfaceRoot.SetCursorTarget(m_nodes[0]); // this will crash if you forget
+
     m_interfaceRoot.AddToScreen();
     m_pEngineManager->m_pInputManager->SwapInputTargetToInterface(&m_interfaceRoot);
 }
@@ -112,15 +115,6 @@ void BlackBoxGame::InitGame()
 	BB_LOG(LogType::kMessage, "Game starting");
     m_pEngineManager->GetWindow()->SetWindowIcon("../Assets/Sprites/DragonQuestIcon.png");
 
-    //auto* pComponent = m_pEngineManager->m_pActorManager->NewActor()->AddComponent<AnimatedSpriteComponent>();
-
-    //pComponent->Sprite().SetTexture( "../Assets/Sprites/Player/CharacterSpriteSheet.png" );
-    //pComponent->Sprite().SetSpriteXCount( 8 );
-    //pComponent->Sprite().SetSpriteYCount( 1 );
-    //pComponent->Sprite().SetSpriteDimension( {16, 16} );
-    //pComponent->Sprite().SetSpriteIndex( 0 );
-    //pComponent->SetDrawnDimensions( 16, 16 );
-    //pComponent->Sprite().AnimateSprite( 1, true );
     //TestInterfaceStuff();
     //m_pEngineManager->m_pActorManager->ClearLevel();
     m_pEngineManager->m_pActorManager->LoadLevel("../Assets/Levels/ExampleLevel.xml");

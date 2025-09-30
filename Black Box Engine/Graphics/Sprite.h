@@ -26,6 +26,9 @@ namespace BlackBoxEngine
         uint32_t m_spriteXPad = 0;
         uint32_t m_spriteYPad = 0;
         uint32_t m_callbackId = 0;
+        int m_framesPerSecond = 0;
+        bool m_animateOnStart = false;
+        bool m_loopAnimation = false;
     private:
         void UpdateOffset();
 
@@ -47,18 +50,25 @@ namespace BlackBoxEngine
         void SetSpriteYPad( uint32_t yPad );
         void SetAnimationStartIndex( int index );
         void SetAnimationEndIndex( int index );
+        void SetFramesPerSecond( int frames ) { m_framesPerSecond = frames; };
+        void SetAnimateOnStart( bool animStart ) { m_animateOnStart = animStart; };
+        void SetLoopAnimation( bool loop ) { m_loopAnimation = loop; };
 
         int GetSpriteIndex() const { return m_spriteSheetIndex; }
         int GetAnimationStartIndex() const { return m_animStartIndex; }
         int GetAnimationEndIndex() const { return m_animEndIndex; }
-        BB_TPoint<uint32_t> GetSpriteDemsions() const { return m_spriteDimensions; }
+        BB_TPoint<uint32_t> GetSpriteDimensions() const { return m_spriteDimensions; }
         uint32_t SetSpriteXCount() const { return m_spriteXCount; }
         uint32_t SetSpriteYCount() const { return m_spriteYCount; }
         uint32_t SetSpriteXPad() const { return m_spriteXPad; }
         uint32_t SetSpriteYPad() const { return m_spriteYPad; }
+        int GetFramesPerSecond() const { return m_framesPerSecond; }
+        bool GetAnimateOnStart() const { return m_animateOnStart; }
+        bool GetIfAnimationLooping() const { return m_loopAnimation; }
 
         void Load( const XMLElementParser parser );
         void Save( XMLElementParser parser ) const;
+        void Start();
     };
 
 }

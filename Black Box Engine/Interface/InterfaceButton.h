@@ -21,7 +21,7 @@ namespace BlackBoxEngine
         * interactColor
         * callbackFunction
         */
-        struct TextureInfo
+        struct ButtonParams
         {
             bool usable = false;
             bool mouseInteractable = false;
@@ -32,14 +32,14 @@ namespace BlackBoxEngine
             ButtonCallbackFunctionPtr callbackFunction;
         };
     private:
-        TextureInfo m_params;
+        ButtonParams m_params;
         std::shared_ptr<BB_Texture> m_pTexture = nullptr;
         ColorValue m_buttonColor;
 
         virtual void UpdateThis();
         virtual void RenderThis(BB_Renderer* pRenderer, float rootX, float rootY) override;
     public:
-        InterfaceButton(InterfaceNode* pParent, const char* pName, BB_FRectangle dimensions, const TextureInfo& params);
+        InterfaceButton(InterfaceNode* pParent, const char* pName, BB_FRectangle dimensions, const ButtonParams& params);
         virtual ~InterfaceButton() = default;
 
         virtual void OnTargeted() override;

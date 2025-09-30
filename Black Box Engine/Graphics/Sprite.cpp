@@ -15,8 +15,8 @@ namespace BlackBoxEngine
         m_textureOffset.h = m_spriteDimensions.y;
         const int spriteX = (m_spriteSheetIndex % (m_spriteXCount));
         const int spriteY = (m_spriteSheetIndex / (m_spriteXCount));
-        m_textureOffset.x = spriteX * (m_spriteDimensions.x + 1 ) + (m_spriteXPad * spriteX);
-        m_textureOffset.y = spriteY * (m_spriteDimensions.y + 1 ) + (m_spriteYPad * spriteY);
+        m_textureOffset.x = spriteX * (m_spriteDimensions.x) + (m_spriteXPad * spriteX);
+        m_textureOffset.y = spriteY * (m_spriteDimensions.y) + (m_spriteYPad * spriteY);
     }
 
     Sprite::Sprite()
@@ -31,13 +31,14 @@ namespace BlackBoxEngine
         uint32_t msDelay = static_cast<uint32_t>(frameDelay * milisecondPerSecond);
 
         int totalFrameCount = m_spriteXCount * m_spriteYCount;
+        m_spriteSheetIndex = m_animStartIndex;
 
         auto callback = [msDelay, totalFrameCount, repeat, this]() -> uint32_t
             {
                 int spriteIndex = GetSpriteIndex();
                 ++spriteIndex;
-                if ( spriteIndex >= totalFrameCount )
-                    spriteIndex = 0;
+                if ( spriteIndex >= totalFrameCount || spriteIndex > m_animEndIndex)
+                    spriteIndex = m_animStartIndex;
                 assert( spriteIndex >= 0 && spriteIndex <= totalFrameCount );
                 SetSpriteIndex( spriteIndex );
                 if(repeat)
@@ -131,29 +132,40 @@ namespace BlackBoxEngine
 
     void Sprite::SetAnimationStartIndex( int index )
     {
-        assert( index > 0 && index < static_cast<int>(m_spriteXCount * m_spriteYCount) );
+        assert( index >= 0 && index < static_cast<int>(m_spriteXCount * m_spriteYCount) );
         m_animStartIndex = index;
     }
 
     void Sprite::SetAnimationEndIndex( int index )
     {
-        assert( index > 0 && index < static_cast<int>(m_spriteXCount * m_spriteYCount) );
-        m_animStartIndex = index;
+        assert( index >= 0 && index < static_cast<int>(m_spriteXCount * m_spriteYCount) );
+        m_animEndIndex = index;
     }
 
     void Sprite::Load( const XMLElementParser parser )
     {
         parser.GetChildVariable( "startingSpriteIndex", &m_spriteSheetIndex );
 
-        auto spriteDim = parser.GetChildElement( "spriteDimensions" );
-        spriteDim.GetChildVariable( "width", (float*)&m_spriteDimensions.x );
-        spriteDim.GetChildVariable( "height", (float*)&m_spriteDimensions.y );
+        parser.GetChildVariable( "UseFullImage", &m_useFullImage );
+        if ( !m_useFullImage )
+        {
+            auto spriteDim = parser.GetChildElement( "spriteDimensions" );
+            spriteDim.GetChildVariable( "width", &m_spriteDimensions.x );
+            spriteDim.GetChildVariable( "height", &m_spriteDimensions.y );
+        }
+        parser.GetChildVariable( "filePath", &m_pFilePath );
 
         parser.GetChildVariable( "sprite_x_count", &m_spriteXCount );
         parser.GetChildVariable( "sprite_y_count", &m_spriteYCount );
         parser.GetChildVariable( "sprite_x_pad", &m_spriteXPad );
         parser.GetChildVariable( "sprite_y_pad", &m_spriteXPad );
+        parser.GetChildVariable( "anim_start_index", &m_animStartIndex );
+        parser.GetChildVariable( "anim_end_index", &m_animEndIndex );
+        parser.GetChildVariable( "frames_per_second", &m_framesPerSecond );
+        parser.GetChildVariable( "looping", &m_loopAnimation );
+        parser.GetChildVariable( "animated_on_start", &m_animateOnStart );
 
+        SetTexture( m_pFilePath );
         UpdateOffset();
     }
 
@@ -179,6 +191,15 @@ namespace BlackBoxEngine
         parser.NewChildVariable( "sprite_y_count", m_spriteYCount );
         parser.NewChildVariable( "sprite_x_pad", m_spriteXPad );
         parser.NewChildVariable( "sprite_y_pad", m_spriteXPad );
+        parser.NewChildVariable( "anim_start_index", m_animStartIndex );
+        parser.NewChildVariable( "anim_end_index", m_animEndIndex );
+        parser.NewChildVariable( "frames_per_second", m_framesPerSecond );
+        parser.NewChildVariable( "looping", m_loopAnimation );
+        parser.NewChildVariable( "animated_on_start", m_animateOnStart );
     }
 
+    void Sprite::Start( )
+    {
+        AnimateSprite( m_framesPerSecond, m_loopAnimation );
+    }
 }
