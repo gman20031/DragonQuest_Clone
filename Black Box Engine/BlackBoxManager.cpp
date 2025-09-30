@@ -142,7 +142,7 @@ namespace BlackBoxEngine
             m_pAudioManager = new AudioManager;
 		if(options & kCollision)
 		{
-			m_pCollisionManager = new CollisionManager(-kCollisionBufferSize, -kCollisionBufferSize,
+			m_pCollisionManager = new CollisionManager(-100, -100,
 				1408,
 				1232);
 		}
