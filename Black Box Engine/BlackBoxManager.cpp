@@ -143,8 +143,8 @@ namespace BlackBoxEngine
 		if(options & kCollision)
 		{
 			m_pCollisionManager = new CollisionManager(-kCollisionBufferSize, -kCollisionBufferSize,
-				(float)m_pWindow->GetWidth() + kCollisionBufferSize,
-				(float)m_pWindow->GetHeight() + kCollisionBufferSize);
+				1408,
+				1232);
 		}
 
         // other inits
