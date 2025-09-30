@@ -463,7 +463,7 @@ namespace BlackBoxEngine
             else
                 pRenderer->SetDrawColor(kEmptyColor);
 
-            pRenderer->DrawRectScreen(pNode->m_boundingBox.m_rect);
+            pRenderer->DrawRectGame(pNode->m_boundingBox.m_rect);
         }
         else
         {
