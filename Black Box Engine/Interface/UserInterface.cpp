@@ -48,7 +48,7 @@ namespace BlackBoxEngine
     void InterfaceHighlighter::Render(BB_Renderer* pRenderer) const
     {
         if ( m_params.mode & kModeIcon )
-            m_pSprite->Render( m_iconDestination );
+            m_pSprite->Render( m_iconDestination , true );
         if ( m_params.mode & kModeColored )
             RenderColor( pRenderer );
         if ( m_params.mode & kModeUnderline )
@@ -69,6 +69,7 @@ namespace BlackBoxEngine
 
     void InterfaceHighlighter::SetTarget(InterfaceNode* pNode)
     {
+        assert( pNode );
         m_pHighlightedNode = pNode;
         m_renderDestination = pNode->GetRenderBox();
         UpdateRenderPosition(pNode);
