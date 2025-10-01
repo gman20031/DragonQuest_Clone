@@ -62,11 +62,11 @@ namespace BlackBoxEngine
         switch (type)
         {
         case InputType::kKeyDown:
-            return m_pInputTarget->m_keyDown.RegisterListener(key, std::forward<Callback>(function) );
+            return m_pInputTarget->m_keyDown.RegisterListener( key, std::forward<Callback>( function ) ); break;
         case InputType::kKeyUp:
-            return m_pInputTarget->m_keyUp.RegisterListener(key, std::forward<Callback>(function) );
+            return m_pInputTarget->m_keyUp.RegisterListener(key, std::forward<Callback>(function) ); break;
         case InputType::kKeyHeld:
-            return m_pInputTarget->m_keyHeld.RegisterListener(key, std::forward<Callback>(function) );
+            return m_pInputTarget->m_keyHeld.RegisterListener(key, std::forward<Callback>(function) ); break;
         default:
             return 0;
         }
@@ -84,11 +84,11 @@ namespace BlackBoxEngine
         switch (type)
         {
         case InputType::kKeyDown:
-            m_pInputTarget->m_keyDown.RemoveListener(id);
+            m_pInputTarget->m_keyDown.RemoveListener( id ); return;
         case InputType::kKeyUp:
-            m_pInputTarget->m_keyUp.RemoveListener(id);
+            m_pInputTarget->m_keyUp.RemoveListener(id); return;
         case InputType::kKeyHeld:
-            m_pInputTarget->m_keyHeld.RemoveListener(id);
+            m_pInputTarget->m_keyHeld.RemoveListener(id); return;
         default:
             return;
         }
@@ -99,11 +99,11 @@ namespace BlackBoxEngine
         switch (type)
         {
         case InputType::kKeyDown:
-            m_pInputTarget->m_keyDown.RemoveListenerWithEvent(id, key);
+            m_pInputTarget->m_keyDown.RemoveListenerWithEvent( id, key ); return;
         case InputType::kKeyUp:
-            m_pInputTarget->m_keyUp.RemoveListenerWithEvent(id, key);
+            m_pInputTarget->m_keyUp.RemoveListenerWithEvent(id, key); return;
         case InputType::kKeyHeld:
-            m_pInputTarget->m_keyHeld.RemoveListenerWithEvent(id, key);
+            m_pInputTarget->m_keyHeld.RemoveListenerWithEvent(id, key); return;
         default:
             return;
         }
