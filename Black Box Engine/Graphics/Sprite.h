@@ -1,6 +1,7 @@
 #pragma once
 
 #include <atomic>
+#include <mutex>
 
 #include "../Resources/ResourceManager.h"
 #include "../Resources/XML/BlackBoxXMLParser.h"

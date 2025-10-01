@@ -39,6 +39,7 @@ namespace BlackBoxEngine
 
         int totalFrameCount = m_spriteXCount * m_spriteYCount;
         m_spriteSheetIndex = m_animStartIndex;
+        m_animating = true;
 
         auto callback = [msDelay, totalFrameCount, repeat, this]() -> uint32_t
             {
