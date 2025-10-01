@@ -1,5 +1,7 @@
 #pragma once
 
+#include <atomic>
+
 #include "../Resources/ResourceManager.h"
 #include "../Resources/XML/BlackBoxXMLParser.h"
 #include "RenderingStructs.h"
@@ -16,7 +18,7 @@ namespace BlackBoxEngine
         bool m_useFullImage = true;
         bool m_animating = false;
 
-        int m_spriteSheetIndex = 0; // index should be able to be zero to wrap around
+        std::atomic_int m_spriteSheetIndex = 0; // index should be able to be zero to wrap around
         int m_animStartIndex = 0;
         int m_animEndIndex = 0;
         BB_TRectangle<uint32_t> m_textureOffset{0,0,0,0};

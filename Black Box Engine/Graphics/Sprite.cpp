@@ -54,6 +54,7 @@ namespace BlackBoxEngine
     {
         if ( !m_animating )
             return;
+        m_animating = false;
         if ( ! StopDelay( m_callbackId ) )
             BB_LOG( LogType::kWarning, "error when attempting to remove animation callback, SDL: ", SDL_GetError() );
     }
@@ -145,7 +146,9 @@ namespace BlackBoxEngine
 
     void Sprite::Load( const XMLElementParser parser )
     {
-        parser.GetChildVariable( "startingSpriteIndex", &m_spriteSheetIndex );
+        int tempIndex;
+        parser.GetChildVariable( "startingSpriteIndex", &tempIndex );
+        m_spriteSheetIndex = tempIndex;
 
         parser.GetChildVariable( "UseFullImage", &m_useFullImage );
         if ( !m_useFullImage )
