@@ -9,7 +9,7 @@ namespace BlackBoxEngine
         BB_FRectangle dest = m_nodeRenderRect;
         dest.x = m_nodeRenderRect.x + rootX;
         dest.y = m_nodeRenderRect.y + rootY;
-        m_pSprite->Render( dest );
+        m_pSprite->Render( dest , true);
     }
 
     InterfaceTexture::InterfaceTexture( InterfaceNode* pParent, const char* pName, BB_FRectangle dimensions, const TextureInfo& params )
