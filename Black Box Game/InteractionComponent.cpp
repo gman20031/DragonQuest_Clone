@@ -6,6 +6,23 @@
 
 using namespace BlackBoxEngine;
 
+void ButtonOneCallback()
+{
+    BB_LOG(LogType::kMessage, "Button 1 clicked");
+}
+void ButtonTwoCallback()
+{
+    BB_LOG(LogType::kMessage, "Button 2 clicked");
+}
+void ButtonThreeCallback()
+{
+    BB_LOG(LogType::kMessage, "Button 3 clicked");
+}
+void ButtonFourCallback()
+{
+    BB_LOG(LogType::kMessage, "Button 4 clicked");
+}
+
 InteractionComponent::~InteractionComponent()
 {
     auto* pInputManager = BlackBoxManager::Get()->m_pInputManager;
@@ -18,7 +35,6 @@ InteractionComponent::~InteractionComponent()
 
 void InteractionComponent::Start()
 {
-    //TestInterfaceStuff();
     auto* pInput = BlackBoxManager::Get()->m_pInputManager;
     using enum InputManager::InputType;
     
@@ -72,47 +88,6 @@ void InteractionComponent::Load([[maybe_unused]] const BlackBoxEngine::XMLElemen
 {
 }
 
-void InteractionComponent::ToggleUI()
-{
-    if (!m_uiActive)
-    {
-        // Create and show the UI
-        //auto* pManager = BlackBoxManager::Get();
-        //auto* pGame = static_cast<BlackBoxGame*>(pManager->m_pGame); // if engine stores it
-        //if (pGame)
-        //    pGame->TestInterfaceStuff();
-        //TestInterfaceStuff();
-
-        m_uiActive = true;
-    }
-    else
-    {
-        // Hide UI, return to game input
-        auto* pManager = BlackBoxManager::Get()->m_pInputManager;
-        pManager->SwapInputToGame();
-
-        m_uiActive = false;
-    }
-}
-
-void ButtonOneCallback()
-{
-    BB_LOG(LogType::kMessage, "Button 1 clicked");
-}
-void ButtonTwoCallback()
-{
-    BB_LOG(LogType::kMessage, "Button 2 clicked");
-}
-void ButtonThreeCallback()
-{
-    BB_LOG(LogType::kMessage, "Button 3 clicked");
-}
-void ButtonFourCallback()
-{
-    BB_LOG(LogType::kMessage, "Button 4 clicked");
-}
-
-
 void InteractionComponent::TestInterfaceStuff()
 {
     using enum Direction;
@@ -148,7 +123,7 @@ void InteractionComponent::TestInterfaceStuff()
 
     InterfaceButton::ButtonParams buttomParams{
         .usable = true,
-        .color = ColorValue(255,0,0,255),
+        .color = ColorValue(0,0,0,0),
         .targetedColor = ColorValue(0,0,0,0),
         .interactColor = ColorValue(0,0,0,0)
     };
