@@ -59,7 +59,7 @@ namespace BlackBoxEngine
             BB_LOG( LogType::kWarning, "error when attempting to remove animation callback, SDL: ", SDL_GetError() );
     }
 
-    void Sprite::Render(const BB_FRectangle& destRect )
+    void Sprite::Render(const BB_FRectangle& destRect , bool renderScreen )
     {
         BB_FRectangle source = {};
         BB_FRectangle* pSource = nullptr;
@@ -77,13 +77,13 @@ namespace BlackBoxEngine
             pSource = &source;
         }
 
-        if ( !m_pRenderer->DrawTextureGame(
-            m_pTexture.get(),
-            pSource,
-            &destRect ) )
-        {
+        bool good = false;
+        if ( renderScreen )
+            good = m_pRenderer->DrawTextureScreen( m_pTexture.get(), pSource, &destRect );
+        else
+            good = m_pRenderer->DrawTextureGame(m_pTexture.get(), pSource, &destRect );
+        if (!good)
             BB_LOG( LogType::kError, SDL_GetError() );
-        }
     }
 
     void Sprite::SetTexture( const char* pTexturePath )

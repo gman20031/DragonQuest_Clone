@@ -118,7 +118,6 @@ void BlackBoxGame::TestInterfaceStuff()
     m_nodes[3]->MakeChildNode<InterfaceText>("FourthButton Text", buttonDimension, textParams);
 
 
-
     pHighlighter->SetTarget(m_nodes[0]);
 
     m_interfaceRoot.SetCursorTarget(m_nodes[0]); // this will crash if you forget
@@ -134,7 +133,7 @@ void BlackBoxGame::InitGame()
 
     TestInterfaceStuff();
     //m_pEngineManager->m_pActorManager->ClearLevel();
-    //m_pEngineManager->m_pActorManager->LoadLevel("../Assets/Levels/ExampleLevel.xml");
+    m_pEngineManager->m_pActorManager->LoadLevel("../Assets/Levels/ExampleLevel.xml");
     //m_pEngineManager->m_pActorManager->LoadLevel("../Assets/Levels/Cave2Level.xml");
 
 }

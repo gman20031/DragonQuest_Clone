@@ -39,7 +39,7 @@ namespace BlackBoxEngine
 
         void AnimateSprite( int framePerSecond, bool repeat);
         void StopAnimating();
-        void Render( const BB_FRectangle& destRect );
+        void Render( const BB_FRectangle& destRect, bool renderScreen = false );
 
         void SetTexture( const char* pFilePath);
 
