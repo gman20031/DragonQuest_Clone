@@ -26,6 +26,11 @@ namespace BlackBoxEngine
         m_pRenderer = BlackBoxManager::Get()->GetWindow()->GetRenderer();
     }
 
+    Sprite::~Sprite()
+    {
+        StopAnimating();
+    }
+
     void Sprite::AnimateSprite( int framePerSecond, bool repeat )
     {
         constexpr uint64_t milisecondPerSecond = std::chrono::milliseconds::period::den;

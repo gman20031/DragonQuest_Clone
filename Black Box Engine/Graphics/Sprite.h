@@ -36,6 +36,7 @@ namespace BlackBoxEngine
 
     public:
         Sprite();
+        ~Sprite();
 
         void AnimateSprite( int framePerSecond, bool repeat);
         void StopAnimating();
