@@ -46,6 +46,8 @@ namespace BlackBoxEngine
     void ActorManager::ClearLevel()
     {
         m_allActors.clear();
+        m_unused.clear();
+        m_highestId = 0;
     }
 
     void ActorManager::LoadLevel(const char* filePath)
