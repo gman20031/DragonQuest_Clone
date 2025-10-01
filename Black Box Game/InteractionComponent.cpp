@@ -114,7 +114,9 @@ void InteractionComponent::OnButtonPressed(const std::string& action)
     {
         if (auto* caveComp = m_currentActor->GetComponent<CaveEntranceComponent>())
         {
+            CloseUI();
             caveComp->OnInteract();
+
             return;
         }
     }

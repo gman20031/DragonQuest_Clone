@@ -10,7 +10,6 @@ void CaveEntranceComponent::OnInteract()
 	BB_LOG(LogType::kMessage, "Entering the cave...");
 
 	BlackBoxManager::Get()->m_pInputManager->SwapInputToGame();
-	BlackBoxManager::Get()->m_pActorManager->ClearLevel();
 	BlackBoxManager::Get()->m_pActorManager->LoadLevel("../Assets/Levels/Cave1Level.xml");
 
 
