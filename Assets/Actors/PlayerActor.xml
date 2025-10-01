@@ -1,8 +1,4 @@
 <Actor Name="PlayerActor">
-    <Component Name="PlayerMovementComponent">
-        <Speed>90</Speed>
-        <TileMapID>0</TileMapID>
-    </Component>
     <Component Name="TransformComponent">
         <Position>
             <X>800</X>
@@ -10,11 +6,21 @@
         </Position>
         <Rotation>0</Rotation>
     </Component>
+    <Component Name="PlayerMovementComponent">
+        <Speed>90</Speed>
+        <TileMapID>0</TileMapID>
+    </Component>
     <Component Name="MoverComponent">
         <Velocity>
             <X>0</X>
             <Y>0</Y>
         </Velocity>
+    </Component>
+    <Component Name="AABBColliderComponent">
+        <width>0</width>
+        <height>0</height>
+        <blockable>false</blockable>
+        <enabled>true</enabled>
     </Component>
     <Component Name="PlayerCameraComponent"/>
     <Component Name="AnimatedSpriteComponent">
@@ -36,8 +42,8 @@
             <sprite_y_pad>0</sprite_y_pad>
             <anim_start_index>0</anim_start_index>
             <anim_end_index>1</anim_end_index>
-			<frames_per_second>2</frames_per_second>
-			<looping>true</looping>
+            <frames_per_second>2</frames_per_second>
+            <looping>true</looping>
             <animated_on_start>true</animated_on_start>
         </SpriteInfo>
     </Component>

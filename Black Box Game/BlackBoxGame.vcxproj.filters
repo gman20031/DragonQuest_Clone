@@ -11,6 +11,7 @@
     <ClCompile Include="TileSystem\TileInfoComponent.cpp" />
     <ClCompile Include="PlayerMovementComponent.cpp" />
     <ClCompile Include="InteractionComponent.cpp" />
+    <ClCompile Include="CaveEntranceComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BlackBoxGame.h" />
@@ -21,5 +22,6 @@
     <ClInclude Include="TileSystem\TileActorManager.h" />
     <ClInclude Include="PlayerMovementComponent.h" />
     <ClInclude Include="InteractionComponent.h" />
+    <ClInclude Include="CaveEntranceComponent.h" />
   </ItemGroup>
 </Project>

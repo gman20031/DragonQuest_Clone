@@ -185,6 +185,7 @@ copy "$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\lib\x64\SDL3_ttf.dll" 
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BlackBoxGame.cpp" />
+    <ClCompile Include="CaveEntranceComponent.cpp" />
     <ClCompile Include="ExampleComponent.cpp" />
     <ClCompile Include="GameComponentRegistrar.cpp" />
     <ClCompile Include="InteractionComponent.cpp" />
@@ -197,6 +198,7 @@ copy "$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\lib\x64\SDL3_ttf.dll" 
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BlackBoxGame.h" />
+    <ClInclude Include="CaveEntranceComponent.h" />
     <ClInclude Include="ExampleComponent.h" />
     <ClInclude Include="InteractionComponent.h" />
     <ClInclude Include="PlayerMovementComponent.h" />

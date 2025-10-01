@@ -2,7 +2,7 @@
 #include "../Black Box Engine/Actors/ActorManager.h"
 #include "../Black Box Engine/BlackBoxManager.h"
 #include "BlackBoxGame.h"
-
+#include "CaveEntranceComponent.h"
 
 using namespace BlackBoxEngine;
 
@@ -78,6 +78,19 @@ void InteractionComponent::Render()
 
 void InteractionComponent::OnCollide([[maybe_unused]]BlackBoxEngine::Actor* pOtherActor)
 {
+    
+    if (!pOtherActor) return;
+
+    // Check if the actor is interactable in any way
+    if (pOtherActor->GetComponent<CaveEntranceComponent>())
+    {
+        m_currentActor = pOtherActor; // store the actor the player is colliding with
+        //BB_LOG(LogType::kMessage, "Player is now colliding with actor: %s", pOtherActor->GetId().c_str());
+    }
+    else
+    {
+        m_currentActor = nullptr; // not colliding with anything relevant
+    }
 }
 
 void InteractionComponent::Save([[maybe_unused]] BlackBoxEngine::XMLElementParser parser)
@@ -86,6 +99,35 @@ void InteractionComponent::Save([[maybe_unused]] BlackBoxEngine::XMLElementParse
 
 void InteractionComponent::Load([[maybe_unused]] const BlackBoxEngine::XMLElementParser parser)
 {
+}
+
+void InteractionComponent::OnButtonPressed(const std::string& action)
+{
+    if (!m_currentActor)
+    {
+        BB_LOG(LogType::kMessage, "No actor to interact with.");
+        return;
+    }
+
+    // Example using the action string
+    if (action == "stair")
+    {
+        if (auto* caveComp = m_currentActor->GetComponent<CaveEntranceComponent>())
+        {
+            caveComp->OnInteract();
+            return;
+        }
+    }
+   //else if (action == "talk")
+   //{
+   //    if (auto* townComp = m_currentActor->GetComponent<TownNPCComponent>())
+   //    {
+   //        townComp->OnInteract();
+   //        return;
+   //    }
+   //}
+
+    BB_LOG(LogType::kMessage, "Cannot perform this action here.");
 }
 
 void InteractionComponent::TestInterfaceStuff()
@@ -125,16 +167,27 @@ void InteractionComponent::TestInterfaceStuff()
         .usable = true,
         .color = ColorValue(0,0,0,0),
         .targetedColor = ColorValue(0,0,0,0),
-        .interactColor = ColorValue(0,0,0,0)
+        .interactColor = ColorValue(0,0,0,0),
     };
 
-    ButtonCallbackFunctionPtr callbacks[] =
-    {
-        &ButtonOneCallback,
-        &ButtonTwoCallback,
-        &ButtonThreeCallback,
-        &ButtonFourCallback
-    };
+    std::string buttonNames[] = { "Talk", "Stair", "Trade", "Look" };
+    std::string actions[] = { "talk", "stair", "trade", "look" };
+
+    //ButtonCallbackFunctionPtr callbacks[] =
+    //{
+    //    &ButtonOneCallback,
+    //    &ButtonTwoCallback,
+    //    &ButtonThreeCallback,
+    //    &ButtonFourCallback
+    //};
+
+   ButtonCallbackFunctionPtr callbacks[] =
+   {
+       [this]() { OnButtonPressed("talk"); }, // First button
+       [this]() { OnButtonPressed("stair"); },  // Second button
+       [this]() { OnButtonPressed("trade"); }, // Third button
+       [this]() { OnButtonPressed("look"); }   // Fourth button
+   };
 
     InterfaceNode* m_nodes[4] = {};
 
@@ -143,16 +196,24 @@ void InteractionComponent::TestInterfaceStuff()
     for (size_t i = 0; i < buttonCount; ++i)
     {
         std::string name = "button_" + std::to_string(i);
-        buttomParams.callbackFunction = callbacks[i];
+        //buttomParams.callbackFunction = callbacks[i];
         buttonDimension.y = i * (buttonDimension.h + yPad);
+
+        buttomParams.callbackFunction = [this, i]() {
+            const char* actions[] = { "talk", "stair", "trade", "look" };
+            OnButtonPressed(actions[i]);
+            };
+
         auto* pButton = m_interfaceRoot.AddNode<InterfaceButton>(name.c_str(), buttonDimension, buttomParams);
         m_nodes[i] = pButton;
-
+    
         if (i == 0)
             continue;
         pButton->SetAdjacentNode(kUp, m_nodes[i - 1]);
         m_nodes[i - 1]->SetAdjacentNode(kDown, pButton);
     }
+
+
     m_nodes[3]->SetAdjacentNode(kDown, m_nodes[0]);
     m_nodes[0]->SetAdjacentNode(kUp, m_nodes[3]);
 
@@ -165,10 +226,10 @@ void InteractionComponent::TestInterfaceStuff()
         .color = ColorPresets::white
     };
 
-    textParams.pText = "First Button";
+    textParams.pText = "Talk";
     m_nodes[0]->MakeChildNode<InterfaceText>("FirstButton Text", buttonDimension, textParams);
 
-    textParams.pText = "Second Button";
+    textParams.pText = "Stair";
     m_nodes[1]->MakeChildNode<InterfaceText>("SecondButton Text", buttonDimension, textParams);
 
     textParams.pText = "Third Button";
@@ -195,3 +256,4 @@ void InteractionComponent::TestInterfaceStuff()
     
     m_uiActive = true;
 }
+

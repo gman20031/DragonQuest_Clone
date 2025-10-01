@@ -91,6 +91,8 @@
 		</TileMap>
     </Component>
 </Actor>
+
+
   <!-- Town -->
 <Actor SeperateFile = "true">
     <FilePath>../Assets/Actors/TownActor.xml</FilePath>

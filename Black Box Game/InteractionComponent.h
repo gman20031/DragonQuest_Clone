@@ -6,8 +6,10 @@
 #include <Interface/InterfaceText.h>
 #include <Interface/InterfaceTexture.h>
 #include <Interface/UserInterface.h>
+//#include "../Black Box Engine/Actors/Actor.h"
 
 class BlackBoxGame;
+//class Actor;
 
 class InteractionComponent : public BlackBoxEngine::Component
 {
@@ -18,6 +20,8 @@ class InteractionComponent : public BlackBoxEngine::Component
     std::string m_foo = "foo";
 
     BlackBoxEngine::UserInterface m_interfaceRoot;
+
+    BlackBoxEngine::Actor* m_currentActor = nullptr;
 
 public:
     InteractionComponent(BlackBoxEngine::Actor* pOwner) : Component(pOwner) { /*EMPTY*/ }
@@ -30,17 +34,20 @@ public:
     virtual void Save(BlackBoxEngine::XMLElementParser parser) override; // for when this actor is called to be saved
     virtual void Load(const BlackBoxEngine::XMLElementParser parser) override; // for when this actor is called to be loaded
 
-   
+    void SetCurrentActor(BlackBoxEngine::Actor* actor) { m_currentActor = actor; }
+    BlackBoxEngine::Actor* GetCurrentActor() const { return m_currentActor; }
+
+    void OnButtonPressed(const std::string& action);  
 
 private:
-    void ToggleUI();
 
     bool m_uiActive = false;
 
     void TestInterfaceStuff();
     void OpenUI();
     void CloseUI();
-    // Store subscription IDs like movement component
+
+
     std::vector<uint64_t> m_keyDownCodes;
-   // std::vector<BlackBoxEngine::InputManager::CallBackId> m_keyDownCodes;
+   
 };

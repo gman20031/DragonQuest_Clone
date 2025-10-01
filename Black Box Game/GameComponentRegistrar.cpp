@@ -7,6 +7,7 @@
 #include "TileSystem/TileMapComponent.h"
 #include "PlayerMovementComponent.h"
 #include "InteractionComponent.h"
+#include "CaveEntranceComponent.h"
 
 using namespace BlackBoxEngine;
 
@@ -17,7 +18,8 @@ static std::tuple
     ComponentFactory::Registrar<TileInfoComponent>,
     ComponentFactory::Registrar<TileMapComponent>,
     ComponentFactory::Registrar<PlayerMovementComponent>,
-    ComponentFactory::Registrar<InteractionComponent>
+    ComponentFactory::Registrar<InteractionComponent>,
+    ComponentFactory::Registrar<CaveEntranceComponent>
  // add more components like so
  //  ,ComponentFactory::Registrar<*NAME*>
 > GameComponentRegistrar;

@@ -7,9 +7,7 @@ using namespace BlackBoxEngine;
 #include <Interface/InterfaceButton.h>
 #include <Interface/InterfaceText.h>
 #include <Interface/InterfaceTexture.h>
-
-#include "InteractionComponent.h"
-#include <Actors/EngineComponents/SpriteComponent.h>
+#include "CaveEntranceComponent.h"
 
 
 void BlackBoxGame::InitGame()
@@ -21,6 +19,8 @@ void BlackBoxGame::InitGame()
     m_pEngineManager->m_pActorManager->LoadLevel("../Assets/Levels/ExampleLevel.xml");
     //m_pEngineManager->m_pActorManager->LoadLevel("../Assets/Levels/Cave2Level.xml");
 
+
+   
 }
 
 BlackBoxGame::BlackBoxGame()
