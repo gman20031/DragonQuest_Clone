@@ -11,7 +11,7 @@ void CaveEntranceComponent::OnInteract()
 
 	BlackBoxManager::Get()->m_pInputManager->SwapInputToGame();
 	BlackBoxManager::Get()->m_pActorManager->LoadLevel("../Assets/Levels/Cave1Level.xml");
-
+    BlackBoxManager::Get()->m_pActorManager->Start();
 
 }
 

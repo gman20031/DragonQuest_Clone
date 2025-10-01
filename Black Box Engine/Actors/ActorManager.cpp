@@ -63,8 +63,6 @@ namespace BlackBoxEngine
             auto& pActor = NewActor();
             while (pActor->ParseComponent(actorParser.NextComponent()));
         }
-        
-        Start();
     }
 
     void ActorManager::SaveActor(const std::unique_ptr<Actor>& pActor,
