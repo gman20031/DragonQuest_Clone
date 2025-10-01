@@ -50,6 +50,8 @@ namespace BlackBoxEngine
 
     void ActorManager::LoadLevel(const char* filePath)
     {
+        m_allActors.clear();
+
         LevelXMLParser LevelParser = ResourceManager::GetLevelXMLData(filePath);
         ActorXMLParser actorParser;
 
@@ -59,6 +61,8 @@ namespace BlackBoxEngine
             auto& pActor = NewActor();
             while (pActor->ParseComponent(actorParser.NextComponent()));
         }
+        
+        Start();
     }
 
     void ActorManager::SaveActor(const std::unique_ptr<Actor>& pActor,
