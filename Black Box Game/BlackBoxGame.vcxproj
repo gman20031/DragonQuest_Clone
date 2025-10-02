@@ -185,24 +185,24 @@ copy "$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\lib\x64\SDL3_ttf.dll" 
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BlackBoxGame.cpp" />
-    <ClCompile Include="CaveEntranceComponent.cpp" />
     <ClCompile Include="ExampleComponent.cpp" />
     <ClCompile Include="GameComponentRegistrar.cpp" />
     <ClCompile Include="InteractionComponent.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PlayerMovementComponent.cpp" />
     <ClCompile Include="ScreenCentered.cpp" />
+    <ClCompile Include="StairComponent.cpp" />
     <ClCompile Include="TileSystem\TileActorManager.cpp" />
     <ClCompile Include="TileSystem\TileInfoComponent.cpp" />
     <ClCompile Include="TileSystem\TileMapComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BlackBoxGame.h" />
-    <ClInclude Include="CaveEntranceComponent.h" />
     <ClInclude Include="ExampleComponent.h" />
     <ClInclude Include="InteractionComponent.h" />
     <ClInclude Include="PlayerMovementComponent.h" />
     <ClInclude Include="ScreenCentered.h" />
+    <ClInclude Include="StairComponent.h" />
     <ClInclude Include="TileSystem\TileActorManager.h" />
     <ClInclude Include="TileSystem\TileInfoComponent.h" />
     <ClInclude Include="TileSystem\TileMapComponent.h" />

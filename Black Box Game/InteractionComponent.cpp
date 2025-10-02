@@ -2,7 +2,7 @@
 #include "../Black Box Engine/Actors/ActorManager.h"
 #include "../Black Box Engine/BlackBoxManager.h"
 #include "BlackBoxGame.h"
-#include "CaveEntranceComponent.h"
+#include "StairComponent.h"
 
 using namespace BlackBoxEngine;
 
@@ -78,19 +78,31 @@ void InteractionComponent::Render()
 
 void InteractionComponent::OnCollide([[maybe_unused]]BlackBoxEngine::Actor* pOtherActor)
 {
-    
     if (!pOtherActor) return;
 
-    // Check if the actor is interactable in any way
-    if (pOtherActor->GetComponent<CaveEntranceComponent>())
+    // Check if the actor has a StairComponent
+    if (auto* stair = pOtherActor->GetComponent<CaveEntranceComponent>())
     {
-        m_currentActor = pOtherActor; // store the actor the player is colliding with
-        //BB_LOG(LogType::kMessage, "Player is now colliding with actor: %s", pOtherActor->GetId().c_str());
+        m_currentStair = stair;  // store the stair we collided with
+        BB_LOG(LogType::kMessage, "Player is on a stair actor.");
+        return;
     }
-    else
-    {
-        m_currentActor = nullptr; // not colliding with anything relevant
-    }
+
+    // Not a stair
+    m_currentStair = nullptr;
+
+   //if (!pOtherActor) return;
+   //
+   //// Check if the actor is interactable in any way
+   //if (pOtherActor->GetComponent<CaveEntranceComponent>())
+   //{
+   //    m_currentActor = pOtherActor; // store the actor the player is colliding with
+   //    //BB_LOG(LogType::kMessage, "Player is now colliding with actor: %s", pOtherActor->GetId().c_str());
+   //}
+   //else
+   //{
+   //    m_currentActor = nullptr; // not colliding with anything relevant
+   //}
 }
 
 void InteractionComponent::Save([[maybe_unused]] BlackBoxEngine::XMLElementParser parser)
@@ -103,34 +115,24 @@ void InteractionComponent::Load([[maybe_unused]] const BlackBoxEngine::XMLElemen
 
 void InteractionComponent::OnButtonPressed(const std::string& action)
 {
-    if (!m_currentActor)
-    {
-        BB_LOG(LogType::kMessage, "No actor to interact with.");
-        return;
-    }
-
-    // Example using the action string
     if (action == "stair")
     {
-        if (auto* caveComp = m_currentActor->GetComponent<CaveEntranceComponent>())
+        if (m_currentStair)
         {
             CloseUI();
-            caveComp->OnInteract();
 
+            //SetOwnerPosition(m_currentStair->GetTargetPosition());
+            m_didMove = true;
+            m_currentStair->OnStairUsed(m_playerActor);
             return;
         }
     }
-   //else if (action == "talk")
-   //{
-   //    if (auto* townComp = m_currentActor->GetComponent<TownNPCComponent>())
-   //    {
-   //        townComp->OnInteract();
-   //        return;
-   //    }
-   //}
 
+    m_didMove = false;
     BB_LOG(LogType::kMessage, "Cannot perform this action here.");
 }
+
+
 
 void InteractionComponent::TestInterfaceStuff()
 {

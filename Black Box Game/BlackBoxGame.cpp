@@ -7,7 +7,6 @@ using namespace BlackBoxEngine;
 #include <Interface/InterfaceButton.h>
 #include <Interface/InterfaceText.h>
 #include <Interface/InterfaceTexture.h>
-#include "CaveEntranceComponent.h"
 
 
 void BlackBoxGame::InitGame()
@@ -15,11 +14,7 @@ void BlackBoxGame::InitGame()
 	BB_LOG(LogType::kMessage, "Game starting");
     m_pEngineManager->GetWindow()->SetWindowIcon("../Assets/Sprites/DragonQuestIcon.png");
 
-    m_pEngineManager->m_pActorManager->ClearLevel();
     m_pEngineManager->m_pActorManager->LoadLevel("../Assets/Levels/ExampleLevel.xml");
-    //m_pEngineManager->m_pActorManager->LoadLevel("../Assets/Levels/Cave2Level.xml");
-
-
    
 }
 

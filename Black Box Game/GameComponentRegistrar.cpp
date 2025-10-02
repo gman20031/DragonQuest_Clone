@@ -7,7 +7,7 @@
 #include "TileSystem/TileMapComponent.h"
 #include "PlayerMovementComponent.h"
 #include "InteractionComponent.h"
-#include "CaveEntranceComponent.h"
+#include "StairComponent.h"
 
 using namespace BlackBoxEngine;
 

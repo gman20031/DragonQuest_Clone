@@ -6,6 +6,8 @@
 #include <Interface/InterfaceText.h>
 #include <Interface/InterfaceTexture.h>
 #include <Interface/UserInterface.h>
+#include "StairComponent.h"
+#include <../Black Box Engine/Math/FVector2.h>
 //#include "../Black Box Engine/Actors/Actor.h"
 
 class BlackBoxGame;
@@ -23,6 +25,12 @@ class InteractionComponent : public BlackBoxEngine::Component
 
     BlackBoxEngine::Actor* m_currentActor = nullptr;
 
+    StairComponent* m_currentStair = nullptr;
+
+    BlackBoxEngine::Actor* m_playerActor = nullptr;
+
+    bool m_didMove = false;
+
 public:
     InteractionComponent(BlackBoxEngine::Actor* pOwner) : Component(pOwner) { /*EMPTY*/ }
     virtual ~InteractionComponent();
@@ -39,6 +47,10 @@ public:
 
     void OnButtonPressed(const std::string& action);  
 
+    void SetCurrentStair(StairComponent* stair) { m_currentStair = stair; }
+    bool GetDidMove() { return m_didMove; }
+
+    BlackBoxEngine::Actor* SetPlayerActor(BlackBoxEngine::Actor* pOtherActor) { return m_playerActor = pOtherActor; }
 private:
 
     bool m_uiActive = false;
@@ -46,6 +58,8 @@ private:
     void TestInterfaceStuff();
     void OpenUI();
     void CloseUI();
+
+
 
 
     std::vector<uint64_t> m_keyDownCodes;
