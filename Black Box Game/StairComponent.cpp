@@ -7,44 +7,25 @@
 
 using namespace BlackBoxEngine;
 
-void CaveEntranceComponent::OnStairUsed([[maybe_unused]] BlackBoxEngine::Actor* pOtherActor)
+void CaveEntranceComponent::OnStairUsed(Actor* pOtherActor)
 {
 	BB_LOG(LogType::kMessage, "Entering the cave...");
 
+    // check if player
+    auto* pInteractComponent = pOtherActor->GetComponent<InteractionComponent>();
+    if ( !pInteractComponent )
+        return;
+    // player should have transform
+    auto* pTransform = pOtherActor->GetComponent<TransformComponent>();
+    if ( !pTransform )
+        return;
 
+    pTransform->m_position = {16, 16};
+    BlackBoxManager::Get()->m_pActorManager->SaveActor( pOtherActor, "PlayerActor", "../Assets/Actors/PlayerActor.xml" );
 
 	BlackBoxManager::Get()->m_pInputManager->SwapInputToGame();
 	BlackBoxManager::Get()->m_pActorManager->LoadLevel("../Assets/Levels/Cave1Level.xml");
-	
-	
-
 	BlackBoxManager::Get()->m_pActorManager->Start();
-
-	//auto* player = BlackBoxManager::Get()->m_pActorManager->GetActor();
-
-	//if (!pOtherActor)
-	//	return;
-	//
-	//if (pOtherActor)
-	//{
-	//
-	//	auto* transform = pOtherActor->GetComponent<TransformComponent>();
-	//
-	//	transform->m_position = { 16,16 };
-	//}
-
-	//auto& actors = BlackBoxManager::Get()->m_pActorManager->GetActors();
-	//for (auto* actor : actors)
-	//{
-	//	if (actor->GetComponent<InteractionComponent>())  // identify by component type
-	//	{
-	//		auto* transform = actor->GetComponent<TransformComponent>();
-	//		if (transform)
-	//			transform->m_position = { 16, 16 };
-	//		break;
-	//	}
-	//}
-
 }
 
 void CaveEntranceComponent::Start()

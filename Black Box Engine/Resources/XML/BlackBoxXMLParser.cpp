@@ -79,35 +79,42 @@ namespace BlackBoxEngine
                                    const char* pActorName,
                                    std::filesystem::path filePath)
     {
-        tinyxml2::XMLDocument saveDoc;
-        auto* pRootElement = saveDoc.NewElement(kActorElementName);
-        saveDoc.InsertFirstChild(pRootElement);
-        pRootElement->SetAttribute(kNameAttribute, pActorName);
+        return SaveActor( pActor.get(), pActorName, filePath );
+    }
 
-        for (auto& [id, pComponet] : pActor->m_componentMap)
+    bool ActorXMLParser::SaveActor( const Actor* pActor,
+        const char* pActorName,
+        std::filesystem::path filePath )
+    {
+        tinyxml2::XMLDocument saveDoc;
+        auto* pRootElement = saveDoc.NewElement( kActorElementName );
+        saveDoc.InsertFirstChild( pRootElement );
+        pRootElement->SetAttribute( kNameAttribute, pActorName );
+
+        for ( auto& [id, pComponet] : pActor->m_componentMap )
         {
-            XMLElementParser componetParser(pRootElement->InsertNewChildElement(kComponentElementName));
-            componetParser.GetTinyXML()->SetAttribute(kNameAttribute, pComponet->Name());
-            pComponet->Save(componetParser);
+            XMLElementParser componetParser( pRootElement->InsertNewChildElement( kComponentElementName ) );
+            componetParser.GetTinyXML()->SetAttribute( kNameAttribute, pComponet->Name() );
+            pComponet->Save( componetParser );
         }
-        
-        if (filePath.empty())
+
+        if ( filePath.empty() )
         {
-            filePath = std::filesystem::path(kActorFilePath) / pActorName;
-            BB_LOG(LogType::kMessage, "filePath was empty, creating new path");
+            filePath = std::filesystem::path( kActorFilePath ) / pActorName;
+            BB_LOG( LogType::kMessage, "filePath was empty, creating new path" );
         }
-        filePath.replace_extension(".xml");
+        filePath.replace_extension( ".xml" );
 
         if constexpr ( kPrintSavedActors )
             saveDoc.Print();
-        
+
         int errCode = saveDoc.SaveFile( filePath.string().c_str() );
         if ( errCode == tinyxml2::XML_SUCCESS )
         {
-            BB_LOG(LogType::kMessage, "Actor saved name:", pActorName, " - saved to :", filePath );
+            BB_LOG( LogType::kMessage, "Actor saved name:", pActorName, " - saved to :", filePath );
             return true;
         }
-        BB_LOG(LogType::kError, "Failed to save actor file , errorcode : " , errCode , "  " , saveDoc.ErrorStr() );
+        BB_LOG( LogType::kError, "Failed to save actor file , errorcode : ", errCode, "  ", saveDoc.ErrorStr() );
         return false;
     }
 

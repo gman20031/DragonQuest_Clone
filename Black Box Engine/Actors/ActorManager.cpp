@@ -72,6 +72,13 @@ namespace BlackBoxEngine
         ActorXMLParser::SaveActor(pActor, pActorName, filePath);
     }
 
+    void ActorManager::SaveActor( const Actor* pActor,
+        const char* pActorName,
+        std::filesystem::path filePath )
+    {
+        ActorXMLParser::SaveActor( pActor, pActorName, filePath );
+    }
+
     const ActorManager::ActorPtr& ActorManager::GetActor(Actor::Id id)
     {
         auto it = m_allActors.find(id);

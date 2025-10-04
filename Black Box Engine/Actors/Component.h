@@ -41,6 +41,8 @@ namespace BlackBoxEngine
         constexpr virtual void OnCollide([[maybe_unused]] Actor* pOther) { /* EMPTY */ }
         virtual void Save([[maybe_unused]]XMLElementParser parser) { /* EMPTY */ }
         virtual void Load([[maybe_unused]]const XMLElementParser parser) { /* EMPTY */ }
+
+        Actor* GetOwner() const { return m_pOwner; }
     };
 
     ////////////////////////////////////////////////////////////
