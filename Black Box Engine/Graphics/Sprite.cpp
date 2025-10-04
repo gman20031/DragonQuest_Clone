@@ -44,6 +44,7 @@ namespace BlackBoxEngine
         m_spriteSheetIndex = m_animStartIndex;
         m_animating = true;
 
+        SetSpriteIndex( m_animStartIndex );
         auto callback = [msDelay, totalFrameCount, repeat, this]() -> uint32_t
             {
                 int spriteIndex = GetSpriteIndex();

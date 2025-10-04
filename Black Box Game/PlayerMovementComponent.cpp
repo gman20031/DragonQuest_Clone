@@ -38,69 +38,69 @@ void PlayerMovementComponent::Start()
 
     InputManager* pInputManager = BlackBoxManager::Get()->m_pInputManager;
     using enum InputManager::InputType;
-    int index = 0;
+    //int index = 0;
 
     const auto& pTileActor = BlackBoxManager::Get()->m_pActorManager->GetActor(m_tileMapId);
     m_pTileMap = pTileActor->GetComponent<TileMapComponent>();
 
      //insane monster of shit just to be able to make input delayed.
-    const auto registerDownKey = [this, pInputManager, &index](KeyCode keyCode, float x, float y)
-    {
-        uint64_t id = pInputManager->SubscribeToKey(keyCode, kKeyDown, [this,keyCode, x,y]()
-        {
-            SetTextureForDirection({x,y});
-
-            Delay(1000, [this, keyCode, x, y]()
-                {
-                    auto* pInput = BlackBoxManager::Get()->m_pInputManager;
-                    if (pInput->IsKeyDown(keyCode))
-                        TryMove({ x, y });
-            
-                    return 0;
-                });
-            
-        } );
-        m_keyDownCodes.emplace_back(id);
-    };
-
-
-    //const auto registerDownKey = [this, pInputManager](KeyCode keyCode, float x, float y)
+    //const auto registerDownKey = [this, pInputManager, &index](KeyCode keyCode, float x, float y)
+    //{
+    //    uint64_t id = pInputManager->SubscribeToKey(keyCode, kKeyDown, [this,keyCode, x,y]()
     //    {
-    //        uint64_t id = pInputManager->SubscribeToKey(keyCode, kKeyDown,
-    //            [this, keyCode, x, y]()
+    //        SetTextureForDirection({x,y});
+    //        Delay(200, [this, keyCode, x, y]()
     //            {
-    //                SetTextureForDirection({ x, y });
-    //
-    //                // Stop previous movement if a different key
-    //                if (m_isMoving && keyCode != m_lastKeyCode)
-    //                    StopMoving();
-    //
-    //                m_lastKeyCode = keyCode;
-    //                m_direction = { x, y };
-    //
-    //                // Only start tap delay if not already moving
-    //                if (!m_isMoving)
-    //                {
-    //                    m_isContinuous = false; // first move is tap
-    //                    m_waitingForTap = true; // new flag
-    //
+    //                auto* pInput = BlackBoxManager::Get()->m_pInputManager;
+    //                if (pInput->IsKeyDown(keyCode))
+    //                    TryMove( {x, y} );
     //                    
-    //                    // Delay 200ms for single-tile tap
-    //                    Delay(200, [this, keyCode, x, y]()
-    //                        {
-    //                            auto* pInput = BlackBoxManager::Get()->m_pInputManager;
-    //                            if (pInput->IsKeyDown(keyCode))
-    //                            {
-    //                                m_isContinuous = true; // now allow continuous if holding
-    //                                TryMove({ x, y });
-    //                                m_waitingForTap = false;
-    //                            }
-    //                            return 0;
-    //                        });
-    //                }
+    //        
+    //                return 0;
     //            });
-    //        m_keyDownCodes.emplace_back(id);
-    //    };
+    //        
+    //    } );
+    //    m_keyDownCodes.emplace_back(id);
+    //};
+
+
+    const auto registerDownKey = [this, pInputManager](KeyCode keyCode, float x, float y)
+        {
+            uint64_t id = pInputManager->SubscribeToKey(keyCode, kKeyDown,
+                [this, keyCode, x, y]()
+                {
+                    SetTextureForDirection({ x, y });
+    
+                    // Stop previous movement if a different key
+                    if (m_isMoving && keyCode != m_lastKeyCode)
+                        StopMoving();
+    
+                    m_lastKeyCode = keyCode;
+                    m_direction = { x, y };
+    
+                    // Only start tap delay if not already moving
+                    if (!m_isMoving)
+                    {
+                        m_isContinuous = false; // first move is tap
+                        m_waitingForTap = true; // new flag
+    
+                        
+                        // Delay 200ms for single-tile tap
+                        Delay(200, [this, keyCode, x, y]()
+                            {
+                                auto* pInput = BlackBoxManager::Get()->m_pInputManager;
+                                if (pInput->IsKeyDown(keyCode))
+                                {
+                                    m_isContinuous = true; // now allow continuous if holding
+                                    TryMove({ x, y });
+                                    m_waitingForTap = false;
+                                }
+                                return 0;
+                            });
+                    }
+                });
+            m_keyDownCodes.emplace_back(id);
+        };
 
     registerDownKey(kUpKey, 0, -1);
     registerDownKey(kDownKey, 0, +1);
@@ -215,17 +215,7 @@ void PlayerMovementComponent::TryMove(const FVector2& direction)
     m_stopMoving = false;
     m_direction = direction;
     
-    // I will make this easier to work with, but for now it is literally sdl3
-    //DelayFunction callback = [](void* pData, [[maybe_unused]]uint32_t timerId, [[maybe_unused]] uint32_t interval)->uint32_t
-    //    {
-    //        auto* pMovementComponent = static_cast<PlayerMovementComponent*>(pData);
-    //        pMovementComponent->SetTargetTile();
-    //        return 0;
-    //    };
-    //Delay(250, callback, this);
-
     SetTargetTile();
-    
 }
 
 void PlayerMovementComponent::SetTextureForDirection([[maybe_unused]]const BlackBoxEngine::FVector2& direction)
@@ -233,7 +223,6 @@ void PlayerMovementComponent::SetTextureForDirection([[maybe_unused]]const Black
     if (!m_pAnimatedSprite)
         return;
     
-
     int startIndex = 0;
     int endIndex = 1;
     
@@ -269,7 +258,7 @@ void PlayerMovementComponent::SetTextureForDirection([[maybe_unused]]const Black
         m_pAnimatedSprite->Sprite().SetAnimationEndIndex(endIndex);
     }
     
-    m_pAnimatedSprite->Sprite().AnimateSprite(2, 1);
+    m_pAnimatedSprite->Sprite().AnimateSprite();
     
 }
 
