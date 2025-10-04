@@ -23,6 +23,16 @@ class InteractionComponent : public BlackBoxEngine::Component
 
     BlackBoxEngine::UserInterface m_interfaceRoot;
 
+    //BlackBoxEngine::InterfaceText* m_actionMessage = nullptr;
+    //
+    //BlackBoxEngine::InterfaceText* m_actionMessageNode = nullptr; // stores the current message
+    //bool m_messageActive = false;
+    //std::string m_currentMessageText;
+
+    BlackBoxEngine::UserInterface m_messageRoot;   // same type as m_interfaceRoot
+    BlackBoxEngine::InterfaceText* m_messageNode = nullptr;
+    bool m_messageActive = false;
+
     BlackBoxEngine::Actor* m_currentActor = nullptr;
 
     StairComponent* m_currentStair = nullptr;
@@ -59,8 +69,9 @@ private:
     void OpenUI();
     void CloseUI();
 
+    void ShowActionMessage(const std::string& text);
 
-
+    void DismissActionMessage(); 
 
     std::vector<uint64_t> m_keyDownCodes;
    

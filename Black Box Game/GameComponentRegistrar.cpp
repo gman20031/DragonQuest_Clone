@@ -19,7 +19,9 @@ static std::tuple
     ComponentFactory::Registrar<TileMapComponent>,
     ComponentFactory::Registrar<PlayerMovementComponent>,
     ComponentFactory::Registrar<InteractionComponent>,
-    ComponentFactory::Registrar<CaveEntranceComponent>
- // add more components like so
- //  ,ComponentFactory::Registrar<*NAME*>
+    ComponentFactory::Registrar<CaveEntranceComponent>,
+    ComponentFactory::Registrar<StairDownComponent>,
+    ComponentFactory::Registrar<StairUpLevel1Component>,
+    ComponentFactory::Registrar<StairUpLevel2Component>
+
 > GameComponentRegistrar;

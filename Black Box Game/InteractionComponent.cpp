@@ -39,10 +39,24 @@ void InteractionComponent::Start()
     using enum InputManager::InputType;
     
     // X = open UI
-    m_keyDownCodes.emplace_back(
-        pInput->SubscribeToKey(KeyCode::kX, kKeyDown, [this]() { if (!m_uiActive) OpenUI(); })
-    );
+    //m_keyDownCodes.emplace_back(
+    //    pInput->SubscribeToKey(KeyCode::kX, kKeyDown, [this]() { if (!m_uiActive) OpenUI(); })
+    //);
     
+    m_keyDownCodes.emplace_back(
+        pInput->SubscribeToKey(KeyCode::kX, kKeyDown, [this]()
+            {
+                if (m_messageActive)
+                {
+                    DismissActionMessage(); // just clear the text
+                }
+                else if (!m_uiActive)
+                {
+                    OpenUI(); // open the whole UI if closed
+                }
+            })
+    );
+
     // Z = close UI
     m_keyDownCodes.emplace_back(
         pInput->SubscribeToKey(KeyCode::kZ, kKeyDown, [this]() { if (m_uiActive) CloseUI(); })
@@ -68,6 +82,48 @@ void InteractionComponent::CloseUI()
 
 }
 
+void InteractionComponent::ShowActionMessage(const std::string& text)
+{
+
+    if (m_messageActive)
+        return;
+
+    BB_FRectangle rect;
+    rect.x = 50; rect.y = 10; rect.w = 200; rect.h = 20;
+
+    InterfaceText::Paremeters params;
+    params.pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf";
+    params.textSize = 12;
+    params.color = ColorPresets::white;
+    params.pText = text.c_str();
+
+    // create node on the *message* root and show only that root
+    m_messageNode = m_messageRoot.AddNode<InterfaceText>("ActionMessage", rect, params);
+
+    // make it visible
+    m_messageRoot.AddToScreen();
+
+    m_messageActive = true;
+
+    // lock input to the message root so player can press X to dismiss
+    BlackBoxManager::Get()->m_pInputManager->SwapInputTargetToInterface(&m_messageRoot);
+}
+
+void InteractionComponent::DismissActionMessage()
+{
+    if (!m_messageActive)
+        return;
+
+    // remove the entire message root from screen (removes the message node too)
+    m_messageRoot.RemoveFromScreen();
+
+    m_messageNode = nullptr;
+    m_messageActive = false;
+
+    // return input to the main game (or to your UI root if you prefer)
+    BlackBoxManager::Get()->m_pInputManager->SwapInputToGame();
+}
+
 void InteractionComponent::Update()
 {
 }
@@ -91,18 +147,7 @@ void InteractionComponent::OnCollide([[maybe_unused]]BlackBoxEngine::Actor* pOth
     // Not a stair
     m_currentStair = nullptr;
 
-   //if (!pOtherActor) return;
-   //
-   //// Check if the actor is interactable in any way
-   //if (pOtherActor->GetComponent<CaveEntranceComponent>())
-   //{
-   //    m_currentActor = pOtherActor; // store the actor the player is colliding with
-   //    //BB_LOG(LogType::kMessage, "Player is now colliding with actor: %s", pOtherActor->GetId().c_str());
-   //}
-   //else
-   //{
-   //    m_currentActor = nullptr; // not colliding with anything relevant
-   //}
+
 }
 
 void InteractionComponent::Save([[maybe_unused]] BlackBoxEngine::XMLElementParser parser)
@@ -129,7 +174,8 @@ void InteractionComponent::OnButtonPressed(const std::string& action)
     }
 
     m_didMove = false;
-    BB_LOG(LogType::kMessage, "Cannot perform this action here.");
+    //BB_LOG(LogType::kMessage, "Cannot perform this action here.");
+    //ShowActionMessage("Cannot perform this action here.");
 }
 
 
@@ -149,6 +195,7 @@ void InteractionComponent::TestInterfaceStuff()
         .iconSize{ 4,7 }
         });
 
+   
     //m_interfaceRoot.AddNode<InterfaceTexture>( "TextureTest", {50,0,16,16}, InterfaceTexture::TextureInfo{
     //    .pTextureFile = "../Assets/Sprites/Player/Fixed_OffsetCharacterSheet.png",
     //    .spriteDimensions = {16,16},
