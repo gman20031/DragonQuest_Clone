@@ -9,7 +9,6 @@
 
 namespace BlackBoxEngine
 {
-
     class Sprite
     {
         const char* m_pFilePath = nullptr;
@@ -39,7 +38,8 @@ namespace BlackBoxEngine
         Sprite();
         ~Sprite();
 
-        void AnimateSprite( int framePerSecond, bool repeat);
+        void AnimateSprite( int framePerSecond, bool repeat );
+        void AnimateSprite();
         void StopAnimating();
         void Render( const BB_FRectangle& destRect, bool renderScreen = false );
 
@@ -72,7 +72,7 @@ namespace BlackBoxEngine
 
         void Load( const XMLElementParser parser );
         void Save( XMLElementParser parser ) const;
-        void Start();
+        void GameStart();
     };
 
 }

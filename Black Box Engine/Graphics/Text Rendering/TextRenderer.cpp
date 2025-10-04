@@ -107,7 +107,9 @@ namespace BlackBoxEngine
 
     bool BB_TextRenderer::RenderText(std::shared_ptr<BB_Text> text, float x, float y)
     {
-        m_pGameCamera->OffsetDestinationToCamera(&x, &y, m_pGameCamera->GetCameraWindowZoom(m_pAttachedWindow));
+        auto zoom = m_pGameCamera->GetCameraWindowZoom(m_pAttachedWindow);
+        x *= zoom.x;
+        y *= zoom.y;
         const bool good = TTF_DrawRendererText(text->m_pTtfText, x, y);
         if (!good)
             BB_LOG(LogType::kError, "Error rendering pTtfText : ", SDL_GetError());

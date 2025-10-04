@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <mutex>
 
 #include "BoundingBox.h"  
 #include "AABBColliderComponent.h"
@@ -27,6 +28,7 @@ namespace BlackBoxEngine
         inline static constexpr size_t kMaxActorsPerCell = 10;
         inline static constexpr size_t kCombineCellThreshold = kMaxActorsPerCell / 2;
         inline static constexpr size_t kMaximumDepth = 3;
+        std::recursive_mutex m_collisionLocker;
         size_t m_minimumWidth;
         size_t m_minimumHeight;
 

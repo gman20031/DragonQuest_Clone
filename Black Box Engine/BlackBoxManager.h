@@ -31,6 +31,7 @@ namespace BlackBoxEngine
         static constexpr EngineInitOptions kAll	        = 0b11111;
 
     private:
+        std::recursive_mutex m_engineMutex;
         inline static constexpr float kCollisionBufferSize = 0;
         static BlackBoxManager* m_pSingletonManager;
         WindowPtr m_pWindow;

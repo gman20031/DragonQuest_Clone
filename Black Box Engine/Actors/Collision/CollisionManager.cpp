@@ -373,6 +373,7 @@ namespace BlackBoxEngine
     void CollisionManager::RegisterActor(Actor * pActor)
     {
         assert(pActor);
+        std::unique_lock lock( m_collisionLocker );
         QuadTreeNode* pNode = m_pRootNode->InsertActor(pActor);
      
         if ( !pNode )
@@ -390,7 +391,7 @@ namespace BlackBoxEngine
             BB_LOG(LogType::kError, "Notified actor moved that wasnt registered to collision manager");
             return;
         }
-
+        std::unique_lock lock( m_collisionLocker );
         QuadTreeNode* pCurrentOwningNode = it->second;
         QuadTreeNode* pNewOwningNode = pCurrentOwningNode;
         const auto& actorBounding = GetBoundingBox(pActor);
@@ -439,6 +440,7 @@ namespace BlackBoxEngine
             BB_LOG(LogType::kError, "Attempted to remove actor that was not added");
             return;
         }
+        std::unique_lock lock( m_collisionLocker );
         it->second->RemoveActor(it->first, true);
         m_actorMap.erase(it);
     }
