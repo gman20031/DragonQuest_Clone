@@ -3,6 +3,7 @@
 #include "../Black Box Engine/BlackBoxManager.h"
 #include "BlackBoxGame.h"
 #include "StairComponent.h"
+#include "PlayerMovementComponent.h"
 
 using namespace BlackBoxEngine;
 
@@ -72,14 +73,34 @@ void InteractionComponent::OpenUI()
 {
     TestInterfaceStuff();
     m_uiActive = true;
+
+    auto* pPlayer = m_pOwner->GetComponent<PlayerMovementComponent>();
+
+    if (pPlayer)
+    {
+            pPlayer->SetAnimationPaused(true);
+    }
+
+    //m_uiActive = true;
 }
 
 void InteractionComponent::CloseUI()
 {
     m_interfaceRoot.RemoveFromScreen();
+    m_messageRoot.RemoveFromScreen();
+
     BlackBoxManager::Get()->m_pInputManager->SwapInputToGame();
     m_uiActive = false;
+    m_messageActive = false;
+    m_messageNode = nullptr;
 
+
+    auto* pPlayer = m_pOwner->GetComponent<PlayerMovementComponent>();
+
+    if (pPlayer)
+    {
+        pPlayer->SetAnimationPaused(false);
+    }
 }
 
 void InteractionComponent::ShowActionMessage(const std::string& text)
@@ -87,41 +108,46 @@ void InteractionComponent::ShowActionMessage(const std::string& text)
 
     if (m_messageActive)
         return;
-
+    
     BB_FRectangle rect;
     rect.x = 50; rect.y = 10; rect.w = 200; rect.h = 20;
-
+    
     InterfaceText::Paremeters params;
     params.pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf";
     params.textSize = 12;
     params.color = ColorPresets::white;
     params.pText = text.c_str();
-
+    
     // create node on the *message* root and show only that root
     m_messageNode = m_messageRoot.AddNode<InterfaceText>("ActionMessage", rect, params);
-
+    
     // make it visible
     m_messageRoot.AddToScreen();
-
+    
     m_messageActive = true;
+    
 
-    // lock input to the message root so player can press X to dismiss
-    BlackBoxManager::Get()->m_pInputManager->SwapInputTargetToInterface(&m_messageRoot);
 }
 
 void InteractionComponent::DismissActionMessage()
 {
-    if (!m_messageActive)
-        return;
+   if (!m_messageActive)
+      return;
+   
+   // remove the entire message root from screen (removes the message node too)
+   m_messageRoot.RemoveFromScreen();
+   
+   m_messageNode = nullptr;
+   m_messageActive = false;
+   
+   if (m_uiActive)
+      BlackBoxManager::Get()->m_pInputManager->SwapInputTargetToInterface(&m_interfaceRoot);
+   else
+      BlackBoxManager::Get()->m_pInputManager->SwapInputToGame();
+   // return input to the main game (or to your UI root if you prefer)
+   //BlackBoxManager::Get()->m_pInputManager->SwapInputToGame();
+   
 
-    // remove the entire message root from screen (removes the message node too)
-    m_messageRoot.RemoveFromScreen();
-
-    m_messageNode = nullptr;
-    m_messageActive = false;
-
-    // return input to the main game (or to your UI root if you prefer)
-    BlackBoxManager::Get()->m_pInputManager->SwapInputToGame();
 }
 
 void InteractionComponent::Update()
@@ -175,7 +201,7 @@ void InteractionComponent::OnButtonPressed(const std::string& action)
 
     m_didMove = false;
     //BB_LOG(LogType::kMessage, "Cannot perform this action here.");
-    //ShowActionMessage("Cannot perform this action here.");
+    ShowActionMessage("Cannot perform this action here.");
 }
 
 
@@ -211,6 +237,15 @@ void InteractionComponent::TestInterfaceStuff()
     //    .framesPerSecond = 2,
     //    .repeat = true
     //} );
+
+    //BB_FRectangle messageRect{ 50, 10, 200, 20 };
+    //InterfaceText::Paremeters msgParams;
+    //msgParams.pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf";
+    //msgParams.textSize = 12;
+    //msgParams.color = ColorPresets::white;
+    //msgParams.pText = ""; // start empty
+    //
+    //m_messageNode = m_interfaceRoot.AddNode<InterfaceText>("ActionMessage", messageRect, msgParams);
 
     BB_FRectangle buttonDimension{ 0,0, 64, 7 };
 

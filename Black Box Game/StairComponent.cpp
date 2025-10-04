@@ -20,7 +20,7 @@ void CaveEntranceComponent::OnStairUsed(Actor* pOtherActor)
     if ( !pTransform )
         return;
 
-    pTransform->m_position = {16, 16};
+    pTransform->m_position = {0, 0};
     BlackBoxManager::Get()->m_pActorManager->SaveActor( pOtherActor, "PlayerActor", "../Assets/Actors/PlayerActor.xml" );
 
 	BlackBoxManager::Get()->m_pInputManager->SwapInputToGame();
@@ -46,16 +46,7 @@ void CaveEntranceComponent::OnCollide([[maybe_unused]] BlackBoxEngine::Actor* pO
 
 	if (auto* player = pOtherActor->GetComponent<InteractionComponent>())
 	{
-		player->SetCurrentStair(this);
-		player->SetPlayerActor(pOtherActor);
-		//if(player->GetDidMove())
-		//{
-		//	//check if did press stair
-		//	pOtherActor->GetComponent<TransformComponent>()->m_position.x = 16;
-		//	pOtherActor->GetComponent<TransformComponent>()->m_position.y = 16;
-		//}
-		//BlackBoxManager::Get()->m_pActorManager->SaveActor(pOtherActor, "PlayerActor");
-
+		player->SetCurrentStair(this);	
 		BB_LOG(LogType::kMessage, "Player is now on cave entrance.");
 	}
 

@@ -1,14 +1,18 @@
 <Actor Name="PlayerActor">
-    <Component Name="TransformComponent">
-        <Position>
-            <X>800</X>
-            <Y>688</Y>
-        </Position>
-        <Rotation>0</Rotation>
-    </Component>
     <Component Name="PlayerMovementComponent">
         <Speed>90</Speed>
         <TileMapID>0</TileMapID>
+    </Component>
+    <Component Name="TransformComponent">
+        <Position>
+            <X>784</X>
+            <Y>704</Y>
+        </Position>
+        <Rotation>0</Rotation>
+        <PreviousPos>
+            <X>784</X>
+            <Y>704</Y>
+        </PreviousPos>
     </Component>
     <Component Name="MoverComponent">
         <Velocity>
@@ -16,20 +20,20 @@
             <Y>0</Y>
         </Velocity>
     </Component>
+    <Component Name="PlayerCameraComponent"/>
     <Component Name="AABBColliderComponent">
         <width>0</width>
         <height>0</height>
         <blockable>false</blockable>
         <enabled>true</enabled>
     </Component>
-    <Component Name="PlayerCameraComponent"/>
     <Component Name="AnimatedSpriteComponent">
         <DrawnWidth>16</DrawnWidth>
         <DrwanHeight>16</DrwanHeight>
         <xOffset>0</xOffset>
         <yOffset>0</yOffset>
         <SpriteInfo>
-            <startingSpriteIndex>0</startingSpriteIndex>
+            <startingSpriteIndex>4</startingSpriteIndex>
             <UseFullImage>false</UseFullImage>
             <spriteDimensions>
                 <width>16</width>

@@ -31,67 +31,76 @@ void PlayerMovementComponent::Start()
 {
     m_pTransform = m_pOwner->GetComponent<TransformComponent>();
     m_pMover = m_pOwner->GetComponent<MoverComponent>();
+
+    m_pAnimatedSprite = m_pOwner->GetComponent<AnimatedSpriteComponent>();
+    if (!m_pAnimatedSprite)
+        BB_LOG(LogType::kError, "PlayerMovementComponent: No AnimatedSpriteComponent attached!");
+
     InputManager* pInputManager = BlackBoxManager::Get()->m_pInputManager;
     using enum InputManager::InputType;
-   // int index = 0;
+    int index = 0;
 
     const auto& pTileActor = BlackBoxManager::Get()->m_pActorManager->GetActor(m_tileMapId);
     m_pTileMap = pTileActor->GetComponent<TileMapComponent>();
+
      //insane monster of shit just to be able to make input delayed.
-    //const auto registerDownKey = [this, pInputManager, &index](KeyCode keyCode, float x, float y)
-    //{
-    //    uint64_t id = pInputManager->SubscribeToKey(keyCode, kKeyDown, [this,keyCode, x,y]()
-    //    {
-    //        SetTextureForDirection({x,y});
-    //        //Delay(200, [this, keyCode, x, y]()
-    //        //    {
-    //        //        auto* pInput = BlackBoxManager::Get()->m_pInputManager;
-    //        //        if (pInput->IsKeyDown(keyCode))
-    //        //            TryMove({ x, y });
-    //        //
-    //        //        return 0;
-    //        //    });
-    //        
-    //    } );
-    //    m_keyDownCodes.emplace_back(id);
-    //};
-
-
-    const auto registerDownKey = [this, pInputManager](KeyCode keyCode, float x, float y)
+    const auto registerDownKey = [this, pInputManager, &index](KeyCode keyCode, float x, float y)
+    {
+        uint64_t id = pInputManager->SubscribeToKey(keyCode, kKeyDown, [this,keyCode, x,y]()
         {
-            uint64_t id = pInputManager->SubscribeToKey(keyCode, kKeyDown,
-                [this, keyCode, x, y]()
+            SetTextureForDirection({x,y});
+
+            Delay(1000, [this, keyCode, x, y]()
                 {
-                    SetTextureForDirection({ x, y });
-
-                    // Stop previous movement if a different key
-                    if (m_isMoving && keyCode != m_lastKeyCode)
-                        StopMoving();
-
-                    m_lastKeyCode = keyCode;
-                    m_direction = { x, y };
-
-                    // Only start tap delay if not already moving
-                    if (!m_isMoving)
-                    {
-                        m_isContinuous = false; // first move is tap
-                        m_waitingForTap = true; // new flag
-
-                        // Delay 200ms for single-tile tap
-                        Delay(600, [this, keyCode, x, y]()
-                            {
-                                if (m_waitingForTap) // still a tap
-                                {
-                                    m_isContinuous = true; // now allow continuous if holding
-                                    TryMove({ x, y });
-                                    m_waitingForTap = false;
-                                }
-                                return 0;
-                            });
-                    }
+                    auto* pInput = BlackBoxManager::Get()->m_pInputManager;
+                    if (pInput->IsKeyDown(keyCode))
+                        TryMove({ x, y });
+            
+                    return 0;
                 });
-            m_keyDownCodes.emplace_back(id);
-        };
+            
+        } );
+        m_keyDownCodes.emplace_back(id);
+    };
+
+
+    //const auto registerDownKey = [this, pInputManager](KeyCode keyCode, float x, float y)
+    //    {
+    //        uint64_t id = pInputManager->SubscribeToKey(keyCode, kKeyDown,
+    //            [this, keyCode, x, y]()
+    //            {
+    //                SetTextureForDirection({ x, y });
+    //
+    //                // Stop previous movement if a different key
+    //                if (m_isMoving && keyCode != m_lastKeyCode)
+    //                    StopMoving();
+    //
+    //                m_lastKeyCode = keyCode;
+    //                m_direction = { x, y };
+    //
+    //                // Only start tap delay if not already moving
+    //                if (!m_isMoving)
+    //                {
+    //                    m_isContinuous = false; // first move is tap
+    //                    m_waitingForTap = true; // new flag
+    //
+    //                    
+    //                    // Delay 200ms for single-tile tap
+    //                    Delay(200, [this, keyCode, x, y]()
+    //                        {
+    //                            auto* pInput = BlackBoxManager::Get()->m_pInputManager;
+    //                            if (pInput->IsKeyDown(keyCode))
+    //                            {
+    //                                m_isContinuous = true; // now allow continuous if holding
+    //                                TryMove({ x, y });
+    //                                m_waitingForTap = false;
+    //                            }
+    //                            return 0;
+    //                        });
+    //                }
+    //            });
+    //        m_keyDownCodes.emplace_back(id);
+    //    };
 
     registerDownKey(kUpKey, 0, -1);
     registerDownKey(kDownKey, 0, +1);
@@ -111,54 +120,63 @@ void PlayerMovementComponent::Start()
     m_keyUpCodes.emplace_back(pInputManager->SubscribeToKey(kRightKey, kKeyUp, [this]() {
         StopMoving();
     }));
+
+   
 }
+
 
 void PlayerMovementComponent::Update()
 {
-    if (!m_isMoving)
-        return;
 
     float deltaTime = static_cast<float>(BlackBoxManager::Get()->GetDeltaTime());
     FVector2& position = m_pTransform->m_position;
     const FVector2 toTarget = m_targetPosition - position;
 
-    // Check if we've reached or passed the target tile (allow some floating point tolerance)
-   //if (toTarget.GetLength() <= m_playerSpeed * deltaTime)
-   //{
-   //    // Snap position to target tile exactly
-   //    position = m_targetPosition;
-   //
-   //    // Stop movement
-   //    if(m_stopMoving)
-   //    {
-   //        m_pMover->m_velocity = FVector2(0, 0);
-   //        m_isMoving = false;
-   //    }
-   //    else
-   //        SetTargetTile();
-   //}
- 
+  
 
+    if (!m_isMoving)
+        return;
+
+    // Check if we've reached or passed the target tile (allow some floating point tolerance)
     if (toTarget.GetLength() <= m_playerSpeed * deltaTime)
     {
+        // Snap position to target tile exactly
         position = m_targetPosition;
-        m_pMover->m_velocity = { 0,0 };
-        m_isMoving = false;
-
-        auto* pInput = BlackBoxManager::Get()->m_pInputManager;
-
-        // Continuous movement if key is held
-        if (m_isContinuous && pInput->IsKeyDown(m_lastKeyCode))
+    
+        // Stop movement
+        if(m_stopMoving)
         {
-            TryMove(m_direction);
+            m_pMover->m_velocity = FVector2(0, 0);
+            m_isMoving = false;
         }
+        else
+            SetTargetTile();
     }
-    else
-    {
-        FVector2 normalized = toTarget.GetNormalizedVector();
-        m_pMover->m_velocity = normalized * m_playerSpeed;
-    }
-}
+ 
+    //if (toTarget.GetLength() <= m_playerSpeed * deltaTime)
+    //{
+    //    position = m_targetPosition;
+    //    m_pMover->m_velocity = { 0,0 };
+    //    m_isMoving = false;
+    //
+    //
+    //    auto* pInput = BlackBoxManager::Get()->m_pInputManager;
+    //
+    //    // Continuous movement if key is held
+    //    if (m_isContinuous && pInput->IsKeyDown(m_lastKeyCode))
+    //    {
+    //        TryMove(m_direction);
+    //    }
+    //}
+    //else
+    //{
+    //    FVector2 normalized = toTarget.GetNormalizedVector();
+    //    m_pMover->m_velocity = normalized * m_playerSpeed;
+    //
+    //}
+    //
+    
+}   
 
 void PlayerMovementComponent::Render()
 {
@@ -180,6 +198,15 @@ void PlayerMovementComponent::Load([[maybe_unused]] const BlackBoxEngine::XMLEle
     parser.GetChildVariable("TileMapID", &m_tileMapId);
 }
 
+void PlayerMovementComponent::SetAnimationPaused(bool paused)
+{
+    if (paused)
+        m_pAnimatedSprite->Sprite().StopAnimating();
+
+    else
+        m_pAnimatedSprite->Sprite().AnimateSprite(2, 1);
+}
+
 void PlayerMovementComponent::TryMove(const FVector2& direction)
 {
     if (m_isMoving)
@@ -187,7 +214,7 @@ void PlayerMovementComponent::TryMove(const FVector2& direction)
 
     m_stopMoving = false;
     m_direction = direction;
-
+    
     // I will make this easier to work with, but for now it is literally sdl3
     //DelayFunction callback = [](void* pData, [[maybe_unused]]uint32_t timerId, [[maybe_unused]] uint32_t interval)->uint32_t
     //    {
@@ -198,11 +225,52 @@ void PlayerMovementComponent::TryMove(const FVector2& direction)
     //Delay(250, callback, this);
 
     SetTargetTile();
+    
 }
 
 void PlayerMovementComponent::SetTextureForDirection([[maybe_unused]]const BlackBoxEngine::FVector2& direction)
 {
-    // does nothing right now
+    if (!m_pAnimatedSprite)
+        return;
+    
+
+    int startIndex = 0;
+    int endIndex = 1;
+    
+    if (direction.y < 0)        // Up
+    {
+        startIndex = 4;
+        endIndex = 5;
+    }
+    else if (direction.y > 0)   // Down
+    {
+        startIndex = 0;
+        endIndex = 1;
+    }
+    else if (direction.x > 0)   // Right
+    {
+        startIndex = 6;
+        endIndex = 7;
+    }
+    else if (direction.x < 0)   // Left
+    {
+        startIndex = 2;
+        endIndex = 3;
+    }
+
+    if (m_pAnimatedSprite->Sprite().GetAnimationStartIndex() == startIndex && m_pAnimatedSprite->Sprite().GetAnimationEndIndex() == endIndex)
+        return;
+
+    else
+    {
+        m_pAnimatedSprite->Sprite().StopAnimating();
+
+        m_pAnimatedSprite->Sprite().SetAnimationStartIndex(startIndex);
+        m_pAnimatedSprite->Sprite().SetAnimationEndIndex(endIndex);
+    }
+    
+    m_pAnimatedSprite->Sprite().AnimateSprite(2, 1);
+    
 }
 
 void PlayerMovementComponent::SetTargetTile()
@@ -243,4 +311,5 @@ void PlayerMovementComponent::SetTargetTile()
 void PlayerMovementComponent::StopMoving()
 {
     m_stopMoving = true;
+    
 }

@@ -5,6 +5,7 @@
 #include "../Black Box Engine/Input/InputManager.h"
 #include "TileSystem/TileMapComponent.h"
 #include "../Black Box Engine/Math/FVector2.h" // why are we using "../" here and not <>
+#include "../Black Box Engine/Actors/EngineComponents/SpriteComponent.h"
 
 class PlayerMovementComponent : public BlackBoxEngine::Component
 {
@@ -27,11 +28,15 @@ class PlayerMovementComponent : public BlackBoxEngine::Component
     bool m_isMoving = false;
     bool m_stopMoving = false;
     BlackBoxEngine::FVector2 m_direction{ 0, 0 };
+    BlackBoxEngine::FVector2 m_lastDirection{ 0, 0 };
     BlackBoxEngine::FVector2 m_targetPosition; // in world coordinates
 
     bool m_isContinuous = false;
     bool m_waitingForTap = false;
     BlackBoxEngine::KeyCode m_lastKeyCode{};
+
+    BlackBoxEngine::AnimatedSpriteComponent* m_pAnimatedSprite = nullptr;
+
 
 private:
     void SetTargetTile();
@@ -39,6 +44,7 @@ private:
     void TryMove(const BlackBoxEngine::FVector2& direction);
     void SetTextureForDirection(const BlackBoxEngine::FVector2& direction);
 
+    
 public:
     PlayerMovementComponent(BlackBoxEngine::Actor* pOwner);
     virtual ~PlayerMovementComponent();
@@ -49,5 +55,8 @@ public:
     virtual void OnCollide([[maybe_unused]] BlackBoxEngine::Actor* pOtherActor) override; // if this actor has a collider, and walks into another actor with a collider
     virtual void Save([[maybe_unused]] BlackBoxEngine::XMLElementParser parser) override; // for when this actor is called to be saved
     virtual void Load([[maybe_unused]] const BlackBoxEngine::XMLElementParser parser) override; // for when this actor is called to be loaded
+
+
+    void SetAnimationPaused(bool paused);
 };
 
