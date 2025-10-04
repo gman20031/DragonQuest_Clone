@@ -232,6 +232,7 @@
     <ClCompile Include="Audio\AudioManager.cpp" />
     <ClCompile Include="Graphics\Camera.cpp" />
     <ClCompile Include="Graphics\RenderingStructs.cpp" />
+    <ClCompile Include="Graphics\ScreenFader.cpp" />
     <ClCompile Include="Graphics\Text Rendering\Font.cpp" />
     <ClCompile Include="Graphics\Text Rendering\Text.cpp" />
     <ClCompile Include="Graphics\Text Rendering\TextRenderer.cpp" />
@@ -488,6 +489,7 @@
     <ClInclude Include="Actors\EngineComponents\SpriteComponent.h" />
     <ClInclude Include="Audio\AudioManager.h" />
     <ClInclude Include="Graphics\Camera.h" />
+    <ClInclude Include="Graphics\ScreenFader.h" />
     <ClInclude Include="Graphics\Text Rendering\Font.h" />
     <ClInclude Include="Graphics\Text Rendering\Text.h" />
     <ClInclude Include="Graphics\Text Rendering\TextRenderer.h" />

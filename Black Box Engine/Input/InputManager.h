@@ -5,6 +5,7 @@
 #include <functional>
 #include <bitset>
 #include <unordered_set>
+#include <mutex>
 
 #include "KeyCodes.h"
 #include "../System/Observer.h"
@@ -38,6 +39,7 @@ namespace BlackBoxEngine
             InputObserver m_keyHeld;
         };
 
+        std::recursive_mutex m_inputMutex;
         std::unordered_set<KeyCode> m_keyCodes;
         InputTarget m_gameInputTarget;
         InputTarget* m_pInputTarget;
@@ -58,8 +60,8 @@ namespace BlackBoxEngine
         void UnsubscribeKeyWithCode(CallBackId id, InputType type, KeyCode key);
         void Update();
 
-        void StopAllInput() { m_inputCanOccur = false; }
-        void ResumeInput() { m_inputCanOccur = true; } 
+        void StopAllInput() { std::unique_lock lock(m_inputMutex); m_inputCanOccur = false; }
+        void ResumeInput()  { std::unique_lock lock(m_inputMutex); m_inputCanOccur = true; } 
         void SwapInputTargetToInterface( UserInterface* pInterface);
         void SwapInputToGame();
     };

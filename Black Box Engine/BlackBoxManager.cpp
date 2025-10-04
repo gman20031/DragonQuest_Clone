@@ -6,6 +6,7 @@
 
 #include <algorithm>
 
+#include "Graphics/ScreenFader.h"
 #include "System/SimpleTimingSystem.h"
 #include "System/Debugging.h"
 #include "Actors/ActorManager.h"
@@ -78,6 +79,7 @@ namespace BlackBoxEngine
 
     void BlackBoxManager::UpdateSubsytems()
     {
+        std::unique_lock lock( m_engineMutex );
         /// Update global Systems
         HandleSdlEvents();
 
@@ -96,6 +98,12 @@ namespace BlackBoxEngine
         if (IsSystemEnabled(kMessaging)) 
             m_pMessagingManager->SendQueuedMessages();
         m_pInterfaceManager->Render(m_pWindow->GetRenderer());
+
+        if ( ScreenFader::m_fading )
+        {
+            ScreenFader::Update( static_cast<float>(m_deltaTime) );
+            ScreenFader::Render();
+        }
     }
 
     int BlackBoxManager::RunEngine()

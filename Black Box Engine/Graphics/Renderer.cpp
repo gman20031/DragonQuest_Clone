@@ -106,8 +106,8 @@ bool BlackBoxEngine::BB_Renderer::DrawLineGame(BB_FPoint start, BB_FPoint end)
         return false;
 
     FVector2 zoom = m_pGameCamera->GetCameraWindowZoom(m_pAttachedWindow);
-    m_pGameCamera->ShiftGamePositionToScreen(&start.x, &start.y, zoom);
-    m_pGameCamera->ShiftGamePositionToScreen(&end.x, &end.y, zoom);
+    m_pGameCamera->ShiftGamePositionToScreen(&start.x, &start.y);
+    m_pGameCamera->ShiftGamePositionToScreen(&end.x, &end.y);
     return SDL_RenderLine(m_pSdlRenderer, start.x, start.y, end.x, end.y);
 }
 
@@ -116,16 +116,25 @@ bool BlackBoxEngine::BB_Renderer::DrawLineGame(BB_FPoint start, BB_FPoint end)
 bool BlackBoxEngine::BB_Renderer::DrawRectScreen(const BB_FRectangle& rec)
 {
     assert(m_pGameCamera);
-    auto dest = m_pGameCamera->OffsetScreenFromCamera(rec);
+    auto dest = m_pGameCamera->ZoomScreenRect(rec);
     SDL_FRect* pSdlRect = (SDL_FRect*)(&dest);
+    if ( rec.x + rec.w < 0 || rec.y + rec.h < 0
+        || rec.y - rec.h > m_pAttachedWindow->m_height
+        || rec.x - rec.w > m_pAttachedWindow->m_width )
+        return true;
     return SDL_RenderRect(m_pSdlRenderer, pSdlRect);
 }
 
 bool BlackBoxEngine::BB_Renderer::DrawRectScreenFilled(const BB_FRectangle& rec)
 {
     assert(m_pGameCamera);
-    auto dest = m_pGameCamera->OffsetScreenFromCamera(rec);
+    auto dest = m_pGameCamera->ZoomScreenRect(rec);
     SDL_FRect* pSdlRect = (SDL_FRect*)(&dest);
+    ;
+    if ( rec.x + rec.w < 0 || rec.y + rec.h < 0 
+        || rec.y - rec.h > m_pAttachedWindow->m_height
+        || rec.x - rec.w > m_pAttachedWindow->m_width )
+        return true;
     return SDL_RenderFillRect(m_pSdlRenderer, pSdlRect);
 }
 
@@ -192,15 +201,23 @@ bool BlackBoxEngine::BB_Renderer::DrawTextureScreen(
 {
     assert(m_pSdlRenderer);
     assert(pTexture);
+    
+    if ( pDest )
+    {
+        if ( pDest->x + pDest->w < 0 || pDest->y + pDest->h < 0
+            || pDest->y - pDest->h > m_pAttachedWindow->m_height
+            || pDest->x - pDest->w > m_pAttachedWindow->m_width )
+            return true;
+    }
 
     const SDL_FRect* pSdlSource = (const SDL_FRect*)(pSource);       // tested, this is faster
     const SDL_FRect* pSdlDest = (const SDL_FRect*)(pDest);           // than doing static_cast
     const SDL_FPoint* pSdlCenter = (const SDL_FPoint*)(pCenter);     // 
-    const SDL_FlipMode sdlFlip = static_cast<SDL_FlipMode>(flip);   // my code is copying Sdl, so I guarntee this to work
+    const SDL_FlipMode sdlFlip = static_cast<SDL_FlipMode>(flip);    // my code is copying Sdl, so I guarntee this to work
 
-    if (pSdlDest)
+    if ( pSdlDest )
     {
-        BB_FRectangle gamePosRect = m_pGameCamera->OffsetScreenFromCamera(*pDest);
+        BB_FRectangle gamePosRect = m_pGameCamera->ZoomScreenRect( *pDest );
         pSdlDest = (const SDL_FRect*)(&gamePosRect);
     }
 
@@ -245,30 +262,29 @@ bool BlackBoxEngine::BB_Renderer::DrawTextureGame(
     assert(pTexture);
     if (!m_pGameCamera)
         return false;
-    
-    const SDL_FRect* pSdlSource = (const SDL_FRect*)(pSource);       // tested, this is faster
-    const SDL_FPoint* pSdlCenter = (const SDL_FPoint*)(pCenter);     // than doing static_cast 
-    const SDL_FlipMode sdlFlip = static_cast<SDL_FlipMode>(flip);    // my code is copying Sdl, this is private code, so I can guarntee this to work
 
-    const SDL_FRect* pSdlDest = nullptr; 
-    BB_FRectangle gamePosRect{ 0,0,0,0 };
     if (pDest)
     {
-        gamePosRect = m_pGameCamera->ConvertGameToScreen(*pDest);
-        pSdlDest = (const SDL_FRect*)(&gamePosRect);
+        auto dest = m_pGameCamera->ConvertGameToScreen( *pDest );
+        return DrawTextureScreen(
+            pTexture,
+            pSource,
+            &dest,
+            rot,
+            pCenter,
+            flip
+        );
     }
-    else
-        pSdlDest = (const SDL_FRect*)(pDest);
 
-    return SDL_RenderTextureRotated(
-        m_pSdlRenderer,
-        pTexture->m_pSdlTexture,
-        pSdlSource,
-        pSdlDest,
+    return DrawTextureScreen(
+        pTexture,
+        pSource,
+        pDest,
         rot,
-        pSdlCenter,
-        sdlFlip
+        pCenter,
+        flip
     );
+
 }
 
 bool BlackBoxEngine::BB_Renderer::DrawTextureGameColored(
@@ -283,7 +299,7 @@ bool BlackBoxEngine::BB_Renderer::DrawTextureGameColored(
     ColorValue preColor;
     pTexture->GetColorMod(&preColor);
     pTexture->SetColorMod(*pcolor);
-    bool good = DrawTextureScreen(pTexture, source, dest, rot, center, flip);
+    bool good = DrawTextureGame(pTexture, source, dest, rot, center, flip);
     pTexture->SetColorMod(preColor);
     return good;
 }

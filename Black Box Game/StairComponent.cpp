@@ -1,9 +1,13 @@
 #include "StairComponent.h"
-#include "../Black Box Engine/BlackBoxManager.h"
+
+#include <chrono>
+#include <BlackBoxManager.h>
+#include <Graphics/ScreenFader.h>
+#include <Actors/EngineComponents/TransformComponent.h>
+#include <System/Delay.h>
+
 #include "BlackBoxGame.h"
 #include "InteractionComponent.h"
-#include "../Black Box Engine/Actors/EngineComponents/TransformComponent.h"
-
 
 using namespace BlackBoxEngine;
 
@@ -20,12 +24,28 @@ void CaveEntranceComponent::OnStairUsed(Actor* pOtherActor)
     if ( !pTransform )
         return;
 
+    auto* pManager = BlackBoxManager::Get();
+    auto currentPos = pTransform->m_position;
     pTransform->m_position = {16, 16};
-    BlackBoxManager::Get()->m_pActorManager->SaveActor( pOtherActor, "PlayerActor", "../Assets/Actors/PlayerActor.xml" );
+    pManager->m_pActorManager->SaveActor( pOtherActor, "PlayerActor", "../Assets/Actors/PlayerActor.xml" );
+    pTransform->m_position = currentPos;
 
-	BlackBoxManager::Get()->m_pInputManager->SwapInputToGame();
-	BlackBoxManager::Get()->m_pActorManager->LoadLevel("../Assets/Levels/Cave1Level.xml");
-	BlackBoxManager::Get()->m_pActorManager->Start();
+    // stop all input.
+    pManager->m_pInputManager->StopAllInput();
+    ScreenFader::FadeToBlack( 1.f );
+
+    auto delayFunc = [pManager]()
+        {
+            pManager->m_pInputManager->SwapInputToGame();
+            pManager->m_pActorManager->LoadLevel( "../Assets/Levels/Cave1Level.xml" );
+            pManager->m_pActorManager->Start();
+            pManager->m_pInputManager->ResumeInput();
+
+            ScreenFader::FadeIn( 1.f );
+            return 0;
+        };
+    Delay( std::chrono::seconds( 1 ), delayFunc );
+
 }
 
 void CaveEntranceComponent::Start()

@@ -10,27 +10,33 @@ namespace BlackBoxEngine
     ////////////////////////////////////////////////////////////////
     // Variable access/manip
     ////////////////////////////////////////////////////////////////
-    void BB_Camera::SetCenterPoint(FVector2 centerPos)
+    void BB_Camera::SetCenterPoint( FVector2 centerPos )
     {
         m_centerPointCache = centerPos;
         m_screenInfoRect.x = centerPos.x - (m_screenInfoRect.w / 2);
         m_screenInfoRect.y = centerPos.y - (m_screenInfoRect.h / 2);
     }
 
-    void BB_Camera::Resize(float width, float height)
+    void BB_Camera::Resize( float width, float height )
     {
         m_screenInfoRect.w = width;
         m_screenInfoRect.h = height;
         m_screenInfoRect.x = m_centerPointCache.x - (m_screenInfoRect.w / 2);
         m_screenInfoRect.y = m_centerPointCache.y - (m_screenInfoRect.h / 2);
+        m_screenZoom = GetCameraWindowZoom( BlackBoxManager::Get()->GetWindow() );
     }
 
-    void BB_Camera::SetScreenDimensions(BB_FRectangle newDimensions)
+    void BB_Camera::SetScreenDimensions( BB_FRectangle newDimensions )
     {
         m_screenInfoRect = newDimensions;
         m_centerPointCache.x = newDimensions.x + (newDimensions.w / 2);
         m_centerPointCache.y = newDimensions.y + (newDimensions.h / 2);
-        m_screenZoom = GetCameraWindowZoom(BlackBoxManager::Get()->GetWindow());
+        m_screenZoom = GetCameraWindowZoom( BlackBoxManager::Get()->GetWindow() );
+    }
+
+    FVector2 BB_Camera::GetTopLeft() const
+    {
+        return FVector2( m_screenInfoRect.x, m_screenInfoRect.y );
     }
 
     FVector2 BB_Camera::GetCenterPoint() const
@@ -40,85 +46,53 @@ namespace BlackBoxEngine
 
     FVector2 BB_Camera::GetDimensions() const
     {
-        return { m_screenInfoRect.w , m_screenInfoRect.h };
+        return {m_screenInfoRect.w , m_screenInfoRect.h};
     }
 
     ////////////////////////////////////////////////////////////////
     // Screen offsetting
     ////////////////////////////////////////////////////////////////
 
-    BB_FRectangle BB_Camera::ConvertGameToScreen(const BB_FRectangle& gameRect) const
+    BB_FRectangle BB_Camera::ConvertGameToScreen( const BB_FRectangle& gameRect ) const
     {
-        const auto& pWindow = BlackBoxManager::Get()->GetWindow();
         BB_FRectangle outputRect = gameRect;
-        FVector2 zoom = GetCameraWindowZoom(pWindow);
-        ShiftGamePositionToScreen(&outputRect.x, &outputRect.y, zoom);
-        ScaleDestinationRectToScreen(&outputRect, zoom);
+        outputRect.x -= m_screenInfoRect.x;
+        outputRect.y -= m_screenInfoRect.y;
         return outputRect;
     }
 
-    BB_FRectangle BB_Camera::OffsetScreenFromCamera(const BB_FRectangle& inRect) const
+    BB_FRectangle BB_Camera::ZoomScreenRect( const BB_FRectangle& inRect ) const
     {
         const auto& pWindow = BlackBoxManager::Get()->GetWindow();
         BB_FRectangle outputRect = inRect;
-        FVector2 zoom = GetCameraWindowZoom(pWindow);
-        ScaleDestinationRectToScreen(&outputRect, zoom);
-        OffsetDestinationToCamera(&outputRect, zoom);
+        FVector2 zoom = GetCameraWindowZoom( pWindow );
+        outputRect.x *= zoom.x;
+        outputRect.y *= zoom.y;
+        outputRect.w *= zoom.x;
+        outputRect.h *= zoom.y;
         return outputRect;
     }
 
-    FVector2 BB_Camera::GetCameraWindowZoom(const BB_Window* pWindow) const
+    void BB_Camera::ShiftGamePositionToScreen( float* pX, float* pY ) const
     {
-        float x = static_cast<float>(pWindow->GetWidth())  / m_screenInfoRect.w;
-        float y = static_cast<float>(pWindow->GetHeight()) / m_screenInfoRect.h;
-        return FVector2{ x,y };
-    }
-
-    FVector2 BB_Camera::GetCameraWindowZoom(const std::unique_ptr<BB_Window>& pWindow) const
-    {
-        float x = static_cast<float>(pWindow->GetWidth()) / m_screenInfoRect.w;
-        float y = static_cast<float>(pWindow->GetHeight()) / m_screenInfoRect.h;
-        return FVector2{ x,y };
-    }
-
-    void BB_Camera::ShiftGamePositionToScreen(FVector2* pPos, FVector2* zoom) const
-    {
-        ShiftGamePositionToScreen(&pPos->x, &pPos->y, *zoom);
-    }
-
-    void BB_Camera::ShiftGamePositionToScreen(float* pX, float* pY, FVector2 zoom) const
-    {
-        *pX = (*pX * zoom.x) - (m_screenInfoRect.x * zoom.x);
-        *pY = (*pY * zoom.y) - (m_screenInfoRect.y * zoom.y);
-    }
-
-    ////////////////////////////////////////////////////////////////
-    // Statics Members
-    ////////////////////////////////////////////////////////////////
-    
-    void BB_Camera::ScaleDestinationRectToScreen(BB_FRectangle* pDest, FVector2 zoom)
-    {
-        pDest->w *= zoom.x;
-        pDest->h *= zoom.y;
-    }   
-
-    void BB_Camera::OffsetDestinationToCamera(BB_FRectangle* pDest, FVector2 zoom)
-    {
-        pDest->x *= zoom.x;
-        pDest->y *= zoom.y;
-    }
-
-    void BB_Camera::ScaleDestinationRectToScreen(float* pW, float* pH, FVector2 zoom)
-    {
-        *pW *= zoom.x;
-        *pH *= zoom.y;
-    }
-
-    void BB_Camera::OffsetDestinationToCamera(float* pX, float* pY, FVector2 zoom)
-    {
+        auto zoom = GetCameraWindowZoom( BlackBoxManager::Get()->GetWindow() );
+        *pX -= m_screenInfoRect.x;
+        *pY -= m_screenInfoRect.y;
         *pX *= zoom.x;
         *pY *= zoom.y;
     }
 
-}
+    FVector2 BB_Camera::GetCameraWindowZoom( const BB_Window* pWindow ) const
+    {
+        float x = static_cast<float>(pWindow->GetWidth()) / m_screenInfoRect.w;
+        float y = static_cast<float>(pWindow->GetHeight()) / m_screenInfoRect.h;
+        return FVector2{x,y};
+    }
 
+    FVector2 BB_Camera::GetCameraWindowZoom( const std::unique_ptr<BB_Window>& pWindow ) const
+    {
+        float x = static_cast<float>(pWindow->GetWidth()) / m_screenInfoRect.w;
+        float y = static_cast<float>(pWindow->GetHeight()) / m_screenInfoRect.h;
+        return FVector2{x,y};
+    }
+}

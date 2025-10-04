@@ -2,6 +2,7 @@
 
 #include <unordered_map>
 #include <filesystem>
+#include <mutex>
 
 #include "Actor.h"
 
@@ -15,19 +16,21 @@ namespace BlackBoxEngine
         std::unordered_map<Actor::Id , ActorPtr> m_allActors;
         std::vector<Actor::Id> m_unused;
         std::vector<Actor::Id> m_destroyQueue;
+        std::recursive_mutex m_actorMutex;
 
         Actor::Id m_highestId = 0;
 
     protected:
         Actor::Id NextId();
         void RemoveQueuedActors();
+        void InternalClearLevel();
     public:
         const ActorPtr& NewActor();
         const ActorPtr& LoadActor(const char* filePath);
         void LoadLevel(const char* filePath);
-        void ClearLevel();
         void DestroyActor(Actor::Id id);
         void DestroyActor(Actor* pActor);
+        void DestoryAllActors();
         
         const ActorPtr& GetActor(Actor::Id id);
 
