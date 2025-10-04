@@ -92,7 +92,8 @@ namespace BlackBoxEngine
 
         const XMLElementParser NextComponent();
 
-        static bool SaveActor(const std::unique_ptr<Actor>& pActor, const char* pActorName, std::filesystem::path filePath = {});
+        static bool SaveActor( const std::unique_ptr<Actor>& pActor, const char* pActorName, std::filesystem::path filePath = {} );
+        static bool SaveActor(const Actor* pActor, const char* pActorName, std::filesystem::path filePath = {});
     };
 
     class LevelXMLParser

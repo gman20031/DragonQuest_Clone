@@ -35,7 +35,8 @@ namespace BlackBoxEngine
         void Start(); // where the hell should I call this?
         void Render();
         
-        static void SaveActor(const std::unique_ptr<Actor>& pActor, const char* pActorName, std::filesystem::path filePath = {});
+        static void SaveActor( const std::unique_ptr<Actor>& pActor, const char* pActorName, std::filesystem::path filePath = {} );
+        static void SaveActor(const Actor* pActor, const char* pActorName, std::filesystem::path filePath = {});
     };
 
 };
