@@ -2,7 +2,7 @@
 
 #include <Actors/EngineComponents/MoverComponent.h>
 #include <Actors/EngineComponents/TransformComponent.h>
-#include <Input/InputManager.h>
+#include "../Black Box Engine/Input/InputManager.h"
 #include "TileSystem/TileMapComponent.h"
 #include "../Black Box Engine/Math/FVector2.h" // why are we using "../" here and not <>
 
@@ -28,6 +28,10 @@ class PlayerMovementComponent : public BlackBoxEngine::Component
     bool m_stopMoving = false;
     BlackBoxEngine::FVector2 m_direction{ 0, 0 };
     BlackBoxEngine::FVector2 m_targetPosition; // in world coordinates
+
+    bool m_isContinuous = false;
+    bool m_waitingForTap = false;
+    BlackBoxEngine::KeyCode m_lastKeyCode{};
 
 private:
     void SetTargetTile();

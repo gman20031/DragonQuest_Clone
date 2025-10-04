@@ -1,6 +1,6 @@
 #include "PlayerMovementComponent.h"
 #include "../Black Box Engine/BlackBoxManager.h"
-#include "../Black Box Engine/Input/InputManager.h"
+
 #include "../Black Box Engine/Actors/Collision/CollisionManager.h"
 #include "../Black Box Engine/Actors/EngineComponents/MovementBlocker.h"
 #include "TileSystem/TileInfoComponent.h"
@@ -33,27 +33,66 @@ void PlayerMovementComponent::Start()
     m_pMover = m_pOwner->GetComponent<MoverComponent>();
     InputManager* pInputManager = BlackBoxManager::Get()->m_pInputManager;
     using enum InputManager::InputType;
-    int index = 0;
+   // int index = 0;
 
     const auto& pTileActor = BlackBoxManager::Get()->m_pActorManager->GetActor(m_tileMapId);
     m_pTileMap = pTileActor->GetComponent<TileMapComponent>();
-    // insane monster of shit just to be able to make input delayed.
-    const auto registerDownKey = [this, pInputManager, &index](KeyCode keyCode, float x, float y)
-    {
-        uint64_t id = pInputManager->SubscribeToKey(keyCode, kKeyDown, [this,keyCode, x,y]()
-        {
-            SetTextureForDirection({x,y});
-            Delay(200, [this, keyCode, x, y]()
-                {
-                    auto* pInput = BlackBoxManager::Get()->m_pInputManager;
-                    if (pInput->IsKeyDown(keyCode))
-                        TryMove({ x, y });
+     //insane monster of shit just to be able to make input delayed.
+    //const auto registerDownKey = [this, pInputManager, &index](KeyCode keyCode, float x, float y)
+    //{
+    //    uint64_t id = pInputManager->SubscribeToKey(keyCode, kKeyDown, [this,keyCode, x,y]()
+    //    {
+    //        SetTextureForDirection({x,y});
+    //        //Delay(200, [this, keyCode, x, y]()
+    //        //    {
+    //        //        auto* pInput = BlackBoxManager::Get()->m_pInputManager;
+    //        //        if (pInput->IsKeyDown(keyCode))
+    //        //            TryMove({ x, y });
+    //        //
+    //        //        return 0;
+    //        //    });
+    //        
+    //    } );
+    //    m_keyDownCodes.emplace_back(id);
+    //};
 
-                    return 0;
+
+    const auto registerDownKey = [this, pInputManager](KeyCode keyCode, float x, float y)
+        {
+            uint64_t id = pInputManager->SubscribeToKey(keyCode, kKeyDown,
+                [this, keyCode, x, y]()
+                {
+                    SetTextureForDirection({ x, y });
+
+                    // Stop previous movement if a different key
+                    if (m_isMoving && keyCode != m_lastKeyCode)
+                        StopMoving();
+
+                    m_lastKeyCode = keyCode;
+                    m_direction = { x, y };
+
+                    // Only start tap delay if not already moving
+                    if (!m_isMoving)
+                    {
+                        m_isContinuous = false; // first move is tap
+                        m_waitingForTap = true; // new flag
+
+                        // Delay 200ms for single-tile tap
+                        Delay(600, [this, keyCode, x, y]()
+                            {
+                                if (m_waitingForTap) // still a tap
+                                {
+                                    m_isContinuous = true; // now allow continuous if holding
+                                    TryMove({ x, y });
+                                    m_waitingForTap = false;
+                                }
+                                return 0;
+                            });
+                    }
                 });
-        } );
-        m_keyDownCodes.emplace_back(id);
-    };
+            m_keyDownCodes.emplace_back(id);
+        };
+
     registerDownKey(kUpKey, 0, -1);
     registerDownKey(kDownKey, 0, +1);
     registerDownKey(kLeftKey, -1, 0);
@@ -84,19 +123,40 @@ void PlayerMovementComponent::Update()
     const FVector2 toTarget = m_targetPosition - position;
 
     // Check if we've reached or passed the target tile (allow some floating point tolerance)
+   //if (toTarget.GetLength() <= m_playerSpeed * deltaTime)
+   //{
+   //    // Snap position to target tile exactly
+   //    position = m_targetPosition;
+   //
+   //    // Stop movement
+   //    if(m_stopMoving)
+   //    {
+   //        m_pMover->m_velocity = FVector2(0, 0);
+   //        m_isMoving = false;
+   //    }
+   //    else
+   //        SetTargetTile();
+   //}
+ 
+
     if (toTarget.GetLength() <= m_playerSpeed * deltaTime)
     {
-        // Snap position to target tile exactly
         position = m_targetPosition;
+        m_pMover->m_velocity = { 0,0 };
+        m_isMoving = false;
 
-        // Stop movement
-        if(m_stopMoving)
+        auto* pInput = BlackBoxManager::Get()->m_pInputManager;
+
+        // Continuous movement if key is held
+        if (m_isContinuous && pInput->IsKeyDown(m_lastKeyCode))
         {
-            m_pMover->m_velocity = FVector2(0, 0);
-            m_isMoving = false;
+            TryMove(m_direction);
         }
-        else
-            SetTargetTile();
+    }
+    else
+    {
+        FVector2 normalized = toTarget.GetNormalizedVector();
+        m_pMover->m_velocity = normalized * m_playerSpeed;
     }
 }
 
@@ -129,13 +189,15 @@ void PlayerMovementComponent::TryMove(const FVector2& direction)
     m_direction = direction;
 
     // I will make this easier to work with, but for now it is literally sdl3
-    DelayFunction callback = [](void* pData, [[maybe_unused]]uint32_t timerId, [[maybe_unused]] uint32_t interval)->uint32_t
-        {
-            auto* pMovementComponent = static_cast<PlayerMovementComponent*>(pData);
-            pMovementComponent->SetTargetTile();
-            return 0;
-        };
-    Delay(250, callback, this);
+    //DelayFunction callback = [](void* pData, [[maybe_unused]]uint32_t timerId, [[maybe_unused]] uint32_t interval)->uint32_t
+    //    {
+    //        auto* pMovementComponent = static_cast<PlayerMovementComponent*>(pData);
+    //        pMovementComponent->SetTargetTile();
+    //        return 0;
+    //    };
+    //Delay(250, callback, this);
+
+    SetTargetTile();
 }
 
 void PlayerMovementComponent::SetTextureForDirection([[maybe_unused]]const BlackBoxEngine::FVector2& direction)
