@@ -449,6 +449,11 @@
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
     </ClCompile>
     <ClCompile Include="Graphics\Sprite.cpp" />
+    <ClCompile Include="Math\Noise\NoiseGenerator.cpp" />
+    <ClCompile Include="Math\Noise\OpenSimplex.cpp" />
+    <ClCompile Include="Math\Noise\PerlinNoise.cpp" />
+    <ClCompile Include="Math\Noise\SmoothStep.cpp" />
+    <ClCompile Include="Math\Noise\ValueNoise.cpp" />
     <ClCompile Include="System\Delay.cpp" />
     <ClCompile Include="Math\Random.cpp" />
     <ClCompile Include="Math\RandomEngines.cpp" />
@@ -615,6 +620,12 @@
     <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3_image\SDL_image.h" />
     <ClInclude Include="libraries\SDL3-3.2.4\include\SDL3_ttf\SDL_ttf.h" />
     <ClInclude Include="Graphics\Sprite.h" />
+    <ClInclude Include="Math\Noise\NoiseGenerator.h" />
+    <ClInclude Include="Math\Noise\OpenSimplex.h" />
+    <ClInclude Include="Math\Noise\PerlinNoise.h" />
+    <ClInclude Include="Math\Noise\SmoothStep.h" />
+    <ClInclude Include="Math\Noise\SquirrelNoise5.h" />
+    <ClInclude Include="Math\Noise\ValueNoise.h" />
     <ClInclude Include="System\Delay.h" />
     <ClInclude Include="Math\RandomEngines.h" />
     <ClInclude Include="Resources\TextFactory.h" />

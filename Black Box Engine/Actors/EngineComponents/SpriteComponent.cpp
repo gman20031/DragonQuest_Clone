@@ -76,7 +76,7 @@ namespace BlackBoxEngine
 
     void AnimatedSpriteComponent::Start()
     {
-        m_sprite.Start();
+        m_sprite.GameStart();
     }
 
     /////////////////////////////////////////////////////////////////

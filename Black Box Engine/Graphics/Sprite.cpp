@@ -33,6 +33,9 @@ namespace BlackBoxEngine
 
     void Sprite::AnimateSprite( int framePerSecond, bool repeat )
     {
+        if ( m_animating )
+            StopAnimating();
+
         constexpr uint64_t milisecondPerSecond = std::chrono::milliseconds::period::den;
         double frameDelay = 1 / (double)framePerSecond;
         uint32_t msDelay = static_cast<uint32_t>(frameDelay * milisecondPerSecond);
@@ -54,6 +57,11 @@ namespace BlackBoxEngine
                 return 0;
             };
         m_callbackId = Delay( msDelay, callback);
+    }
+
+    void Sprite::AnimateSprite()
+    {
+        AnimateSprite( m_framesPerSecond, m_loopAnimation );
     }
 
     void Sprite::StopAnimating()
@@ -208,7 +216,7 @@ namespace BlackBoxEngine
         parser.NewChildVariable( "animated_on_start", m_animateOnStart );
     }
 
-    void Sprite::Start( )
+    void Sprite::GameStart( )
     {
         if( m_animateOnStart )
             AnimateSprite( m_framesPerSecond, m_loopAnimation );

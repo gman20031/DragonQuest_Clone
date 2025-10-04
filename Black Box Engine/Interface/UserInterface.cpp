@@ -58,7 +58,7 @@ namespace BlackBoxEngine
     void InterfaceHighlighter::Start()
     {
         if ( m_pSprite )
-            m_pSprite->Start();
+            m_pSprite->GameStart();
     }
     
     void InterfaceHighlighter::Stop()
