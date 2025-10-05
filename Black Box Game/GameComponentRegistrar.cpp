@@ -8,6 +8,8 @@
 #include "PlayerMovementComponent.h"
 #include "InteractionComponent.h"
 #include "StairComponent.h"
+#include "TalkComponent.h"
+#include "TakeComponent.h"
 
 using namespace BlackBoxEngine;
 
@@ -22,6 +24,8 @@ static std::tuple
     ComponentFactory::Registrar<CaveEntranceComponent>,
     ComponentFactory::Registrar<StairDownComponent>,
     ComponentFactory::Registrar<StairUpLevel1Component>,
-    ComponentFactory::Registrar<StairUpLevel2Component>
+    ComponentFactory::Registrar<StairUpLevel2Component>,
+    ComponentFactory::Registrar<TalkComponent>,
+    ComponentFactory::Registrar<TakeComponent>
 
 > GameComponentRegistrar;

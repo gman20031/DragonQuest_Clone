@@ -2,7 +2,7 @@
     <Component Name="TransformComponent">
         <Position>
             <X>896</X>
-            <Y>782</Y>
+            <Y>784</Y>
         </Position>
         <Rotation>0</Rotation>
     </Component>
@@ -24,4 +24,5 @@
         </TextureOffset>
         <filePath>../Assets/Tiles/FullTileSheet.png</filePath>
     </Component>
+    <Component Name="TalkComponent"/>
 </Actor>

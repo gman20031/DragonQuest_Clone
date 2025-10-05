@@ -7,8 +7,9 @@
 #include <Interface/InterfaceTexture.h>
 #include <Interface/UserInterface.h>
 #include "StairComponent.h"
+#include "TalkComponent.h"
+#include "TakeComponent.h"
 #include <../Black Box Engine/Math/FVector2.h>
-//#include "../Black Box Engine/Actors/Actor.h"
 
 class BlackBoxGame;
 //class Actor;
@@ -23,19 +24,15 @@ class InteractionComponent : public BlackBoxEngine::Component
 
     BlackBoxEngine::UserInterface m_interfaceRoot;
 
-    //BlackBoxEngine::InterfaceText* m_actionMessage = nullptr;
-    //
-    //BlackBoxEngine::InterfaceText* m_actionMessageNode = nullptr; // stores the current message
-    //bool m_messageActive = false;
-    //std::string m_currentMessageText;
-
     BlackBoxEngine::UserInterface m_messageRoot;   // same type as m_interfaceRoot
     BlackBoxEngine::InterfaceText* m_messageNode = nullptr;
     bool m_messageActive = false;
 
     BlackBoxEngine::Actor* m_currentActor = nullptr;
 
-    StairComponent* m_currentStair = nullptr;
+    StairComponent* m_pCurrentStair = nullptr;
+    TalkComponent* m_pCurrentTalk = nullptr;
+    TakeComponent* m_pCurrentTake = nullptr;
 
     BlackBoxEngine::Actor* m_playerActor = nullptr;
 
@@ -57,7 +54,10 @@ public:
 
     void OnButtonPressed(const std::string& action);  
 
-    void SetCurrentStair(StairComponent* stair) { m_currentStair = stair; }
+    void SetCurrentStair(StairComponent* stair) { m_pCurrentStair = stair; }
+    void SetCurrentTalk(TalkComponent* talk) { m_pCurrentTalk = talk; }
+    void SetCurrentTake(TakeComponent* take) { m_pCurrentTake = take; }
+
     bool GetDidMove() { return m_didMove; }
 
     BlackBoxEngine::Actor* SetPlayerActor(BlackBoxEngine::Actor* pOtherActor) { return m_playerActor = pOtherActor; }

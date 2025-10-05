@@ -12,6 +12,8 @@
     <ClCompile Include="PlayerMovementComponent.cpp" />
     <ClCompile Include="InteractionComponent.cpp" />
     <ClCompile Include="StairComponent.cpp" />
+    <ClCompile Include="TalkComponent.cpp" />
+    <ClCompile Include="TakeComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BlackBoxGame.h" />
@@ -23,5 +25,7 @@
     <ClInclude Include="PlayerMovementComponent.h" />
     <ClInclude Include="InteractionComponent.h" />
     <ClInclude Include="StairComponent.h" />
+    <ClInclude Include="TalkComponent.h" />
+    <ClInclude Include="TakeComponent.h" />
   </ItemGroup>
 </Project>

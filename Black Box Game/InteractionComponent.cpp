@@ -142,31 +142,46 @@ void InteractionComponent::OnCollide([[maybe_unused]]BlackBoxEngine::Actor* pOth
     // Check if the actor has a StairComponent
     if (auto* stair = pOtherActor->GetComponent<CaveEntranceComponent>())
     {
-        m_currentStair = stair;  // store the stair we collided with
+        m_pCurrentStair = stair;  // store the stair we collided with
         BB_LOG(LogType::kMessage, "Player is on a cave entrance actor.");
         return;
     }
     if (auto* stair1 = pOtherActor->GetComponent<StairUpLevel1Component>())
     {
-        m_currentStair = stair1;  // store the stair we collided with
+        m_pCurrentStair = stair1;  // store the stair we collided with
         BB_LOG(LogType::kMessage, "Player is on a cave exit actor.");
         return;
     }
     if (auto* stair2 = pOtherActor->GetComponent<StairUpLevel2Component>())
     {
-        m_currentStair = stair2;  // store the stair we collided with
+        m_pCurrentStair = stair2;  // store the stair we collided with
         BB_LOG(LogType::kMessage, "Player is on a cave level 1 actor.");
         return;
     }
     if (auto* stair3 = pOtherActor->GetComponent<StairDownComponent>())
     {
-        m_currentStair = stair3;  // store the stair we collided with
+        m_pCurrentStair = stair3;  // store the stair we collided with
         BB_LOG(LogType::kMessage, "Player is on a cave level 2 actor.");
         return;
     }
-    // Not a stair
-    m_currentStair = nullptr;
 
+    if (auto* talk = pOtherActor->GetComponent<TalkComponent>())
+    {
+        m_pCurrentTalk = talk;  // store the stair we collided with
+        BB_LOG(LogType::kMessage, "Player is the town.");
+        return;
+    }
+
+    if (auto* take = pOtherActor->GetComponent<TakeComponent>())
+    {
+        m_pCurrentTake = take;  // store the stair we collided with
+        BB_LOG(LogType::kMessage, "Player is the chest.");
+        return;
+    }
+
+    // Not a stair
+    m_pCurrentStair = nullptr;
+    m_pCurrentTalk = nullptr;
 
 }
 
@@ -182,17 +197,47 @@ void InteractionComponent::OnButtonPressed(const std::string& action)
 {
     if (action == "stair")
     {
-        if (m_currentStair)
+        if (m_pCurrentStair)
         {
             CloseUI();
 
             //SetOwnerPosition(m_currentStair->GetTargetPosition());
             m_didMove = true;
-            m_currentStair->OnStairUsed(m_playerActor);
+            m_pCurrentStair->OnStairUsed(m_playerActor);
             return;
         }
         else
             ShowActionMessage("No Stairs To Take"); //need to check actual text 
+    }
+
+    if (action == "talk")
+    {
+        if (m_pCurrentTalk)
+        {
+            CloseUI();
+
+            //SetOwnerPosition(m_currentStair->GetTargetPosition());
+            m_didMove = true;
+            m_pCurrentTalk->OnTalkUsed(m_playerActor);
+            return;
+        }
+        else
+            ShowActionMessage("No tile To Talk"); //need to check actual text 
+    }
+
+    if (action == "take")
+    {
+        if (m_pCurrentTake)
+        {
+            CloseUI();
+
+            //SetOwnerPosition(m_currentStair->GetTargetPosition());
+            m_didMove = true;
+            m_pCurrentTake->OnTakeUsed(m_playerActor);
+            return;
+        }
+        else
+            ShowActionMessage("No tile To take"); //need to check actual text 
     }
 
     m_didMove = false;

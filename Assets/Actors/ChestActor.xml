@@ -24,4 +24,5 @@
         </TextureOffset>
         <filePath>../Assets/Tiles/FullTileSheet.png</filePath>
     </Component>
+    <Component Name="TakeComponent"/>
 </Actor>
