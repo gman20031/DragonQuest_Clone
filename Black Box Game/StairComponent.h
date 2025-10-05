@@ -18,12 +18,12 @@ public:
 
     virtual void OnStairUsed(BlackBoxEngine::Actor* pOtherActor) = 0; // all stairs must implement this
 
-    virtual void Start() override; // only when this is created.
-    virtual void Update() override; // every tick of the game
-    virtual void Render() override; // just for rendering stuff
-    virtual void OnCollide(BlackBoxEngine::Actor* pOtherActor) override; // if this actor has a collider, and walks into another actor with a collider
-    virtual void Save(BlackBoxEngine::XMLElementParser parser) override; // for when this actor is called to be saved
-    virtual void Load(const BlackBoxEngine::XMLElementParser parser) override; // for when this actor is called to be loaded
+    virtual void Start() override {} // only when this is created.
+    virtual void Update() override {} // every tick of the game
+    virtual void Render() override {} // just for rendering stuff
+    virtual void OnCollide([[maybe_unused]] BlackBoxEngine::Actor* pOtherActor) override {} // if this actor has a collider, and walks into another actor with a collider
+    virtual void Save([[maybe_unused]] BlackBoxEngine::XMLElementParser parser) override {} // for when this actor is called to be saved
+    virtual void Load([[maybe_unused]] const BlackBoxEngine::XMLElementParser parser) override {} // for when this actor is called to be loaded
 };
 
 //load level 1 (cave part 1)
@@ -37,12 +37,12 @@ public:
     
     virtual void OnStairUsed([[maybe_unused]] BlackBoxEngine::Actor* pOtherActor) override;
 
-    virtual void Start() override; // only when this is created.
-    virtual void Update() override; // every tick of the game
-    virtual void Render() override; // just for rendering stuff
+    virtual void Start() override {} // only when this is created.
+    virtual void Update() override {} // every tick of the game
+    virtual void Render() override {} // just for rendering stuff
     virtual void OnCollide([[maybe_unused]] BlackBoxEngine::Actor* pOtherActor) override; // if this actor has a collider, and walks into another actor with a collider
-    virtual void Save([[maybe_unused]] BlackBoxEngine::XMLElementParser parser) override; // for when this actor is called to be saved
-    virtual void Load([[maybe_unused]] const BlackBoxEngine::XMLElementParser parser) override; // for when this actor is called to be loaded
+    virtual void Save([[maybe_unused]] BlackBoxEngine::XMLElementParser parser) override {} // for when this actor is called to be saved
+    virtual void Load([[maybe_unused]] const BlackBoxEngine::XMLElementParser parser) override {} // for when this actor is called to be loaded
 };
 
 //load level 2 (cave part 2)
@@ -54,12 +54,12 @@ public:
     StairDownComponent(BlackBoxEngine::Actor* pActor) : StairComponent(pActor) {}
     virtual ~StairDownComponent() override {}
 
-    virtual void OnStairUsed([[maybe_unused]] BlackBoxEngine::Actor* pOtherActor) override {}
+    virtual void OnStairUsed([[maybe_unused]] BlackBoxEngine::Actor* pOtherActor) override;
 
     virtual void Start() override {} // only when this is created.
     virtual void Update() override {}// every tick of the game
     virtual void Render() override {} // just for rendering stuff
-    virtual void OnCollide([[maybe_unused]] BlackBoxEngine::Actor* pOtherActor) override {} // if this actor has a collider, and walks into another actor with a collider
+    virtual void OnCollide([[maybe_unused]] BlackBoxEngine::Actor* pOtherActor) override;  // if this actor has a collider, and walks into another actor with a collider
     virtual void Save([[maybe_unused]] BlackBoxEngine::XMLElementParser parser) override {}// for when this actor is called to be saved
     virtual void Load([[maybe_unused]] const BlackBoxEngine::XMLElementParser parser) override {} // for when this actor is called to be loaded
 };
@@ -73,12 +73,12 @@ public:
     StairUpLevel1Component(BlackBoxEngine::Actor* pActor) : StairComponent(pActor) {}
     virtual ~StairUpLevel1Component() override {}
 
-    virtual void OnStairUsed([[maybe_unused]] BlackBoxEngine::Actor* pOtherActor) override {}
+    virtual void OnStairUsed([[maybe_unused]] BlackBoxEngine::Actor* pOtherActor) override;
 
     virtual void Start() override {} // only when this is created.
     virtual void Update() override {} // every tick of the game
     virtual void Render() override {} // just for rendering stuff
-    virtual void OnCollide([[maybe_unused]] BlackBoxEngine::Actor* pOtherActor) override {}// if this actor has a collider, and walks into another actor with a collider
+    virtual void OnCollide([[maybe_unused]] BlackBoxEngine::Actor* pOtherActor) override; // if this actor has a collider, and walks into another actor with a collider
     virtual void Save([[maybe_unused]] BlackBoxEngine::XMLElementParser parser) override {} // for when this actor is called to be saved
     virtual void Load([[maybe_unused]] const BlackBoxEngine::XMLElementParser parser) override {} // for when this actor is called to be loaded
 };
@@ -92,12 +92,12 @@ public:
     StairUpLevel2Component(BlackBoxEngine::Actor* pActor) : StairComponent(pActor) {}
     virtual ~StairUpLevel2Component() override {}
 
-    virtual void OnStairUsed([[maybe_unused]] BlackBoxEngine::Actor* pOtherActor) override {}
+    virtual void OnStairUsed([[maybe_unused]] BlackBoxEngine::Actor* pOtherActor) override; 
 
     virtual void Start() override {} // only when this is created.
     virtual void Update() override {} // every tick of the game
     virtual void Render() override {} // just for rendering stuff
-    virtual void OnCollide([[maybe_unused]] BlackBoxEngine::Actor* pOtherActor) override {} // if this actor has a collider, and walks into another actor with a collider
+    virtual void OnCollide([[maybe_unused]] BlackBoxEngine::Actor* pOtherActor) override;  // if this actor has a collider, and walks into another actor with a collider
     virtual void Save([[maybe_unused]] BlackBoxEngine::XMLElementParser parser) override {} // for when this actor is called to be saved
     virtual void Load([[maybe_unused]] const BlackBoxEngine::XMLElementParser parser) override {} // for when this actor is called to be loaded
 };

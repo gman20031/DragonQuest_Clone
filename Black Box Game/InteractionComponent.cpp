@@ -40,23 +40,10 @@ void InteractionComponent::Start()
     using enum InputManager::InputType;
     
     // X = open UI
-    //m_keyDownCodes.emplace_back(
-    //    pInput->SubscribeToKey(KeyCode::kX, kKeyDown, [this]() { if (!m_uiActive) OpenUI(); })
-    //);
-    
     m_keyDownCodes.emplace_back(
-        pInput->SubscribeToKey(KeyCode::kX, kKeyDown, [this]()
-            {
-                if (m_messageActive)
-                {
-                    DismissActionMessage(); // just clear the text
-                }
-                else if (!m_uiActive)
-                {
-                    OpenUI(); // open the whole UI if closed
-                }
-            })
+        pInput->SubscribeToKey(KeyCode::kX, kKeyDown, [this]() { if (!m_uiActive) OpenUI(); })
     );
+
 
     // Z = close UI
     m_keyDownCodes.emplace_back(
@@ -77,11 +64,9 @@ void InteractionComponent::OpenUI()
     auto* pPlayer = m_pOwner->GetComponent<PlayerMovementComponent>();
 
     if (pPlayer)
-    {
             pPlayer->SetAnimationPaused(true);
-    }
+    
 
-    //m_uiActive = true;
 }
 
 void InteractionComponent::CloseUI()
@@ -98,9 +83,8 @@ void InteractionComponent::CloseUI()
     auto* pPlayer = m_pOwner->GetComponent<PlayerMovementComponent>();
 
     if (pPlayer)
-    {
         pPlayer->SetAnimationPaused(false);
-    }
+    
 }
 
 void InteractionComponent::ShowActionMessage(const std::string& text)
@@ -109,8 +93,10 @@ void InteractionComponent::ShowActionMessage(const std::string& text)
     if (m_messageActive)
         return;
     
+    m_messageActive = true;
+
     BB_FRectangle rect;
-    rect.x = 50; rect.y = 10; rect.w = 200; rect.h = 20;
+    rect.x = 50; rect.y = 50; rect.w = 200; rect.h = 20;
     
     InterfaceText::Paremeters params;
     params.pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf";
@@ -124,30 +110,21 @@ void InteractionComponent::ShowActionMessage(const std::string& text)
     // make it visible
     m_messageRoot.AddToScreen();
     
-    m_messageActive = true;
-    
 
 }
 
 void InteractionComponent::DismissActionMessage()
 {
-   if (!m_messageActive)
-      return;
    
-   // remove the entire message root from screen (removes the message node too)
-   m_messageRoot.RemoveFromScreen();
-   
-   m_messageNode = nullptr;
-   m_messageActive = false;
-   
-   if (m_uiActive)
-      BlackBoxManager::Get()->m_pInputManager->SwapInputTargetToInterface(&m_interfaceRoot);
-   else
-      BlackBoxManager::Get()->m_pInputManager->SwapInputToGame();
-   // return input to the main game (or to your UI root if you prefer)
-   //BlackBoxManager::Get()->m_pInputManager->SwapInputToGame();
-   
+    if (!m_messageActive)
+        return;
 
+    // Hide the entire message root
+    m_messageRoot.RemoveFromScreen();
+
+    // Reset flags
+    m_messageNode = nullptr;
+    m_messageActive = false;
 }
 
 void InteractionComponent::Update()
@@ -166,10 +143,27 @@ void InteractionComponent::OnCollide([[maybe_unused]]BlackBoxEngine::Actor* pOth
     if (auto* stair = pOtherActor->GetComponent<CaveEntranceComponent>())
     {
         m_currentStair = stair;  // store the stair we collided with
-        BB_LOG(LogType::kMessage, "Player is on a stair actor.");
+        BB_LOG(LogType::kMessage, "Player is on a cave entrance actor.");
         return;
     }
-
+    if (auto* stair1 = pOtherActor->GetComponent<StairUpLevel1Component>())
+    {
+        m_currentStair = stair1;  // store the stair we collided with
+        BB_LOG(LogType::kMessage, "Player is on a cave exit actor.");
+        return;
+    }
+    if (auto* stair2 = pOtherActor->GetComponent<StairUpLevel2Component>())
+    {
+        m_currentStair = stair2;  // store the stair we collided with
+        BB_LOG(LogType::kMessage, "Player is on a cave level 1 actor.");
+        return;
+    }
+    if (auto* stair3 = pOtherActor->GetComponent<StairDownComponent>())
+    {
+        m_currentStair = stair3;  // store the stair we collided with
+        BB_LOG(LogType::kMessage, "Player is on a cave level 2 actor.");
+        return;
+    }
     // Not a stair
     m_currentStair = nullptr;
 
@@ -197,11 +191,12 @@ void InteractionComponent::OnButtonPressed(const std::string& action)
             m_currentStair->OnStairUsed(m_playerActor);
             return;
         }
+        else
+            ShowActionMessage("No Stairs To Take"); //need to check actual text 
     }
 
     m_didMove = false;
-    //BB_LOG(LogType::kMessage, "Cannot perform this action here.");
-    ShowActionMessage("Cannot perform this action here.");
+    //ShowActionMessage("Cannot perform this action here.");
 }
 
 
@@ -238,14 +233,6 @@ void InteractionComponent::TestInterfaceStuff()
     //    .repeat = true
     //} );
 
-    //BB_FRectangle messageRect{ 50, 10, 200, 20 };
-    //InterfaceText::Paremeters msgParams;
-    //msgParams.pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf";
-    //msgParams.textSize = 12;
-    //msgParams.color = ColorPresets::white;
-    //msgParams.pText = ""; // start empty
-    //
-    //m_messageNode = m_interfaceRoot.AddNode<InterfaceText>("ActionMessage", messageRect, msgParams);
 
     BB_FRectangle buttonDimension{ 0,0, 64, 7 };
 
@@ -256,8 +243,8 @@ void InteractionComponent::TestInterfaceStuff()
         .interactColor = ColorValue(0,0,0,0),
     };
 
-    std::string buttonNames[] = { "Talk", "Stair", "Trade", "Look" };
-    std::string actions[] = { "talk", "stair", "trade", "look" };
+    std::string buttonNames[] = { "Talk", "Stair", "Take", "Item" };
+    std::string actions[] = { "talk", "stair", "take", "item" };
 
     //ButtonCallbackFunctionPtr callbacks[] =
     //{
@@ -271,8 +258,8 @@ void InteractionComponent::TestInterfaceStuff()
    {
        [this]() { OnButtonPressed("talk"); }, // First button
        [this]() { OnButtonPressed("stair"); },  // Second button
-       [this]() { OnButtonPressed("trade"); }, // Third button
-       [this]() { OnButtonPressed("look"); }   // Fourth button
+       [this]() { OnButtonPressed("take"); }, // Third button
+       [this]() { OnButtonPressed("item"); }   // Fourth button
    };
 
     InterfaceNode* m_nodes[4] = {};
@@ -286,7 +273,7 @@ void InteractionComponent::TestInterfaceStuff()
         buttonDimension.y = i * (buttonDimension.h + yPad);
 
         buttomParams.callbackFunction = [this, i]() {
-            const char* actions[] = { "talk", "stair", "trade", "look" };
+            const char* actions[] = { "talk", "stair", "take", "item" };
             OnButtonPressed(actions[i]);
             };
 
@@ -318,10 +305,10 @@ void InteractionComponent::TestInterfaceStuff()
     textParams.pText = "Stair";
     m_nodes[1]->MakeChildNode<InterfaceText>("SecondButton Text", buttonDimension, textParams);
 
-    textParams.pText = "Third Button";
+    textParams.pText = "Take";
     m_nodes[2]->MakeChildNode<InterfaceText>("ThirdButton Text", buttonDimension, textParams);
 
-    textParams.pText = "Fourth Button";
+    textParams.pText = "Item";
     m_nodes[3]->MakeChildNode<InterfaceText>("FourthButton Text", buttonDimension, textParams);
 
 
@@ -340,6 +327,14 @@ void InteractionComponent::TestInterfaceStuff()
     pInterfaceTarget->m_keyDown.RegisterListener(KeyCode::kZ, [this]() { CloseUI(); });
     pInterfaceTarget->m_keyDown.RegisterListener(KeyCode::kEscape, [this]() { CloseUI(); });
     
+    pInterfaceTarget->m_keyDown.RegisterListener(KeyCode::kX, [this]() {
+        if (m_messageActive)
+            DismissActionMessage();
+        else if (!m_uiActive)
+            OpenUI(); // fallback if needed
+        });
+
+
     m_uiActive = true;
 }
 

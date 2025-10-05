@@ -50,7 +50,7 @@ void PlayerMovementComponent::Start()
         {
             SetTextureForDirection({x,y});
 
-            Delay(1000, [this, keyCode, x, y]()
+            Delay(200, [this, keyCode, x, y]()
                 {
                     auto* pInput = BlackBoxManager::Get()->m_pInputManager;
                     if (pInput->IsKeyDown(keyCode))
@@ -59,6 +59,8 @@ void PlayerMovementComponent::Start()
                     return 0;
                 });
             
+           
+
         } );
         m_keyDownCodes.emplace_back(id);
     };
@@ -260,7 +262,7 @@ void PlayerMovementComponent::SetTextureForDirection([[maybe_unused]]const Black
 
     if (m_pAnimatedSprite->Sprite().GetAnimationStartIndex() == startIndex && m_pAnimatedSprite->Sprite().GetAnimationEndIndex() == endIndex)
         return;
-
+    
     else
     {
         m_pAnimatedSprite->Sprite().StopAnimating();

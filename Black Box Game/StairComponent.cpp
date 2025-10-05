@@ -26,7 +26,12 @@ void CaveEntranceComponent::OnStairUsed(Actor* pOtherActor)
 
     auto* pManager = BlackBoxManager::Get();
     auto currentPos = pTransform->m_position;
+
+    
     pTransform->m_position = {16, 16};
+
+    //pTransform->m_prevPosition = { 16, 16 };
+
     pManager->m_pActorManager->SaveActor( pOtherActor, "PlayerActor", "../Assets/Actors/PlayerActor.xml" );
     pTransform->m_position = currentPos;
 
@@ -48,67 +53,175 @@ void CaveEntranceComponent::OnStairUsed(Actor* pOtherActor)
 
 }
 
-void CaveEntranceComponent::Start()
-{
-}
-
-void CaveEntranceComponent::Update()
-{
-}
-
-void CaveEntranceComponent::Render()
-{
-}
 
 void CaveEntranceComponent::OnCollide([[maybe_unused]] BlackBoxEngine::Actor* pOtherActor)
 {
-	//auto* pComponent = pOtherActor->GetComponent<InteractionComponent>();
 
 	if (auto* player = pOtherActor->GetComponent<InteractionComponent>())
 	{
 		player->SetCurrentStair(this);
-		player->SetPlayerActor(pOtherActor);
-		//if(player->GetDidMove())
-		//{
-		//	//check if did press stair
-		//	pOtherActor->GetComponent<TransformComponent>()->m_position.x = 16;
-		//	pOtherActor->GetComponent<TransformComponent>()->m_position.y = 16;
-		//}
-		//BlackBoxManager::Get()->m_pActorManager->SaveActor(pOtherActor, "PlayerActor");
+        player->SetPlayerActor(pOtherActor);
 
 		BB_LOG(LogType::kMessage, "Player is now on cave entrance.");
 	}
 
 }
 
-void CaveEntranceComponent::Save([[maybe_unused]] BlackBoxEngine::XMLElementParser parser)
+
+
+void StairDownComponent::OnStairUsed(BlackBoxEngine::Actor* pOtherActor)
 {
+    BB_LOG(LogType::kMessage, "Entering the cave...");
+
+    // check if player
+    auto* pInteractComponent = pOtherActor->GetComponent<InteractionComponent>();
+    if (!pInteractComponent)
+        return;
+    // player should have transform
+    auto* pTransform = pOtherActor->GetComponent<TransformComponent>();
+    if (!pTransform)
+        return;
+
+    auto* pManager = BlackBoxManager::Get();
+    auto currentPos = pTransform->m_position;
+
+
+    pTransform->m_position = { 144, 160 };
+
+    //pTransform->m_prevPosition = { 16, 16 };
+
+    pManager->m_pActorManager->SaveActor(pOtherActor, "PlayerActor", "../Assets/Actors/PlayerActor.xml");
+    pTransform->m_position = currentPos;
+
+    // stop all input.
+    pManager->m_pInputManager->StopAllInput();
+    ScreenFader::FadeToBlack(1.f);
+
+    auto delayFunc = [pManager]()
+        {
+            pManager->m_pInputManager->SwapInputToGame();
+            pManager->m_pActorManager->LoadLevel("../Assets/Levels/Cave2Level.xml");
+            pManager->m_pActorManager->Start();
+            pManager->m_pInputManager->ResumeInput();
+
+            ScreenFader::FadeIn(1.f);
+            return 0;
+        };
+    Delay(std::chrono::seconds(1), delayFunc);
 }
 
-void CaveEntranceComponent::Load([[maybe_unused]] const BlackBoxEngine::XMLElementParser parser)
+void StairDownComponent::OnCollide([[maybe_unused]] BlackBoxEngine::Actor* pOtherActor)
 {
+    if (auto* player = pOtherActor->GetComponent<InteractionComponent>())
+    {
+        player->SetCurrentStair(this);
+        player->SetPlayerActor(pOtherActor);
+
+        BB_LOG(LogType::kMessage, "Player is now on cave level 2 entrance.");
+    }
 }
 
-void StairComponent::Start()
+void StairUpLevel1Component::OnStairUsed(BlackBoxEngine::Actor* pOtherActor)
 {
+    BB_LOG(LogType::kMessage, "Entering the cave...");
+
+    // check if player
+    auto* pInteractComponent = pOtherActor->GetComponent<InteractionComponent>();
+    if (!pInteractComponent)
+        return;
+    // player should have transform
+    auto* pTransform = pOtherActor->GetComponent<TransformComponent>();
+    if (!pTransform)
+        return;
+
+    auto* pManager = BlackBoxManager::Get();
+    auto currentPos = pTransform->m_position;
+
+
+    pTransform->m_position = { 576, 320 };
+
+    //pTransform->m_prevPosition = { 16, 16 };
+
+    pManager->m_pActorManager->SaveActor(pOtherActor, "PlayerActor", "../Assets/Actors/PlayerActor.xml");
+    pTransform->m_position = currentPos;
+
+    // stop all input.
+    pManager->m_pInputManager->StopAllInput();
+    ScreenFader::FadeToBlack(1.f);
+
+    auto delayFunc = [pManager]()
+        {
+            pManager->m_pInputManager->SwapInputToGame();
+            pManager->m_pActorManager->LoadLevel("../Assets/Levels/ExampleLevel.xml");
+            pManager->m_pActorManager->Start();
+            pManager->m_pInputManager->ResumeInput();
+
+            ScreenFader::FadeIn(1.f);
+            return 0;
+        };
+    Delay(std::chrono::seconds(1), delayFunc);
 }
 
-void StairComponent::Update()
+void StairUpLevel1Component::OnCollide(BlackBoxEngine::Actor* pOtherActor)
 {
+    if (auto* player = pOtherActor->GetComponent<InteractionComponent>())
+    {
+        player->SetCurrentStair(this);
+        player->SetPlayerActor(pOtherActor);
+
+        BB_LOG(LogType::kMessage, "Player is now on stair of cave 1 entrance.");
+    }
+
 }
 
-void StairComponent::Render()
+void StairUpLevel2Component::OnStairUsed(BlackBoxEngine::Actor* pOtherActor)
 {
+    BB_LOG(LogType::kMessage, "Entering the cave...");
+
+    // check if player
+    auto* pInteractComponent = pOtherActor->GetComponent<InteractionComponent>();
+    if (!pInteractComponent)
+        return;
+    // player should have transform
+    auto* pTransform = pOtherActor->GetComponent<TransformComponent>();
+    if (!pTransform)
+        return;
+
+    auto* pManager = BlackBoxManager::Get();
+    auto currentPos = pTransform->m_position;
+
+
+    pTransform->m_position = { 160, 160 };
+
+    //pTransform->m_prevPosition = { 16, 16 };
+
+    pManager->m_pActorManager->SaveActor(pOtherActor, "PlayerActor", "../Assets/Actors/PlayerActor.xml");
+    pTransform->m_position = currentPos;
+
+    // stop all input.
+    pManager->m_pInputManager->StopAllInput();
+    ScreenFader::FadeToBlack(1.f);
+
+    auto delayFunc = [pManager]()
+        {
+            pManager->m_pInputManager->SwapInputToGame();
+            pManager->m_pActorManager->LoadLevel("../Assets/Levels/Cave1Level.xml");
+            pManager->m_pActorManager->Start();
+            pManager->m_pInputManager->ResumeInput();
+
+            ScreenFader::FadeIn(1.f);
+            return 0;
+        };
+    Delay(std::chrono::seconds(1), delayFunc);
 }
 
-void StairComponent::OnCollide([[maybe_unused]] BlackBoxEngine::Actor* pOtherActor)
+void StairUpLevel2Component::OnCollide(BlackBoxEngine::Actor* pOtherActor)
 {
-}
+    if (auto* player = pOtherActor->GetComponent<InteractionComponent>())
+    {
+        player->SetCurrentStair(this);
+        player->SetPlayerActor(pOtherActor);
 
-void StairComponent::Save([[maybe_unused]] BlackBoxEngine::XMLElementParser parser)
-{
-}
-
-void StairComponent::Load([[maybe_unused]] const BlackBoxEngine::XMLElementParser parser)
-{
+        BB_LOG(LogType::kMessage, "Player is now on stair of cave 2 entrance.");
+    }
 }
