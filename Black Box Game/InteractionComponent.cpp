@@ -58,7 +58,10 @@ void InteractionComponent::Start()
 
 void InteractionComponent::OpenUI()
 {
-    TestInterfaceStuff();
+    if (m_hudVisible)
+        HideHUD();
+
+    SelectionMenu();
     m_uiActive = true;
 
     auto* pPlayer = m_pOwner->GetComponent<PlayerMovementComponent>();
@@ -95,12 +98,32 @@ void InteractionComponent::ShowActionMessage(const std::string& text)
     
     m_messageActive = true;
 
+    BB_FRectangle bgRect;
+    bgRect.x = 60;       // slightly offset to have padding
+    bgRect.y = 60;
+    bgRect.w = 104;      // width slightly bigger than text rectangle
+    bgRect.h = 24;       // height slightly bigger than text rectangle
+
+    InterfaceTexture::TextureInfo bgTextureInfo{
+        .pTextureFile = "../Assets/UI/BottomTextBox.png", // your background image
+        .spriteDimensions = {16, 16},
+        .useFullImage = true,
+        .animate = false
+    };
+
+    // Add background first so it's behind the text
+    m_messageRoot.AddNode<InterfaceTexture>("ActionMessage_Background", bgRect, bgTextureInfo);
+
+
     BB_FRectangle rect;
-    rect.x = 50; rect.y = 50; rect.w = 200; rect.h = 20;
+    rect.x = 72; 
+    rect.y = 70;
+    rect.w = 100; 
+    rect.h = 20;
     
     InterfaceText::Paremeters params;
     params.pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf";
-    params.textSize = 12;
+    params.textSize = 16;
     params.color = ColorPresets::white;
     params.pText = text.c_str();
     
@@ -136,11 +159,11 @@ void InteractionComponent::Update()
 
     bool isMoving = pPlayer->m_isMoving; // Assuming this exists, or you track input velocity
 
-    if (!isMoving && !m_hudVisible)
+    if (!isMoving && !m_hudVisible && !m_uiActive)
     {
         DisplayHUD();
     }
-    else if (isMoving && m_hudVisible)
+    else if ((isMoving || m_uiActive) && m_hudVisible)
     {
         HideHUD();
     }
@@ -275,12 +298,6 @@ void InteractionComponent::DisplayHUD()
     rect.x = 10;
     rect.y = 10;
 
-    //BB_FRectangle rect;
-    //rect.w = 150;  // widened for label + value
-    //rect.h = 120;
-    //rect.x = 10;
-    //rect.y = 10;
-
     // --- Add background texture ---
     InterfaceTexture::TextureInfo bgTextureInfo{
         .pTextureFile = "../Assets/UI/StatsInfoBox.png",
@@ -327,133 +344,123 @@ void InteractionComponent::DisplayHUD()
 
 
 
-void InteractionComponent::TestInterfaceStuff()
+void InteractionComponent::SelectionMenu()
 {
-    using enum Direction;
-    using namespace BlackBoxEngine;
+   using enum Direction;
+   using namespace BlackBoxEngine;
 
-    m_interfaceRoot.GetRoot()->SetOffset(20, 20);
+   // Offset the whole UI root
+   m_interfaceRoot.GetRoot()->SetOffset(20, 20);
 
-    auto* pHighlighter = m_interfaceRoot.GetHighlight();
-    pHighlighter->SetParameters({
-        .mode = InterfaceHighlighter::kModeIcon,
-        .pSpriteFile = "../Assets/UI/Icons/IconSpriteFile.xml",
-        .iconOffset{-5, -2},
-        .iconSize{ 4,7 }
-        });
+   // --- Highlighter setup ---
+   auto* pHighlighter = m_interfaceRoot.GetHighlight();
+   pHighlighter->SetParameters({
+       .mode = InterfaceHighlighter::kModeIcon,
+       .pSpriteFile = "../Assets/UI/Icons/IconSpriteFile.xml",
+       .iconOffset{-5, -2},
+       .iconSize{4, 7}
+       });
 
-   
-    //m_interfaceRoot.AddNode<InterfaceTexture>( "TextureTest", {50,0,16,16}, InterfaceTexture::TextureInfo{
-    //    .pTextureFile = "../Assets/Sprites/Player/Fixed_OffsetCharacterSheet.png",
-    //    .spriteDimensions = {16,16},
-    //    .useFullImage = false,
-    //    .animate = true,
-    //    .spriteXCount = 8,
-    //    .spriteYCount = 1,
-    //    .spriteXPad = 0,
-    //    .spriteYPad = 0,
-    //    .animationStartIndex = 0,
-    //    .animationEndIndex = 7,
-    //    .spriteSheetIndex = 0,
-    //    .framesPerSecond = 2,
-    //    .repeat = true
-    //} );
+   // --- Button dimensions ---
+   BB_FRectangle buttonDimension{ 0, 0, 64, 7 };
+   float yPad = 1;
+   const size_t buttonCount = 4;
 
+   // --- Background behind buttons ---
+   BB_FRectangle bgRect;
+   bgRect.x = buttonDimension.x - 5; // padding
+   bgRect.y = buttonDimension.y - 5;
+   bgRect.w = buttonDimension.w;
+   bgRect.h = (buttonDimension.h + yPad) * buttonCount + 10;
 
-    BB_FRectangle buttonDimension{ 0,0, 64, 7 };
-
-    InterfaceButton::ButtonParams buttomParams{
-        .usable = true,
-        .color = ColorValue(0,0,0,0),
-        .targetedColor = ColorValue(0,0,0,0),
-        .interactColor = ColorValue(0,0,0,0),
-    };
-
-    std::string buttonNames[] = { "Talk", "Stair", "Take", "Item" };
-    std::string actions[] = { "talk", "stair", "take", "item" };
-
-   ButtonCallbackFunctionPtr callbacks[] =
-   {
-       [this]() { OnButtonPressed("talk"); }, // First button
-       [this]() { OnButtonPressed("stair"); },  // Second button
-       [this]() { OnButtonPressed("take"); }, // Third button
-       [this]() { OnButtonPressed("item"); }   // Fourth button
+   InterfaceTexture::TextureInfo bgTextureInfo{
+       .pTextureFile = "../Assets/UI/BottomTextBox.png",
+       .spriteDimensions = {16, 16},
+       .useFullImage = true,
+       .animate = false
    };
 
-    InterfaceNode* m_nodes[4] = {};
+   m_interfaceRoot.AddNode<InterfaceTexture>("UI_Background", bgRect, bgTextureInfo);
 
-    float yPad = 1;
-    size_t buttonCount = std::size(callbacks);
-    for (size_t i = 0; i < buttonCount; ++i)
-    {
-        std::string name = "button_" + std::to_string(i);
-        //buttomParams.callbackFunction = callbacks[i];
-        buttonDimension.y = i * (buttonDimension.h + yPad);
+   // --- Buttons setup ---
+   InterfaceButton::ButtonParams buttonParams{
+       .usable = true,
+       .color = ColorValue(0, 0, 0, 0),
+       .targetedColor = ColorValue(0, 0, 0, 0),
+       .interactColor = ColorValue(0, 0, 0, 0)
+   };
 
-        buttomParams.callbackFunction = [this, i]() {
-            const char* actions[] = { "talk", "stair", "take", "item" };
-            OnButtonPressed(actions[i]);
-            };
+   const char* actions[] = { "talk", "stair", "take", "item" };
+   InterfaceNode* m_nodes[buttonCount] = {};
 
-        auto* pButton = m_interfaceRoot.AddNode<InterfaceButton>(name.c_str(), buttonDimension, buttomParams);
-        m_nodes[i] = pButton;
-    
-        if (i == 0)
-            continue;
-        pButton->SetAdjacentNode(kUp, m_nodes[i - 1]);
-        m_nodes[i - 1]->SetAdjacentNode(kDown, pButton);
-    }
+   for (size_t i = 0; i < buttonCount; ++i)
+   {
+       buttonDimension.y = i * (buttonDimension.h + yPad);
 
+       buttonParams.callbackFunction = [this, i]() {
+           const char* actions[] = { "talk", "stair", "take", "item" };
+           OnButtonPressed(actions[i]);
+           };
 
-    m_nodes[3]->SetAdjacentNode(kDown, m_nodes[0]);
-    m_nodes[0]->SetAdjacentNode(kUp, m_nodes[3]);
+       std::string name = "button_" + std::to_string(i);
+       auto* pButton = m_interfaceRoot.AddNode<InterfaceButton>(name.c_str(), buttonDimension, buttonParams);
+       m_nodes[i] = pButton;
 
-    buttonDimension.y = 0;
-    buttonDimension.x = 0;
+       if (i > 0)
+       {
+           pButton->SetAdjacentNode(kUp, m_nodes[i - 1]);
+           m_nodes[i - 1]->SetAdjacentNode(kDown, pButton);
+       }
+   }
 
-    InterfaceText::Paremeters textParams{
-        .pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf",
-        .textSize = 12,
-        .color = ColorPresets::white
-    };
+   // Wrap navigation
+   m_nodes[0]->SetAdjacentNode(kUp, m_nodes[buttonCount - 1]);
+   m_nodes[buttonCount - 1]->SetAdjacentNode(kDown, m_nodes[0]);
 
-    textParams.pText = "Talk";
-    m_nodes[0]->MakeChildNode<InterfaceText>("FirstButton Text", buttonDimension, textParams);
+   buttonDimension.y = 0;
+   buttonDimension.x = 0;
+   // --- Optional: add button text (if needed) ---
+   // Commented out so buttons are still active but text is hidden
+   InterfaceText::Paremeters textParams{
+       .pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf",
+       .textSize = 16,
+       .color = ColorPresets::white
+   };
+   
+   textParams.pText = "Talk";
+   m_nodes[0]->MakeChildNode<InterfaceText>("FirstButton Text", buttonDimension, textParams);
+   
+   textParams.pText = "Stair";
+   m_nodes[1]->MakeChildNode<InterfaceText>("SecondButton Text", buttonDimension, textParams);
+   
+   textParams.pText = "Take";
+   m_nodes[2]->MakeChildNode<InterfaceText>("ThirdButton Text", buttonDimension, textParams);
+   
+   textParams.pText = "Item";
+   m_nodes[3]->MakeChildNode<InterfaceText>("FourthButton Text", buttonDimension, textParams);
+   
 
-    textParams.pText = "Stair";
-    m_nodes[1]->MakeChildNode<InterfaceText>("SecondButton Text", buttonDimension, textParams);
+   // --- Set highlighter target ---
+   pHighlighter->SetTarget(m_nodes[0]);
+   m_interfaceRoot.SetCursorTarget(m_nodes[0]);
 
-    textParams.pText = "Take";
-    m_nodes[2]->MakeChildNode<InterfaceText>("ThirdButton Text", buttonDimension, textParams);
+   // --- Add everything to screen ---
+   m_interfaceRoot.AddToScreen();
 
-    textParams.pText = "Item";
-    m_nodes[3]->MakeChildNode<InterfaceText>("FourthButton Text", buttonDimension, textParams);
+   auto* pInput = BlackBoxManager::Get()->m_pInputManager;
+   pInput->SwapInputTargetToInterface(&m_interfaceRoot);
 
+   auto* pInterfaceTarget = m_interfaceRoot.GetInputTarget();
+   pInterfaceTarget->m_keyDown.RegisterListener(KeyCode::kZ, [this]() { CloseUI(); });
+   pInterfaceTarget->m_keyDown.RegisterListener(KeyCode::kEscape, [this]() { CloseUI(); });
+   pInterfaceTarget->m_keyDown.RegisterListener(KeyCode::kX, [this]() {
+       if (m_messageActive)
+           DismissActionMessage();
+       else if (!m_uiActive)
+           OpenUI();
+       });
 
-    pHighlighter->SetTarget(m_nodes[0]);
-
-    m_interfaceRoot.SetCursorTarget(m_nodes[0]); // this will crash if you forget
-
-    m_interfaceRoot.AddToScreen();
-
-    //BlackBoxManager::Get()->m_pInputManager->SwapInputTargetToInterface(&m_interfaceRoot);
-    auto* pInput = BlackBoxManager::Get()->m_pInputManager;
-    pInput->SwapInputTargetToInterface(&m_interfaceRoot);
-    
-    // Bind Z/Escape to close UI (do not touch arrow keys)
-    auto* pInterfaceTarget = m_interfaceRoot.GetInputTarget();
-    pInterfaceTarget->m_keyDown.RegisterListener(KeyCode::kZ, [this]() { CloseUI(); });
-    pInterfaceTarget->m_keyDown.RegisterListener(KeyCode::kEscape, [this]() { CloseUI(); });
-    
-    pInterfaceTarget->m_keyDown.RegisterListener(KeyCode::kX, [this]() {
-        if (m_messageActive)
-            DismissActionMessage();
-        else if (!m_uiActive)
-            OpenUI(); // fallback if needed
-        });
-
-
-    m_uiActive = true;
+   m_uiActive = true;
 }
 
 

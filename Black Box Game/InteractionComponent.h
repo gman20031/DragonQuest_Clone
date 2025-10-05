@@ -84,7 +84,7 @@ private:
 
     bool m_uiActive = false;
 
-    void TestInterfaceStuff();
+    void SelectionMenu();
     void OpenUI();
     void CloseUI();
 
