@@ -38,6 +38,21 @@ class InteractionComponent : public BlackBoxEngine::Component
 
     bool m_didMove = false;
 
+    //maybe i hsould not do everything in the same class
+    BlackBoxEngine::UserInterface m_hudRoot;
+    BlackBoxEngine::InterfaceText* m_hudTextNode = nullptr;
+    bool m_hudVisible = false;
+   // BB_FRectangle m_hudRect;
+
+
+
+    int m_playerLevel = 1;
+    int m_playerHP = 20;
+    int m_playerMaxHP = 20;
+    int m_playerMP = 8;
+    int m_playerMaxMP = 8;
+    int m_playerGold = 120;
+    int m_playerEnergy = 10;
 public:
     InteractionComponent(BlackBoxEngine::Actor* pOwner) : Component(pOwner) { /*EMPTY*/ }
     virtual ~InteractionComponent();
@@ -61,6 +76,10 @@ public:
     bool GetDidMove() { return m_didMove; }
 
     BlackBoxEngine::Actor* SetPlayerActor(BlackBoxEngine::Actor* pOtherActor) { return m_playerActor = pOtherActor; }
+
+    void DisplayHUD(); //should we make it so that we can take in the name of the player?
+    
+    void HideHUD();
 private:
 
     bool m_uiActive = false;

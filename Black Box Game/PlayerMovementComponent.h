@@ -44,7 +44,7 @@ private:
     void TryMove(const BlackBoxEngine::FVector2& direction);
     void SetTextureForDirection(const BlackBoxEngine::FVector2& direction);
 
-    
+   
 public:
     PlayerMovementComponent(BlackBoxEngine::Actor* pOwner);
     virtual ~PlayerMovementComponent();
@@ -56,6 +56,7 @@ public:
     virtual void Save([[maybe_unused]] BlackBoxEngine::XMLElementParser parser) override; // for when this actor is called to be saved
     virtual void Load([[maybe_unused]] const BlackBoxEngine::XMLElementParser parser) override; // for when this actor is called to be loaded
 
+    //bool IsMoving() { return m_isMoving; }
 
     void SetAnimationPaused(bool paused);
 };

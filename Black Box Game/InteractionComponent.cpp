@@ -129,6 +129,21 @@ void InteractionComponent::DismissActionMessage()
 
 void InteractionComponent::Update()
 {
+
+    auto* pPlayer = m_pOwner->GetComponent<PlayerMovementComponent>();
+    if (!pPlayer)
+        return;
+
+    bool isMoving = pPlayer->m_isMoving; // Assuming this exists, or you track input velocity
+
+    if (!isMoving && !m_hudVisible)
+    {
+        DisplayHUD();
+    }
+    else if (isMoving && m_hudVisible)
+    {
+        HideHUD();
+    }
 }
 
 void InteractionComponent::Render()
@@ -246,6 +261,72 @@ void InteractionComponent::OnButtonPressed(const std::string& action)
 
 
 
+void InteractionComponent::DisplayHUD()
+{
+
+    if (m_hudVisible)
+        return;
+
+    m_hudVisible = true;
+
+    BB_FRectangle rect;
+    rect.w = 50;
+    rect.h = 70;
+    rect.x = 10;
+    rect.y = 10;
+
+    //BB_FRectangle rect;
+    //rect.w = 150;  // widened for label + value
+    //rect.h = 120;
+    //rect.x = 10;
+    //rect.y = 10;
+
+    // --- Add background texture ---
+    InterfaceTexture::TextureInfo bgTextureInfo{
+        .pTextureFile = "../Assets/UI/StatsInfoBox.png",
+        .spriteDimensions = {16, 16},  // full size of your texture
+        .useFullImage = true,
+        .animate = false
+    };
+
+    m_hudRoot.AddNode<InterfaceTexture>("HUD_Background", rect, bgTextureInfo);
+
+    // --- Add header text ---
+    InterfaceText::Paremeters headerParams;
+    headerParams.pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf";
+    headerParams.textSize = 14;
+    headerParams.color = ColorPresets::white;
+    headerParams.pText = "     PLAYER";
+
+    BB_FRectangle headerRect = rect;
+    headerRect.h = 15;
+    //headerRect.y += 2; // small top padding
+    m_hudRoot.AddNode<InterfaceText>("HUD_Header", headerRect, headerParams);
+
+    // --- Add stats text ---
+    BB_FRectangle statsRect = rect;
+    statsRect.y += 12;
+    
+    std::string hudText =
+        "  LV       " + std::to_string(m_playerLevel) + "\n\n" +
+        "  HP       " + std::to_string(m_playerHP) + "\n\n" +
+        "  MP       " + std::to_string(m_playerMP) + "\n\n" +
+        "  G        " + std::to_string(m_playerGold) + "\n\n" +
+        "  E        " + std::to_string(m_playerEnergy);
+    
+    InterfaceText::Paremeters statsParams;
+    statsParams.pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf";
+    statsParams.textSize = 16;
+    statsParams.color = ColorPresets::white;
+    statsParams.pText = hudText.c_str(); 
+
+    m_hudRoot.AddNode<InterfaceText>("HUD_Stats", statsRect, statsParams);
+    // --- Show HUD ---
+    m_hudRoot.AddToScreen();
+}
+
+
+
 void InteractionComponent::TestInterfaceStuff()
 {
     using enum Direction;
@@ -290,14 +371,6 @@ void InteractionComponent::TestInterfaceStuff()
 
     std::string buttonNames[] = { "Talk", "Stair", "Take", "Item" };
     std::string actions[] = { "talk", "stair", "take", "item" };
-
-    //ButtonCallbackFunctionPtr callbacks[] =
-    //{
-    //    &ButtonOneCallback,
-    //    &ButtonTwoCallback,
-    //    &ButtonThreeCallback,
-    //    &ButtonFourCallback
-    //};
 
    ButtonCallbackFunctionPtr callbacks[] =
    {
@@ -383,3 +456,13 @@ void InteractionComponent::TestInterfaceStuff()
     m_uiActive = true;
 }
 
+
+void InteractionComponent::HideHUD()
+{
+    if (!m_hudVisible)
+        return;
+
+    m_hudRoot.RemoveFromScreen();
+    m_hudTextNode = nullptr;
+    m_hudVisible = false;
+}
