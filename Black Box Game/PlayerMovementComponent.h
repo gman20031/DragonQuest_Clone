@@ -7,6 +7,7 @@
 #include "../Black Box Engine/Math/FVector2.h" // why are we using "../" here and not <>
 #include "../Black Box Engine/Actors/EngineComponents/SpriteComponent.h"
 
+
 class PlayerMovementComponent : public BlackBoxEngine::Component
 {
     GENERATE_ID("PlayerMovementComponent");

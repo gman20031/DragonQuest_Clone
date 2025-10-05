@@ -28,6 +28,7 @@ void CaveEntranceComponent::OnStairUsed(Actor* pOtherActor)
     auto currentPos = pTransform->m_position;
 
     
+    
     pTransform->m_position = {16, 16};
 
     //pTransform->m_prevPosition = { 16, 16 };
@@ -39,8 +40,11 @@ void CaveEntranceComponent::OnStairUsed(Actor* pOtherActor)
     pManager->m_pInputManager->StopAllInput();
     ScreenFader::FadeToBlack( 1.f );
 
-    auto delayFunc = [pManager]()
+    auto delayFunc = [pManager, pOtherActor]()
         {
+            auto* pInteractComponent = pOtherActor->GetComponent<InteractionComponent>();
+            pInteractComponent->HideHUD();
+            
             pManager->m_pInputManager->SwapInputToGame();
             pManager->m_pActorManager->LoadLevel( "../Assets/Levels/Cave1Level.xml" );
             pManager->m_pActorManager->Start();
@@ -97,8 +101,11 @@ void StairDownComponent::OnStairUsed(BlackBoxEngine::Actor* pOtherActor)
     pManager->m_pInputManager->StopAllInput();
     ScreenFader::FadeToBlack(1.f);
 
-    auto delayFunc = [pManager]()
+    auto delayFunc = [pManager, pOtherActor]()
         {
+            auto* pInteractComponent = pOtherActor->GetComponent<InteractionComponent>();
+            pInteractComponent->HideHUD();
+
             pManager->m_pInputManager->SwapInputToGame();
             pManager->m_pActorManager->LoadLevel("../Assets/Levels/Cave2Level.xml");
             pManager->m_pActorManager->Start();
@@ -149,8 +156,11 @@ void StairUpLevel1Component::OnStairUsed(BlackBoxEngine::Actor* pOtherActor)
     pManager->m_pInputManager->StopAllInput();
     ScreenFader::FadeToBlack(1.f);
 
-    auto delayFunc = [pManager]()
+    auto delayFunc = [pManager, pOtherActor]()
         {
+            auto* pInteractComponent = pOtherActor->GetComponent<InteractionComponent>();
+            pInteractComponent->HideHUD();
+
             pManager->m_pInputManager->SwapInputToGame();
             pManager->m_pActorManager->LoadLevel("../Assets/Levels/ExampleLevel.xml");
             pManager->m_pActorManager->Start();
@@ -202,8 +212,11 @@ void StairUpLevel2Component::OnStairUsed(BlackBoxEngine::Actor* pOtherActor)
     pManager->m_pInputManager->StopAllInput();
     ScreenFader::FadeToBlack(1.f);
 
-    auto delayFunc = [pManager]()
+    auto delayFunc = [pManager, pOtherActor]()
         {
+            auto* pInteractComponent = pOtherActor->GetComponent<InteractionComponent>();
+            pInteractComponent->HideHUD();
+
             pManager->m_pInputManager->SwapInputToGame();
             pManager->m_pActorManager->LoadLevel("../Assets/Levels/Cave1Level.xml");
             pManager->m_pActorManager->Start();

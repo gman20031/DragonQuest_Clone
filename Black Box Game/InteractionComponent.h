@@ -10,6 +10,7 @@
 #include "TalkComponent.h"
 #include "TakeComponent.h"
 #include <../Black Box Engine/Math/FVector2.h>
+#include <cstdint>
 
 class BlackBoxGame;
 //class Actor;
@@ -42,8 +43,6 @@ class InteractionComponent : public BlackBoxEngine::Component
     BlackBoxEngine::UserInterface m_hudRoot;
     BlackBoxEngine::InterfaceText* m_hudTextNode = nullptr;
     bool m_hudVisible = false;
-   // BB_FRectangle m_hudRect;
-
 
 
     int m_playerLevel = 1;
@@ -53,6 +52,9 @@ class InteractionComponent : public BlackBoxEngine::Component
     int m_playerMaxMP = 8;
     int m_playerGold = 120;
     int m_playerEnergy = 10;
+
+    uint32_t m_delayedHudTimerId = 0;
+
 public:
     InteractionComponent(BlackBoxEngine::Actor* pOwner) : Component(pOwner) { /*EMPTY*/ }
     virtual ~InteractionComponent();

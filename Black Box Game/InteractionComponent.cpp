@@ -4,6 +4,7 @@
 #include "BlackBoxGame.h"
 #include "StairComponent.h"
 #include "PlayerMovementComponent.h"
+#include "../Black Box Engine/System/Delay.h"
 
 using namespace BlackBoxEngine;
 
@@ -162,6 +163,18 @@ void InteractionComponent::Update()
     if (!isMoving && !m_hudVisible && !m_uiActive)
     {
         DisplayHUD();
+        //if (m_delayedDisplayId != 0)
+        //{
+        //    BlackBoxEngine::StopDelay(m_delayedDisplayId);
+        //    m_delayedDisplayId = 0;
+        //}
+        //
+        //// Schedule HUD display after 1 second (or any desired delay)
+        //m_delayedDisplayId = BlackBoxEngine::Delay(std::chrono::seconds(1), [this]() -> uint32_t {
+        //    DisplayHUD();
+        //    m_delayedDisplayId = 0; // reset handle
+        //    return 0; // 0 = do not repeat
+        //    });
     }
     else if ((isMoving || m_uiActive) && m_hudVisible)
     {
@@ -238,14 +251,14 @@ void InteractionComponent::OnButtonPressed(const std::string& action)
         if (m_pCurrentStair)
         {
             CloseUI();
-
+            HideHUD();
             //SetOwnerPosition(m_currentStair->GetTargetPosition());
             m_didMove = true;
             m_pCurrentStair->OnStairUsed(m_playerActor);
             return;
         }
         else
-            ShowActionMessage("No Stairs To Take"); //need to check actual text 
+            ShowActionMessage("Thou canst not go down."); //need to check actual text 
     }
 
     if (action == "talk")
@@ -253,14 +266,14 @@ void InteractionComponent::OnButtonPressed(const std::string& action)
         if (m_pCurrentTalk)
         {
             CloseUI();
-
+            HideHUD();
             //SetOwnerPosition(m_currentStair->GetTargetPosition());
             m_didMove = true;
             m_pCurrentTalk->OnTalkUsed(m_playerActor);
             return;
         }
         else
-            ShowActionMessage("No tile To Talk"); //need to check actual text 
+            ShowActionMessage("There is no one there."); //need to check actual text 
     }
 
     if (action == "take")
@@ -268,14 +281,14 @@ void InteractionComponent::OnButtonPressed(const std::string& action)
         if (m_pCurrentTake)
         {
             CloseUI();
-
+            HideHUD();
             //SetOwnerPosition(m_currentStair->GetTargetPosition());
             m_didMove = true;
             m_pCurrentTake->OnTakeUsed(m_playerActor);
             return;
         }
         else
-            ShowActionMessage("No tile To take"); //need to check actual text 
+            ShowActionMessage("There is nothing to take here."); //need to check actual text 
     }
 
     m_didMove = false;
@@ -469,7 +482,11 @@ void InteractionComponent::HideHUD()
     if (!m_hudVisible)
         return;
 
+    BB_LOG(LogType::kMessage, "Hiding HUD: Removing from screen...");
     m_hudRoot.RemoveFromScreen();
-    m_hudTextNode = nullptr;
+    BB_LOG(LogType::kMessage, "HUD removed from screen.");
+
+    //m_hudTextNode = nullptr;
     m_hudVisible = false;
+
 }
