@@ -25,6 +25,8 @@ class InteractionComponent : public BlackBoxEngine::Component
 
     BlackBoxEngine::UserInterface m_interfaceRoot;
 
+    BlackBoxEngine::Actor* m_testActor;
+
     BlackBoxEngine::UserInterface m_messageRoot;   // same type as m_interfaceRoot
     BlackBoxEngine::InterfaceText* m_messageNode = nullptr;
     bool m_messageActive = false;

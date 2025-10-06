@@ -131,12 +131,10 @@ const TileMapComponent::ActorPtr& TileMapComponent::GetTileAtGamePosition(const 
 
 const TileMapComponent::ActorPtr& TileMapComponent::GetEncounterAtGame( [[maybe_unused]]BlackBoxEngine::FVector2 pos )
 {
-    //uint32_t x = static_cast<uint32_t>(pos.x);
-    //uint32_t y = static_cast<uint32_t>(pos.y);
+    uint32_t x = static_cast<uint32_t>(pos.x) / m_tileSize;
+    uint32_t y = static_cast<uint32_t>(pos.y) / m_tileSize;
     BB_LOG( LogType::kMessage, "Encounter should occur" );
-    //m_encounterHandler.GetEncounterActorAtTile( x, y );
-
-    return BlackBoxManager::Get()->m_pActorManager->GetActor( 0 );
+    return m_encounterHandler.GetEncounterActorAtTile( x, y );
 }
 
 void TileMapComponent::SetAnchorPoint(BlackBoxEngine::BB_AnchorPoint anchor)

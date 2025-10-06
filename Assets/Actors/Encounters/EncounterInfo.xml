@@ -1,7 +1,7 @@
 <OverworldEncounterInfo>
 	<EncounterAreaStartX>7</EncounterAreaStartX>
 	<EncounterAreaStartY>8</EncounterAreaStartY>
-	<EncounterZoneSize>8</EncounterZoneSize>
+	<EncounterZoneSize>15</EncounterZoneSize>
 	<EncounterWidth>5</EncounterWidth>
 	<EncounterGrid>
 		<element>3</element>  
@@ -30,32 +30,32 @@
 	</EncounterGrid>
 	<EncounterMap>
 		<encounterKey>
-			<encounter>../Assets/Actors/Encounters/SlimeEncounter.xml</encounter>
-			<encounter>../Assets/Actors/Encounters/SlimeEncounter.xml</encounter>
-			<encounter>../Assets/Actors/Encounters/SlimeEncounter.xml</encounter>
-			<encounter>../Assets/Actors/Encounters/SlimeEncounter.xml</encounter>
-			<encounter>../Assets/Actors/Encounters/SlimeEncounter.xml</encounter>
+			<encounterInfo>../Assets/Actors/Encounters/SlimeEncounter.xml</encounterInfo>
+			<encounterInfo>../Assets/Actors/Encounters/SlimeEncounter.xml</encounterInfo>
+			<encounterInfo>../Assets/Actors/Encounters/SlimeEncounter.xml</encounterInfo>
+			<encounterInfo>../Assets/Actors/Encounters/SlimeEncounter.xml</encounterInfo>
+			<encounterInfo>../Assets/Actors/Encounters/SlimeEncounter.xml</encounterInfo>
 		</encounterKey>
 		<encounterKey>
-			<encounter>../Assets/Actors/Encounters/SlimeEncounter.xml</encounter>
-			<encounter>../Assets/Actors/Encounters/SlimeEncounter.xml</encounter>
-			<encounter>../Assets/Actors/Encounters/SlimeEncounter.xml</encounter>
-			<encounter>../Assets/Actors/Encounters/SlimeEncounter.xml</encounter>
-			<encounter>../Assets/Actors/Encounters/SlimeEncounter.xml</encounter>
+			<encounterInfo>../Assets/Actors/Encounters/SlimeEncounter.xml</encounterInfo>
+			<encounterInfo>../Assets/Actors/Encounters/SlimeEncounter.xml</encounterInfo>
+			<encounterInfo>../Assets/Actors/Encounters/SlimeEncounter.xml</encounterInfo>
+			<encounterInfo>../Assets/Actors/Encounters/SlimeEncounter.xml</encounterInfo>
+			<encounterInfo>../Assets/Actors/Encounters/SlimeEncounter.xml</encounterInfo>
 		</encounterKey>
 		<encounterKey>
-			<encounter>../Assets/Actors/Encounters/SlimeEncounter.xml</encounter>
-			<encounter>../Assets/Actors/Encounters/SlimeEncounter.xml</encounter>
-			<encounter>../Assets/Actors/Encounters/SlimeEncounter.xml</encounter>
-			<encounter>../Assets/Actors/Encounters/SlimeEncounter.xml</encounter>
-			<encounter>../Assets/Actors/Encounters/SlimeEncounter.xml</encounter>
+			<encounterInfo>../Assets/Actors/Encounters/SlimeEncounter.xml</encounterInfo>
+			<encounterInfo>../Assets/Actors/Encounters/SlimeEncounter.xml</encounterInfo>
+			<encounterInfo>../Assets/Actors/Encounters/SlimeEncounter.xml</encounterInfo>
+			<encounterInfo>../Assets/Actors/Encounters/SlimeEncounter.xml</encounterInfo>
+			<encounterInfo>../Assets/Actors/Encounters/SlimeEncounter.xml</encounterInfo>
 		</encounterKey>
 		<encounterKey>
-			<encounter>../Assets/Actors/Encounters/SlimeEncounter.xml</encounter>
-			<encounter>../Assets/Actors/Encounters/SlimeEncounter.xml</encounter>
-			<encounter>../Assets/Actors/Encounters/SlimeEncounter.xml</encounter>
-			<encounter>../Assets/Actors/Encounters/SlimeEncounter.xml</encounter>
-			<encounter>../Assets/Actors/Encounters/SlimeEncounter.xml</encounter>
+			<encounterInfo>../Assets/Actors/Encounters/SlimeEncounter.xml</encounterInfo>
+			<encounterInfo>../Assets/Actors/Encounters/SlimeEncounter.xml</encounterInfo>
+			<encounterInfo>../Assets/Actors/Encounters/SlimeEncounter.xml</encounterInfo>
+			<encounterInfo>../Assets/Actors/Encounters/SlimeEncounter.xml</encounterInfo>
+			<encounterInfo>../Assets/Actors/Encounters/SlimeEncounter.xml</encounterInfo>
 		</encounterKey>
 	</EncounterMap>
 </OverworldEncounterInfo>

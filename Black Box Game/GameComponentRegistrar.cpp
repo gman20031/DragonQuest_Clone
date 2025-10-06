@@ -5,6 +5,7 @@
 
 #include "TileSystem/TileInfoComponent.h"
 #include "TileSystem/TileMapComponent.h"
+#include "TileSystem/EncounterComponent.h"
 #include "PlayerMovementComponent.h"
 #include "InteractionComponent.h"
 #include "StairComponent.h"
@@ -26,6 +27,7 @@ static std::tuple
     ComponentFactory::Registrar<StairUpLevel1Component>,
     ComponentFactory::Registrar<StairUpLevel2Component>,
     ComponentFactory::Registrar<TalkComponent>,
-    ComponentFactory::Registrar<TakeComponent>
+    ComponentFactory::Registrar<TakeComponent>,
+    ComponentFactory::Registrar<EncounterComponent>
 
 > GameComponentRegistrar;

@@ -37,7 +37,7 @@ namespace BlackBoxEngine
 
     std::shared_ptr<BB_Texture> ResourceManager::GetTexture(BB_Renderer* pRenderer, const char* pFilepath)
     {
-        return GetTextureFactory()->CreateFont(pRenderer, pFilepath);
+        return GetTextureFactory()->CreateTexture(pRenderer, pFilepath);
     }
 
     std::shared_ptr<LuaScript> ResourceManager::GetLuaScript(const char* pFilePath)

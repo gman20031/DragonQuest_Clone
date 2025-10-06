@@ -38,8 +38,8 @@ void CaveEntranceComponent::OpenLevel(BlackBoxEngine::Actor* pOtherActor)
     auto* pManager = BlackBoxManager::Get();
     auto currentPos = pTransform->m_position;
 
-    pTransform->m_position = { 16, 16 };
-    pTransform->m_prevPosition = { 16, 16 };
+    //pTransform->m_position = { 16, 16 };
+    //pTransform->m_prevPosition = { 16, 16 };
 
     pManager->m_pActorManager->SaveActor(pOtherActor, "PlayerActor", "../Assets/Actors/PlayerActor.xml");
     pTransform->m_position = currentPos;
@@ -58,6 +58,8 @@ void CaveEntranceComponent::OpenLevel(BlackBoxEngine::Actor* pOtherActor)
             pManager->m_pInputManager->SwapInputToGame();
             pManager->m_pActorManager->LoadLevel("../Assets/Levels/Cave1Level.xml");
             pManager->m_pInputManager->ResumeInput();
+
+            pManager->m_pActorManager->GetActor( 3 )->GetComponent<TransformComponent>()->m_position = {16,16};
 
             ScreenFader::FadeIn(1.f);
 

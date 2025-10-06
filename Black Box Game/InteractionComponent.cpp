@@ -6,6 +6,9 @@
 #include "PlayerMovementComponent.h"
 #include "../Black Box Engine/System/Delay.h"
 
+#include "TileSystem/EncounterTestComponent.h"
+
+
 using namespace BlackBoxEngine;
 
 void ButtonOneCallback()
@@ -51,6 +54,21 @@ void InteractionComponent::Start()
         pInput->SubscribeToKey(KeyCode::kZ, kKeyDown, [this]() { if (m_uiActive) CloseUI(); })
     );
     
+    m_keyDownCodes.emplace_back(
+        pInput->SubscribeToKey(KeyCode::k7, kKeyDown, [this]() {
+            const auto& pActor = BlackBoxManager::Get()->m_pActorManager->NewActor();
+            pActor->AddComponent<EncounterTest>();
+            m_testActor = pActor.get();
+        })
+    );
+    m_keyDownCodes.emplace_back(
+        pInput->SubscribeToKey( KeyCode::k8, kKeyDown, [this]()
+            {
+                BlackBoxManager::Get()->m_pActorManager->DestroyActor( m_testActor );
+            } )
+    );
+
+
     // Escape = also close UI
     //m_keyDownCodes.emplace_back(
     //    pInput->SubscribeToKey(KeyCode::kEscape, kKeyDown, [this]() { if (m_uiActive) CloseUI(); })

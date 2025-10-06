@@ -1,13 +1,13 @@
 <Actor Name="PlayerActor">
     <Component Name="TransformComponent">
         <Position>
-            <X>16</X>
-            <Y>16</Y>
+            <X>576</X>
+            <Y>320</Y>
         </Position>
         <Rotation>0</Rotation>
         <PreviousPos>
-            <X>16</X>
-            <Y>16</Y>
+            <X>576</X>
+            <Y>320</Y>
         </PreviousPos>
     </Component>
     <Component Name="PlayerMovementComponent">

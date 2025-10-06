@@ -1,0 +1,3 @@
+<Actor Name="SlimeEncounter">
+	<Component Name="EncounterComponent"/>
+</Actor>

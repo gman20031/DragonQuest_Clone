@@ -15,11 +15,14 @@ EncounterHandler::EncounterHandler()
 const EncounterHandler::ActorPtr& EncounterHandler::GetEncounterActorAtTile( int x, int y )
 {
     int index = x + (y * (m_encounterZoneSize * m_encounterCountX));
-    assert( index > 0 && index < m_encounterZones.size() );
+    assert( index > 0 && index < m_encounterZones.size() * m_encounterZoneSize * m_encounterZoneSize );
+    float zoneIndex = float( index ) / (m_encounterZoneSize * m_encounterZoneSize);
+    index = static_cast<int>( floorf( zoneIndex ) );
     int encounterId = m_encounterZones[index];
     auto& encounterVector = m_encounterMap[encounterId];
     int encounterIndex = m_randomMachine.GetRandomInRange( 0, (int)encounterVector.size() - 1 );
     ActorXMLParser xml = encounterVector[encounterIndex];
+    std::cout << "Actor should be made and used here\n";
     return BlackBoxManager::Get()->m_pActorManager->MakeActor( xml );
 }
 
@@ -49,10 +52,10 @@ void EncounterHandler::LoadEncounterData()
         BB_LOG(LogType::kError , "EncounterMap not found when loading encouner handler data");
 
     int encounterId = 0;
-    auto mapElement = encounterMap.GetChildElement( "0" );
+    auto mapElement = encounterMap.GetChildElement( "encounterKey" );
     while ( mapElement )
     {
-        auto encounter = encounterMap.GetChildElement( "encounter" );
+        auto encounter = mapElement.GetChildElement( "encounterInfo" );
         while ( encounter )
         {
             const char* pText = nullptr;

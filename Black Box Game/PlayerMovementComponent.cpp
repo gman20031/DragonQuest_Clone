@@ -41,7 +41,19 @@ void PlayerMovementComponent::Start()
     int index = 0;
 
     const auto& pTileActor = BlackBoxManager::Get()->m_pActorManager->GetActor(m_tileMapId);
-    m_pTileMap = pTileActor->GetComponent<TileMapComponent>();
+    if ( !pTileActor )
+    {
+        BB_LOG(LogType::kWarning, "TileMap actor not found id ", m_tileMapId);
+        const auto& pTileTest = BlackBoxManager::Get()->m_pActorManager->FindActorWithComponent<TileMapComponent>();
+        if ( !pTileTest )
+        {
+            BB_LOG( LogType::kError, "No actor with Tilemap", m_tileMapId );
+            return;
+        }
+        m_pTileMap = pTileTest->GetComponent<TileMapComponent>();
+    }
+    else
+        m_pTileMap = pTileActor->GetComponent<TileMapComponent>();
 
      //insane monster of shit just to be able to make input delayed.
     const auto registerDownKey = [this, pInputManager, &index](KeyCode keyCode, float x, float y)

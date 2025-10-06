@@ -28,7 +28,9 @@ namespace BlackBoxEngine
     public:
         const ActorPtr& NewActor();
         const ActorPtr& MakeActor(ActorXMLParser actorParser );
-        const ActorPtr& LoadActor(const char* filePath);
+        const ActorPtr& LoadActor( const char* filePath );
+        template<SubComponent ComponenentType>
+        const ActorPtr& FindActorWithComponent();
         void LoadLevel(const char* filePath);
         void DestroyActor(Actor::Id id);
         void DestroyActor(Actor* pActor);
@@ -43,5 +45,21 @@ namespace BlackBoxEngine
         static void SaveActor(const Actor* pActor, const char* pActorName, std::filesystem::path filePath = {});
     };
 
+    template<SubComponent ComponenentType>
+    inline const ActorManager::ActorPtr& ActorManager::FindActorWithComponent( )
+    {
+        for ( const auto& [id, pActor] : m_activeActors )
+        {
+            auto* pComponent = pActor->GetComponent<ComponenentType>();
+            if ( pComponent )
+                return pActor;
+        }
+        for ( const auto& [id, pActor] : m_newActors )
+        {
+            auto* pComponent = pActor->GetComponent<ComponenentType>();
+            if ( pComponent )
+                return pActor;
+        }
+        return GetActor((uint32_t) - 1);
+    }
 };
-
