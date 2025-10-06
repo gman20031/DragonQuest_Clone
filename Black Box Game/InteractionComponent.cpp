@@ -291,7 +291,7 @@ void InteractionComponent::OnCollide([[maybe_unused]]BlackBoxEngine::Actor* pOth
     // Not a stair
     m_pCurrentStair = nullptr;
     m_pCurrentTalk = nullptr;
-
+    m_pCurrentTake = nullptr;
 }
 
 void InteractionComponent::Save([[maybe_unused]] BlackBoxEngine::XMLElementParser parser)
@@ -323,11 +323,14 @@ void InteractionComponent::OnButtonPressed(const std::string& action)
     {
         if (m_pCurrentTalk)
         {
-            CloseUI();
+           // CloseUI();
            // HideHUD();
             //SetOwnerPosition(m_currentStair->GetTargetPosition());
             m_didMove = true;
-            m_pCurrentTalk->OnTalkUsed(m_playerActor);
+            //m_pCurrentTalk->OnTalkUsed(m_playerActor);
+
+            ShowActionMessage("Trading with Inn.");
+
             return;
         }
         else
@@ -338,11 +341,12 @@ void InteractionComponent::OnButtonPressed(const std::string& action)
     {
         if (m_pCurrentTake)
         {
-            CloseUI();
+            //CloseUI();
            // HideHUD();
             //SetOwnerPosition(m_currentStair->GetTargetPosition());
             m_didMove = true;
-            m_pCurrentTake->OnTakeUsed(m_playerActor);
+            //m_pCurrentTake->OnTakeUsed(m_playerActor);
+            ShowActionMessage("You found a key.");
             return;
         }
         else
