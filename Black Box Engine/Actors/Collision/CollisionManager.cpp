@@ -434,13 +434,13 @@ namespace BlackBoxEngine
 
     void CollisionManager::RemoveActor(Actor* pActor)
     {
+        std::unique_lock lock( m_collisionLocker );
         auto it = m_actorMap.find(pActor);
         if (it == m_actorMap.end())
         {
             BB_LOG(LogType::kError, "Attempted to remove actor that was not added");
             return;
         }
-        std::unique_lock lock( m_collisionLocker );
         it->second->RemoveActor(it->first, true);
         m_actorMap.erase(it);
     }

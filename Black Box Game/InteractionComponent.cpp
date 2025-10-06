@@ -353,17 +353,14 @@ void InteractionComponent::OnButtonPressed(const std::string& action)
     //ShowActionMessage("Cannot perform this action here.");
 }
 
-
-
 void InteractionComponent::DisplayHUD()
 {
-
     if (m_hudVisible)
         return;
 
     m_hudVisible = true;
 
-    BB_FRectangle rect;
+    BB_FRectangle rect{};
     rect.w = 50;
     rect.h = 70;
     rect.x = 10;

@@ -4,6 +4,7 @@
 #include <BlackBoxManager.h>
 #include <Graphics/ScreenFader.h>
 #include <Actors/EngineComponents/TransformComponent.h>
+#include <Actors/EngineComponents/MoverComponent.h>
 #include <System/Delay.h>
 
 #include "BlackBoxGame.h"
@@ -32,11 +33,12 @@ void CaveEntranceComponent::OpenLevel(BlackBoxEngine::Actor* pOtherActor)
     if (!pTransform)
         return;
 
+    pOtherActor->GetComponent< MoverComponent>()->m_velocity = {0,0};
+
     auto* pManager = BlackBoxManager::Get();
     auto currentPos = pTransform->m_position;
 
     pTransform->m_position = { 16, 16 };
-
     pTransform->m_prevPosition = { 16, 16 };
 
     pManager->m_pActorManager->SaveActor(pOtherActor, "PlayerActor", "../Assets/Actors/PlayerActor.xml");

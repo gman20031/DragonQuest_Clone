@@ -9,6 +9,7 @@
     <Component Name="TileMapComponent">
         <TileSize>16</TileSize>
 		<AnchorPoint>kTopLeft</AnchorPoint>
+		<HasEncounters>true</HasEncounters>
 		<TileMap>
 			<row>GGGGGGGGGGGGG</row>
 			<row>GGGGGGGGGGGGG</row>

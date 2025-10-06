@@ -44,7 +44,7 @@ private:
     void StopMoving();
     void TryMove(const BlackBoxEngine::FVector2& direction);
     void SetTextureForDirection(const BlackBoxEngine::FVector2& direction);
-
+    void CheckForEncounters();
    
 public:
     PlayerMovementComponent(BlackBoxEngine::Actor* pOwner);
@@ -52,12 +52,8 @@ public:
 
     virtual void Start() override; // only when this is created.
     virtual void Update() override; // every tick of the game
-    virtual void Render() override; // just for rendering stuff
-    virtual void OnCollide([[maybe_unused]] BlackBoxEngine::Actor* pOtherActor) override; // if this actor has a collider, and walks into another actor with a collider
     virtual void Save([[maybe_unused]] BlackBoxEngine::XMLElementParser parser) override; // for when this actor is called to be saved
     virtual void Load([[maybe_unused]] const BlackBoxEngine::XMLElementParser parser) override; // for when this actor is called to be loaded
-
-    //bool IsMoving() { return m_isMoving; }
 
     void SetAnimationPaused(bool paused);
 };

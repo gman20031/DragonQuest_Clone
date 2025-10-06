@@ -12,22 +12,15 @@ namespace BlackBoxEngine
     {
         std::unique_lock lock( m_actorMutex );
         RemoveQueuedActors();
-        for ( auto actorId : m_startQueue )
-        {
-            auto it = m_allActors.find( actorId );
-            if ( it == m_allActors.end() )
-                continue;
-            it->second->Start();
-        }
-        m_startQueue.clear();
-        for (auto& [id, pActor] : m_allActors)
+        MakeNewActorsActive();
+        for (auto& [id, pActor] : m_activeActors)
             pActor->Update();
     }
 
     void ActorManager::Render()
     {
         std::unique_lock lock( m_actorMutex );
-        for (auto& [id, pActor] : m_allActors)
+        for (auto& [id, pActor] : m_activeActors)
             pActor->Render();
     }
 
@@ -35,30 +28,35 @@ namespace BlackBoxEngine
     {
         std::unique_lock lock( m_actorMutex );
         Actor::Id id = NextId();
-        auto [pair, test] = m_allActors.emplace(id, std::make_unique<Actor>(this, id) );
+        auto [pair, test] = m_newActors.emplace(id, std::make_unique<Actor>(this, id) );
         if (!test)
             BB_LOG(LogType::kError, "Actor emplace failed");
-        m_startQueue.emplace_back( pair->second->GetId() );
         return pair->second;
     }
 
-    const ActorManager::ActorPtr& ActorManager::LoadActor(const char* filePath)
+    const ActorManager::ActorPtr& ActorManager::MakeActor( ActorXMLParser actorParser )
     {
-        std::unique_lock lock( m_actorMutex );
-        auto parser = ResourceManager::GetActorXMLData(filePath);
         auto& pActor = NewActor();
-        while ( pActor->ParseComponent(parser.NextComponent()) );
+        while ( pActor->ParseComponent( actorParser.NextComponent() ) );
+        return pActor;
+    }
+
+    const ActorManager::ActorPtr& ActorManager::LoadActor( const char* filePath )
+    {
+        auto parser = ResourceManager::GetActorXMLData( filePath );
+        auto& pActor = NewActor();
+        while ( pActor->ParseComponent( parser.NextComponent() ) );
         return pActor;
     }
 
     void ActorManager::LoadLevel(const char* filePath)
     {
-        std::unique_lock lock( m_actorMutex );
         DestoryAllActors();
 
         LevelXMLParser LevelParser = ResourceManager::GetLevelXMLData(filePath);
         ActorXMLParser actorParser;
 
+        std::unique_lock lock( m_actorMutex );
         while (LevelParser.HasActors())
         {
             actorParser = LevelParser.GetNextActor();
@@ -84,8 +82,12 @@ namespace BlackBoxEngine
     const ActorManager::ActorPtr& ActorManager::GetActor(Actor::Id id)
     {
         std::unique_lock lock( m_actorMutex );
-        auto it = m_allActors.find(id);
-        if (it != m_allActors.end() )
+        auto it = m_activeActors.find(id);
+        if (it != m_activeActors.end() )
+            return it->second;
+
+        it = m_newActors.find( id );
+        if ( it != m_newActors.end() )
             return it->second;
 
         BB_LOG(LogType::kError, "Attempted to get actor that does not exist. Making a temp empty actor, ID: " , id);
@@ -98,6 +100,7 @@ namespace BlackBoxEngine
     {
         std::unique_lock lock( m_actorMutex );
         m_destroyQueue.emplace_back( id );
+        m_unusedIds.emplace_back( id );
     }
 
     void ActorManager::DestroyActor( Actor* pActor )
@@ -109,8 +112,10 @@ namespace BlackBoxEngine
     void ActorManager::DestoryAllActors()
     {
         std::unique_lock lock( m_actorMutex );
-        for ( auto& [id, actor] : m_allActors )
+        for ( auto& [id, actor] : m_activeActors )
             DestroyActor( id );
+        m_unusedIds.clear();
+        m_highestId = 0;
     }
 
     ///// private
@@ -132,9 +137,21 @@ namespace BlackBoxEngine
     {
         for (auto id : m_destroyQueue)
         {
-            m_allActors.erase(id);
+            m_activeActors.erase(id);
             m_unusedIds.push_back(id);
         }
+        m_destroyQueue.clear();
+    }
+
+    void ActorManager::MakeNewActorsActive()
+    {
+        for ( auto it = m_newActors.begin(); it != m_newActors.end(); ++it )
+        {
+            ActorPtr pActor = std::move( it->second );
+            pActor->Start();
+            m_activeActors.emplace( it->first, std::move( pActor ) );
+        }
+        m_newActors.clear();
     }
 
 }

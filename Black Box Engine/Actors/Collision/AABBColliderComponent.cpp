@@ -10,7 +10,6 @@ namespace BlackBoxEngine
         : Component(pActor)
         , m_actorPosition(pActor->GetComponent<TransformComponent>()->m_position)
     {
-        m_pCollisionManager = BlackBoxManager::Get()->m_pCollisionManager;
     }
 
     AABBColliderComponent::~AABBColliderComponent()
@@ -45,11 +44,6 @@ namespace BlackBoxEngine
             EnableCollision();
     }
 
-    void AABBColliderComponent::RegisterCollision()
-    {
-        m_pCollisionManager->RegisterActor(m_pOwner);
-    }
-
     void AABBColliderComponent::Update()
     {
         //BB_LOG(LogType::kMessage, "AABBColliderComponent: last position: ", m_lastPosition, " -> new position: ", newPos);
@@ -60,13 +54,18 @@ namespace BlackBoxEngine
         }
     }
 
+    void AABBColliderComponent::Start()
+    {
+        m_pCollisionManager = BlackBoxManager::Get()->m_pCollisionManager;
+        m_pCollisionManager->RegisterActor( m_pOwner );
+    }
+
     void AABBColliderComponent::Load(const XMLElementParser parser)
     {
         parser.GetChildVariable("width",  &m_width);
         parser.GetChildVariable("height", &m_height);
         parser.GetChildVariable("blockable", &m_IsBlockable);
         parser.GetChildVariable("enabled", &m_enabled);
-        RegisterCollision();
     }
 
     void AABBColliderComponent::Save(XMLElementParser parser)

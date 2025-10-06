@@ -8,6 +8,7 @@
 #include <Graphics/RenderingStructs.h>
 
 #include "TileActorManager.h"
+#include "EncounterHandler.h"
 
 class TileMapComponent : public BlackBoxEngine::Component
 {
@@ -16,6 +17,7 @@ public:
     GENERATE_ID("TileMapComponent");
     inline static const char* kTileLookupPath = "../Assets/Tiles/TileLookup.xml";
 private:
+    EncounterHandler m_encounterHandler;
     BlackBoxEngine::TransformComponent* m_pTransform = nullptr;
     BlackBoxEngine::BB_Renderer* m_pRenderer = nullptr;
     TileActorManager* m_pTileActorManager = nullptr;
@@ -30,7 +32,7 @@ private:
     uint32_t m_height   = 0;
     uint32_t m_width    = 0;
     uint32_t m_tileSize = 0;
-
+    bool m_hasEncounters = false;
 
 private:
     BlackBoxEngine::FVector2 GetGameCoordsFromTilePos(uint32_t x, uint32_t y);
@@ -55,6 +57,9 @@ public:
     const ActorPtr& GetTileAt(uint32_t tileX, uint32_t tileY);
     const ActorPtr& GetTileAtGamePosition(uint32_t gameX, uint32_t gameY);
     const ActorPtr& GetTileAtGamePosition(const BlackBoxEngine::FVector2 pos);
+
+    const ActorPtr& GetEncounterAtGame( BlackBoxEngine::FVector2 pos );
+
     /**
      * @brief Sets the anchor point of this tilemap. The anchor point is the point where the 
      * transform components pos will coorilate to on this map. Top Left means this actors pos
