@@ -128,9 +128,13 @@ namespace BlackBoxEngine
 
     void UserInterface::SetupKeysForInputTarget()
     {
+        using enum Direction;
+        
+        assert( m_pInputTarget );
+
         // ensure we dont overlap keys
         m_pInputTarget->m_keyDown.ClearListeners();
-        using enum Direction;
+        m_pInputTarget->m_keyUp.ClearListeners();
         
         m_pInputTarget->m_keyDown.RegisterListener(m_keycodes.m_up,   [this]() {MoveCursor(kUp); });
         m_pInputTarget->m_keyDown.RegisterListener(m_keycodes.m_down, [this]() {MoveCursor(kDown); });
@@ -154,8 +158,10 @@ namespace BlackBoxEngine
 
     UserInterface::UserInterface()
         : m_highlighter(this)
+        , m_pInputTarget(new InputManager::InputTarget)
     {
         m_pRootNode = new InterfaceNode(nullptr, "_root");
+        SetupKeysForInputTarget();
     }
 
     UserInterface::~UserInterface()
@@ -166,10 +172,7 @@ namespace BlackBoxEngine
 
     InputManager::InputTarget* UserInterface::GetInputTarget()
     {
-        if (m_pInputTarget)
-            return m_pInputTarget;
-        m_pInputTarget = new InputManager::InputTarget;
-        SetupKeysForInputTarget();
+        assert( m_pInputTarget );
         return m_pInputTarget;
     }
 
