@@ -161,35 +161,63 @@ void InteractionComponent::Update()
     bool isMoving = pPlayer->m_isMoving; // Assuming this exists, or you track input velocity
 
 
-   if (!isMoving && !m_hudVisible && !m_uiActive)
-   {
-       // Only schedule a delay if one is not already running
-       if (m_delayedDisplayId == 0)
-       {
-           m_delayedDisplayId = BlackBoxEngine::Delay(1000, [this]() -> uint32_t
-               {
-                   auto* pPlayerInner = m_pOwner->GetComponent<PlayerMovementComponent>();
-                   if (pPlayerInner && !pPlayerInner->m_isMoving && !m_hudVisible && !m_uiActive)
-                   {
-                       DisplayHUD();
-                   }
-       
-                   m_delayedDisplayId = 0; // reset handle
-                   return 0;
-               });
-       }
-   }
-   else if((isMoving || m_uiActive) && m_hudVisible)
-   {
-           HideHUD();
-   
-       if (m_delayedDisplayId != 0)
-       {
-           BlackBoxEngine::StopDelay(m_delayedDisplayId);
-           m_delayedDisplayId = 0;
-       }
-   }
-    
+   //if (!isMoving && !m_hudVisible && !m_uiActive)
+   //{
+   //    // Only schedule a delay if one is not already running
+   //    if (m_delayedDisplayId == 0)
+   //    {
+   //        m_delayedDisplayId = BlackBoxEngine::Delay(1000, [this]() -> uint32_t
+   //            {
+   //                auto* pPlayerInner = m_pOwner->GetComponent<PlayerMovementComponent>();
+   //                if (pPlayerInner && !pPlayerInner->m_isMoving && !m_hudVisible && !m_uiActive)
+   //                {
+   //                    DisplayHUD();
+   //                }
+   //    
+   //                m_delayedDisplayId = 0; // reset handle
+   //                return 0;
+   //            });
+   //    }
+   //}
+   //else if((isMoving || m_uiActive) && m_hudVisible)
+   //{
+   //        HideHUD();
+   //
+   //    if (m_delayedDisplayId != 0)
+   //    {
+   //        BlackBoxEngine::StopDelay(m_delayedDisplayId);
+   //        m_delayedDisplayId = 0;
+   //    }
+   //}
+   // 
+    if (!isMoving && !m_hudVisible && !m_uiActive && !m_isChangingLevel)
+    {
+        if (m_delayedDisplayId == 0)
+        {
+            m_delayedDisplayId = BlackBoxEngine::Delay(1000, [this]() -> uint32_t
+                {
+                    auto* pPlayerInner = m_pOwner->GetComponent<PlayerMovementComponent>();
+                    if (pPlayerInner && !pPlayerInner->m_isMoving && !m_hudVisible && !m_uiActive && !m_isChangingLevel)
+                    {
+                        DisplayHUD();
+                    }
+
+                    m_delayedDisplayId = 0; // reset handle
+                    return 0;
+                });
+        }
+    }
+    // Hide HUD if player moves or UI becomes active, but only if not during level transition
+    else if ((isMoving || m_uiActive) && m_hudVisible && !m_isChangingLevel)
+    {
+        HideHUD();
+
+        if (m_delayedDisplayId != 0)
+        {
+            BlackBoxEngine::StopDelay(m_delayedDisplayId);
+            m_delayedDisplayId = 0;
+        }
+    }
 }
 
 void InteractionComponent::OnLevelTransitionStart()
@@ -394,7 +422,12 @@ void InteractionComponent::SelectionMenu()
 
    // Offset the whole UI root
    m_interfaceRoot.GetRoot()->SetOffset(20, 20);
-
+  //UserInterface::InterfaceKeys keys{
+  //
+  //    .m_select = KeyCode::kX
+  //};
+  //
+  //m_interfaceRoot.SetInterfaceKeys(keys);
    // --- Highlighter setup ---
    auto* pHighlighter = m_interfaceRoot.GetHighlight();
    pHighlighter->SetParameters({

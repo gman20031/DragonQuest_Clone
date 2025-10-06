@@ -25,8 +25,7 @@ void CaveEntranceComponent::OpenLevel(BlackBoxEngine::Actor* pOtherActor)
     if (!pInteractComponent)
         return;
 
-    ///if (pInteractComponent)
-    ///    pInteractComponent->OnLevelTransitionStart();
+    pInteractComponent->OnLevelTransitionStart();
 
     // player should have transform
     auto* pTransform = pOtherActor->GetComponent<TransformComponent>();
@@ -35,8 +34,6 @@ void CaveEntranceComponent::OpenLevel(BlackBoxEngine::Actor* pOtherActor)
 
     auto* pManager = BlackBoxManager::Get();
     auto currentPos = pTransform->m_position;
-
-
 
     pTransform->m_position = { 16, 16 };
 
@@ -51,7 +48,7 @@ void CaveEntranceComponent::OpenLevel(BlackBoxEngine::Actor* pOtherActor)
 
     ScreenFader::FadeToBlack(1.f);
 
-    auto delayFunc = [pManager, pOtherActor]()
+    auto delayFunc = [pManager, pOtherActor, pInteractComponent]()
         {
             //auto* pInteractComponent = pOtherActor->GetComponent<InteractionComponent>();
             //pInteractComponent->HideHUD();
@@ -63,9 +60,7 @@ void CaveEntranceComponent::OpenLevel(BlackBoxEngine::Actor* pOtherActor)
 
             ScreenFader::FadeIn(1.f);
 
-            //auto* pInteract = pOtherActor->GetComponent<InteractionComponent>();
-            //if (pInteract)
-            //    pInteract->OnLevelTransitionEnd();
+            pInteractComponent->OnLevelTransitionEnd();
 
             return 0;
         };
@@ -102,8 +97,7 @@ void StairDownComponent::OnStairUsed(BlackBoxEngine::Actor* pOtherActor)
     if (!pInteractComponent)
         return;
 
-    //if (pInteractComponent)
-    //    pInteractComponent->OnLevelTransitionStart();
+    pInteractComponent->OnLevelTransitionStart();
 
     // player should have transform
     auto* pTransform = pOtherActor->GetComponent<TransformComponent>();
@@ -126,7 +120,7 @@ void StairDownComponent::OnStairUsed(BlackBoxEngine::Actor* pOtherActor)
 
     ScreenFader::FadeToBlack(1.f);
 
-    auto delayFunc = [pManager, pOtherActor]()
+    auto delayFunc = [pManager, pOtherActor, pInteractComponent]()
         {
            //auto* pInteractComponent = pOtherActor->GetComponent<InteractionComponent>();
            //pInteractComponent->HideHUD();
@@ -137,7 +131,7 @@ void StairDownComponent::OnStairUsed(BlackBoxEngine::Actor* pOtherActor)
             pManager->m_pInputManager->ResumeInput();
 
             ScreenFader::FadeIn(1.f);
-            
+            pInteractComponent->OnLevelTransitionEnd();
 
             return 0;
         };
@@ -164,9 +158,7 @@ void StairUpLevel1Component::OnStairUsed(BlackBoxEngine::Actor* pOtherActor)
     if (!pInteractComponent)
         return;
 
-    //if (pInteractComponent)
-    //    pInteractComponent->OnLevelTransitionStart();
-
+    pInteractComponent->OnLevelTransitionStart();
     // player should have transform
     auto* pTransform = pOtherActor->GetComponent<TransformComponent>();
     if (!pTransform)
@@ -188,7 +180,7 @@ void StairUpLevel1Component::OnStairUsed(BlackBoxEngine::Actor* pOtherActor)
 
     ScreenFader::FadeToBlack(1.f);
 
-    auto delayFunc = [pManager, pOtherActor]()
+    auto delayFunc = [pManager, pOtherActor, pInteractComponent]()
         {
             //auto* pInteractComponent = pOtherActor->GetComponent<InteractionComponent>();
             //pInteractComponent->HideHUD();
@@ -201,6 +193,7 @@ void StairUpLevel1Component::OnStairUsed(BlackBoxEngine::Actor* pOtherActor)
 
             ScreenFader::FadeIn(1.f);
 
+            pInteractComponent->OnLevelTransitionEnd();
             return 0;
         };
     Delay(std::chrono::seconds(1), delayFunc);
@@ -227,6 +220,8 @@ void StairUpLevel2Component::OnStairUsed(BlackBoxEngine::Actor* pOtherActor)
     if (!pInteractComponent)
         return;
 
+    pInteractComponent->OnLevelTransitionStart();
+
     // player should have transform
     auto* pTransform = pOtherActor->GetComponent<TransformComponent>();
     if (!pTransform)
@@ -245,10 +240,10 @@ void StairUpLevel2Component::OnStairUsed(BlackBoxEngine::Actor* pOtherActor)
 
     // stop all input.
     pManager->m_pInputManager->StopAllInput();
-    pInteractComponent->HideHUD();
+    //pInteractComponent->HideHUD();
     ScreenFader::FadeToBlack(1.f);
 
-    auto delayFunc = [pManager, pOtherActor]()
+    auto delayFunc = [pManager, pOtherActor, pInteractComponent]()
         {
             //auto* pInteractComponent = pOtherActor->GetComponent<InteractionComponent>();
             //pInteractComponent->HideHUD();
@@ -259,6 +254,8 @@ void StairUpLevel2Component::OnStairUsed(BlackBoxEngine::Actor* pOtherActor)
             pManager->m_pInputManager->ResumeInput();
 
             ScreenFader::FadeIn(1.f);
+
+            pInteractComponent->OnLevelTransitionEnd();
 
             return 0;
         };
