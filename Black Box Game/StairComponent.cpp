@@ -55,7 +55,6 @@ void CaveEntranceComponent::OpenLevel(BlackBoxEngine::Actor* pOtherActor)
 
             pManager->m_pInputManager->SwapInputToGame();
             pManager->m_pActorManager->LoadLevel("../Assets/Levels/Cave1Level.xml");
-            pManager->m_pActorManager->Start();
             pManager->m_pInputManager->ResumeInput();
 
             ScreenFader::FadeIn(1.f);
@@ -127,7 +126,6 @@ void StairDownComponent::OnStairUsed(BlackBoxEngine::Actor* pOtherActor)
 
             pManager->m_pInputManager->SwapInputToGame();
             pManager->m_pActorManager->LoadLevel("../Assets/Levels/Cave2Level.xml");
-            pManager->m_pActorManager->Start();
             pManager->m_pInputManager->ResumeInput();
 
             ScreenFader::FadeIn(1.f);
@@ -187,8 +185,6 @@ void StairUpLevel1Component::OnStairUsed(BlackBoxEngine::Actor* pOtherActor)
 
             pManager->m_pInputManager->SwapInputToGame();
             pManager->m_pActorManager->LoadLevel("../Assets/Levels/ExampleLevel.xml");
-
-            pManager->m_pActorManager->Start();
             pManager->m_pInputManager->ResumeInput();
 
             ScreenFader::FadeIn(1.f);
@@ -250,7 +246,6 @@ void StairUpLevel2Component::OnStairUsed(BlackBoxEngine::Actor* pOtherActor)
 
             pManager->m_pInputManager->SwapInputToGame();
             pManager->m_pActorManager->LoadLevel("../Assets/Levels/Cave1Level.xml");
-            pManager->m_pActorManager->Start();
             pManager->m_pInputManager->ResumeInput();
 
             ScreenFader::FadeIn(1.f);
