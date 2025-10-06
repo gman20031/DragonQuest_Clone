@@ -77,6 +77,11 @@ namespace BlackBoxEngine
 		return m_engineOptions & option;
 	}
 
+    void BlackBoxManager::SetGameUpdate( GameUpdateFunc&& callback )
+    {
+        m_gameUpdateFunction = callback;
+    }
+
     void BlackBoxManager::UpdateSubsytems()
     {
         std::unique_lock lock( m_engineMutex );
@@ -86,6 +91,8 @@ namespace BlackBoxEngine
         if (IsSystemEnabled(kInput) ) 
             m_pInputManager->Update();
 
+        if ( m_gameUpdateFunction )
+            m_gameUpdateFunction();
         if (IsSystemEnabled(kActorSystem) ) 
         {
             m_pActorManager->Update();
@@ -113,8 +120,6 @@ namespace BlackBoxEngine
             BB_LOG(LogType::kMessage, "Game started in debug mode");
             CheckEngineInitialized();
         }
-
-        m_pActorManager->Start();
 
         SimpleTimer timer;
         timer.StartTimer();

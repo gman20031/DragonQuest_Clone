@@ -4,6 +4,7 @@
 #include <BlackBoxManager.h>
 #include <Graphics/ScreenFader.h>
 #include <Actors/EngineComponents/TransformComponent.h>
+#include <Actors/EngineComponents/MoverComponent.h>
 #include <System/Delay.h>
 
 #include "BlackBoxGame.h"
@@ -32,12 +33,13 @@ void CaveEntranceComponent::OpenLevel(BlackBoxEngine::Actor* pOtherActor)
     if (!pTransform)
         return;
 
+    pOtherActor->GetComponent< MoverComponent>()->m_velocity = {0,0};
+
     auto* pManager = BlackBoxManager::Get();
     auto currentPos = pTransform->m_position;
 
-    pTransform->m_position = { 16, 16 };
-
-    pTransform->m_prevPosition = { 16, 16 };
+    //pTransform->m_position = { 16, 16 };
+    //pTransform->m_prevPosition = { 16, 16 };
 
     pManager->m_pActorManager->SaveActor(pOtherActor, "PlayerActor", "../Assets/Actors/PlayerActor.xml");
     pTransform->m_position = currentPos;
@@ -55,8 +57,9 @@ void CaveEntranceComponent::OpenLevel(BlackBoxEngine::Actor* pOtherActor)
 
             pManager->m_pInputManager->SwapInputToGame();
             pManager->m_pActorManager->LoadLevel("../Assets/Levels/Cave1Level.xml");
-            pManager->m_pActorManager->Start();
             pManager->m_pInputManager->ResumeInput();
+
+            pManager->m_pActorManager->GetActor( 3 )->GetComponent<TransformComponent>()->m_position = {16,16};
 
             ScreenFader::FadeIn(1.f);
 
@@ -127,7 +130,6 @@ void StairDownComponent::OnStairUsed(BlackBoxEngine::Actor* pOtherActor)
 
             pManager->m_pInputManager->SwapInputToGame();
             pManager->m_pActorManager->LoadLevel("../Assets/Levels/Cave2Level.xml");
-            pManager->m_pActorManager->Start();
             pManager->m_pInputManager->ResumeInput();
 
             ScreenFader::FadeIn(1.f);
@@ -187,8 +189,6 @@ void StairUpLevel1Component::OnStairUsed(BlackBoxEngine::Actor* pOtherActor)
 
             pManager->m_pInputManager->SwapInputToGame();
             pManager->m_pActorManager->LoadLevel("../Assets/Levels/ExampleLevel.xml");
-
-            pManager->m_pActorManager->Start();
             pManager->m_pInputManager->ResumeInput();
 
             ScreenFader::FadeIn(1.f);
@@ -250,7 +250,6 @@ void StairUpLevel2Component::OnStairUsed(BlackBoxEngine::Actor* pOtherActor)
 
             pManager->m_pInputManager->SwapInputToGame();
             pManager->m_pActorManager->LoadLevel("../Assets/Levels/Cave1Level.xml");
-            pManager->m_pActorManager->Start();
             pManager->m_pInputManager->ResumeInput();
 
             ScreenFader::FadeIn(1.f);

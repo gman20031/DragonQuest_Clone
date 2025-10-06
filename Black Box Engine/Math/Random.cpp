@@ -7,7 +7,7 @@ namespace BlackBoxEngine
 {
     namespace Random
     {
-        namespace Static_Machines
+        namespace Global
         {
             MachineXoshiro256& BB_Xoshiro256()
             {

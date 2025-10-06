@@ -2,6 +2,7 @@
     <Component Name="TileInfoComponent">
         <TextureFilePath>../Assets/Tiles/FullTileSheet.png</TextureFilePath>
 		<IsWalkable>true</IsWalkable>
+		<EncounterChance>24</EncounterChance>
 		<ImageSource>
 			<X>34</X>
 			<Y>17</Y>

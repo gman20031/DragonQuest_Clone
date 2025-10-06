@@ -129,6 +129,14 @@ const TileMapComponent::ActorPtr& TileMapComponent::GetTileAtGamePosition(const 
     return GetTileAtGamePosition(x, y);
 }
 
+const TileMapComponent::ActorPtr& TileMapComponent::GetEncounterAtGame( [[maybe_unused]]BlackBoxEngine::FVector2 pos )
+{
+    uint32_t x = static_cast<uint32_t>(pos.x) / m_tileSize;
+    uint32_t y = static_cast<uint32_t>(pos.y) / m_tileSize;
+    BB_LOG( LogType::kMessage, "Encounter should occur" );
+    return m_encounterHandler.GetEncounterActorAtTile( x, y );
+}
+
 void TileMapComponent::SetAnchorPoint(BlackBoxEngine::BB_AnchorPoint anchor)
 {
     m_anchorPoint = anchor;
@@ -274,7 +282,8 @@ void TileMapComponent::Render()
 void TileMapComponent::Save(BlackBoxEngine::XMLElementParser parser)
 {
     parser.NewChildVariable("TileSize", m_tileSize);
-    parser.NewChildVariable("AnchorPoint", m_anchorPoint);
+    parser.NewChildVariable("AnchorPoint", m_anchorPoint );
+    parser.NewChildVariable("HasEncounters", m_hasEncounters);
     auto element = parser.InsertNewChild("TileMap");
     SaveMap(element);
 }
@@ -283,6 +292,7 @@ void TileMapComponent::Load(const BlackBoxEngine::XMLElementParser parser)
 {
     parser.GetChildVariable("TileSize",   &m_tileSize);
     parser.GetChildVariable("AnchorPoint",&m_anchorPoint);
+    parser.GetChildVariable("HasEncounters", &m_hasEncounters );
     auto element = parser.GetChildElement("TileMap");
     SetAnchorPoint(m_anchorPoint);
     LoadMap(element);

@@ -18,7 +18,7 @@ namespace BlackBoxEngine
 		using BB_RendererPtr = BB_Renderer*;
 
 		std::unordered_map<HashType, std::weak_ptr<BB_Texture> > m_textureCache;
-        std::shared_ptr<BB_Texture> CreateFont(const BB_RendererPtr pRenderer, const char* imageFilePath);
+        std::shared_ptr<BB_Texture> CreateTexture(const BB_RendererPtr pRenderer, const char* imageFilePath);
     };
 
 }

@@ -15,7 +15,7 @@ void BlackBoxGame::InitGame()
     pTransform->m_position.x = 800;
     pTransform->m_position.y = 688;
 
-
+    m_pEngineManager->SetGameUpdate( [this]() { GameUpdate(); } );
 }
 
 BlackBoxGame::BlackBoxGame()
@@ -42,8 +42,12 @@ void BlackBoxGame::Launch()
     assert(m_pEngineManager);
     m_pEngineManager->InitEngine();
     InitGame();
-    m_pTileActorManager->Start();
     m_pEngineManager->RunEngine();
+}
+
+void BlackBoxGame::GameUpdate()
+{
+    m_pTileActorManager->Update();
 }
 
 BlackBoxGame* BlackBoxGame::NewSingleton()

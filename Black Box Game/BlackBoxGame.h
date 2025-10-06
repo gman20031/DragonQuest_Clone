@@ -26,6 +26,7 @@ public:
     TileActorManager* GetTileActorManager() const { return m_pTileActorManager; }
 
     void Launch();
+    void GameUpdate();
 private:
     void InitGame();
 

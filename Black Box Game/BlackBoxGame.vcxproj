@@ -194,6 +194,8 @@ copy "$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\lib\x64\SDL3_ttf.dll" 
     <ClCompile Include="StairComponent.cpp" />
     <ClCompile Include="TakeComponent.cpp" />
     <ClCompile Include="TalkComponent.cpp" />
+    <ClCompile Include="TileSystem\EncounterHandler.cpp" />
+    <ClCompile Include="TileSystem\EncounterTestComponent.cpp" />
     <ClCompile Include="TileSystem\TileActorManager.cpp" />
     <ClCompile Include="TileSystem\TileInfoComponent.cpp" />
     <ClCompile Include="TileSystem\TileMapComponent.cpp" />
@@ -207,6 +209,9 @@ copy "$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\lib\x64\SDL3_ttf.dll" 
     <ClInclude Include="StairComponent.h" />
     <ClInclude Include="TakeComponent.h" />
     <ClInclude Include="TalkComponent.h" />
+    <ClInclude Include="TileSystem\EncounterComponent.h" />
+    <ClInclude Include="TileSystem\EncounterHandler.h" />
+    <ClInclude Include="TileSystem\EncounterTestComponent.h" />
     <ClInclude Include="TileSystem\TileActorManager.h" />
     <ClInclude Include="TileSystem\TileInfoComponent.h" />
     <ClInclude Include="TileSystem\TileMapComponent.h" />

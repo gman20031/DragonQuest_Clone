@@ -11,6 +11,7 @@ public:
     inline static const char* kTileLookupPath = "../Assets/Tiles/TileLookup.xml";
 private:
     void CheckForTileComponent(const ActorPtr& pActor);
+
 public:
     TileActorManager();
 

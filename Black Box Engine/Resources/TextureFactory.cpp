@@ -10,7 +10,7 @@
 namespace BlackBoxEngine
 {
     std::shared_ptr<BB_Texture>
-        TextureFactory::CreateFont(const BB_RendererPtr pRenderer, const char* pImageFilePath)
+        TextureFactory::CreateTexture(const BB_RendererPtr pRenderer, const char* pImageFilePath)
     {
         HashType hash = StringHash(pImageFilePath);
 

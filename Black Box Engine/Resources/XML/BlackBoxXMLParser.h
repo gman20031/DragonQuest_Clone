@@ -34,7 +34,8 @@ namespace BlackBoxEngine
         XMLElementParser GetSibling();
         void GetElementName(const char** ppName);
         void GetAttribute(const char* pName, const char** ppText);
-        void GetText(const char** ppText);
+        void GetText( const char** ppText );
+        void GetInt(int* pInt);
 
         /// Loading interface
 

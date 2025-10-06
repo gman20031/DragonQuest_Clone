@@ -153,6 +153,11 @@ namespace BlackBoxEngine
         *ppText = m_pRootElement->GetText();
     }
 
+    void XMLElementParser::GetInt( int* pInt )
+    {
+        *pInt = std::stoi(m_pRootElement->GetText());
+    }
+
     const char* XMLElementParser::GetFirstAttribute() const
     {
         return m_pRootElement->FirstAttribute()->Value();

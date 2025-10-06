@@ -20,7 +20,6 @@ namespace BlackBoxEngine
         bool m_enabled = true;
         CollisionManager* m_pCollisionManager;
 
-        void RegisterCollision();
     public:
         AABBColliderComponent(Actor* pActor);
         ~AABBColliderComponent();
@@ -34,6 +33,7 @@ namespace BlackBoxEngine
         void ToggleCollision();
 
         virtual void Update() override;
+        virtual void Start() override;
         virtual void Load(const XMLElementParser parser) override;
         virtual void Save(XMLElementParser parser) override;
 
