@@ -53,8 +53,8 @@ class InteractionComponent : public BlackBoxEngine::Component
     int m_playerGold = 120;
     int m_playerEnergy = 10;
 
-    uint32_t m_delayedHudTimerId = 0;
-
+    uint32_t m_delayedDisplayId = 0;
+    bool m_isChangingLevel = false;
 public:
     InteractionComponent(BlackBoxEngine::Actor* pOwner) : Component(pOwner) { /*EMPTY*/ }
     virtual ~InteractionComponent();
@@ -82,6 +82,9 @@ public:
     void DisplayHUD(); //should we make it so that we can take in the name of the player?
     
     void HideHUD();
+
+    void OnLevelTransitionStart();
+    void OnLevelTransitionEnd();
 private:
 
     bool m_uiActive = false;

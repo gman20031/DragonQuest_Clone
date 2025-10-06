@@ -8,7 +8,6 @@ class StairComponent : public BlackBoxEngine::Component
     GENERATE_ID("StairComponent");
 
 protected:
-    //FVector2 m_targetPosition{ 0,0 };
 
 public:
     StairComponent(BlackBoxEngine::Actor* pOwner) : Component(pOwner) { /*EMPTY*/ }
@@ -36,6 +35,8 @@ public:
     virtual ~CaveEntranceComponent() override {}
     
     virtual void OnStairUsed([[maybe_unused]] BlackBoxEngine::Actor* pOtherActor) override;
+
+    void OpenLevel([[maybe_unused]] BlackBoxEngine::Actor* pOtherActor);
 
     virtual void Start() override {} // only when this is created.
     virtual void Update() override {} // every tick of the game

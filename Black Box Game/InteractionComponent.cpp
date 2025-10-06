@@ -1,4 +1,4 @@
-#include "InteractionComponent.h"
+﻿#include "InteractionComponent.h"
 #include "../Black Box Engine/Actors/ActorManager.h"
 #include "../Black Box Engine/BlackBoxManager.h"
 #include "BlackBoxGame.h"
@@ -52,9 +52,9 @@ void InteractionComponent::Start()
     );
     
     // Escape = also close UI
-    m_keyDownCodes.emplace_back(
-        pInput->SubscribeToKey(KeyCode::kEscape, kKeyDown, [this]() { if (m_uiActive) CloseUI(); })
-    );
+    //m_keyDownCodes.emplace_back(
+    //    pInput->SubscribeToKey(KeyCode::kEscape, kKeyDown, [this]() { if (m_uiActive) CloseUI(); })
+    //);
 }
 
 void InteractionComponent::OpenUI()
@@ -160,26 +160,56 @@ void InteractionComponent::Update()
 
     bool isMoving = pPlayer->m_isMoving; // Assuming this exists, or you track input velocity
 
-    if (!isMoving && !m_hudVisible && !m_uiActive)
-    {
-        DisplayHUD();
-        //if (m_delayedDisplayId != 0)
-        //{
-        //    BlackBoxEngine::StopDelay(m_delayedDisplayId);
-        //    m_delayedDisplayId = 0;
-        //}
-        //
-        //// Schedule HUD display after 1 second (or any desired delay)
-        //m_delayedDisplayId = BlackBoxEngine::Delay(std::chrono::seconds(1), [this]() -> uint32_t {
-        //    DisplayHUD();
-        //    m_delayedDisplayId = 0; // reset handle
-        //    return 0; // 0 = do not repeat
-        //    });
-    }
-    else if ((isMoving || m_uiActive) && m_hudVisible)
-    {
+
+   if (!isMoving && !m_hudVisible && !m_uiActive)
+   {
+       // Only schedule a delay if one is not already running
+       if (m_delayedDisplayId == 0)
+       {
+           m_delayedDisplayId = BlackBoxEngine::Delay(1000, [this]() -> uint32_t
+               {
+                   auto* pPlayerInner = m_pOwner->GetComponent<PlayerMovementComponent>();
+                   if (pPlayerInner && !pPlayerInner->m_isMoving && !m_hudVisible && !m_uiActive)
+                   {
+                       DisplayHUD();
+                   }
+       
+                   m_delayedDisplayId = 0; // reset handle
+                   return 0;
+               });
+       }
+   }
+   else if((isMoving || m_uiActive) && m_hudVisible)
+   {
+           HideHUD();
+   
+       if (m_delayedDisplayId != 0)
+       {
+           BlackBoxEngine::StopDelay(m_delayedDisplayId);
+           m_delayedDisplayId = 0;
+       }
+   }
+    
+}
+
+void InteractionComponent::OnLevelTransitionStart()
+{
+    m_isChangingLevel = true;
+
+    if (m_hudVisible)
         HideHUD();
+
+    if (m_delayedDisplayId != 0)
+    {
+        BlackBoxEngine::StopDelay(m_delayedDisplayId);
+        m_delayedDisplayId = 0;
     }
+}
+
+// Call this after the new level is loaded
+void InteractionComponent::OnLevelTransitionEnd()
+{
+    m_isChangingLevel = false;
 }
 
 void InteractionComponent::Render()
@@ -251,7 +281,7 @@ void InteractionComponent::OnButtonPressed(const std::string& action)
         if (m_pCurrentStair)
         {
             CloseUI();
-            HideHUD();
+           // HideHUD();
             //SetOwnerPosition(m_currentStair->GetTargetPosition());
             m_didMove = true;
             m_pCurrentStair->OnStairUsed(m_playerActor);
@@ -266,7 +296,7 @@ void InteractionComponent::OnButtonPressed(const std::string& action)
         if (m_pCurrentTalk)
         {
             CloseUI();
-            HideHUD();
+           // HideHUD();
             //SetOwnerPosition(m_currentStair->GetTargetPosition());
             m_didMove = true;
             m_pCurrentTalk->OnTalkUsed(m_playerActor);
@@ -281,7 +311,7 @@ void InteractionComponent::OnButtonPressed(const std::string& action)
         if (m_pCurrentTake)
         {
             CloseUI();
-            HideHUD();
+           // HideHUD();
             //SetOwnerPosition(m_currentStair->GetTargetPosition());
             m_didMove = true;
             m_pCurrentTake->OnTakeUsed(m_playerActor);
@@ -387,7 +417,7 @@ void InteractionComponent::SelectionMenu()
    bgRect.h = (buttonDimension.h + yPad) * buttonCount + 10;
 
    InterfaceTexture::TextureInfo bgTextureInfo{
-       .pTextureFile = "../Assets/UI/BottomTextBox.png",
+       .pTextureFile = "../Assets/UI/SelectionBox.png",
        .spriteDimensions = {16, 16},
        .useFullImage = true,
        .animate = false
@@ -432,8 +462,7 @@ void InteractionComponent::SelectionMenu()
 
    buttonDimension.y = 0;
    buttonDimension.x = 0;
-   // --- Optional: add button text (if needed) ---
-   // Commented out so buttons are still active but text is hidden
+
    InterfaceText::Paremeters textParams{
        .pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf",
        .textSize = 16,
@@ -465,7 +494,7 @@ void InteractionComponent::SelectionMenu()
 
    auto* pInterfaceTarget = m_interfaceRoot.GetInputTarget();
    pInterfaceTarget->m_keyDown.RegisterListener(KeyCode::kZ, [this]() { CloseUI(); });
-   pInterfaceTarget->m_keyDown.RegisterListener(KeyCode::kEscape, [this]() { CloseUI(); });
+   //pInterfaceTarget->m_keyDown.RegisterListener(KeyCode::kEscape, [this]() { CloseUI(); });
    pInterfaceTarget->m_keyDown.RegisterListener(KeyCode::kX, [this]() {
        if (m_messageActive)
            DismissActionMessage();
