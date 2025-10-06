@@ -21,6 +21,7 @@ namespace BlackBoxEngine
     {
     public:
         using WindowPtr = std::unique_ptr<BB_Window>;
+        using GameUpdateFunc = std::function<void( void )>;
         using EngineInitOptions = uint8_t;
         static constexpr EngineInitOptions kNone        = 0b00000;
         static constexpr EngineInitOptions kActorSystem = 0b00001;
@@ -31,6 +32,7 @@ namespace BlackBoxEngine
         static constexpr EngineInitOptions kAll	        = 0b11111;
 
     private:
+        GameUpdateFunc m_gameUpdateFunction;
         std::recursive_mutex m_engineMutex;
         inline static constexpr float kCollisionBufferSize = 0;
         static BlackBoxManager* m_pSingletonManager;
@@ -64,6 +66,7 @@ namespace BlackBoxEngine
         );
         double GetDeltaTime() const { return m_deltaTime; }
         bool IsSystemEnabled(EngineInitOptions option) const;
+        void SetGameUpdate( GameUpdateFunc&& callback );
 
         [[nodiscard("Manager not being used")]] static BlackBoxManager* Get();
         static BlackBoxManager* NewAndInitEngine(EngineInitOptions options = kAll);

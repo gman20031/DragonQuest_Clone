@@ -12,15 +12,16 @@ namespace BlackBoxEngine
     {
         std::unique_lock lock( m_actorMutex );
         RemoveQueuedActors();
+        for ( auto actorId : m_startQueue )
+        {
+            auto it = m_allActors.find( actorId );
+            if ( it == m_allActors.end() )
+                continue;
+            it->second->Start();
+        }
+        m_startQueue.clear();
         for (auto& [id, pActor] : m_allActors)
             pActor->Update();
-    }
-
-    void ActorManager::Start()
-    {
-        std::unique_lock lock( m_actorMutex );
-        for (auto& [id, pActor] : m_allActors)
-            pActor->Start();
     }
 
     void ActorManager::Render()
@@ -32,15 +33,18 @@ namespace BlackBoxEngine
 
     const ActorManager::ActorPtr& ActorManager::NewActor()
     {
+        std::unique_lock lock( m_actorMutex );
         Actor::Id id = NextId();
         auto [pair, test] = m_allActors.emplace(id, std::make_unique<Actor>(this, id) );
         if (!test)
             BB_LOG(LogType::kError, "Actor emplace failed");
+        m_startQueue.emplace_back( pair->second->GetId() );
         return pair->second;
     }
 
     const ActorManager::ActorPtr& ActorManager::LoadActor(const char* filePath)
     {
+        std::unique_lock lock( m_actorMutex );
         auto parser = ResourceManager::GetActorXMLData(filePath);
         auto& pActor = NewActor();
         while ( pActor->ParseComponent(parser.NextComponent()) );
@@ -50,7 +54,7 @@ namespace BlackBoxEngine
     void ActorManager::LoadLevel(const char* filePath)
     {
         std::unique_lock lock( m_actorMutex );
-        InternalClearLevel();
+        DestoryAllActors();
 
         LevelXMLParser LevelParser = ResourceManager::GetLevelXMLData(filePath);
         ActorXMLParser actorParser;
@@ -104,20 +108,23 @@ namespace BlackBoxEngine
 
     void ActorManager::DestoryAllActors()
     {
+        std::unique_lock lock( m_actorMutex );
         for ( auto& [id, actor] : m_allActors )
             DestroyActor( id );
     }
 
+    ///// private
+
     Actor::Id ActorManager::NextId()
     {
-        if (m_unused.empty())
+        if (m_unusedIds.empty())
         {
             auto id = m_highestId;
             ++m_highestId;
             return id;
         }
-        Actor::Id nextId = m_unused.back();
-        m_unused.pop_back();
+        Actor::Id nextId = m_unusedIds.back();
+        m_unusedIds.pop_back();
         return nextId;
     }
 
@@ -126,14 +133,8 @@ namespace BlackBoxEngine
         for (auto id : m_destroyQueue)
         {
             m_allActors.erase(id);
-            m_unused.push_back(id);
+            m_unusedIds.push_back(id);
         }
     }
 
-    void ActorManager::InternalClearLevel()
-    {
-        m_allActors.clear();
-        m_unused.clear();
-        m_highestId = 0;
-    }
 }
