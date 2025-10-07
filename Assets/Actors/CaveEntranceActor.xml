@@ -24,5 +24,11 @@
         <blockable>false</blockable>
         <enabled>true</enabled>
     </Component>
-    <Component Name="CaveEntranceComponent"/>
+    <Component type="BaseStairComponent">
+        <TargetLevel>../Assets/Levels/Cave1Level.xml</TargetLevel>
+        <SpawnX>16</SpawnX>
+        <SpawnY>16</SpawnY>
+        <Fade>1.0</Fade>
+        <AutoUse>true</AutoUse>
+    </Component>
 </Actor>

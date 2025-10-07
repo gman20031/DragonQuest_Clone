@@ -46,16 +46,11 @@ void InteractionComponent::Start()
         pInput->SubscribeToKey(KeyCode::kX, kKeyDown, [this]() { if (!m_uiActive) OpenUI(); })
     );
 
-
     // Z = close UI
     m_keyDownCodes.emplace_back(
         pInput->SubscribeToKey(KeyCode::kZ, kKeyDown, [this]() { if (m_uiActive) CloseUI(); })
     );
 
-    // Escape = also close UI
-    //m_keyDownCodes.emplace_back(
-    //    pInput->SubscribeToKey(KeyCode::kEscape, kKeyDown, [this]() { if (m_uiActive) CloseUI(); })
-    //);
 }
 
 void InteractionComponent::OpenUI()
@@ -158,38 +153,8 @@ void InteractionComponent::Update()
     if (!pPlayer)
         return;
 
-    bool isMoving = pPlayer->m_isMoving; // Assuming this exists, or you track input velocity
+    bool isMoving = pPlayer->m_isMoving; 
 
-
-   //if (!isMoving && !m_hudVisible && !m_uiActive)
-   //{
-   //    // Only schedule a delay if one is not already running
-   //    if (m_delayedDisplayId == 0)
-   //    {
-   //        m_delayedDisplayId = BlackBoxEngine::Delay(1000, [this]() -> uint32_t
-   //            {
-   //                auto* pPlayerInner = m_pOwner->GetComponent<PlayerMovementComponent>();
-   //                if (pPlayerInner && !pPlayerInner->m_isMoving && !m_hudVisible && !m_uiActive)
-   //                {
-   //                    DisplayHUD();
-   //                }
-   //    
-   //                m_delayedDisplayId = 0; // reset handle
-   //                return 0;
-   //            });
-   //    }
-   //}
-   //else if((isMoving || m_uiActive) && m_hudVisible)
-   //{
-   //        HideHUD();
-   //
-   //    if (m_delayedDisplayId != 0)
-   //    {
-   //        BlackBoxEngine::StopDelay(m_delayedDisplayId);
-   //        m_delayedDisplayId = 0;
-   //    }
-   //}
-   // 
     if (!isMoving && !m_hudVisible && !m_uiActive && !m_isChangingLevel)
     {
         if (m_delayedDisplayId == 0)
@@ -245,49 +210,41 @@ void InteractionComponent::Render()
 
 void InteractionComponent::OnCollide([[maybe_unused]]BlackBoxEngine::Actor* pOtherActor)
 {
-    if (!pOtherActor) return;
+    if (!pOtherActor)
+        return;
 
-    // Check if the actor has a StairComponent
-    if (auto* stair = pOtherActor->GetComponent<CaveEntranceComponent>())
+    // Try to detect a stair
+    if (auto* stair = pOtherActor->GetComponent<BaseStairComponent>())
     {
-        m_pCurrentStair = stair;  // store the stair we collided with
-        BB_LOG(LogType::kMessage, "Player is on a cave entrance actor.");
-        return;
-    }
-    if (auto* stair1 = pOtherActor->GetComponent<StairUpLevel1Component>())
-    {
-        m_pCurrentStair = stair1;  // store the stair we collided with
-        BB_LOG(LogType::kMessage, "Player is on a cave exit actor.");
-        return;
-    }
-    if (auto* stair2 = pOtherActor->GetComponent<StairUpLevel2Component>())
-    {
-        m_pCurrentStair = stair2;  // store the stair we collided with
-        BB_LOG(LogType::kMessage, "Player is on a cave level 1 actor.");
-        return;
-    }
-    if (auto* stair3 = pOtherActor->GetComponent<StairDownComponent>())
-    {
-        m_pCurrentStair = stair3;  // store the stair we collided with
-        BB_LOG(LogType::kMessage, "Player is on a cave level 2 actor.");
+        m_pCurrentStair = stair;
+        m_pCurrentTalk = nullptr;
+        m_pCurrentTake = nullptr;
+        BB_LOG(LogType::kMessage, "Player collided with a BaseStairComponent to level: %s",
+            stair->GetTransitionData().targetLevelPath.c_str());
         return;
     }
 
+    // Try to detect a talkable actor
     if (auto* talk = pOtherActor->GetComponent<TalkComponent>())
     {
-        m_pCurrentTalk = talk;  // store the stair we collided with
-        BB_LOG(LogType::kMessage, "Player is the town.");
+        m_pCurrentTalk = talk;
+        m_pCurrentStair = nullptr;
+        m_pCurrentTake = nullptr;
+        BB_LOG(LogType::kMessage, "Player is near a talkable actor.");
         return;
     }
 
+    // Try to detect a takeable actor
     if (auto* take = pOtherActor->GetComponent<TakeComponent>())
     {
-        m_pCurrentTake = take;  // store the stair we collided with
-        BB_LOG(LogType::kMessage, "Player is the chest.");
+        m_pCurrentTake = take;
+        m_pCurrentStair = nullptr;
+        m_pCurrentTalk = nullptr;
+        BB_LOG(LogType::kMessage, "Player is near a takeable object.");
         return;
     }
 
-    // Not a stair
+    // Reset if no interaction components found
     m_pCurrentStair = nullptr;
     m_pCurrentTalk = nullptr;
     m_pCurrentTake = nullptr;
@@ -552,3 +509,4 @@ void InteractionComponent::HideHUD()
     m_hudVisible = false;
 
 }
+

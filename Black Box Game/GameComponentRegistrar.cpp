@@ -22,12 +22,13 @@ static std::tuple
     ComponentFactory::Registrar<TileMapComponent>,
     ComponentFactory::Registrar<PlayerMovementComponent>,
     ComponentFactory::Registrar<InteractionComponent>,
-    ComponentFactory::Registrar<CaveEntranceComponent>,
-    ComponentFactory::Registrar<StairDownComponent>,
-    ComponentFactory::Registrar<StairUpLevel1Component>,
-    ComponentFactory::Registrar<StairUpLevel2Component>,
+    //ComponentFactory::Registrar<CaveEntranceComponent>,
+    //ComponentFactory::Registrar<StairDownComponent>,
+    //ComponentFactory::Registrar<StairUpLevel1Component>,
+    //ComponentFactory::Registrar<StairUpLevel2Component>,
     ComponentFactory::Registrar<TalkComponent>,
     ComponentFactory::Registrar<TakeComponent>,
-    ComponentFactory::Registrar<EncounterComponent>
+    ComponentFactory::Registrar<EncounterComponent>,
+    ComponentFactory::Registrar<BaseStairComponent>
 
 > GameComponentRegistrar;

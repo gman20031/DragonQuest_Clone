@@ -12,8 +12,6 @@ public:
     TalkComponent(BlackBoxEngine::Actor* pOwner) : Component(pOwner) { /*EMPTY*/ }
     virtual ~TalkComponent() override {}
 
-    //virtual FVector2 GetTargetPosition() const { return m_targetPosition; }
-
     virtual void OnTalkUsed(BlackBoxEngine::Actor* pOtherActor); // all stairs must implement this
 
     virtual void Start() override {} // only when this is created.

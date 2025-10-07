@@ -11,17 +11,17 @@
 #include "TakeComponent.h"
 #include <../Black Box Engine/Math/FVector2.h>
 #include <cstdint>
+#include <array>
+
+#include <vector>
+#include <array>
+#include <string>
 
 class BlackBoxGame;
-//class Actor;
 
 class InteractionComponent : public BlackBoxEngine::Component
 {
     GENERATE_ID("InteractionComponent");
-
-    int m_bar = 25;
-    const char* m_baz = "Baz";
-    std::string m_foo = "foo";
 
     BlackBoxEngine::UserInterface m_interfaceRoot;
 
@@ -31,7 +31,7 @@ class InteractionComponent : public BlackBoxEngine::Component
 
     BlackBoxEngine::Actor* m_currentActor = nullptr;
 
-    StairComponent* m_pCurrentStair = nullptr;
+    BaseStairComponent* m_pCurrentStair = nullptr;
     TalkComponent* m_pCurrentTalk = nullptr;
     TakeComponent* m_pCurrentTake = nullptr;
 
@@ -71,7 +71,7 @@ public:
 
     void OnButtonPressed(const std::string& action);  
 
-    void SetCurrentStair(StairComponent* stair) { m_pCurrentStair = stair; }
+    void SetCurrentStair(BaseStairComponent* stair) { m_pCurrentStair = stair; }
     void SetCurrentTalk(TalkComponent* talk) { m_pCurrentTalk = talk; }
     void SetCurrentTake(TakeComponent* take) { m_pCurrentTake = take; }
 
@@ -100,3 +100,5 @@ private:
     std::vector<uint64_t> m_keyDownCodes;
    
 };
+
+

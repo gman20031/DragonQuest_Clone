@@ -24,5 +24,11 @@
         </TextureOffset>
         <filePath>../Assets/Tiles/FullTileSheet.png</filePath>
     </Component>
-    <Component Name="StairUpLevel2Component"/>
+    <Component type="BaseStairComponent">
+        <TargetLevel>../Assets/Levels/Cave1Level.xml</TargetLevel>
+        <SpawnX>160</SpawnX>
+        <SpawnY>160</SpawnY>
+        <Fade>1.0</Fade>
+        <AutoUse>false</AutoUse>
+    </Component>
 </Actor>
