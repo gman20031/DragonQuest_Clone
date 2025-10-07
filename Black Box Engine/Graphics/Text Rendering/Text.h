@@ -34,7 +34,7 @@ namespace BlackBoxEngine
         void SetColor(ColorValue color);
         void SetPosition(FVector2 position);
         void SetString(const char* pString, size_t length);
-        bool SetTextWrapWidthPixels(int pixels);
+        bool SetTextWrapWidthPixels( int size );
 
         ColorValue GetColor() const;
         FVector2 GetPosition() const;

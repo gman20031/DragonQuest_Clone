@@ -62,14 +62,12 @@ void PlayerMovementComponent::Start()
         {
             SetTextureForDirection({x,y});
 
-            Delay(200, [this, keyCode, x, y]()
+            DelayedCallbackManager::AddCallback([this, keyCode, x, y]()
                 {
                     auto* pInput = BlackBoxManager::Get()->m_pInputManager;
                     if (pInput->IsKeyDown(keyCode))
                         TryMove({ x, y });
-            
-                    return 0;
-                });
+                } , 200);
         } );
         m_keyDownCodes.emplace_back(id);
     };

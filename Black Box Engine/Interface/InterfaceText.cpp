@@ -13,6 +13,11 @@ namespace BlackBoxEngine
         pRenderer->GetTextVariant()->RenderText(m_pText, x + m_nodeRenderRect.x, y + m_nodeRenderRect.y);
     }
 
+    InterfaceText::~InterfaceText()
+    {
+        BlackBoxManager::Get()->m_pMessagingManager->RemoveListener( m_messageId );
+    }
+
     BlackBoxEngine::InterfaceText::InterfaceText(
         InterfaceNode* pParent,
         const char* pName,
@@ -29,9 +34,11 @@ namespace BlackBoxEngine
            {
                auto* pCamera = BlackBoxManager::Get()->m_pMainCamera;
                auto zoom = pCamera->GetCameraWindowZoom(BlackBoxManager::Get()->GetWindow());
+               if ( m_nodeRenderRect.w <= 0 )
+                   return;
                m_pText->SetTextWrapWidthPixels(static_cast<int>(m_nodeRenderRect.w * zoom.x));
            };
-        BlackBoxManager::Get()->m_pMessagingManager->RegisterListenerString(
+        m_messageId = BlackBoxManager::Get()->m_pMessagingManager->RegisterListenerString(
             "WindowSizeChanged", ScreenSizeChanged
         );
     }

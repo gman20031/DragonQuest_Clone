@@ -1,6 +1,5 @@
 #pragma once
 
-#include <unordered_map>
 #include <functional>
 #include <chrono>
 
@@ -8,49 +7,37 @@
 
 namespace BlackBoxEngine
 {
-    using DelayFunction = uint32_t(*)(void* userData, uint32_t timerId, uint32_t interval);
-    // @brief see https://wiki.libsdl.org/SDL3/SDL_AddTimer
-    uint32_t Delay(uint32_t milisecondDelay, DelayFunction callbackFunction, void* userData);
-    uint32_t Delay(std::chrono::milliseconds milisecondDelay, DelayFunction callbackFunction, void* userData);
-    uint32_t Delay(std::chrono::seconds secondDelay, DelayFunction callbackFunction, void* userData);
-    
-
-    template<std::invocable Callable>
-    uint32_t Delay( std::chrono::milliseconds milisecondDelay, Callable callback );
-    template<std::invocable Callable>
-    uint32_t Delay( std::chrono::seconds secondDelay, Callable callback );
-
-    // Callable must return uint32_t for when it should be called next
-    template<std::invocable Callable>
-    uint32_t Delay(uint32_t miliseconds, Callable callback)
+    struct DelayedCallback
     {
-        using TempMap = std::unordered_map<uint32_t, Callable>;
-        static TempMap s_tempStorage;
+        using Callback = std::function<void()>;
 
-        DelayFunction function = [](void* pMap, [[maybe_unused]] uint32_t timerId, [[maybe_unused]] uint32_t interval) -> uint32_t
-            {
-                TempMap* pTempMap = static_cast<TempMap*>(pMap);
-                return pTempMap->at(timerId)();
-            };
+        uint64_t id;
+        Callback callback;
+        double callTimeSeconds;
+        double repeatTime = 0;
+    };
 
-        auto id = Delay(miliseconds, function, &s_tempStorage);
-        s_tempStorage.emplace(id, callback);
-
-        return id;
-    }
-
-    template<std::invocable Callable>
-    uint32_t Delay( std::chrono::milliseconds milisecondDelay, Callable callback )
+    class DelayedCallbackManager
     {
-        return Delay( (uint32_t)milisecondDelay.count(), callback );
-    }
+        inline static std::vector<DelayedCallback> m_callbacks;
+        inline static std::vector<uint64_t> m_unusedIds;
+        inline static double m_currentTime = 0;
+        inline static uint64_t m_nextId = 0;
+    public:
+        static void Update( double deltaMS );
 
-    template<std::invocable Callable>
-    uint32_t Delay( std::chrono::seconds secondDelay, Callable callback )
-    {
-        using namespace std::chrono;
-        return Delay( duration_cast<milliseconds>(secondDelay) , callback);
-    }
-
-    bool StopDelay( uint32_t id );
+        static uint64_t AddCallback( DelayedCallback::Callback&& callback, std::chrono::seconds delay, std::chrono::seconds repeat = {} );
+        static uint64_t AddCallback( DelayedCallback::Callback&& callback, std::chrono::milliseconds delay, std::chrono::milliseconds repeat = {} );
+        static uint64_t AddCallback( DelayedCallback::Callback&& callback, double delayMS, double repeatMS = 0 );
+        
+        static bool RemoveCallback( uint64_t id );
+    private:
+        static bool HeapCompare(
+            const DelayedCallback& left,
+            const DelayedCallback& right)
+        {
+            return left.callTimeSeconds > right.callTimeSeconds;
+        }
+        static uint64_t NextId();
+    };
 }

@@ -20,11 +20,12 @@ namespace BlackBoxEngine
     private:
         Paremeters m_params;
         std::shared_ptr<BB_Text> m_pText;
+        uint64_t m_messageId;
 
         virtual void RenderThis(BB_Renderer* pRenderer, float x, float y) override;
     public:
-        virtual ~InterfaceText() = default;
         InterfaceText(InterfaceNode* pParent, const char* pName, BB_FRectangle dimensions, const Paremeters& params);
+        virtual ~InterfaceText();
 
 
     };

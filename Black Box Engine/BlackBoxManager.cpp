@@ -10,6 +10,7 @@
 #include "System/SimpleTimingSystem.h"
 #include "System/Debugging.h"
 #include "Actors/ActorManager.h"
+#include "System/Delay.h"
 
 namespace BlackBoxEngine
 {
@@ -87,6 +88,8 @@ namespace BlackBoxEngine
         std::unique_lock lock( m_engineMutex );
         /// Update global Systems
         HandleSdlEvents();
+
+        DelayedCallbackManager::Update( m_deltaTime * 1'000);
 
         if (IsSystemEnabled(kInput) ) 
             m_pInputManager->Update();

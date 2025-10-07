@@ -38,14 +38,14 @@ namespace BlackBoxEngine
 
         constexpr uint64_t milisecondPerSecond = std::chrono::milliseconds::period::den;
         double frameDelay = 1 / (double)framePerSecond;
-        uint32_t msDelay = static_cast<uint32_t>(frameDelay * milisecondPerSecond);
+        double msDelay = (frameDelay * milisecondPerSecond);
 
         int totalFrameCount = m_spriteXCount * m_spriteYCount;
         m_spriteSheetIndex = m_animStartIndex;
         m_animating = true;
 
         SetSpriteIndex( m_animStartIndex );
-        auto callback = [msDelay, totalFrameCount, repeat, this]() -> uint32_t
+        auto callback = [msDelay, totalFrameCount, repeat, this]() -> void
             {
                 int spriteIndex = GetSpriteIndex();
                 ++spriteIndex;
@@ -53,11 +53,11 @@ namespace BlackBoxEngine
                     spriteIndex = m_animStartIndex;
                 assert( spriteIndex >= 0 && spriteIndex <= totalFrameCount );
                 SetSpriteIndex( spriteIndex );
-                if(repeat)
-                    return msDelay;
-                return 0;
             };
-        m_callbackId = Delay( msDelay, callback);
+        double repeatDelay = 0;
+        if ( repeat )
+            repeatDelay = msDelay;
+        m_callbackId = DelayedCallbackManager::AddCallback(callback, msDelay, repeatDelay);
     }
 
     void Sprite::AnimateSprite()
@@ -70,7 +70,7 @@ namespace BlackBoxEngine
         if ( !m_animating )
             return;
         m_animating = false;
-        if ( ! StopDelay( m_callbackId ) )
+        if ( ! DelayedCallbackManager::RemoveCallback(m_callbackId) )
             BB_LOG( LogType::kWarning, "error when attempting to remove animation callback, SDL: ", SDL_GetError() );
     }
 

@@ -27,7 +27,7 @@ namespace BlackBoxEngine
         uint32_t m_spriteYCount = 0;
         uint32_t m_spriteXPad = 0;
         uint32_t m_spriteYPad = 0;
-        uint32_t m_callbackId = 0;
+        uint64_t m_callbackId = 0;
         int m_framesPerSecond = 0;
         bool m_animateOnStart = false;
         bool m_loopAnimation = false;

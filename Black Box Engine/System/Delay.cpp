@@ -1,30 +1,86 @@
 #include "Delay.h"
 
-#include <SDL3/SDL_timer.h>
+#include <algorithm>
+#include <ranges>
 
 namespace BlackBoxEngine
 {
-
-    uint32_t Delay(uint32_t milisecondDelay, DelayFunction callbackFunction, void* userData)
+    void DelayedCallbackManager::Update( double deltaMS )
     {
-        return SDL_AddTimer(milisecondDelay, callbackFunction, userData);
+        m_currentTime += deltaMS;
+        while ( !m_callbacks.empty() && m_currentTime >= m_callbacks.front().callTimeSeconds )
+        {
+            m_callbacks.front().callback();
+            if ( m_callbacks.front().repeatTime > 0 )
+            {
+                m_callbacks.emplace_back( m_callbacks.front() );
+                m_callbacks.back().callTimeSeconds = m_currentTime + m_callbacks.back().repeatTime;
+            }
+            std::ranges::pop_heap( m_callbacks, &HeapCompare);
+            m_callbacks.pop_back();
+        }
     }
 
-    uint32_t Delay(std::chrono::milliseconds milisecondDelay, DelayFunction callbackFunction, void* userData)
+    uint64_t DelayedCallbackManager::AddCallback(
+        DelayedCallback::Callback&& callback,
+        std::chrono::seconds delay,
+        std::chrono::seconds repeat )
     {
-        return SDL_AddTimer(static_cast<uint32_t>(milisecondDelay.count()), callbackFunction, userData);
+        using namespace std::chrono;
+        return AddCallback(
+            std::forward<DelayedCallback::Callback>( callback ),
+            duration_cast<milliseconds>(delay),
+            duration_cast<milliseconds>(repeat) 
+        );
     }
 
-    uint32_t Delay(std::chrono::seconds secondDelay, DelayFunction callbackFunction, void* userData)
+    uint64_t DelayedCallbackManager::AddCallback(
+        DelayedCallback::Callback&& callback,
+        std::chrono::milliseconds delay,
+        std::chrono::milliseconds repeat )
     {
-        using namespace std::chrono; 
-        auto milisecondDelay = duration_cast<milliseconds>(secondDelay);
-        return SDL_AddTimer(static_cast<uint32_t>(milisecondDelay.count()), callbackFunction, userData);
+        using namespace std::chrono;
+        return AddCallback(
+            std::forward<DelayedCallback::Callback>( callback ),
+            static_cast<double>(delay.count()) , static_cast<double>(repeat.count())
+        );
     }
 
-    bool StopDelay( uint32_t id )
+    uint64_t DelayedCallbackManager::AddCallback(
+        DelayedCallback::Callback&& callback, double delayMS, double repeatMS )
     {
-        return SDL_RemoveTimer( id );
+        uint64_t id = NextId();
+        m_callbacks.emplace_back( 
+            id,
+            std::forward<DelayedCallback::Callback>( callback ),
+            m_currentTime + ( delayMS ) ,
+            repeatMS
+        );
+        std::ranges::make_heap( m_callbacks, &HeapCompare );
+        return id;
+    }
+
+    bool DelayedCallbackManager::RemoveCallback( uint64_t id )
+    {
+        for ( auto it = m_callbacks.begin(); it != m_callbacks.end() ; ++it)
+        {
+            if( it->id == id )
+            {
+                m_callbacks.erase( it );
+                std::ranges::make_heap( m_callbacks, &HeapCompare );
+                return true;
+            }
+        }
+        return false;
+    }
+
+    uint64_t DelayedCallbackManager::NextId()
+    {
+        if( m_unusedIds.empty() )
+            return m_nextId++;
+        uint64_t id = m_unusedIds.back();
+        m_unusedIds.pop_back();
+        return id;
     }
 
 }

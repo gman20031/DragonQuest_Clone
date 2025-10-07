@@ -6,8 +6,6 @@
 #include "PlayerMovementComponent.h"
 #include "../Black Box Engine/System/Delay.h"
 
-#include "TileSystem/EncounterTestComponent.h"
-
 
 using namespace BlackBoxEngine;
 
@@ -118,7 +116,6 @@ void InteractionComponent::ShowActionMessage(const std::string& text)
     // Add background first so it's behind the text
     m_messageRoot.AddNode<InterfaceTexture>("ActionMessage_Background", bgRect, bgTextureInfo);
 
-
     BB_FRectangle rect;
     rect.x = 72; 
     rect.y = 70;
@@ -197,7 +194,7 @@ void InteractionComponent::Update()
     {
         if (m_delayedDisplayId == 0)
         {
-            m_delayedDisplayId = BlackBoxEngine::Delay(1000, [this]() -> uint32_t
+            m_delayedDisplayId = DelayedCallbackManager::AddCallback( [this]() -> void
                 {
                     auto* pPlayerInner = m_pOwner->GetComponent<PlayerMovementComponent>();
                     if (pPlayerInner && !pPlayerInner->m_isMoving && !m_hudVisible && !m_uiActive && !m_isChangingLevel)
@@ -206,8 +203,7 @@ void InteractionComponent::Update()
                     }
 
                     m_delayedDisplayId = 0; // reset handle
-                    return 0;
-                });
+                } , 1000);
         }
     }
     // Hide HUD if player moves or UI becomes active, but only if not during level transition
@@ -217,7 +213,7 @@ void InteractionComponent::Update()
 
         if (m_delayedDisplayId != 0)
         {
-            BlackBoxEngine::StopDelay(m_delayedDisplayId);
+            DelayedCallbackManager::RemoveCallback(m_delayedDisplayId);
             m_delayedDisplayId = 0;
         }
     }
@@ -232,7 +228,7 @@ void InteractionComponent::OnLevelTransitionStart()
 
     if (m_delayedDisplayId != 0)
     {
-        BlackBoxEngine::StopDelay(m_delayedDisplayId);
+        DelayedCallbackManager::RemoveCallback(m_delayedDisplayId);
         m_delayedDisplayId = 0;
     }
 }

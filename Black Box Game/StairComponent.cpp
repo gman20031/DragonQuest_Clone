@@ -38,8 +38,8 @@ void CaveEntranceComponent::OpenLevel(BlackBoxEngine::Actor* pOtherActor)
     auto* pManager = BlackBoxManager::Get();
     auto currentPos = pTransform->m_position;
 
-    //pTransform->m_position = { 16, 16 };
-    //pTransform->m_prevPosition = { 16, 16 };
+    pTransform->m_position = { 16, 16 };
+    pTransform->m_prevPosition = { 16, 16 };
 
     pManager->m_pActorManager->SaveActor(pOtherActor, "PlayerActor", "../Assets/Actors/PlayerActor.xml");
     pTransform->m_position = currentPos;
@@ -52,14 +52,10 @@ void CaveEntranceComponent::OpenLevel(BlackBoxEngine::Actor* pOtherActor)
 
     auto delayFunc = [pManager, pOtherActor, pInteractComponent]()
         {
-            //auto* pInteractComponent = pOtherActor->GetComponent<InteractionComponent>();
-            //pInteractComponent->HideHUD();
 
             pManager->m_pInputManager->SwapInputToGame();
             pManager->m_pActorManager->LoadLevel("../Assets/Levels/Cave1Level.xml");
             pManager->m_pInputManager->ResumeInput();
-
-            pManager->m_pActorManager->GetActor( 3 )->GetComponent<TransformComponent>()->m_position = {16,16};
 
             ScreenFader::FadeIn(1.f);
 
@@ -67,7 +63,7 @@ void CaveEntranceComponent::OpenLevel(BlackBoxEngine::Actor* pOtherActor)
 
             return 0;
         };
-    Delay(std::chrono::seconds(1), delayFunc);
+    DelayedCallbackManager::AddCallback(delayFunc , std::chrono::seconds(1) );
 
 
   
@@ -134,10 +130,8 @@ void StairDownComponent::OnStairUsed(BlackBoxEngine::Actor* pOtherActor)
 
             ScreenFader::FadeIn(1.f);
             pInteractComponent->OnLevelTransitionEnd();
-
-            return 0;
         };
-    Delay(std::chrono::seconds(1), delayFunc);
+    DelayedCallbackManager::AddCallback(delayFunc, std::chrono::seconds( 1 ));
 }
 
 void StairDownComponent::OnCollide([[maybe_unused]] BlackBoxEngine::Actor* pOtherActor)
@@ -182,7 +176,7 @@ void StairUpLevel1Component::OnStairUsed(BlackBoxEngine::Actor* pOtherActor)
 
     ScreenFader::FadeToBlack(1.f);
 
-    auto delayFunc = [pManager, pOtherActor, pInteractComponent]()
+    auto delayFunc = [pManager, pOtherActor, pInteractComponent]() -> void
         {
             //auto* pInteractComponent = pOtherActor->GetComponent<InteractionComponent>();
             //pInteractComponent->HideHUD();
@@ -194,9 +188,8 @@ void StairUpLevel1Component::OnStairUsed(BlackBoxEngine::Actor* pOtherActor)
             ScreenFader::FadeIn(1.f);
 
             pInteractComponent->OnLevelTransitionEnd();
-            return 0;
         };
-    Delay(std::chrono::seconds(1), delayFunc);
+    DelayedCallbackManager::AddCallback(delayFunc , std::chrono::seconds( 1 ));
 }
 
 void StairUpLevel1Component::OnCollide(BlackBoxEngine::Actor* pOtherActor)
@@ -243,7 +236,7 @@ void StairUpLevel2Component::OnStairUsed(BlackBoxEngine::Actor* pOtherActor)
     //pInteractComponent->HideHUD();
     ScreenFader::FadeToBlack(1.f);
 
-    auto delayFunc = [pManager, pOtherActor, pInteractComponent]()
+    auto delayFunc = [pManager, pOtherActor, pInteractComponent]() -> void
         {
             //auto* pInteractComponent = pOtherActor->GetComponent<InteractionComponent>();
             //pInteractComponent->HideHUD();
@@ -255,10 +248,8 @@ void StairUpLevel2Component::OnStairUsed(BlackBoxEngine::Actor* pOtherActor)
             ScreenFader::FadeIn(1.f);
 
             pInteractComponent->OnLevelTransitionEnd();
-
-            return 0;
         };
-    Delay(std::chrono::seconds(1), delayFunc);
+    DelayedCallbackManager::AddCallback( delayFunc, std::chrono::seconds(1));
 }
 
 void StairUpLevel2Component::OnCollide(BlackBoxEngine::Actor* pOtherActor)
