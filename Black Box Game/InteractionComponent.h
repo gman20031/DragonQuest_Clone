@@ -1,21 +1,21 @@
 #pragma once
 #include <Actors/Component.h>
+
+#include <cstdint>
+#include <string>
+#include <vector>
+#include <array>
+
 #include "../Black Box Engine/BlackBoxManager.h"
 #include "../Black Box Engine/Input/InputManager.h"
+#include "../Black Box Engine/Math/FVector2.h"
+#include <Interface/UserInterface.h>
 #include <Interface/InterfaceButton.h>
 #include <Interface/InterfaceText.h>
 #include <Interface/InterfaceTexture.h>
-#include <Interface/UserInterface.h>
 #include "StairComponent.h"
 #include "TalkComponent.h"
 #include "TakeComponent.h"
-#include <../Black Box Engine/Math/FVector2.h>
-#include <cstdint>
-#include <array>
-
-#include <vector>
-#include <array>
-#include <string>
 
 class BlackBoxGame;
 
@@ -23,28 +23,36 @@ class InteractionComponent : public BlackBoxEngine::Component
 {
     GENERATE_ID("InteractionComponent");
 
+    // --- UI Roots ---
     BlackBoxEngine::UserInterface m_interfaceRoot;
+    BlackBoxEngine::UserInterface m_messageRoot;
+    BlackBoxEngine::UserInterface m_hudRoot;
 
-    BlackBoxEngine::UserInterface m_messageRoot;   // same type as m_interfaceRoot
+    // --- Message Box ---
     BlackBoxEngine::InterfaceText* m_messageNode = nullptr;
     bool m_messageActive = false;
 
-    BlackBoxEngine::Actor* m_currentActor = nullptr;
+    // --- HUD ---
+    bool m_hudVisible = false;
 
+    // --- Actor references ---
+    BlackBoxEngine::Actor* m_currentActor = nullptr;
+    BlackBoxEngine::Actor* m_playerActor = nullptr;
+
+    // --- Interaction targets ---
     BaseStairComponent* m_pCurrentStair = nullptr;
     TalkComponent* m_pCurrentTalk = nullptr;
     TakeComponent* m_pCurrentTake = nullptr;
 
-    BlackBoxEngine::Actor* m_playerActor = nullptr;
-
+    // --- State ---
+    bool m_uiActive = false;
     bool m_didMove = false;
+    bool m_isChangingLevel = false;
 
-    //maybe i hsould not do everything in the same class
-    BlackBoxEngine::UserInterface m_hudRoot;
-    BlackBoxEngine::InterfaceText* m_hudTextNode = nullptr;
-    bool m_hudVisible = false;
+    uint64_t m_delayedDisplayId = 0;
+    std::vector<uint64_t> m_keyDownCodes;
 
-
+    // --- Player Stats ---
     int m_playerLevel = 1;
     int m_playerHP = 20;
     int m_playerMaxHP = 20;
@@ -53,52 +61,47 @@ class InteractionComponent : public BlackBoxEngine::Component
     int m_playerGold = 120;
     int m_playerEnergy = 10;
 
-    uint64_t m_delayedDisplayId = 0;
-    bool m_isChangingLevel = false;
 public:
-    InteractionComponent(BlackBoxEngine::Actor* pOwner) : Component(pOwner) { /*EMPTY*/ }
+    InteractionComponent(BlackBoxEngine::Actor* pOwner) : Component(pOwner) {}
     virtual ~InteractionComponent();
 
-    virtual void Start() override; // only when this is created.
-    virtual void Update() override; // every tick of the game
-    virtual void Render() override; // just for rendering stuff
-    virtual void OnCollide(BlackBoxEngine::Actor* pOtherActor) override; // if this actor has a collider, and walks into another actor with a collider
-    virtual void Save(BlackBoxEngine::XMLElementParser parser) override; // for when this actor is called to be saved
-    virtual void Load(const BlackBoxEngine::XMLElementParser parser) override; // for when this actor is called to be loaded
+    // --- Engine Overrides ---
+    void Start() override;
+    void Update() override;
+    void Render() override;
+    void OnCollide(BlackBoxEngine::Actor* pOtherActor) override;
+    void Save(BlackBoxEngine::XMLElementParser parser) override;
+    void Load(const BlackBoxEngine::XMLElementParser parser) override;
 
+    // --- Player Linking ---
     void SetCurrentActor(BlackBoxEngine::Actor* actor) { m_currentActor = actor; }
-    BlackBoxEngine::Actor* GetCurrentActor() const { return m_currentActor; }
+    void SetPlayerActor(BlackBoxEngine::Actor* actor) { m_playerActor = actor; }
 
-    void OnButtonPressed(const std::string& action);  
+    // --- Interaction Hooks ---
+    void OnButtonPressed(const std::string& action);
+    void OnLevelTransitionStart();
+    void OnLevelTransitionEnd();
 
     void SetCurrentStair(BaseStairComponent* stair) { m_pCurrentStair = stair; }
     void SetCurrentTalk(TalkComponent* talk) { m_pCurrentTalk = talk; }
     void SetCurrentTake(TakeComponent* take) { m_pCurrentTake = take; }
 
-    bool GetDidMove() { return m_didMove; }
-
-    BlackBoxEngine::Actor* SetPlayerActor(BlackBoxEngine::Actor* pOtherActor) { return m_playerActor = pOtherActor; }
-
-    void DisplayHUD(); //should we make it so that we can take in the name of the player?
-    
     void HideHUD();
 
-    void OnLevelTransitionStart();
-    void OnLevelTransitionEnd();
 private:
-
-    bool m_uiActive = false;
-
-    void SelectionMenu();
+    // --- UI helpers ---
     void OpenUI();
     void CloseUI();
+    void SelectionMenu();
+
+    void DisplayHUD();
 
     void ShowActionMessage(const std::string& text);
+    void DismissActionMessage();
 
-    void DismissActionMessage(); 
+    // --- Action Handlers ---
+    void HandleTalk();
+    void HandleStair();
+    void HandleTake();
 
-    std::vector<uint64_t> m_keyDownCodes;
-   
 };
-
-

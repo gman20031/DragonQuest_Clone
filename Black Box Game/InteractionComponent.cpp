@@ -1,177 +1,67 @@
 ﻿#include "InteractionComponent.h"
 #include "../Black Box Engine/Actors/ActorManager.h"
 #include "../Black Box Engine/BlackBoxManager.h"
-#include "BlackBoxGame.h"
-#include "StairComponent.h"
-#include "PlayerMovementComponent.h"
 #include "../Black Box Engine/System/Delay.h"
+#include "BlackBoxGame.h"
+#include "PlayerMovementComponent.h"
+#include "StairComponent.h"
 
 
 using namespace BlackBoxEngine;
 
-void ButtonOneCallback()
-{
-    BB_LOG(LogType::kMessage, "Button 1 clicked");
-}
-void ButtonTwoCallback()
-{
-    BB_LOG(LogType::kMessage, "Button 2 clicked");
-}
-void ButtonThreeCallback()
-{
-    BB_LOG(LogType::kMessage, "Button 3 clicked");
-}
-void ButtonFourCallback()
-{
-    BB_LOG(LogType::kMessage, "Button 4 clicked");
-}
-
 InteractionComponent::~InteractionComponent()
 {
-    auto* pInputManager = BlackBoxManager::Get()->m_pInputManager;
+    auto* input = BlackBoxManager::Get()->m_pInputManager;
     using enum InputManager::InputType;
-
-    // Unsubscribe all key downs
     for (auto id : m_keyDownCodes)
-        pInputManager->UnsubscribeKey(id, kKeyDown);
+        input->UnsubscribeKey(id, kKeyDown);
 }
 
+// -------------------------------------------------------------
+// Start
+// -------------------------------------------------------------
 void InteractionComponent::Start()
 {
-    auto* pInput = BlackBoxManager::Get()->m_pInputManager;
+    auto* input = BlackBoxManager::Get()->m_pInputManager;
     using enum InputManager::InputType;
-    
+
     // X = open UI
     m_keyDownCodes.emplace_back(
-        pInput->SubscribeToKey(KeyCode::kX, kKeyDown, [this]() { if (!m_uiActive) OpenUI(); })
+        input->SubscribeToKey(KeyCode::kX, kKeyDown, [this]() { if (!m_uiActive) OpenUI(); })
     );
 
     // Z = close UI
     m_keyDownCodes.emplace_back(
-        pInput->SubscribeToKey(KeyCode::kZ, kKeyDown, [this]() { if (m_uiActive) CloseUI(); })
+        input->SubscribeToKey(KeyCode::kZ, kKeyDown, [this]() { if (m_uiActive) CloseUI(); })
     );
-
 }
 
-void InteractionComponent::OpenUI()
-{
-    if (m_hudVisible)
-        HideHUD();
-
-    SelectionMenu();
-    m_uiActive = true;
-
-    auto* pPlayer = m_pOwner->GetComponent<PlayerMovementComponent>();
-
-    if (pPlayer)
-            pPlayer->SetAnimationPaused(true);
-    
-
-}
-
-void InteractionComponent::CloseUI()
-{
-    m_interfaceRoot.RemoveFromScreen();
-    m_messageRoot.RemoveFromScreen();
-
-    BlackBoxManager::Get()->m_pInputManager->SwapInputToGame();
-    m_uiActive = false;
-    m_messageActive = false;
-    m_messageNode = nullptr;
-
-
-    auto* pPlayer = m_pOwner->GetComponent<PlayerMovementComponent>();
-
-    if (pPlayer)
-        pPlayer->SetAnimationPaused(false);
-    
-}
-
-void InteractionComponent::ShowActionMessage(const std::string& text)
-{
-
-    if (m_messageActive)
-        return;
-    
-    m_messageActive = true;
-
-    BB_FRectangle bgRect;
-    bgRect.x = 60;       // slightly offset to have padding
-    bgRect.y = 60;
-    bgRect.w = 104;      // width slightly bigger than text rectangle
-    bgRect.h = 24;       // height slightly bigger than text rectangle
-
-    InterfaceTexture::TextureInfo bgTextureInfo{
-        .pTextureFile = "../Assets/UI/BottomTextBox.png", // your background image
-        .spriteDimensions = {16, 16},
-        .useFullImage = true,
-        .animate = false
-    };
-
-    // Add background first so it's behind the text
-    m_messageRoot.AddNode<InterfaceTexture>("ActionMessage_Background", bgRect, bgTextureInfo);
-
-    BB_FRectangle rect;
-    rect.x = 72; 
-    rect.y = 70;
-    rect.w = 100; 
-    rect.h = 20;
-    
-    InterfaceText::Paremeters params;
-    params.pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf";
-    params.textSize = 16;
-    params.color = ColorPresets::white;
-    params.pText = text.c_str();
-    
-    // create node on the *message* root and show only that root
-    m_messageNode = m_messageRoot.AddNode<InterfaceText>("ActionMessage", rect, params);
-    
-    // make it visible
-    m_messageRoot.AddToScreen();
-    
-
-}
-
-void InteractionComponent::DismissActionMessage()
-{
-   
-    if (!m_messageActive)
-        return;
-
-    // Hide the entire message root
-    m_messageRoot.RemoveFromScreen();
-
-    // Reset flags
-    m_messageNode = nullptr;
-    m_messageActive = false;
-}
-
+// -------------------------------------------------------------
+// Update
+// -------------------------------------------------------------
 void InteractionComponent::Update()
 {
+    auto* playerMove = m_pOwner->GetComponent<PlayerMovementComponent>();
+    if (!playerMove) return;
 
-    auto* pPlayer = m_pOwner->GetComponent<PlayerMovementComponent>();
-    if (!pPlayer)
-        return;
+    bool isMoving = playerMove->m_isMoving;
 
-    bool isMoving = pPlayer->m_isMoving; 
-
+    // Show HUD after player stops
     if (!isMoving && !m_hudVisible && !m_uiActive && !m_isChangingLevel)
     {
         if (m_delayedDisplayId == 0)
         {
-            m_delayedDisplayId = DelayedCallbackManager::AddCallback( [this]() -> void
+            m_delayedDisplayId = DelayedCallbackManager::AddCallback([this]()
                 {
-                    auto* pPlayerInner = m_pOwner->GetComponent<PlayerMovementComponent>();
-                    if (pPlayerInner && !pPlayerInner->m_isMoving && !m_hudVisible && !m_uiActive && !m_isChangingLevel)
-                    {
+                    auto* pm = m_pOwner->GetComponent<PlayerMovementComponent>();
+                    if (pm && !pm->m_isMoving && !m_hudVisible && !m_uiActive && !m_isChangingLevel)
                         DisplayHUD();
-                    }
 
-                    m_delayedDisplayId = 0; // reset handle
-                } , 1000);
+                    m_delayedDisplayId = 0;
+                }, 1000);
         }
     }
-    // Hide HUD if player moves or UI becomes active, but only if not during level transition
+    // Hide HUD if player moves or UI active
     else if ((isMoving || m_uiActive) && m_hudVisible && !m_isChangingLevel)
     {
         HideHUD();
@@ -184,12 +74,322 @@ void InteractionComponent::Update()
     }
 }
 
+// -------------------------------------------------------------
+// OnCollide
+// -------------------------------------------------------------
+void InteractionComponent::OnCollide(Actor* other)
+{
+    if (!other) return;
+
+    if (auto* stair = other->GetComponent<BaseStairComponent>())
+    {
+        m_pCurrentStair = stair;
+        m_pCurrentTalk = nullptr;
+        m_pCurrentTake = nullptr;
+        return;
+    }
+
+    if (auto* talk = other->GetComponent<TalkComponent>())
+    {
+        m_pCurrentTalk = talk;
+        m_pCurrentStair = nullptr;
+        m_pCurrentTake = nullptr;
+        return;
+    }
+
+    if (auto* take = other->GetComponent<TakeComponent>())
+    {
+        m_pCurrentTake = take;
+        m_pCurrentStair = nullptr;
+        m_pCurrentTalk = nullptr;
+        return;
+    }
+
+    // None found
+    m_pCurrentStair = nullptr;
+    m_pCurrentTalk = nullptr;
+    m_pCurrentTake = nullptr;
+}
+
+// -------------------------------------------------------------
+// UI: Open/Close
+// -------------------------------------------------------------
+void InteractionComponent::OpenUI()
+{
+    if (m_hudVisible)
+        HideHUD();
+
+    SelectionMenu();
+    m_uiActive = true;
+
+    if (auto* player = m_pOwner->GetComponent<PlayerMovementComponent>())
+        player->SetAnimationPaused(true);
+}
+
+void InteractionComponent::CloseUI()
+{
+    m_interfaceRoot.RemoveFromScreen();
+    m_messageRoot.RemoveFromScreen();
+
+    BlackBoxManager::Get()->m_pInputManager->SwapInputToGame();
+
+    m_uiActive = false;
+    m_messageActive = false;
+    m_messageNode = nullptr;
+
+    if (auto* player = m_pOwner->GetComponent<PlayerMovementComponent>())
+        player->SetAnimationPaused(false);
+}
+
+// -------------------------------------------------------------
+// UI: Selection Menu
+// -------------------------------------------------------------
+void InteractionComponent::SelectionMenu()
+{
+    using namespace BlackBoxEngine;
+    using enum Direction;
+
+    constexpr float kButtonW = 64.f;
+    constexpr float kButtonH = 7.f;
+    constexpr float kYPad = 1.f;
+    constexpr int kButtonCount = 4;
+
+    // Offset menu
+    m_interfaceRoot.GetRoot()->SetOffset(20, 20);
+
+    // Highlighter
+    auto* highlighter = m_interfaceRoot.GetHighlight();
+    highlighter->SetParameters({
+        .mode = InterfaceHighlighter::kModeIcon,
+        .pSpriteFile = "../Assets/UI/Icons/IconSpriteFile.xml",
+        .iconOffset{-5, -2},
+        .iconSize{4, 7}
+        });
+
+    // Background box
+    BB_FRectangle bgRect{ -5, -5, kButtonW, (kButtonH + kYPad) * kButtonCount + 10 };
+    InterfaceTexture::TextureInfo bgInfo{
+        .pTextureFile = "../Assets/UI/SelectionBox.png",
+        .spriteDimensions = {16, 16},
+        .useFullImage = true
+    };
+    m_interfaceRoot.AddNode<InterfaceTexture>("UI_Background", bgRect, bgInfo);
+
+    // Button setup
+    InterfaceButton::ButtonParams btnParams{
+        .usable = true,
+        .color = ColorValue(0, 0, 0, 0),
+        .targetedColor = ColorValue(0, 0, 0, 0),
+        .interactColor = ColorValue(0, 0, 0, 0)
+    };
+
+    const char* actions[kButtonCount] = { "talk", "stair", "take", "item" };
+    InterfaceNode* nodes[kButtonCount] = {};
+
+    BB_FRectangle rect{ 0, 0, kButtonW, kButtonH };
+
+    for (int i = 0; i < kButtonCount; ++i)
+    {
+        rect.y = i * (kButtonH + kYPad);
+        btnParams.callbackFunction = [this, i, actions]() { OnButtonPressed(actions[i]); };
+
+        auto* btn = m_interfaceRoot.AddNode<InterfaceButton>(
+            ("button_" + std::to_string(i)).c_str(), rect, btnParams
+        );
+        nodes[i] = btn;
+
+        if (i > 0)
+        {
+            btn->SetAdjacentNode(kUp, nodes[i - 1]);
+            nodes[i - 1]->SetAdjacentNode(kDown, btn);
+        }
+    }
+
+    // Wrap navigation
+    nodes[0]->SetAdjacentNode(kUp, nodes[kButtonCount - 1]);
+    nodes[kButtonCount - 1]->SetAdjacentNode(kDown, nodes[0]);
+
+    // Add text labels
+    InterfaceText::Paremeters textParams{
+        .pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf",
+        .textSize = 16,
+        .color = ColorPresets::white
+    };
+
+    const char* labels[kButtonCount] = { "Talk", "Stair", "Take", "Item" };
+    rect.x = rect.y = 0;
+    for (int i = 0; i < kButtonCount; ++i)
+    {
+        textParams.pText = labels[i];
+        nodes[i]->MakeChildNode<InterfaceText>(
+            ("button_text_" + std::to_string(i)).c_str(), rect, textParams
+        );
+    }
+
+    highlighter->SetTarget(nodes[0]);
+    m_interfaceRoot.SetCursorTarget(nodes[0]);
+    m_interfaceRoot.AddToScreen();
+
+    auto* input = BlackBoxManager::Get()->m_pInputManager;
+    input->SwapInputTargetToInterface(&m_interfaceRoot);
+
+    auto* inputTarget = m_interfaceRoot.GetInputTarget();
+    inputTarget->m_keyDown.RegisterListener(KeyCode::kZ, [this]() { CloseUI(); });
+    inputTarget->m_keyDown.RegisterListener(KeyCode::kX, [this]() {
+        if (m_messageActive) DismissActionMessage();
+        else if (!m_uiActive) OpenUI();
+        });
+}
+
+// -------------------------------------------------------------
+// HUD
+// -------------------------------------------------------------
+void InteractionComponent::DisplayHUD()
+{
+    if (m_hudVisible) return;
+
+    m_hudVisible = true;
+
+    constexpr BB_FRectangle bgRect{ 10, 10, 50, 70 };
+    InterfaceTexture::TextureInfo bgInfo{
+        .pTextureFile = "../Assets/UI/StatsInfoBox.png",
+        .spriteDimensions = {16, 16},
+        .useFullImage = true
+    };
+    m_hudRoot.AddNode<InterfaceTexture>("HUD_Background", bgRect, bgInfo);
+
+    InterfaceText::Paremeters textParams{
+        .pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf",
+        .textSize = 16,
+        .color = ColorPresets::white
+    };
+
+    // Header
+    BB_FRectangle headerRect = bgRect;
+    headerRect.h = 15;
+    textParams.pText = "     PLAYER";
+    m_hudRoot.AddNode<InterfaceText>("HUD_Header", headerRect, textParams);
+
+    // Stats
+    BB_FRectangle statsRect = bgRect;
+    statsRect.y += 12;
+    std::string stats =
+        "  LV       " + std::to_string(m_playerLevel) + "\n\n" +
+        "  HP       " + std::to_string(m_playerHP) + "\n\n" +
+        "  MP       " + std::to_string(m_playerMP) + "\n\n" +
+        "  G        " + std::to_string(m_playerGold) + "\n\n" +
+        "  E        " + std::to_string(m_playerEnergy);
+    textParams.pText = stats.c_str();
+    m_hudRoot.AddNode<InterfaceText>("HUD_Stats", statsRect, textParams);
+
+    m_hudRoot.AddToScreen();
+}
+
+void InteractionComponent::HideHUD()
+{
+    if (!m_hudVisible) return;
+    m_hudRoot.RemoveFromScreen();
+    m_hudVisible = false;
+}
+
+// -------------------------------------------------------------
+// Message Box
+// -------------------------------------------------------------
+void InteractionComponent::ShowActionMessage(const std::string& text)
+{
+    if (m_messageActive) return;
+
+    m_messageActive = true;
+
+    constexpr BB_FRectangle bgRect{ 60, 60, 104, 24 };
+    InterfaceTexture::TextureInfo bgInfo{
+        .pTextureFile = "../Assets/UI/BottomTextBox.png",
+        .spriteDimensions = {16, 16},
+        .useFullImage = true
+    };
+    m_messageRoot.AddNode<InterfaceTexture>("ActionMessage_BG", bgRect, bgInfo);
+
+    BB_FRectangle txtRect{ 72.f, 70.f, 100.f, 20.f };
+    InterfaceText::Paremeters params; // create default struct
+
+    params.pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf";
+    params.textSize = 16;
+    params.color = ColorPresets::white;
+    params.pText = text.c_str();
+
+    m_messageNode = m_messageRoot.AddNode<InterfaceText>("ActionMessage_Text", txtRect, params);
+    m_messageRoot.AddToScreen();
+}
+
+void InteractionComponent::DismissActionMessage()
+{
+    if (!m_messageActive) return;
+    m_messageRoot.RemoveFromScreen();
+    m_messageNode = nullptr;
+    m_messageActive = false;
+}
+
+// -------------------------------------------------------------
+// Action Handling
+// -------------------------------------------------------------
+void InteractionComponent::OnButtonPressed(const std::string& action)
+{
+    static const std::unordered_map<std::string, void(InteractionComponent::*)()> kActionMap = {
+        {"talk", &InteractionComponent::HandleTalk},
+        {"stair", &InteractionComponent::HandleStair},
+        {"take", &InteractionComponent::HandleTake},
+    };
+
+    auto it = kActionMap.find(action);
+    if (it != kActionMap.end())
+        (this->*(it->second))();
+    else
+        ShowActionMessage("Unknown action.");
+}
+
+void InteractionComponent::HandleTalk()
+{
+    if (m_pCurrentTalk)
+    {
+        //CloseUI();
+        //m_didMove = true;
+        ShowActionMessage("Trading with Inn.");
+    }
+    else
+        ShowActionMessage("There is no one there.");
+}
+
+void InteractionComponent::HandleStair()
+{
+    if (m_pCurrentStair)
+    {
+        CloseUI();
+        m_didMove = true;
+        m_pCurrentStair->OnStairUsed(m_playerActor);
+    }
+    else
+        ShowActionMessage("Thou canst not go down.");
+}
+
+void InteractionComponent::HandleTake()
+{
+    if (m_pCurrentTake)
+    {
+        //CloseUI();
+        //m_didMove = true;
+        ShowActionMessage("You found a key.");
+    }
+    else
+        ShowActionMessage("There is nothing to take here.");
+}
+
+// -------------------------------------------------------------
+// Level Transition
+// -------------------------------------------------------------
 void InteractionComponent::OnLevelTransitionStart()
 {
     m_isChangingLevel = true;
-
-    if (m_hudVisible)
-        HideHUD();
+    if (m_hudVisible) HideHUD();
 
     if (m_delayedDisplayId != 0)
     {
@@ -198,315 +398,11 @@ void InteractionComponent::OnLevelTransitionStart()
     }
 }
 
-// Call this after the new level is loaded
 void InteractionComponent::OnLevelTransitionEnd()
 {
     m_isChangingLevel = false;
 }
 
-void InteractionComponent::Render()
-{
-}
-
-void InteractionComponent::OnCollide([[maybe_unused]]BlackBoxEngine::Actor* pOtherActor)
-{
-    if (!pOtherActor)
-        return;
-
-    // Try to detect a stair
-    if (auto* stair = pOtherActor->GetComponent<BaseStairComponent>())
-    {
-        m_pCurrentStair = stair;
-        m_pCurrentTalk = nullptr;
-        m_pCurrentTake = nullptr;
-        BB_LOG(LogType::kMessage, "Player collided with a BaseStairComponent to level: %s",
-            stair->GetTransitionData().targetLevelPath.c_str());
-        return;
-    }
-
-    // Try to detect a talkable actor
-    if (auto* talk = pOtherActor->GetComponent<TalkComponent>())
-    {
-        m_pCurrentTalk = talk;
-        m_pCurrentStair = nullptr;
-        m_pCurrentTake = nullptr;
-        BB_LOG(LogType::kMessage, "Player is near a talkable actor.");
-        return;
-    }
-
-    // Try to detect a takeable actor
-    if (auto* take = pOtherActor->GetComponent<TakeComponent>())
-    {
-        m_pCurrentTake = take;
-        m_pCurrentStair = nullptr;
-        m_pCurrentTalk = nullptr;
-        BB_LOG(LogType::kMessage, "Player is near a takeable object.");
-        return;
-    }
-
-    // Reset if no interaction components found
-    m_pCurrentStair = nullptr;
-    m_pCurrentTalk = nullptr;
-    m_pCurrentTake = nullptr;
-}
-
-void InteractionComponent::Save([[maybe_unused]] BlackBoxEngine::XMLElementParser parser)
-{
-}
-
-void InteractionComponent::Load([[maybe_unused]] const BlackBoxEngine::XMLElementParser parser)
-{
-}
-
-void InteractionComponent::OnButtonPressed(const std::string& action)
-{
-    if (action == "stair")
-    {
-        if (m_pCurrentStair)
-        {
-            CloseUI();
-           // HideHUD();
-            //SetOwnerPosition(m_currentStair->GetTargetPosition());
-            m_didMove = true;
-            m_pCurrentStair->OnStairUsed(m_playerActor);
-            return;
-        }
-        else
-            ShowActionMessage("Thou canst not go down."); //need to check actual text 
-    }
-
-    if (action == "talk")
-    {
-        if (m_pCurrentTalk)
-        {
-           // CloseUI();
-           // HideHUD();
-            //SetOwnerPosition(m_currentStair->GetTargetPosition());
-            m_didMove = true;
-            //m_pCurrentTalk->OnTalkUsed(m_playerActor);
-
-            ShowActionMessage("Trading with Inn.");
-
-            return;
-        }
-        else
-            ShowActionMessage("There is no one there."); //need to check actual text 
-    }
-
-    if (action == "take")
-    {
-        if (m_pCurrentTake)
-        {
-            //CloseUI();
-           // HideHUD();
-            //SetOwnerPosition(m_currentStair->GetTargetPosition());
-            m_didMove = true;
-            //m_pCurrentTake->OnTakeUsed(m_playerActor);
-            ShowActionMessage("You found a key.");
-            return;
-        }
-        else
-            ShowActionMessage("There is nothing to take here."); //need to check actual text 
-    }
-
-    m_didMove = false;
-    //ShowActionMessage("Cannot perform this action here.");
-}
-
-void InteractionComponent::DisplayHUD()
-{
-    if (m_hudVisible)
-        return;
-
-    m_hudVisible = true;
-
-    BB_FRectangle rect{};
-    rect.w = 50;
-    rect.h = 70;
-    rect.x = 10;
-    rect.y = 10;
-
-    // --- Add background texture ---
-    InterfaceTexture::TextureInfo bgTextureInfo{
-        .pTextureFile = "../Assets/UI/StatsInfoBox.png",
-        .spriteDimensions = {16, 16},  // full size of your texture
-        .useFullImage = true,
-        .animate = false
-    };
-
-    m_hudRoot.AddNode<InterfaceTexture>("HUD_Background", rect, bgTextureInfo);
-
-    // --- Add header text ---
-    InterfaceText::Paremeters headerParams;
-    headerParams.pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf";
-    headerParams.textSize = 14;
-    headerParams.color = ColorPresets::white;
-    headerParams.pText = "     PLAYER";
-
-    BB_FRectangle headerRect = rect;
-    headerRect.h = 15;
-    //headerRect.y += 2; // small top padding
-    m_hudRoot.AddNode<InterfaceText>("HUD_Header", headerRect, headerParams);
-
-    // --- Add stats text ---
-    BB_FRectangle statsRect = rect;
-    statsRect.y += 12;
-    
-    std::string hudText =
-        "  LV       " + std::to_string(m_playerLevel) + "\n\n" +
-        "  HP       " + std::to_string(m_playerHP) + "\n\n" +
-        "  MP       " + std::to_string(m_playerMP) + "\n\n" +
-        "  G        " + std::to_string(m_playerGold) + "\n\n" +
-        "  E        " + std::to_string(m_playerEnergy);
-    
-    InterfaceText::Paremeters statsParams;
-    statsParams.pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf";
-    statsParams.textSize = 16;
-    statsParams.color = ColorPresets::white;
-    statsParams.pText = hudText.c_str(); 
-
-    m_hudRoot.AddNode<InterfaceText>("HUD_Stats", statsRect, statsParams);
-    // --- Show HUD ---
-    m_hudRoot.AddToScreen();
-}
-
-
-
-void InteractionComponent::SelectionMenu()
-{
-   using enum Direction;
-   using namespace BlackBoxEngine;
-
-   // Offset the whole UI root
-   m_interfaceRoot.GetRoot()->SetOffset(20, 20);
-  //UserInterface::InterfaceKeys keys{
-  //
-  //    .m_select = KeyCode::kX
-  //};
-  //
-  //m_interfaceRoot.SetInterfaceKeys(keys);
-   // --- Highlighter setup ---
-   auto* pHighlighter = m_interfaceRoot.GetHighlight();
-   pHighlighter->SetParameters({
-       .mode = InterfaceHighlighter::kModeIcon,
-       .pSpriteFile = "../Assets/UI/Icons/IconSpriteFile.xml",
-       .iconOffset{-5, -2},
-       .iconSize{4, 7}
-       });
-
-   // --- Button dimensions ---
-   BB_FRectangle buttonDimension{ 0, 0, 64, 7 };
-   float yPad = 1;
-   const size_t buttonCount = 4;
-
-   // --- Background behind buttons ---
-   BB_FRectangle bgRect;
-   bgRect.x = buttonDimension.x - 5; // padding
-   bgRect.y = buttonDimension.y - 5;
-   bgRect.w = buttonDimension.w;
-   bgRect.h = (buttonDimension.h + yPad) * buttonCount + 10;
-
-   InterfaceTexture::TextureInfo bgTextureInfo{
-       .pTextureFile = "../Assets/UI/SelectionBox.png",
-       .spriteDimensions = {16, 16},
-       .useFullImage = true,
-       .animate = false
-   };
-
-   m_interfaceRoot.AddNode<InterfaceTexture>("UI_Background", bgRect, bgTextureInfo);
-
-   // --- Buttons setup ---
-   InterfaceButton::ButtonParams buttonParams{
-       .usable = true,
-       .color = ColorValue(0, 0, 0, 0),
-       .targetedColor = ColorValue(0, 0, 0, 0),
-       .interactColor = ColorValue(0, 0, 0, 0)
-   };
-
-   const char* actions[] = { "talk", "stair", "take", "item" };
-   InterfaceNode* m_nodes[buttonCount] = {};
-
-   for (size_t i = 0; i < buttonCount; ++i)
-   {
-       buttonDimension.y = i * (buttonDimension.h + yPad);
-
-       buttonParams.callbackFunction = [this, i]() {
-           const char* actions[] = { "talk", "stair", "take", "item" };
-           OnButtonPressed(actions[i]);
-           };
-
-       std::string name = "button_" + std::to_string(i);
-       auto* pButton = m_interfaceRoot.AddNode<InterfaceButton>(name.c_str(), buttonDimension, buttonParams);
-       m_nodes[i] = pButton;
-
-       if (i > 0)
-       {
-           pButton->SetAdjacentNode(kUp, m_nodes[i - 1]);
-           m_nodes[i - 1]->SetAdjacentNode(kDown, pButton);
-       }
-   }
-
-   // Wrap navigation
-   m_nodes[0]->SetAdjacentNode(kUp, m_nodes[buttonCount - 1]);
-   m_nodes[buttonCount - 1]->SetAdjacentNode(kDown, m_nodes[0]);
-
-   buttonDimension.y = 0;
-   buttonDimension.x = 0;
-
-   InterfaceText::Paremeters textParams{
-       .pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf",
-       .textSize = 16,
-       .color = ColorPresets::white
-   };
-   
-   textParams.pText = "Talk";
-   m_nodes[0]->MakeChildNode<InterfaceText>("FirstButton Text", buttonDimension, textParams);
-   
-   textParams.pText = "Stair";
-   m_nodes[1]->MakeChildNode<InterfaceText>("SecondButton Text", buttonDimension, textParams);
-   
-   textParams.pText = "Take";
-   m_nodes[2]->MakeChildNode<InterfaceText>("ThirdButton Text", buttonDimension, textParams);
-   
-   textParams.pText = "Item";
-   m_nodes[3]->MakeChildNode<InterfaceText>("FourthButton Text", buttonDimension, textParams);
-   
-
-   // --- Set highlighter target ---
-   pHighlighter->SetTarget(m_nodes[0]);
-   m_interfaceRoot.SetCursorTarget(m_nodes[0]);
-
-   // --- Add everything to screen ---
-   m_interfaceRoot.AddToScreen();
-
-   auto* pInput = BlackBoxManager::Get()->m_pInputManager;
-   pInput->SwapInputTargetToInterface(&m_interfaceRoot);
-
-   auto* pInterfaceTarget = m_interfaceRoot.GetInputTarget();
-   pInterfaceTarget->m_keyDown.RegisterListener(KeyCode::kZ, [this]() { CloseUI(); });
-   //pInterfaceTarget->m_keyDown.RegisterListener(KeyCode::kEscape, [this]() { CloseUI(); });
-   pInterfaceTarget->m_keyDown.RegisterListener(KeyCode::kX, [this]() {
-       if (m_messageActive)
-           DismissActionMessage();
-       else if (!m_uiActive)
-           OpenUI();
-       });
-
-   m_uiActive = true;
-}
-
-
-void InteractionComponent::HideHUD()
-{
-    if (!m_hudVisible)
-        return;
-
-    BB_LOG(LogType::kMessage, "Hiding HUD: Removing from screen...");
-    m_hudRoot.RemoveFromScreen();
-    BB_LOG(LogType::kMessage, "HUD removed from screen.");
-
-    //m_hudTextNode = nullptr;
-    m_hudVisible = false;
-
-}
-
+void InteractionComponent::Render() {}
+void InteractionComponent::Save(BlackBoxEngine::XMLElementParser) {}
+void InteractionComponent::Load(const BlackBoxEngine::XMLElementParser) {}
