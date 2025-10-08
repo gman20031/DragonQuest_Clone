@@ -13,18 +13,22 @@ public:
 
     void Start() override;
     void Update() override;
-    void Render() override;
-    void OnCollide(BlackBoxEngine::Actor* pOtherActor) override;
-    void Load(const BlackBoxEngine::XMLElementParser parser) override;
-    void Save(BlackBoxEngine::XMLElementParser parser) override;
+    void Render() override {}
+    void OnCollide([[maybe_unused]]BlackBoxEngine::Actor* pOtherActor) override {}
+    void Load([[maybe_unused]] const BlackBoxEngine::XMLElementParser parser) override;
+    void Save([[maybe_unused]] BlackBoxEngine::XMLElementParser parser) override;
 
     // Enemy properties
+
     const std::string& GetName() const { return m_name; }
     int GetHP() const { return m_hp; }
     int GetAttack() const { return m_attack; }
     int GetDefense() const { return m_defense; }
     int GetXP() const { return m_xpReward; }
     int GetGold() const { return m_goldReward; }
+    const std::string& GetSpritePath() const { return m_spriteFile; }
+
+    void SetActiveInBattle(bool active) { m_inBattle = active; }
 
 private:
 
@@ -40,5 +44,9 @@ private:
 
     std::string m_spriteFile;
     float m_patrolRadius = 0.0f;
+
+    bool m_inBattle = false;
+
+
 };
 

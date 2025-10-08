@@ -1,3 +1,7 @@
 <Actor Name="SlimeEncounter">
-	<Component Name="EncounterComponent"/>
+	 <Component Name="EncounterComponent">
+        <Enemies>
+            <EnemyXML>../Assets/Actors/Enemies/SlimeEnemy.xml</EnemyXML>
+        </Enemies>
+    </Component>
 </Actor>

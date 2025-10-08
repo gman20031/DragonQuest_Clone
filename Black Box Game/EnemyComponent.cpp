@@ -16,6 +16,7 @@ void EnemyComponent::Update()
 
 }
 
+//to change depending on the enemy
 void EnemyComponent::Load(const XMLElementParser parser)
 {
     parser.GetChildVariable("Name", &m_name);
@@ -25,7 +26,7 @@ void EnemyComponent::Load(const XMLElementParser parser)
     parser.GetChildVariable("XPReward", &m_xpReward);
     parser.GetChildVariable("GoldReward", &m_goldReward);
     parser.GetChildVariable("SpriteFile", &m_spriteFile);
-    parser.GetChildVariable("PatrolRadius", &m_patrolRadius);
+    //parser.GetChildVariable("PatrolRadius", &m_patrolRadius);
 }
 
 void EnemyComponent::Save(XMLElementParser parser)
@@ -37,5 +38,5 @@ void EnemyComponent::Save(XMLElementParser parser)
     parser.NewChildVariable("XPReward", m_xpReward);
     parser.NewChildVariable("GoldReward", m_goldReward);
     parser.NewChildVariable("SpriteFile", m_spriteFile);
-    parser.NewChildVariable("PatrolRadius", m_patrolRadius);
+    //parser.NewChildVariable("PatrolRadius", m_patrolRadius);
 }

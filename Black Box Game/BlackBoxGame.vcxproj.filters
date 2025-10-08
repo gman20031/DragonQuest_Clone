@@ -16,6 +16,7 @@
     <ClCompile Include="TakeComponent.cpp" />
     <ClCompile Include="TileSystem\EncounterHandler.cpp" />
     <ClCompile Include="EnemyComponent.cpp" />
+    <ClCompile Include="TileSystem\EncounterComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BlackBoxGame.h" />
