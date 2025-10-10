@@ -8,25 +8,6 @@
 
 using namespace BlackBoxEngine;
 
-struct EnemyData
-{
-    std::string name;
-    int hp;
-    int attack;
-    int defense;
-    int xp;
-    int gold;
-    std::string sprite;
-};
-
-static const std::unordered_map<EnemyType, EnemyData> s_enemyDatabase = {
-    { EnemyType::Slime,     { "Slime",     3,  5, 0, 1, 1, "sprites/enemies/slime.png" } },
-    { EnemyType::RedSlime,  { "Red Slime", 4,  7, 1, 1, 2, "sprites/enemies/red_slime.png" } },
-    { EnemyType::Drakee,    { "Drakee",    6,  9, 2, 2, 2, "sprites/enemies/drakee.png" } },
-    { EnemyType::Ghost,     { "Ghost",     7, 11, 3, 3, 3, "sprites/enemies/ghost.png" } },
-    { EnemyType::Magician,  { "Magician", 13, 11, 4, 9, 11, "sprites/enemies/magician.png" } }
-};
-
 void EncounterComponent::Start()
 {
     BB_LOG(LogType::kMessage, "Enemy '%s' spawned with HP=%d", m_name.c_str(), m_hp);
@@ -93,20 +74,3 @@ void EncounterComponent::Save(XMLElementParser parser)
     //parser.NewChildVariable("PatrolRadius", m_patrolRadius);
 }
 
-void EncounterComponent::Init(EnemyType type)
-{
-    m_type = type;
-
-    auto it = s_enemyDatabase.find(type);
-    if (it != s_enemyDatabase.end())
-    {
-        const auto& data = it->second;
-        m_name = data.name;
-        m_hp = data.hp;
-        m_attack = data.attack;
-        m_defense = data.defense;
-        m_xpReward = data.xp;
-        m_goldReward = data.gold;
-        m_spriteFile = data.sprite;
-    }
-}
