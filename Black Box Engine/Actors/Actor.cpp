@@ -40,7 +40,10 @@ namespace BlackBoxEngine
         Component* pComponent = AddComponent( StringHash(componentParser.GetFirstAttribute() ) );
 
         if (!pComponent)
-            BB_LOG(LogType::kError, "Component creation failed, ", componentParser.GetFirstAttribute());
+        {
+            BB_LOG( LogType::kError, "Component creation failed, ", componentParser.GetFirstAttribute() );
+            return false;
+        }
         
         pComponent->Load(componentParser);
         return true;

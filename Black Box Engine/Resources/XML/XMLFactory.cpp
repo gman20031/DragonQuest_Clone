@@ -14,10 +14,10 @@ namespace BlackBoxEngine
         pDocument->LoadFile(pFilePath);
         if (pDocument->Error())
             BB_LOG(LogType::kError, "Error with document load : ", pDocument->ErrorName());
-        auto emplacePair = m_XMLDocMap.emplace(hash, pDocument);
+        auto emplacePair = m_XMLDocMap.try_emplace(hash, pDocument);
 
         // log errors
-        if (!emplacePair.second || !pDocument)
+        if (!pDocument)
             BB_LOG(LogType::kError, "Error importing xmlFile : \"", pFilePath, '\"');
         else
             BB_LOG(LogType::kMessage, pFilePath, " imported properly");
@@ -43,12 +43,12 @@ namespace BlackBoxEngine
     {
         HashType hash = StringHash(pFilePath);
 
-        // find if already in cache
-        auto it = m_XMLDocMap.find(hash);
-        if (it != m_XMLDocMap.end())
-        {
-            return ActorXMLParser(it->second);
-        }
+        //// find if already in cache
+        //auto it = m_XMLDocMap.find(hash);
+        //if (it != m_XMLDocMap.end())
+        //{
+        //    return ActorXMLParser(it->second);
+        //}
 
         return ActorXMLParser(CreateNewXMLFile(hash, pFilePath));
     }
@@ -57,12 +57,12 @@ namespace BlackBoxEngine
     {
         HashType hash = StringHash(pFilePath);
 
-        // find if already in cache
-        auto it = m_XMLDocMap.find(hash);
-        if (it != m_XMLDocMap.end())
-        {
-            return XMLElementParser(it->second->RootElement());
-        }
+        //// find if already in cache
+        //auto it = m_XMLDocMap.find(hash);
+        //if (it != m_XMLDocMap.end())
+        //{
+        //    return XMLElementParser(it->second->RootElement());
+        //}
 
         auto* pDoc = CreateNewXMLFile(hash, pFilePath);
         return XMLElementParser(pDoc->RootElement());
