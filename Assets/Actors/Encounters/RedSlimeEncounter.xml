@@ -1,7 +1,0 @@
-<Actor Name="RedSlimeEncounter">
-	 <Component Name="EncounterComponent">
-        <Enemies>
-            <EnemyXML>../Assets/Actors/Enemies/RedSlimeEnemy.xml</EnemyXML>
-        </Enemies>
-    </Component>
-</Actor>

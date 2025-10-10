@@ -1,7 +1,0 @@
-<Actor Name="GhostEncounter">
-	 <Component Name="EncounterComponent">
-        <Enemies>
-            <EnemyXML>../Assets/Actors/Enemies/GhostEnemy.xml</EnemyXML>
-        </Enemies>
-    </Component>
-</Actor>

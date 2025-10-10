@@ -11,7 +11,6 @@
 #include "StairComponent.h"
 #include "TalkComponent.h"
 #include "TakeComponent.h"
-#include "EnemyComponent.h"
 
 using namespace BlackBoxEngine;
 
@@ -23,14 +22,9 @@ static std::tuple
     ComponentFactory::Registrar<TileMapComponent>,
     ComponentFactory::Registrar<PlayerMovementComponent>,
     ComponentFactory::Registrar<InteractionComponent>,
-    //ComponentFactory::Registrar<CaveEntranceComponent>,
-    //ComponentFactory::Registrar<StairDownComponent>,
-    //ComponentFactory::Registrar<StairUpLevel1Component>,
-    //ComponentFactory::Registrar<StairUpLevel2Component>,
     ComponentFactory::Registrar<TalkComponent>,
     ComponentFactory::Registrar<TakeComponent>,
     ComponentFactory::Registrar<EncounterComponent>,
-    ComponentFactory::Registrar<BaseStairComponent>,
-    ComponentFactory::Registrar<EnemyComponent>
+    ComponentFactory::Registrar<BaseStairComponent>
 
 > GameComponentRegistrar;
