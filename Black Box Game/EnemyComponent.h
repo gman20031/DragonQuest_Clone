@@ -3,9 +3,21 @@
 
 class BlackBoxGame;
 
+enum class EnemyType
+{
+    Slime,
+    RedSlime,
+    Drakee,
+    Ghost,
+    Magician,
+    Unknown
+};
+
 class EnemyComponent : public BlackBoxEngine::Component
 {
     GENERATE_ID("EnemyComponent");
+
+    EnemyType m_type = EnemyType::Unknown;
 
 public:
     EnemyComponent(BlackBoxEngine::Actor* pOwner) : Component(pOwner) {}
@@ -19,6 +31,7 @@ public:
     void Save([[maybe_unused]] BlackBoxEngine::XMLElementParser parser) override;
 
     // Enemy properties
+    void Init(EnemyType type);
 
     const std::string& GetName() const { return m_name; }
     int GetHP() const { return m_hp; }

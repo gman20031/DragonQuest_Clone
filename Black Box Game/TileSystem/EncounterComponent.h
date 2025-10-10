@@ -14,5 +14,5 @@ public:
 
 
     void StartEncounter();
-    void  BuildCombatUI();
+    //void  BuildCombatUI();
 };

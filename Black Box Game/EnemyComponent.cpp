@@ -4,6 +4,24 @@
 #include "BlackBoxGame.h"
 
 using namespace BlackBoxEngine;
+struct EnemyData
+{
+    std::string name;
+    int hp;
+    int attack;
+    int defense;
+    int xp;
+    int gold;
+    std::string sprite;
+};
+
+static const std::unordered_map<EnemyType, EnemyData> s_enemyDatabase = {
+    { EnemyType::Slime,     { "Slime",     3,  5, 0, 1, 1, "sprites/enemies/slime.png" } },
+    { EnemyType::RedSlime,  { "Red Slime", 4,  7, 1, 1, 2, "sprites/enemies/red_slime.png" } },
+    { EnemyType::Drakee,    { "Drakee",    6,  9, 2, 2, 2, "sprites/enemies/drakee.png" } },
+    { EnemyType::Ghost,     { "Ghost",     7, 11, 3, 3, 3, "sprites/enemies/ghost.png" } },
+    { EnemyType::Magician,  { "Magician", 13, 11, 4, 9, 11, "sprites/enemies/magician.png" } }
+};
 
 void EnemyComponent::Start()
 {
@@ -12,7 +30,27 @@ void EnemyComponent::Start()
 
 void EnemyComponent::Update()
 {
-    // behavior
+    //i need to define there behavior
+    if (!m_inBattle) return;
+
+    if (m_name == "Slime")
+    {
+        // simple attack behavior
+        //AttackTarget();
+    }
+    else if (m_name == "Magician")
+    {
+        // maybe 50% chance to cast "Hurt" spell
+        //if (RandomFloat() < 0.5f)
+        //    CastSpell("Hurt");
+        //else
+        //    AttackTarget();
+    }
+    else
+    {
+        // default behavior
+        //AttackTarget();
+    }
 
 }
 
@@ -39,4 +77,22 @@ void EnemyComponent::Save(XMLElementParser parser)
     parser.NewChildVariable("GoldReward", m_goldReward);
     parser.NewChildVariable("SpriteFile", m_spriteFile);
     //parser.NewChildVariable("PatrolRadius", m_patrolRadius);
+}
+
+void EnemyComponent::Init(EnemyType type)
+{
+    m_type = type;
+
+    auto it = s_enemyDatabase.find(type);
+    if (it != s_enemyDatabase.end())
+    {
+        const auto& data = it->second;
+        m_name = data.name;
+        m_hp = data.hp;
+        m_attack = data.attack;
+        m_defense = data.defense;
+        m_xpReward = data.xp;
+        m_goldReward = data.gold;
+        m_spriteFile = data.sprite;
+    }
 }

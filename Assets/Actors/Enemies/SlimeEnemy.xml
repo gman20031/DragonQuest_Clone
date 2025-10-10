@@ -1,0 +1,12 @@
+<Actor Name="SlimeEnemy">
+    <Component Name="EnemyComponent">
+        <Name>Slime</Name>
+        <HP>3</HP>
+        <Attack>5</Attack>
+        <Defense>0</Defense>
+        <XPReward>1</XPReward>
+        <GoldReward>1</GoldReward>
+        <SpriteFile>sprites/enemies/slime.png</SpriteFile>
+         <!-- <Behavior>Attack</Behavior> -->
+    </Component>
+</Actor>

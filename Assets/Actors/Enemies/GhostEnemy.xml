@@ -1,0 +1,12 @@
+<Actor Name="GhostEnemy">
+    <Component Name="EnemyComponent">
+            <Name>Ghost</Name>
+            <HP>7</HP>
+            <Attack>11</Attack>
+            <Defense>3</Defense>
+            <XPReward>3</XPReward>
+            <GoldReward>3</GoldReward>
+            <!-- <SpriteFile>sprites/enemies/ghost.png</SpriteFile> -->
+            <!-- <Behavior>Attack</Behavior> -->
+    </Components>
+</Actor>
