@@ -4,6 +4,7 @@
 #include "../Black Box Engine/Actors/Collision/CollisionManager.h"
 #include "../Black Box Engine/Actors/EngineComponents/MovementBlocker.h"
 #include "TileSystem/TileInfoComponent.h"
+#include "TileSystem/EncounterComponent.h"
 
 using namespace BlackBoxEngine;
 
@@ -92,6 +93,10 @@ void PlayerMovementComponent::Start()
     }));
 }
 
+void PlayerMovementComponent::SetInteractionComponent(InteractionComponent* interaction)
+{
+    m_pInteraction = interaction;
+}
 
 void PlayerMovementComponent::Update()
 {
@@ -145,6 +150,10 @@ void PlayerMovementComponent::TryMove(const FVector2& direction)
 {
     if (m_isMoving)
         return; // Already moving; ignore input
+
+    // Block movement if combat UI is active
+    //if (m_pInteraction && m_pInteraction->IsCombatActive())
+    //    return;
 
     m_stopMoving = false;
     m_direction = direction;
@@ -202,7 +211,17 @@ void PlayerMovementComponent::CheckForEncounters()
     bool encounter = pInfo->CheckEncounter();
     if ( !encounter )
         return;
-    m_pTileMap->GetEncounterAtGame( m_targetPosition );
+    auto& pActor = m_pTileMap->GetEncounterAtGame( m_targetPosition );
+
+    if (!pActor) return;
+
+    // Get the EncounterComponent from the actor
+    auto* pEncounter = pActor->GetComponent<EncounterComponent>();
+    if (!pEncounter) return;
+
+    // Start the encounter
+    pEncounter->StartEncounter(m_pOwner);
+
 }
 
 void PlayerMovementComponent::SetTargetTile()

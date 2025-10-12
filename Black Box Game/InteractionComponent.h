@@ -27,6 +27,7 @@ class InteractionComponent : public BlackBoxEngine::Component
     BlackBoxEngine::UserInterface m_interfaceRoot;
     BlackBoxEngine::UserInterface m_messageRoot;
     BlackBoxEngine::UserInterface m_hudRoot;
+    BlackBoxEngine::UserInterface m_combatRoot;
 
     // --- Message Box ---
     BlackBoxEngine::InterfaceText* m_messageNode = nullptr;
@@ -48,6 +49,8 @@ class InteractionComponent : public BlackBoxEngine::Component
     bool m_uiActive = false;
     bool m_didMove = false;
     bool m_isChangingLevel = false;
+
+    bool m_isCombatActive = false;
 
     uint64_t m_delayedDisplayId = 0;
     std::vector<uint64_t> m_keyDownCodes;
@@ -87,6 +90,11 @@ public:
     void SetCurrentTake(TakeComponent* take) { m_pCurrentTake = take; }
 
     void HideHUD();
+
+    void StartCombatUI(const std::string& enemyName, const std::string& spriteFile);
+    void EndCombatUI();
+    void OnCombatButtonPressed(const std::string& action);
+    bool IsCombatActive() const { return m_isCombatActive; }
 
 private:
     // --- UI helpers ---
