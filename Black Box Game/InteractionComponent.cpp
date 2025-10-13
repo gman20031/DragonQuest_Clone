@@ -431,7 +431,18 @@ void InteractionComponent::StartCombatUI(const std::string& enemyName, const std
     // --- Add to screen ---
     m_combatRoot.AddToScreen();
     BlackBoxManager::Get()->m_pInputManager->SwapInputTargetToInterface(&m_combatRoot);
-   
+
+    //temp for the demo
+    //auto* inputTarget = m_combatRoot.GetInputTarget();
+    //inputTarget->m_keyDown.RegisterListener(KeyCode::kX, [this]() {
+    //    EndCombatUI();
+    //    if (auto* playerMove = m_pOwner->GetComponent<PlayerMovementComponent>()) {
+    //        playerMove->SetAnimationPaused(false);
+    //        playerMove->m_stopMoving = false;
+    //
+    //        BlackBoxManager::Get()->m_pInputManager->SwapInputToGame();
+    //    }
+    //    });
 }
 
 void InteractionComponent::EndCombatUI()
@@ -467,6 +478,8 @@ void InteractionComponent::OnCombatButtonPressed(const std::string& action)
             playerMove->SetAnimationPaused(false);  // resume animations
             playerMove->m_stopMoving = false;       // allow movement
         }
+
+        BlackBoxManager::Get()->m_pInputManager->SwapInputToGame();
     }
 }
 
