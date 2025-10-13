@@ -27,7 +27,7 @@
     <Component type="BaseStairComponent">
         <TargetLevel>../Assets/Levels/ExampleLevel.xml</TargetLevel>
         <SpawnX>576</SpawnX>
-        <SpawnY>320</SpawnY>
+        <SpawnY>336</SpawnY>
         <Fade>1.0</Fade>
         <AutoUse>false</AutoUse>
     </Component>
