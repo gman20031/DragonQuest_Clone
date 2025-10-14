@@ -16,6 +16,7 @@
     <ClCompile Include="TakeComponent.cpp" />
     <ClCompile Include="TileSystem\EncounterHandler.cpp" />
     <ClCompile Include="TileSystem\EncounterComponent.cpp" />
+    <ClCompile Include="PlayerStatsComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BlackBoxGame.h" />
@@ -31,5 +32,6 @@
     <ClInclude Include="TakeComponent.h" />
     <ClInclude Include="TileSystem\EncounterHandler.h" />
     <ClInclude Include="TileSystem\EncounterComponent.h" />
+    <ClInclude Include="PlayerStatsComponent.h" />
   </ItemGroup>
 </Project>

@@ -190,6 +190,7 @@ copy "$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\lib\x64\SDL3_ttf.dll" 
     <ClCompile Include="InteractionComponent.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PlayerMovementComponent.cpp" />
+    <ClCompile Include="PlayerStatsComponent.cpp" />
     <ClCompile Include="ScreenCentered.cpp" />
     <ClCompile Include="StairComponent.cpp" />
     <ClCompile Include="TakeComponent.cpp" />
@@ -205,6 +206,7 @@ copy "$(solutiondir)Black Box Engine\libraries\SDL3-3.2.4\lib\x64\SDL3_ttf.dll" 
     <ClInclude Include="ExampleComponent.h" />
     <ClInclude Include="InteractionComponent.h" />
     <ClInclude Include="PlayerMovementComponent.h" />
+    <ClInclude Include="PlayerStatsComponent.h" />
     <ClInclude Include="ScreenCentered.h" />
     <ClInclude Include="StairComponent.h" />
     <ClInclude Include="TakeComponent.h" />

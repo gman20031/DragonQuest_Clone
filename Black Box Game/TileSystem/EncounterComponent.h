@@ -3,6 +3,11 @@
 #include <Actors/Component.h>
 #include <Actors/Actor.h>
 #include <BlackBoxManager.h>
+#include <Interface/UserInterface.h>
+#include <Interface/InterfaceButton.h>
+#include <Interface/InterfaceText.h>
+#include <Interface/InterfaceTexture.h>
+
 
 enum class EnemyType
 {
@@ -13,6 +18,17 @@ enum class EnemyType
     Magician,
     Unknown
 };
+
+enum class BattleState
+{
+    WaitingForPlayer,
+    PlayerActing,
+    EnemyActing,
+    Victory,
+    Defeat,
+    Flee
+};
+
 class BlackBoxGame;
 
 using namespace BlackBoxEngine;
@@ -27,7 +43,14 @@ class EncounterComponent : public BlackBoxEngine::Component
     BlackBoxEngine::Actor* m_currentEnemy = nullptr;
 
     EnemyType m_type = EnemyType::Unknown;
+    BlackBoxEngine::UserInterface m_combatRoot;
 
+    BlackBoxEngine::Actor* m_pPlayer = nullptr;
+public:
+
+    BattleState m_battleState = BattleState::WaitingForPlayer;
+
+    void SetPlayer(BlackBoxEngine::Actor* pActor) { m_pPlayer = pActor; }
 
 public:
     EncounterComponent( BlackBoxEngine::Actor* pOwner ) : Component( pOwner ) {};
@@ -35,7 +58,6 @@ public:
 
     void StartEncounter(Actor* pOtherActor);
     void EndEncounter();
-    void ShowEnemySprite();
 
     void Start() override;
     void Update() override;
@@ -56,6 +78,20 @@ public:
     const std::string& GetSpritePath() const { return m_spriteFile; }
 
     void SetActiveInBattle(bool active) { m_inBattle = active; }
+    void EnemyTakeTurn();
+
+    void BasicAttack();
+    void CastSpell();
+    void Taunt(const std::string& enemyName);
+    void Dodge();
+    void SwoopAttack();
+
+    void PlayerAttack();
+    void TryToFlee();
+
+    void StartCombatUI();
+    void EndCombatUI();
+    void OnCombatButtonPressed(const std::string& action);
 
 private:
 

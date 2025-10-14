@@ -19,6 +19,7 @@
 
 class BlackBoxGame;
 
+
 class InteractionComponent : public BlackBoxEngine::Component
 {
     GENERATE_ID("InteractionComponent");
@@ -27,7 +28,7 @@ class InteractionComponent : public BlackBoxEngine::Component
     BlackBoxEngine::UserInterface m_interfaceRoot;
     BlackBoxEngine::UserInterface m_messageRoot;
     BlackBoxEngine::UserInterface m_hudRoot;
-    BlackBoxEngine::UserInterface m_combatRoot;
+
 
     // --- Message Box ---
     BlackBoxEngine::InterfaceText* m_messageNode = nullptr;
@@ -91,10 +92,8 @@ public:
 
     void HideHUD();
 
-    void StartCombatUI(const std::string& enemyName, const std::string& spriteFile);
-    void EndCombatUI();
-    void OnCombatButtonPressed(const std::string& action);
     bool IsCombatActive() const { return m_isCombatActive; }
+
 
 private:
     // --- UI helpers ---
