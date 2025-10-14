@@ -1,27 +1,41 @@
 #include "EncounterComponent.h"
 #include <Resources/ResourceManager.h>
-#include <Actors/Actor.h>
-#include <BlackBoxManager.h>
+
 #include "EncounterHandler.h"
 #include "../Black Box Engine/Actors/ActorManager.h"
 #include "../Black Box Engine/BlackBoxManager.h"
+#include "../Black Box Engine/Actors/EngineComponents/SpriteComponent.h"
+#include "../Black Box Game/InteractionComponent.h"
 
 using namespace BlackBoxEngine;
 
 void EncounterComponent::Start()
 {
-    BB_LOG(LogType::kMessage, "Enemy '%s' spawned with HP=%d", m_name.c_str(), m_hp);
+    //BB_LOG(LogType::kMessage, "Enemy '%s' spawned with HP=%d", m_name.c_str(), m_hp);
 }
 
-void EncounterComponent::StartEncounter()
+void EncounterComponent::StartEncounter(Actor* pOtherActor)
 {
 
+    m_inBattle = true;
+    BB_LOG(LogType::kMessage, "Enemy '%s' appeared! HP=%d", m_name.c_str(), m_hp);
 
+    // Display the enemy sprite
+    //ShowEnemySprite();
+    auto* pInteract = pOtherActor->GetComponent<InteractionComponent>();
+    if (pInteract)
+        pInteract->StartCombatUI(m_name, m_spriteFile);
+   
 }
 
 void EncounterComponent::EndEncounter()
 {
    
+}
+
+void EncounterComponent::ShowEnemySprite()
+{
+    
 }
 
 void EncounterComponent::Update()

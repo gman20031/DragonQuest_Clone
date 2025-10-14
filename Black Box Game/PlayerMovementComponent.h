@@ -6,7 +6,7 @@
 #include "TileSystem/TileMapComponent.h"
 #include "../Black Box Engine/Math/FVector2.h" // why are we using "../" here and not <>
 #include "../Black Box Engine/Actors/EngineComponents/SpriteComponent.h"
-
+#include "InteractionComponent.h"
 
 class PlayerMovementComponent : public BlackBoxEngine::Component
 {
@@ -14,6 +14,7 @@ class PlayerMovementComponent : public BlackBoxEngine::Component
 
     BlackBoxEngine::MoverComponent* m_pMover = nullptr;
     BlackBoxEngine::TransformComponent* m_pTransform = nullptr;
+    InteractionComponent* m_pInteraction = nullptr;
 
     int m_tileMapId = 0;
     TileMapComponent* m_pTileMap = nullptr;
@@ -55,6 +56,7 @@ public:
     virtual void Save([[maybe_unused]] BlackBoxEngine::XMLElementParser parser) override; // for when this actor is called to be saved
     virtual void Load([[maybe_unused]] const BlackBoxEngine::XMLElementParser parser) override; // for when this actor is called to be loaded
 
+    void SetInteractionComponent(InteractionComponent* interaction);
     void SetAnimationPaused(bool paused);
 };
 

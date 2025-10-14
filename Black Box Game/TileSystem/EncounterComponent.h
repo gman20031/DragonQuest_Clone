@@ -1,6 +1,8 @@
 #pragma once
 
 #include <Actors/Component.h>
+#include <Actors/Actor.h>
+#include <BlackBoxManager.h>
 
 enum class EnemyType
 {
@@ -11,7 +13,9 @@ enum class EnemyType
     Magician,
     Unknown
 };
+class BlackBoxGame;
 
+using namespace BlackBoxEngine;
 
 class EncounterComponent : public BlackBoxEngine::Component
 {
@@ -29,9 +33,9 @@ public:
     EncounterComponent( BlackBoxEngine::Actor* pOwner ) : Component( pOwner ) {};
     virtual ~EncounterComponent() = default;
 
-    void StartEncounter();
+    void StartEncounter(Actor* pOtherActor);
     void EndEncounter();
-
+    void ShowEnemySprite();
 
     void Start() override;
     void Update() override;
