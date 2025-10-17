@@ -7,7 +7,6 @@
 #include "StairComponent.h"
 #include "TileSystem/EncounterComponent.h"
 
-
 using namespace BlackBoxEngine;
 
 InteractionComponent::~InteractionComponent()
