@@ -1,5 +1,6 @@
 #include "BlackBoxManager.h"
 
+#include <SDL3_mixer/SDL_mixer.h>
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL3_ttf/SDL_ttf.h>
@@ -20,15 +21,15 @@ namespace BlackBoxEngine
     void BlackBoxManager::CheckEngineInitialized()
     {
         if (m_engineOptions & kActorSystem && !m_pActorManager)
-            BB_LOG(LogType::kFailure, "Machine has no actor Manager");
+            BB_LOG(LogType::kFailure, "Engine has no actor Manager");
         if (m_engineOptions & kInput && !m_pInputManager)
-			BB_LOG(LogType::kFailure, "Machine has no input Manager");
+			BB_LOG(LogType::kFailure, "Engine has no input Manager");
 		if (m_engineOptions & kMessaging && !m_pMessagingManager)
-			BB_LOG(LogType::kFailure, "Machine has no message Manager");
+			BB_LOG(LogType::kFailure, "Engine has no message Manager");
 		if (m_engineOptions & kCollision && !m_pCollisionManager)
-            BB_LOG(LogType::kFailure, "Machine has no collision Manager");
+            BB_LOG(LogType::kFailure, "Engine has no collision Manager");
         if (!m_pWindow)
-            BB_LOG(LogType::kFailure, "Machine has no window");
+            BB_LOG(LogType::kFailure, "Engine has no window");
     }
 
 #endif // _DEBUG
