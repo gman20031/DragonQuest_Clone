@@ -271,15 +271,16 @@ void InteractionComponent::DisplayHUD()
     textParams.pText = "     PLAYER";
     m_hudRoot.AddNode<InterfaceText>("HUD_Header", headerRect, textParams);
 
+    auto* playerStats = m_pOwner->GetComponent<PlayerStatsComponent>();
     // Stats
     BB_FRectangle statsRect = bgRect;
     statsRect.y += 12;
     std::string stats =
-        "  LV       " + std::to_string(m_playerLevel) + "\n\n" +
-        "  HP       " + std::to_string(m_playerHP) + "\n\n" +
-        "  MP       " + std::to_string(m_playerMP) + "\n\n" +
-        "  G        " + std::to_string(m_playerGold) + "\n\n" +
-        "  E        " + std::to_string(m_playerEnergy);
+        "  LV       " + std::to_string(playerStats->GetPlayerLevel()) + "\n\n" +
+        "  HP       " + std::to_string(playerStats->GetPlayerHP()) + "\n\n" +
+        "  MP       " + std::to_string(playerStats->GetPlayerMP()) + "\n\n" +
+        "  G        " + std::to_string(playerStats->GetPlayerGold()) + "\n\n" +
+        "  E        " + std::to_string(playerStats->GetPlayerEnergy());
     textParams.pText = stats.c_str();
     m_hudRoot.AddNode<InterfaceText>("HUD_Stats", statsRect, textParams);
 

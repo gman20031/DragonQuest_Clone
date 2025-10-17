@@ -7,6 +7,7 @@
 #include <Interface/InterfaceButton.h>
 #include <Interface/InterfaceText.h>
 #include <Interface/InterfaceTexture.h>
+#include "../Black Box Game/PlayerStatsComponent.h"
 
 
 enum class EnemyType

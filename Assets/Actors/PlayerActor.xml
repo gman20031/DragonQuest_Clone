@@ -52,4 +52,15 @@
         </SpriteInfo>
     </Component>
     <Component Name="InteractionComponent"/>
+    <Component Name="PlayerStatsComponent">
+        <Level>1</Level>
+        <HP>13</HP>
+        <MaxHP>16</MaxHP>
+        <MP>0</MP>
+        <MaxMP>0</MaxMP>
+        <Gold>120</Gold>
+        <Energy>10</Energy>
+        <Strength>3</Strength>
+        <Agility>3</Agility>
+    </Component>
 </Actor>

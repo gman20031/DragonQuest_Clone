@@ -16,6 +16,7 @@
 #include "StairComponent.h"
 #include "TalkComponent.h"
 #include "TakeComponent.h"
+#include "PlayerStatsComponent.h"
 
 class BlackBoxGame;
 
@@ -57,13 +58,13 @@ class InteractionComponent : public BlackBoxEngine::Component
     std::vector<uint64_t> m_keyDownCodes;
 
     // --- Player Stats ---
-    int m_playerLevel = 1;
-    int m_playerHP = 20;
-    int m_playerMaxHP = 20;
-    int m_playerMP = 8;
-    int m_playerMaxMP = 8;
-    int m_playerGold = 120;
-    int m_playerEnergy = 10;
+    //int m_playerLevel = 1;
+    //int m_playerHP = 20;
+    //int m_playerMaxHP = 20;
+    //int m_playerMP = 8;
+    //int m_playerMaxMP = 8;
+    //int m_playerGold = 120;
+    //int m_playerEnergy = 10;
 
 public:
     InteractionComponent(BlackBoxEngine::Actor* pOwner) : Component(pOwner) {}

@@ -96,21 +96,30 @@ void EncounterComponent::EnemyTakeTurn()
 //not sure those should be here -? maybe have a combat comp on player?
 void EncounterComponent::PlayerAttack()
 {
-    //GET THE PLAYER STATS fro the comp
-    if (!m_inBattle || m_battleState != BattleState::WaitingForPlayer)
-        return;
+    auto* pStats = m_pPlayer->GetComponent<PlayerStatsComponent>();
+    if (!pStats) return;
 
-    //auto* pStats = pActor->GetComponent<InteractionComponent>();
-    //if (!pStats) return;
+    int playerAtk = pStats->GetPlayerStrength();
+    int damage = std::max(1, playerAtk - m_defense);
+    m_hp -= damage;
 
-    //int playerAtk = pStats->GetAttack();
-    //int damage = std::max(1, playerAtk - m_defense);
-    //m_hp -= damage;
-
-    //BB_LOG(LogType::kMessage, "You attack the %s for %d damage!", m_name.c_str(), damage);
-
+    BB_LOG(LogType::kMessage, m_name.c_str(), damage);
+    
     if (m_hp <= 0)
+    {
         m_battleState = BattleState::Victory;
+        //do another function to check victory or enemy ation this is temp
+        EndCombatUI();
+        m_pPlayer->GetComponent<InteractionComponent>()->m_uiActive = false;// remove combat UI
+        //m_uiActive = false;  // allow player movement
+        if (auto* playerMove = m_pPlayer->GetComponent<PlayerMovementComponent>())
+        {
+            playerMove->SetAnimationPaused(false);  // resume animations
+            playerMove->m_stopMoving = false;       // allow movement
+        }
+
+        BlackBoxManager::Get()->m_pInputManager->SwapInputToGame();
+    }
     else
         m_battleState = BattleState::EnemyActing;
 }
