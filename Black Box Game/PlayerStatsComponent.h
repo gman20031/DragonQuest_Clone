@@ -1,5 +1,16 @@
 #pragma once
 #include <Actors/Component.h>
+#include <functional>
+#include <string>
+#include <vector>
+#include "../Black Box Engine/BlackBoxManager.h"
+#include "../Black Box Engine/Input/InputManager.h"
+#include "../Black Box Engine/Math/FVector2.h"
+#include <Interface/UserInterface.h>
+#include <Interface/InterfaceButton.h>
+#include <Interface/InterfaceText.h>
+#include <Interface/InterfaceTexture.h>
+
 class BlackBoxGame;
 
 //https://mikesrpgcenter.com/dw1/levels.html
@@ -20,21 +31,37 @@ class PlayerStatsComponent : public BlackBoxEngine::Component
     int m_playerStrength = 0;
     int m_playerAgility = 0;
 
+    bool m_hudVisible = false;
+    bool m_needsHUDRefresh = false;
+    bool m_forceHUDVisible = false;
+
+    BlackBoxEngine::UserInterface m_hudRoot;
+    BlackBoxEngine::InterfaceText* m_hudStatsText = nullptr;
+
+    
+
     //spells?
     //strengh and agility 
-
+    //ned xp
 public:
     PlayerStatsComponent(BlackBoxEngine::Actor* pOwner) : Component(pOwner) {}
     virtual ~PlayerStatsComponent() {}
 
-    void SetPlayerLevel(int value) { m_playerLevel = value; }
-    void SetPlayerHP(int value) { m_playerHP = value; }
-    void SetPlayerMP(int value) { m_playerMP = value; }
-    void SetPlayerGold(int value) { m_playerGold = value; }
-    void SetPlayerEnergy(int value) { m_playerEnergy = value; }
+    //std::function<void()> OnStatsChanged = []() {};
 
-    void SetPlayerStrength(int value) { m_playerStrength = value; }
-    void SetPlayerAgility(int value) { m_playerAgility = value; }
+    void SetPlayerLevel(int value) { m_playerLevel = value;
+    }
+    void SetPlayerHP(int value) { m_playerHP = value; 
+    }
+    void SetPlayerMP(int value) { m_playerMP = value;
+    }
+    void SetPlayerGold(int value) { m_playerGold = value; 
+    }
+    void SetPlayerEnergy(int value) { m_playerEnergy = value;
+    }
+
+    void SetPlayerStrength(int value) { m_playerStrength = value;}
+    void SetPlayerAgility(int value) { m_playerAgility = value;}
 
     int GetPlayerLevel() { return m_playerLevel; }
     int GetPlayerHP() { return m_playerHP; }
@@ -45,11 +72,15 @@ public:
     int GetPlayerStrength() { return m_playerStrength; }
     int GetPlayerAgility() { return m_playerAgility; }
 
-
+    void Update() override;
     void Load([[maybe_unused]] const BlackBoxEngine::XMLElementParser parser) override;
     void Save([[maybe_unused]] BlackBoxEngine::XMLElementParser parser) override;
     //getter and setters ->set the HUD in interact comp every update
     //or do the UI for the HUD here (but needs to figure out how to make is work like u  did in the other comp)
 
+    void DisplayHUD(); 
+    void HideHUD();
+    void RefreshHUD();
+    std::string BuildStatsString() const;
 };
 

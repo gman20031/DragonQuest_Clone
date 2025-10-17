@@ -9,6 +9,7 @@
 
 #include "BlackBoxGame.h"
 #include "InteractionComponent.h"
+#include "PlayerStatsComponent.h"
 
 using namespace BlackBoxEngine;
 
@@ -70,10 +71,13 @@ void BaseStairComponent::OnStairUsed(Actor* pOtherActor)
     auto* pManager = BlackBoxManager::Get();
     if (!pManager) return;
 
+    auto* pHUD = pOtherActor->GetComponent<PlayerStatsComponent>();
+    if (!pHUD) return;
+
     // Begin transition
     pInteract->OnLevelTransitionStart();
     pManager->m_pInputManager->StopAllInput();
-    pInteract->HideHUD();
+    pHUD->HideHUD();
 
     ScreenFader::FadeToBlack(m_data.fadeDuration);
 

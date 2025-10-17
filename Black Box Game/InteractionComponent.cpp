@@ -6,7 +6,7 @@
 #include "PlayerMovementComponent.h"
 #include "StairComponent.h"
 #include "TileSystem/EncounterComponent.h"
-
+#include "PlayerStatsComponent.h"
 
 using namespace BlackBoxEngine;
 
@@ -42,38 +42,9 @@ void InteractionComponent::Start()
 // -------------------------------------------------------------
 void InteractionComponent::Update()
 {
-    auto* playerMove = m_pOwner->GetComponent<PlayerMovementComponent>();
-    if (!playerMove) return;
 
-    bool isMoving = playerMove->m_isMoving;
-
-    // Show HUD after player stops
-    if (!isMoving && !m_hudVisible && !m_uiActive && !m_isChangingLevel)
-    {
-        if (m_delayedDisplayId == 0)
-        {
-            m_delayedDisplayId = DelayedCallbackManager::AddCallback([this]()
-                {
-                    auto* pm = m_pOwner->GetComponent<PlayerMovementComponent>();
-                    if (pm && !pm->m_isMoving && !m_hudVisible && !m_uiActive && !m_isChangingLevel)
-                        DisplayHUD();
-
-                    m_delayedDisplayId = 0;
-                }, 1000);
-        }
-    }
-    // Hide HUD if player moves or UI active
-    else if ((isMoving || m_uiActive) && m_hudVisible && !m_isChangingLevel)
-    {
-        HideHUD();
-
-        if (m_delayedDisplayId != 0)
-        {
-            DelayedCallbackManager::RemoveCallback(m_delayedDisplayId);
-            m_delayedDisplayId = 0;
-        }
-    }
 }
+
 
 // -------------------------------------------------------------
 // OnCollide
@@ -117,8 +88,11 @@ void InteractionComponent::OnCollide(Actor* other)
 // -------------------------------------------------------------
 void InteractionComponent::OpenUI()
 {
-    if (m_hudVisible)
-        HideHUD();
+    auto* playerHUD = m_pOwner->GetComponent<PlayerStatsComponent>();
+    if (!playerHUD) return;
+
+    if (playerHUD->m_hudVisible)
+        playerHUD->HideHUD();
 
     SelectionMenu();
     m_uiActive = true;
@@ -243,59 +217,6 @@ void InteractionComponent::SelectionMenu()
 }
 
 // -------------------------------------------------------------
-// HUD
-// -------------------------------------------------------------
-void InteractionComponent::DisplayHUD()
-{
-    if (m_hudVisible) return;
-
-    m_hudVisible = true;
-
-    constexpr BB_FRectangle bgRect{ 10, 10, 50, 70 };
-    InterfaceTexture::TextureInfo bgInfo{
-        .pTextureFile = "../Assets/UI/StatsInfoBox.png",
-        .spriteDimensions = {16, 16},
-        .useFullImage = true
-    };
-    m_hudRoot.AddNode<InterfaceTexture>("HUD_Background", bgRect, bgInfo);
-
-    InterfaceText::Paremeters textParams{
-        .pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf",
-        .textSize = 16,
-        .color = ColorPresets::white
-    };
-
-    // Header
-    BB_FRectangle headerRect = bgRect;
-    headerRect.h = 15;
-    textParams.pText = "     PLAYER";
-    m_hudRoot.AddNode<InterfaceText>("HUD_Header", headerRect, textParams);
-
-    auto* playerStats = m_pOwner->GetComponent<PlayerStatsComponent>();
-    // Stats
-    BB_FRectangle statsRect = bgRect;
-    statsRect.y += 12;
-    std::string stats =
-        "  LV       " + std::to_string(playerStats->GetPlayerLevel()) + "\n\n" +
-        "  HP       " + std::to_string(playerStats->GetPlayerHP()) + "\n\n" +
-        "  MP       " + std::to_string(playerStats->GetPlayerMP()) + "\n\n" +
-        "  G        " + std::to_string(playerStats->GetPlayerGold()) + "\n\n" +
-        "  E        " + std::to_string(playerStats->GetPlayerEnergy());
-    textParams.pText = stats.c_str();
-    m_hudRoot.AddNode<InterfaceText>("HUD_Stats", statsRect, textParams);
-
-    m_hudRoot.AddToScreen();
-}
-
-void InteractionComponent::HideHUD()
-{
-    if (!m_hudVisible) return;
-    m_hudRoot.RemoveFromScreen();
-    m_hudVisible = false;
-}
-
-
-// -------------------------------------------------------------
 // Message Box
 // -------------------------------------------------------------
 void InteractionComponent::ShowActionMessage(const std::string& text)
@@ -391,8 +312,11 @@ void InteractionComponent::HandleTake()
 // -------------------------------------------------------------
 void InteractionComponent::OnLevelTransitionStart()
 {
+    auto* player = m_pOwner->GetComponent<PlayerStatsComponent>();
+    if (!player) return;
+
     m_isChangingLevel = true;
-    if (m_hudVisible) HideHUD();
+    if (player->m_hudVisible) player->HideHUD();
 
     if (m_delayedDisplayId != 0)
     {

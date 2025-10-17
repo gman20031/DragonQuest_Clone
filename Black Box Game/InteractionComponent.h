@@ -29,14 +29,19 @@ class InteractionComponent : public BlackBoxEngine::Component
     BlackBoxEngine::UserInterface m_interfaceRoot;
     BlackBoxEngine::UserInterface m_messageRoot;
     BlackBoxEngine::UserInterface m_hudRoot;
+    BlackBoxEngine::InterfaceText* m_hudStatsText = nullptr;
 
 
+  
+    BlackBoxEngine::InterfaceText* m_hudHeaderText = nullptr;
+
+    BlackBoxEngine::InterfaceNode* m_hudStatsNode = nullptr;
     // --- Message Box ---
     BlackBoxEngine::InterfaceText* m_messageNode = nullptr;
     bool m_messageActive = false;
 
     // --- HUD ---
-    bool m_hudVisible = false;
+    //bool m_hudVisible = false;
 
     // --- Actor references ---
     BlackBoxEngine::Actor* m_currentActor = nullptr;
@@ -51,20 +56,20 @@ class InteractionComponent : public BlackBoxEngine::Component
     bool m_uiActive = false;
     bool m_didMove = false;
     bool m_isChangingLevel = false;
+    bool m_needsHUDRefresh = false;
+    bool m_forceHUDVisible = false;
 
     bool m_isCombatActive = false;
 
     uint64_t m_delayedDisplayId = 0;
     std::vector<uint64_t> m_keyDownCodes;
 
-    // --- Player Stats ---
-    //int m_playerLevel = 1;
-    //int m_playerHP = 20;
-    //int m_playerMaxHP = 20;
-    //int m_playerMP = 8;
-    //int m_playerMaxMP = 8;
-    //int m_playerGold = 120;
-    //int m_playerEnergy = 10;
+
+    BlackBoxEngine::InterfaceText* m_hudText_Level = nullptr;
+    BlackBoxEngine::InterfaceText* m_hudText_HP = nullptr;
+    BlackBoxEngine::InterfaceText* m_hudText_MP = nullptr;
+    BlackBoxEngine::InterfaceText* m_hudText_Gold = nullptr;
+    BlackBoxEngine::InterfaceText* m_hudText_Energy = nullptr;
 
 public:
     InteractionComponent(BlackBoxEngine::Actor* pOwner) : Component(pOwner) {}
@@ -91,18 +96,20 @@ public:
     void SetCurrentTalk(TalkComponent* talk) { m_pCurrentTalk = talk; }
     void SetCurrentTake(TakeComponent* take) { m_pCurrentTake = take; }
 
-    void HideHUD();
+    //void HideHUD();
 
     bool IsCombatActive() const { return m_isCombatActive; }
+    //void RefreshHUD();
+    //void UpdateHUDNumbers();
 
-
+    //BlackBoxEngine::InterfaceText* ReplaceTextNode(InterfaceText* oldNode, const std::string& newText, const BB_FRectangle& rect);
 private:
     // --- UI helpers ---
     void OpenUI();
     void CloseUI();
     void SelectionMenu();
 
-    void DisplayHUD();
+    //void DisplayHUD();
 
     void ShowActionMessage(const std::string& text);
     void DismissActionMessage();

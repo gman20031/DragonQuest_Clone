@@ -68,7 +68,7 @@ public:
     void Save([[maybe_unused]] BlackBoxEngine::XMLElementParser parser) override;
 
     // Enemy properties
-    void Init(EnemyType type);
+    //void Init(EnemyType type);
 
     const std::string& GetName() const { return m_name; }
     int GetHP() const { return m_hp; }
@@ -93,6 +93,7 @@ public:
     void StartCombatUI();
     void EndCombatUI();
     void OnCombatButtonPressed(const std::string& action);
+    float RandomFloat();
 
 private:
 

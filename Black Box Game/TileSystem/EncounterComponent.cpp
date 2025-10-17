@@ -31,6 +31,10 @@ void EncounterComponent::EndEncounter()
     BB_LOG(LogType::kMessage, "Encounter ended.");
 }
 
+float EncounterComponent::RandomFloat()
+{
+    return static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+}
 
 void EncounterComponent::Update()
 {
@@ -39,54 +43,55 @@ void EncounterComponent::Update()
 
 void EncounterComponent::EnemyTakeTurn()
 {
+    //check if the enemy won
     if (m_hp <= 0)
     {
         m_battleState = BattleState::Victory;
         return;
     }
 
-    // Retrieve player stats ->need to find a way to pass it in
-   // auto* pStats = pActor->GetComponent<InteractionComponent>();
-   // if (!pStats) return;
-   //
-   // if (m_name == "Slime")
-   // {
-   //     BasicAttack();
-   // }
-   // else if (m_name == "RedSlime")
-   // {
-   //     if (RandomFloat() < 0.8f)
-   //         BasicAttack();
-   //     else
-   //         Taunt();
-   // }
-   // else if (m_name == "Ghost")
-   // {
-   //     if (RandomFloat() < 0.5f)
-   //         BasicAttack();
-   //     else
-   //         Dodge();
-   // }
-   // else if (m_name == "Drakee")
-   // {
-   //     if (RandomFloat() < 0.3f)
-   //         SwoopAttack();
-   //     else
-   //         BasicAttack();
-   // }
-   // else if (m_name == "Magician")
-   // {
-   //     if (RandomFloat() < 0.5f)
-   //         CastSpell("Hurt");
-   //     else
-   //         BasicAttack();
-   // }
-   //
-   // // return to player turn if still alive
-   // if (pStats->GetHP() > 0)
-   //     m_battleState = BattleState::WaitingForPlayer;
-   // else
-   //     m_battleState = BattleState::Defeat;
+
+    auto* pStats = m_pPlayer->GetComponent<PlayerStatsComponent>();
+    if (!pStats) return;
+
+    float roll = RandomFloat();
+
+    if (m_name == "BlueSlime")
+    {
+        BasicAttack();
+    }
+    else if (m_name == "RedSlime")
+    {
+        if (roll < 0.8f)
+            BasicAttack();
+        else
+            Taunt(m_name);
+    }
+    else if (m_name == "Ghost")
+    {
+        if (roll < 0.5f)
+            BasicAttack();
+        else
+            Dodge();
+    }
+    else if (m_name == "Drakee")
+    {
+        if (roll < 0.3f)
+            SwoopAttack();
+        else
+            BasicAttack();
+    }
+    else if (m_name == "Magician")
+    {
+        //if (roll < 0.5f)
+        //    CastSpell("Hurt");
+        //else
+        //    BasicAttack();
+    }
+    else
+    {
+        BasicAttack();
+    }
 }
 
 
@@ -103,25 +108,40 @@ void EncounterComponent::PlayerAttack()
     int damage = std::max(1, playerAtk - m_defense);
     m_hp -= damage;
 
-    BB_LOG(LogType::kMessage, m_name.c_str(), damage);
-    
+    BB_LOG(LogType::kMessage, "You hit the %s for %d damage!", m_name.c_str(), damage);
+
     if (m_hp <= 0)
     {
-        m_battleState = BattleState::Victory;
-        //do another function to check victory or enemy ation this is temp
+        BB_LOG(LogType::kMessage, "The %s is defeated!", m_name.c_str());
         EndCombatUI();
-        m_pPlayer->GetComponent<InteractionComponent>()->m_uiActive = false;// remove combat UI
-        //m_uiActive = false;  // allow player movement
+        EndEncounter();
+
+        //pStats->Set(m_xpReward); //i need the XP
+        pStats->SetPlayerGold(pStats->GetPlayerGold() + m_goldReward);
+
+        //if (auto* inter = m_pPlayer->GetComponent<InteractionComponent>())
+        //{
+        //    inter->m_forceHUDVisible = true;  // Keep HUD visible during combat
+        //    // Immediately refresh HUD to show current stats
+        //    auto* stats = m_pPlayer->GetComponent<PlayerStatsComponent>();
+        //    if (stats)
+        //        stats->RefreshHUD();
+        //}
+
+
         if (auto* playerMove = m_pPlayer->GetComponent<PlayerMovementComponent>())
         {
-            playerMove->SetAnimationPaused(false);  // resume animations
-            playerMove->m_stopMoving = false;       // allow movement
+            playerMove->SetAnimationPaused(false);
+            playerMove->m_stopMoving = false;
         }
 
         BlackBoxManager::Get()->m_pInputManager->SwapInputToGame();
     }
     else
-        m_battleState = BattleState::EnemyActing;
+    {
+        // Enemy retaliates immediately
+        EnemyTakeTurn();
+    }
 }
 
 void EncounterComponent::TryToFlee()
@@ -129,36 +149,72 @@ void EncounterComponent::TryToFlee()
     if (!m_inBattle)
         return;
 
-    //float chance = RandomFloat(); // assume 0–1
-    //if (chance < 0.5f)
+    float fleeChance = 0.5f;
+    if (m_name == "Drakee" || m_name == "Magician")
+        fleeChance = 0.35f;
+    else if (m_name == "Ghost")
+        fleeChance = 0.25f;
+
+    if (RandomFloat() < fleeChance)
     {
         BB_LOG(LogType::kMessage, "You successfully escaped!");
-        m_battleState = BattleState::Flee;
+        EndCombatUI();
+        EndEncounter();
+        m_inBattle = false;
+
+        if (auto* playerMove = m_pPlayer->GetComponent<PlayerMovementComponent>())
+        {
+            playerMove->SetAnimationPaused(false);
+            playerMove->m_stopMoving = false;
+        }
+
+        BlackBoxManager::Get()->m_pInputManager->SwapInputToGame();
     }
-   // else
+    else
     {
         BB_LOG(LogType::kMessage, "You cannot escape!");
-        m_battleState = BattleState::EnemyActing;
+        EnemyTakeTurn(); // immediately counterattack if flee fails
     }
 }
 
 
 void EncounterComponent::BasicAttack()
 {
-    //auto* pStats = pActor->GetComponent<InteractionComponent>();
-    //if (!pStats) return;
-    //
-    //int damage = std::max(1, m_attack - pStats->GetDefense());
-    //pStats->TakeDamage(damage);
-    //
-    //BB_LOG(LogType::kMessage, "The %s attacks you for %d damage!", m_name.c_str(), damage);
+    auto* pStats = m_pPlayer->GetComponent<PlayerStatsComponent>();
+    if (!pStats) return;
+
+    int defense = pStats->GetPlayerStrength();  // use real defense
+    int damage = std::max(1, m_attack - defense);
+
+    int currentHP = pStats->GetPlayerHP();
+    pStats->SetPlayerHP(currentHP - damage);
+
+    //if (auto* inter = m_pPlayer->GetComponent<InteractionComponent>())
+    //    inter->RefreshHUD();
+
+    BB_LOG(LogType::kMessage, "The %s attacks! You take %d damage!", m_name.c_str(), damage);
+
+    // Check if player died
+    if (pStats->GetPlayerHP() <= 0)
+    {
+        BB_LOG(LogType::kMessage, "You are defeated!");
+        EndCombatUI();
+        EndEncounter();
+
+        if (auto* playerMove = m_pPlayer->GetComponent<PlayerMovementComponent>())
+        {
+            playerMove->SetAnimationPaused(false);
+            playerMove->m_stopMoving = false;
+        }
+        BlackBoxManager::Get()->m_pInputManager->SwapInputToGame();
+    }
 }
 
 void EncounterComponent::CastSpell()
 {
-    //auto* pStats = pActor->GetComponent<InteractionComponent>();
-    //if (!pStats) return;
-    //
+    auto* pStats = m_pPlayer->GetComponent<PlayerStatsComponent>();
+    if (!pStats) return;
+
     //if (spellName == "Hurt")
     //{
     //    int damage = 8 + rand() % 4;
@@ -179,13 +235,12 @@ void EncounterComponent::Dodge()
 
 void EncounterComponent::SwoopAttack()
 {
-    //auto* pStats = pActor->GetComponent<InteractionComponent>();
-    //if (!pStats) return;
-    //
-    //int damage = static_cast<int>((m_attack * 1.2f) - pStats->GetDefense());
-    //damage = std::max(1, damage);
+    auto* pStats = m_pPlayer->GetComponent<PlayerStatsComponent>();
+    if (!pStats) return;
+
+    //int damage = std::max(1, static_cast<int>(m_attack * 1.2f) - pStats->GetPlayerDefense());
     //pStats->TakeDamage(damage);
-    //
+
     //BB_LOG(LogType::kMessage, "The %s swoops down and hits for %d damage!", m_name.c_str(), damage);
 }
 
@@ -222,6 +277,8 @@ void EncounterComponent::StartCombatUI()
         playerMove->SetAnimationPaused(true);
         playerMove->m_stopMoving = true;
     }
+
+   
 
     // --- Enemy background and sprite ---
     BB_FRectangle bgRect{ 80.f, 80.f, 104.f, 74.f };
@@ -358,8 +415,12 @@ void EncounterComponent::StartCombatUI()
 
 void EncounterComponent::EndCombatUI()
 {
+   
+
     m_combatRoot.RemoveFromScreen();
     m_pPlayer->GetComponent<InteractionComponent>()->m_uiActive = false;
+
+    
 }
 
 void EncounterComponent::OnCombatButtonPressed(const std::string& action)
@@ -368,6 +429,7 @@ void EncounterComponent::OnCombatButtonPressed(const std::string& action)
     {
         // Call attack logic
         PlayerAttack();
+
 
     }
     else if (action == "Magic")
@@ -382,18 +444,7 @@ void EncounterComponent::OnCombatButtonPressed(const std::string& action)
     //THIS TEMPS
     else if (action == "Run")
     {
-        //TryToFlee();
+        TryToFlee();
 
-        //MAYBE HAVE A BOOL AND CHECK IF FLEE SUCCESSFUL 
-        EndCombatUI();
-        m_pPlayer->GetComponent<InteractionComponent>()->m_uiActive = false;// remove combat UI
-        //m_uiActive = false;  // allow player movement
-        if (auto* playerMove = m_pPlayer->GetComponent<PlayerMovementComponent>())
-        {
-            playerMove->SetAnimationPaused(false);  // resume animations
-            playerMove->m_stopMoving = false;       // allow movement
-        }
-
-        BlackBoxManager::Get()->m_pInputManager->SwapInputToGame();
     }
 }
