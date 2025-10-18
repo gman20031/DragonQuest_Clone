@@ -44,6 +44,7 @@ namespace BlackBoxEngine
             delete m_pMessagingManager;
         if (m_pCollisionManager)
             delete m_pCollisionManager;
+        SDL_QuitSubSystem( SDL_INIT_AUDIO );
     }
 
     void BlackBoxManager::HandleSdlEvents()

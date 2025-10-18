@@ -230,6 +230,7 @@
     <ClCompile Include="Actors\EngineComponents\TransformComponent.cpp" />
     <ClCompile Include="Actors\EngineComponents\TransformComponent.h" />
     <ClCompile Include="Audio\AudioManager.cpp" />
+    <ClCompile Include="Audio\AudioPlayerComponent.cpp" />
     <ClCompile Include="Graphics\Camera.cpp" />
     <ClCompile Include="Graphics\RenderingStructs.cpp" />
     <ClCompile Include="Graphics\ScreenFader.cpp" />
@@ -493,6 +494,7 @@
     <ClInclude Include="Actors\EngineComponents\SimpleTextComponent.h" />
     <ClInclude Include="Actors\EngineComponents\SpriteComponent.h" />
     <ClInclude Include="Audio\AudioManager.h" />
+    <ClInclude Include="Audio\AudioPlayerComponent.h" />
     <ClInclude Include="Graphics\Camera.h" />
     <ClInclude Include="Graphics\ScreenFader.h" />
     <ClInclude Include="Graphics\Text Rendering\Font.h" />

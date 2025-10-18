@@ -11,6 +11,7 @@
 #include "EngineComponents/SimpleTextComponent.h"
 #include "EngineComponents/PlayerCameraComponent.h"
 #include "Collision/AABBColliderComponent.h"
+#include "../Audio/AudioPlayerComponent.h"
 
 namespace BlackBoxEngine
 {
@@ -25,7 +26,9 @@ namespace BlackBoxEngine
         ComponentFactory::Registrar<MovementBlocker>,
         ComponentFactory::Registrar<LuaScriptComponent>,
         ComponentFactory::Registrar<SimpleTextComponent>,
-        ComponentFactory::Registrar<PlayerCameraComponent>
+        ComponentFactory::Registrar<PlayerCameraComponent>,
+        ComponentFactory::Registrar<AudioPlayerComponent>,
+        ComponentFactory::Registrar<MusicPlayer>
     > EngineRegistrar;
 
     Component* ComponentFactory::NewComponent(Component::Id id, Actor* pOwner)
