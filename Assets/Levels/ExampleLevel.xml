@@ -91,6 +91,11 @@
 			<row>1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111</row>
 		</TileMap>
     </Component>
+	<Component Name="MusicPlayer">
+		<RunOnStart>true</RunOnStart>
+		<Volume>0.2</Volume>
+		<AudioFile>../Assets/Audio/05DragonQuest1-KingdomofAlefgard.wav</AudioFile>
+	</Component>
 </Actor>
 
 

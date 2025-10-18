@@ -88,6 +88,8 @@ namespace BlackBoxEngine
             BB_LOG( LogType::kWarning, "Audio Mixer not created , ", SDL_GetError() );
             return;
         }
+
+        m_pMusicTrack = new AudioTrack( 0, m_pAudioMixer );
     }
 
     AudioManager::~AudioManager()
@@ -95,6 +97,8 @@ namespace BlackBoxEngine
         MIX_DestroyMixer( m_pAudioMixer );
         MIX_StopAllTracks( m_pAudioMixer , 0);
 
+        if ( m_pMusicTrack )
+            delete m_pMusicTrack;
 
         MIX_Quit();
         SDL_QuitSubSystem( SDL_INIT_AUDIO );

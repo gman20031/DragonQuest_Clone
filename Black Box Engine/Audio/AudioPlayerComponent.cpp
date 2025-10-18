@@ -18,13 +18,17 @@ namespace BlackBoxEngine
     
     void AudioPlayerComponent::Save( XMLElementParser parser )
     {
-        parser.NewChildVariable( "audioFile", m_pFilePath );
+        parser.NewChildVariable( "AudioFile", m_pFilePath );
+        parser.NewChildVariable( "Volume", m_volume );
+
     }
 
     void AudioPlayerComponent::Load( const XMLElementParser parser )
     {
-        parser.GetChildVariable( "audioFile", &m_pFilePath );
+        parser.GetChildVariable( "AudioFile", &m_pFilePath );
+        parser.GetChildVariable( "Volume", &m_volume );
         m_pAudioTrack->SetAudioFile( m_pFilePath );
+        m_pAudioTrack->SetVolume( m_volume );
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////
@@ -44,20 +48,28 @@ namespace BlackBoxEngine
             BB_LOG( LogType::kWarning, "Attempted to set music track with null filepath" );
             return;
         }
-
         m_pAudioManager->SetMusicTrack( pMusicFilePath );
+        m_pAudioManager->GetMusicTrack()->SetVolume( m_volume );
+    }
+
+    void MusicPlayer::Start()
+    {
+        if ( m_playOnStart )
+            SetMusicTrack( m_pFilePath );
     }
 
     void MusicPlayer::Save( XMLElementParser parser )
     {
         parser.NewChildVariable( "RunOnStart", m_playOnStart );
-        parser.NewChildVariable( "audioFile", m_pFilePath );
+        parser.NewChildVariable( "Volume", m_volume );
+        parser.NewChildVariable( "AudioFile", m_pFilePath );
     }
 
     void MusicPlayer::Load( const XMLElementParser parser )
     {
         parser.GetChildVariable( "RunOnStart", &m_playOnStart );
-        parser.GetChildVariable( "audioFile", &m_pFilePath );
+        parser.GetChildVariable( "Volume", &m_volume );
+        parser.GetChildVariable( "AudioFile", &m_pFilePath );
     }
 
 }
