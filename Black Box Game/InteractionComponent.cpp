@@ -42,9 +42,7 @@ void InteractionComponent::Start()
 // -------------------------------------------------------------
 void InteractionComponent::Update()
 {
-
 }
-
 
 // -------------------------------------------------------------
 // OnCollide

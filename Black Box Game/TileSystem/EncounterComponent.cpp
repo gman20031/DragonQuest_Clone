@@ -7,6 +7,7 @@
 #include "../Black Box Engine/Actors/EngineComponents/SpriteComponent.h"
 #include "../Black Box Game/InteractionComponent.h"
 #include "../Black Box Game/PlayerMovementComponent.h"
+#include <format>
 
 using namespace BlackBoxEngine;
 
@@ -17,16 +18,31 @@ void EncounterComponent::Start()
 
 void EncounterComponent::StartEncounter(Actor* pOtherActor)
 {
+  
 
     m_inBattle = true;
     BB_LOG(LogType::kMessage, "Enemy '%s' appeared! HP=%d", m_name.c_str(), m_hp);
 
     SetPlayer(pOtherActor);
+
+    //auto* pStats = m_pPlayer->GetComponent<PlayerStatsComponent>();
+    //if (pStats)
+    //    pStats->m_forceHUDVisible = true;
+    //
+    //pStats->DisplayHUD();
+
     StartCombatUI();
 }
 
 void EncounterComponent::EndEncounter()
 {
+    //auto* pStats = m_pPlayer->GetComponent<PlayerStatsComponent>();
+    //if (pStats)
+    //{
+    //    pStats->m_forceHUDVisible = false;
+    //    pStats->RefreshHUD(); // redraw HUD for overworld
+    //}
+
     m_inBattle = false;
     BB_LOG(LogType::kMessage, "Encounter ended.");
 }
@@ -83,10 +99,10 @@ void EncounterComponent::EnemyTakeTurn()
     }
     else if (m_name == "Magician")
     {
-        //if (roll < 0.5f)
-        //    CastSpell("Hurt");
-        //else
-        //    BasicAttack();
+        if (roll < 0.5f)
+            CastSpell("Hurt");
+        else
+            BasicAttack();
     }
     else
     {
@@ -95,10 +111,6 @@ void EncounterComponent::EnemyTakeTurn()
 }
 
 
-
-//MAYBE ADD A COMBAT OR STATS COMP FOR THE PLAYER?
-// 
-//not sure those should be here -? maybe have a combat comp on player?
 void EncounterComponent::PlayerAttack()
 {
     auto* pStats = m_pPlayer->GetComponent<PlayerStatsComponent>();
@@ -108,25 +120,18 @@ void EncounterComponent::PlayerAttack()
     int damage = std::max(1, playerAtk - m_defense);
     m_hp -= damage;
 
-    BB_LOG(LogType::kMessage, "You hit the %s for %d damage!", m_name.c_str(), damage);
+    ShowActionMessage(std::format("You hit the {} for {} damage!", m_name, damage));
 
     if (m_hp <= 0)
     {
         BB_LOG(LogType::kMessage, "The %s is defeated!", m_name.c_str());
+        ShowActionMessage(std::format("The {} is defeated!", m_name.c_str()));
         EndCombatUI();
         EndEncounter();
 
         //pStats->Set(m_xpReward); //i need the XP
         pStats->SetPlayerGold(pStats->GetPlayerGold() + m_goldReward);
-
-        //if (auto* inter = m_pPlayer->GetComponent<InteractionComponent>())
-        //{
-        //    inter->m_forceHUDVisible = true;  // Keep HUD visible during combat
-        //    // Immediately refresh HUD to show current stats
-        //    auto* stats = m_pPlayer->GetComponent<PlayerStatsComponent>();
-        //    if (stats)
-        //        stats->RefreshHUD();
-        //}
+        pStats->RefreshHUD();
 
 
         if (auto* playerMove = m_pPlayer->GetComponent<PlayerMovementComponent>())
@@ -139,7 +144,6 @@ void EncounterComponent::PlayerAttack()
     }
     else
     {
-        // Enemy retaliates immediately
         EnemyTakeTurn();
     }
 }
@@ -157,7 +161,7 @@ void EncounterComponent::TryToFlee()
 
     if (RandomFloat() < fleeChance)
     {
-        BB_LOG(LogType::kMessage, "You successfully escaped!");
+        ShowActionMessage("You successfully escaped!");
         EndCombatUI();
         EndEncounter();
         m_inBattle = false;
@@ -172,8 +176,8 @@ void EncounterComponent::TryToFlee()
     }
     else
     {
-        BB_LOG(LogType::kMessage, "You cannot escape!");
-        EnemyTakeTurn(); // immediately counterattack if flee fails
+        ShowActionMessage("You cannot escape!");
+        EnemyTakeTurn(); 
     }
 }
 
@@ -189,15 +193,13 @@ void EncounterComponent::BasicAttack()
     int currentHP = pStats->GetPlayerHP();
     pStats->SetPlayerHP(currentHP - damage);
 
-    //if (auto* inter = m_pPlayer->GetComponent<InteractionComponent>())
-    //    inter->RefreshHUD();
-
-    BB_LOG(LogType::kMessage, "The %s attacks! You take %d damage!", m_name.c_str(), damage);
+    pStats->RefreshHUD();
+    ShowActionMessage(std::format("The {} attacks! You take {} damage!", m_name.c_str(), damage));
 
     // Check if player died
     if (pStats->GetPlayerHP() <= 0)
     {
-        BB_LOG(LogType::kMessage, "You are defeated!");
+        ShowActionMessage("You are defeated!");
         EndCombatUI();
         EndEncounter();
 
@@ -210,7 +212,7 @@ void EncounterComponent::BasicAttack()
     }
 }
 
-void EncounterComponent::CastSpell()
+void EncounterComponent::CastSpell([[maybe_unused]]const std::string& string)
 {
     auto* pStats = m_pPlayer->GetComponent<PlayerStatsComponent>();
     if (!pStats) return;
@@ -225,12 +227,12 @@ void EncounterComponent::CastSpell()
 
 void EncounterComponent::Taunt(const std::string& enemyName)
 {
-    BB_LOG(LogType::kMessage, "%s glares menacingly!", enemyName.c_str());
+    ShowActionMessage(std::format("{} glares menacingly!", enemyName.c_str()));
 }
 
 void EncounterComponent::Dodge()
 {
-    BB_LOG(LogType::kMessage, "%s fades away briefly...", m_name.c_str());
+    ShowActionMessage(std::format("{} fades away briefly...", m_name.c_str()));
 }
 
 void EncounterComponent::SwoopAttack()
@@ -254,7 +256,6 @@ void EncounterComponent::Load(const XMLElementParser parser)
     parser.GetChildVariable("XPReward", &m_xpReward);
     parser.GetChildVariable("GoldReward", &m_goldReward);
     parser.GetChildVariable("SpriteFile", &m_spriteFile);
-    //parser.GetChildVariable("PatrolRadius", &m_patrolRadius);
 }
 
 void EncounterComponent::Save(XMLElementParser parser)
@@ -266,7 +267,6 @@ void EncounterComponent::Save(XMLElementParser parser)
     parser.NewChildVariable("XPReward", m_xpReward);
     parser.NewChildVariable("GoldReward", m_goldReward);
     parser.NewChildVariable("SpriteFile", m_spriteFile);
-    //parser.NewChildVariable("PatrolRadius", m_patrolRadius);
 }
 
 void EncounterComponent::StartCombatUI()
@@ -277,8 +277,6 @@ void EncounterComponent::StartCombatUI()
         playerMove->SetAnimationPaused(true);
         playerMove->m_stopMoving = true;
     }
-
-   
 
     // --- Enemy background and sprite ---
     BB_FRectangle bgRect{ 80.f, 80.f, 104.f, 74.f };
@@ -415,36 +413,68 @@ void EncounterComponent::StartCombatUI()
 
 void EncounterComponent::EndCombatUI()
 {
-   
-
+    DismissActionMessage();
     m_combatRoot.RemoveFromScreen();
-    m_pPlayer->GetComponent<InteractionComponent>()->m_uiActive = false;
-
-    
+    m_pPlayer->GetComponent<InteractionComponent>()->m_uiActive = false;   
 }
 
 void EncounterComponent::OnCombatButtonPressed(const std::string& action)
 {
+    DismissActionMessage();
     if (action == "Fight")
     {
-        // Call attack logic
         PlayerAttack();
-
-
     }
     else if (action == "Magic")
     {
-        BB_LOG(LogType::kMessage, "You have no magic yet!");
+        ShowActionMessage("You have no magic yet!");
     }
     else if (action == "Item")
     {
-        BB_LOG(LogType::kMessage, "You rummage through your bag...");
+        ShowActionMessage("You rummage through your bag...");
     }
-
-    //THIS TEMPS
     else if (action == "Run")
     {
         TryToFlee();
 
     }
+}
+
+
+void EncounterComponent::ShowActionMessage(const std::string& text)
+{
+    if (m_messageActive) return;
+
+    m_messageActive = true;
+
+    constexpr BB_FRectangle bgRect{ 60.f, 160.f, 180.f, 48.f };
+    InterfaceTexture::TextureInfo bgInfo{
+        .pTextureFile = "../Assets/UI/BottomTextBox.png",
+        .spriteDimensions = {16, 16},
+        .useFullImage = true
+    };
+    m_messageRoot.AddNode<InterfaceTexture>("ActionMessage_BG", bgRect, bgInfo);
+
+    // --- Text parameters ---
+    BB_FRectangle txtRect{ 68.f, 166.f, 164.f, 36.f };
+    InterfaceText::Paremeters params{};
+    params.pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf";
+    params.textSize = 16;
+    params.color = ColorPresets::white;
+    params.pText = text.c_str();
+
+    m_messageNode = m_messageRoot.AddNode<InterfaceText>("ActionMessage_Text", txtRect, params);
+
+    // Add to screen
+    m_messageRoot.AddToScreen();
+}
+
+void EncounterComponent::DismissActionMessage()
+{
+    if (!m_messageActive) 
+        return;
+
+    m_messageRoot.RemoveFromScreen();
+    m_messageNode = nullptr;
+    m_messageActive = false;
 }

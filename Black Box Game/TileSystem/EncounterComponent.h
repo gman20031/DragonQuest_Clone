@@ -82,7 +82,7 @@ public:
     void EnemyTakeTurn();
 
     void BasicAttack();
-    void CastSpell();
+    void CastSpell(const std::string& string);
     void Taunt(const std::string& enemyName);
     void Dodge();
     void SwoopAttack();
@@ -95,8 +95,13 @@ public:
     void OnCombatButtonPressed(const std::string& action);
     float RandomFloat();
 
+    void ShowActionMessage(const std::string& text);
+    void DismissActionMessage();
 private:
 
+    BlackBoxEngine::InterfaceText* m_messageNode = nullptr;
+    bool m_messageActive = false;
+    BlackBoxEngine::UserInterface m_messageRoot;
     //thing should be based on the different type of enemies
 
     //should i have also a variable for the percentage of encountering depending on are
@@ -111,5 +116,6 @@ private:
     float m_patrolRadius = 0.0f;
 
     bool m_inBattle = false;
+
 
 };

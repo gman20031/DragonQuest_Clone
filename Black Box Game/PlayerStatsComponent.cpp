@@ -52,7 +52,8 @@ void PlayerStatsComponent::RefreshHUD()
         return;
     
     // Remove the HUD from screen entirely
-    m_hudRoot.RemoveFromScreen();
+    if (m_hudVisible)
+        m_hudRoot.RemoveFromScreen();
     
     // Recreate HUD (DisplayHUD) with updated values
     DisplayHUD();
@@ -100,6 +101,8 @@ void PlayerStatsComponent::DisplayHUD()
     if (m_hudVisible) return;
     
     m_hudVisible = true;
+
+    m_hudRoot.RemoveFromScreen();
     
     constexpr BB_FRectangle bgRect{ 10, 10, 50, 70 };
     InterfaceTexture::TextureInfo bgInfo{

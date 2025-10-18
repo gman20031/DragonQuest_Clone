@@ -190,6 +190,7 @@ copy "$(solutiondir)Black Box Engine\libraries\SDL3-3.3\lib\x64\SDL3_mixer.dll" 
     <ClCompile Include="ExampleComponent.cpp" />
     <ClCompile Include="GameComponentRegistrar.cpp" />
     <ClCompile Include="InteractionComponent.cpp" />
+    <ClCompile Include="InventoryComponent.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PlayerMovementComponent.cpp" />
     <ClCompile Include="PlayerStatsComponent.cpp" />
@@ -207,6 +208,7 @@ copy "$(solutiondir)Black Box Engine\libraries\SDL3-3.3\lib\x64\SDL3_mixer.dll" 
     <ClInclude Include="BlackBoxGame.h" />
     <ClInclude Include="ExampleComponent.h" />
     <ClInclude Include="InteractionComponent.h" />
+    <ClInclude Include="InventoryComponent.h" />
     <ClInclude Include="PlayerMovementComponent.h" />
     <ClInclude Include="PlayerStatsComponent.h" />
     <ClInclude Include="ScreenCentered.h" />
