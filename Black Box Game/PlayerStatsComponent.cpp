@@ -6,7 +6,6 @@ using namespace BlackBoxEngine;
 
 void PlayerStatsComponent::Start()
 {
-    //Initialize();
 }
 
 void PlayerStatsComponent::Update()

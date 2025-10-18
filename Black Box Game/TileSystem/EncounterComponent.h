@@ -116,6 +116,7 @@ private:
     float m_patrolRadius = 0.0f;
 
     bool m_inBattle = false;
+    bool m_waitingForExit = false;
 
 
 };

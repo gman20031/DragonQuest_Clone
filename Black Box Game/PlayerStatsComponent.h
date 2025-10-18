@@ -79,9 +79,7 @@ public:
     void Update() override;
     void Load([[maybe_unused]] const BlackBoxEngine::XMLElementParser parser) override;
     void Save([[maybe_unused]] BlackBoxEngine::XMLElementParser parser) override;
-    //getter and setters ->set the HUD in interact comp every update
-    //or do the UI for the HUD here (but needs to figure out how to make is work like u  did in the other comp)
-
+   
     void DisplayHUD(); 
     void HideHUD();
     void RefreshHUD();
