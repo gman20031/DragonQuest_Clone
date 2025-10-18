@@ -27,6 +27,7 @@ namespace BlackBoxEngine
         InterfaceText(InterfaceNode* pParent, const char* pName, BB_FRectangle dimensions, const Paremeters& params);
         virtual ~InterfaceText();
 
+        std::shared_ptr<BB_Text> GetText() { return m_pText; }
 
     };
 
