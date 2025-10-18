@@ -19,6 +19,14 @@ public:
         bool autoUse = false;
     };
 
+    struct PlayerRuntimeStats {
+        int HP;
+        int MP;
+        int Gold;
+        int Energy;
+    };
+    
+
     explicit BaseStairComponent(Actor* pOwner): Component(pOwner) {}
     virtual ~BaseStairComponent() override = default;
     explicit BaseStairComponent(const TransitionData& data): Component(nullptr), m_data(data) {}
@@ -37,4 +45,5 @@ public:
 
 private:
     TransitionData m_data;
+   // PlayerRuntimeStats m_PlayerStats;
 };

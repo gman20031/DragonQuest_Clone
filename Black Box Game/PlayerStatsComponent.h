@@ -19,18 +19,6 @@ class PlayerStatsComponent : public BlackBoxEngine::Component
 {
     GENERATE_ID("PlayerStatsComponent");
 
-    //THIS NEEDS TO BE SET UP ACCORDINGLY 
-    int m_playerLevel = 0;
-    int m_playerHP = 0;
-    int m_playerMaxHP = 0;
-    int m_playerMP = 0;
-    int m_playerMaxMP = 0;
-    int m_playerGold = 0;
-    int m_playerEnergy = 0;
-
-    int m_playerStrength = 0;
-    int m_playerAgility = 0;
-
     bool m_hudVisible = false;
     bool m_needsHUDRefresh = false;
     bool m_forceHUDVisible = false;
@@ -38,7 +26,22 @@ class PlayerStatsComponent : public BlackBoxEngine::Component
     BlackBoxEngine::UserInterface m_hudRoot;
     BlackBoxEngine::InterfaceText* m_hudStatsText = nullptr;
 
-    
+public:
+    //i need to check how they change depending on XP!!!
+    int m_playerLevel = 1;
+    int m_playerMaxHP = 16;
+    int m_playerHP = 16; // current HP
+    int m_playerMaxMP = 0;
+    int m_playerMP = 0; // current MP
+    int m_playerGold = 120;
+    int m_playerEnergy = 10;
+    int m_playerStrength = 3;
+    int m_playerAgility = 3;
+
+    void Initialize() {
+        m_playerHP = m_playerMaxHP;  // start full HP
+        m_playerMP = m_playerMaxMP;  // start full MP
+    }
 
     //spells?
     //strengh and agility 
@@ -72,6 +75,7 @@ public:
     int GetPlayerStrength() { return m_playerStrength; }
     int GetPlayerAgility() { return m_playerAgility; }
 
+    void Start() override;
     void Update() override;
     void Load([[maybe_unused]] const BlackBoxEngine::XMLElementParser parser) override;
     void Save([[maybe_unused]] BlackBoxEngine::XMLElementParser parser) override;
