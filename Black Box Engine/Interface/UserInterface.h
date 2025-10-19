@@ -71,11 +71,11 @@ namespace BlackBoxEngine
     public:
         struct InterfaceKeys
         {
-            KeyCode m_up = KeyCode::kUp;
-            KeyCode m_down = KeyCode::kDown;
-            KeyCode m_right = KeyCode::kRight;
-            KeyCode m_left = KeyCode::kLeft;
-            KeyCode m_select = KeyCode::kReturn;
+            KeyCode up = KeyCode::kUp;
+            KeyCode down = KeyCode::kDown;
+            KeyCode right = KeyCode::kRight;
+            KeyCode left = KeyCode::kLeft;
+            KeyCode select = KeyCode::kReturn;
         };
 
     private:
@@ -166,6 +166,10 @@ namespace BlackBoxEngine
         NodeType* MakeChildNode(const char* pName, BB_FRectangle dimensions, Args&&... args);
         InterfaceNode* GetChildNode(const char* pName);
         InterfaceNode* GetChildNode(uint32_t nameHash);
+        void RemoveAllChildNodes();
+        void RemoveChildNode( InterfaceNode* pChildNode );
+        void RemoveChildNode( const char* pName );
+        void RemoveChildNode( uint32_t nameHash );
 
         BB_FPoint GetScreenPosition();
 

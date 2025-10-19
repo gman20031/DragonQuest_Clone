@@ -393,7 +393,7 @@ void EncounterComponent::StartCombatUI()
 void EncounterComponent::EndCombatUI()
 {
     m_combatRoot.RemoveFromScreen();
-    m_pPlayer->GetComponent<InteractionComponent>()->m_uiActive = false;   
+    m_pPlayer->GetComponent<InteractionComponent>()->m_commandMenuActive = false;   
 }
 
 void EncounterComponent::OnCombatButtonPressed(const std::string& action)

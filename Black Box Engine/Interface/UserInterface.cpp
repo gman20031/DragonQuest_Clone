@@ -118,11 +118,18 @@ namespace BlackBoxEngine
 
     void UserInterface::SelectTargetedNode()
     {
+        if ( !m_pCursorPosition )
+            return;
         m_pCursorPosition->OnInteracted();
     }
 
     void UserInterface::DeSelectTargetNode()
     {
+        if ( !m_pCursorPosition )
+        {
+            BB_LOG( LogType::kWarning, "Attempted to deselect node without a target" );
+            return;
+        }
         m_pCursorPosition->OnInteractStop();
     }
 
@@ -136,12 +143,12 @@ namespace BlackBoxEngine
         m_pInputTarget->m_keyDown.ClearListeners();
         m_pInputTarget->m_keyUp.ClearListeners();
         
-        m_pInputTarget->m_keyDown.RegisterListener(m_keycodes.m_up,   [this]() {MoveCursor(kUp); });
-        m_pInputTarget->m_keyDown.RegisterListener(m_keycodes.m_down, [this]() {MoveCursor(kDown); });
-        m_pInputTarget->m_keyDown.RegisterListener(m_keycodes.m_right,[this]() {MoveCursor(kRight); });
-        m_pInputTarget->m_keyDown.RegisterListener(m_keycodes.m_left, [this]() {MoveCursor(kLeft); });
-        m_pInputTarget->m_keyDown.RegisterListener(m_keycodes.m_select, [this]() {SelectTargetedNode(); });
-        m_pInputTarget->m_keyUp.RegisterListener(m_keycodes.m_select, [this]() {DeSelectTargetNode(); });
+        m_pInputTarget->m_keyDown.RegisterListener(m_keycodes.up,   [this]() {MoveCursor(kUp); });
+        m_pInputTarget->m_keyDown.RegisterListener(m_keycodes.down, [this]() {MoveCursor(kDown); });
+        m_pInputTarget->m_keyDown.RegisterListener(m_keycodes.right,[this]() {MoveCursor(kRight); });
+        m_pInputTarget->m_keyDown.RegisterListener(m_keycodes.left, [this]() {MoveCursor(kLeft); });
+        m_pInputTarget->m_keyDown.RegisterListener(m_keycodes.select, [this]() {SelectTargetedNode(); });
+        m_pInputTarget->m_keyUp.RegisterListener(m_keycodes.select, [this]() {DeSelectTargetNode(); });
     }
 
     void UserInterface::Start()
@@ -184,11 +191,11 @@ namespace BlackBoxEngine
 
     void UserInterface::SetInterfaceKeys(KeyCode up, KeyCode down, KeyCode right, KeyCode left, KeyCode select)
     {
-        m_keycodes.m_up = up;
-        m_keycodes.m_down = down;
-        m_keycodes.m_left = left;
-        m_keycodes.m_right = right;
-        m_keycodes.m_select = select;
+        m_keycodes.up = up;
+        m_keycodes.down = down;
+        m_keycodes.left = left;
+        m_keycodes.right = right;
+        m_keycodes.select = select;
         SetupKeysForInputTarget();
     }
 
@@ -251,8 +258,7 @@ namespace BlackBoxEngine
 
     InterfaceNode::~InterfaceNode()
     {
-        for (auto* pNode : m_childNodes)
-            delete pNode;
+        RemoveAllChildNodes();
     }
 
     void InterfaceNode::SetOffset(float x, float y)
@@ -325,6 +331,37 @@ namespace BlackBoxEngine
 
         // child node not attached
         return nullptr; 
+    }
+
+    void InterfaceNode::RemoveAllChildNodes()
+    {
+        for ( auto* pNode : m_childNodes )
+            delete pNode;
+        m_childNodes.clear();
+    }
+
+    void InterfaceNode::RemoveChildNode( InterfaceNode* pChildNode )
+    {
+        RemoveChildNode( pChildNode->m_nameHash );
+    }
+
+    void InterfaceNode::RemoveChildNode( const char* pName )
+    {
+        RemoveChildNode( StringHash( pName ) );
+    }
+
+    void InterfaceNode::RemoveChildNode( uint32_t nameHash )
+    {
+        for ( auto it = m_childNodes.begin() ; it != m_childNodes.end() ; ++it)
+        {
+            auto* pChildNode = *it;
+            if ( pChildNode->m_nameHash == nameHash )
+            {
+                delete pChildNode;
+                m_childNodes.erase( it );
+                return;
+            }
+        }
     }
 
     BB_FPoint InterfaceNode::GetScreenPosition()

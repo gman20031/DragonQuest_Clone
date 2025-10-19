@@ -13,6 +13,13 @@
 
 using namespace BlackBoxEngine;
 
+static constexpr float kMessageBoxWidth = 12 * 16;
+static constexpr float kMessageBoxHeight = 5 * 16;
+static constexpr float kStandardUITextSize = 28;
+
+static constexpr KeyCode kSelectkey = KeyCode::kX;
+static constexpr KeyCode kBackKey = KeyCode::kZ;
+
 InteractionComponent::InteractionComponent( BlackBoxEngine::Actor* pOwner )
     : Component(pOwner)
 {
@@ -20,6 +27,13 @@ InteractionComponent::InteractionComponent( BlackBoxEngine::Actor* pOwner )
     if ( !good )
     {
         BB_LOG( LogType::kError, "Failed to create command menu ui" );
+        return;
+    }
+    good = CreateMessageLogBox();
+    if ( !good )
+    {
+        BB_LOG( LogType::kError, "Failed to create message log menu ui" );
+        return;
     }
 
 }
@@ -42,11 +56,11 @@ void InteractionComponent::Start()
 
     // X = open UI
     m_keyDownCodes[0] = 
-        input->SubscribeToKey( KeyCode::kX, kKeyDown, [this]() { if ( !m_uiActive ) OpenUI(); } );
+        input->SubscribeToKey( KeyCode::kX, kKeyDown, [this]() { if ( !m_commandMenuActive ) OpenCommandUI(); } );
 
     // Z = close UI
     m_keyDownCodes[1] =
-        input->SubscribeToKey( KeyCode::kZ, kKeyDown, [this]() { if ( m_uiActive ) CloseUI(); } );
+        input->SubscribeToKey( KeyCode::kZ, kKeyDown, [this]() { if ( m_commandMenuActive ) CloseCommandUI(); } );
 }
 
 // -------------------------------------------------------------
@@ -94,49 +108,18 @@ void InteractionComponent::OnCollide(Actor* other)
 }
 
 // -------------------------------------------------------------
-// UI: Open/Close
-// -------------------------------------------------------------
-void InteractionComponent::OpenUI()
-{
-    if ( m_uiActive )
-        return;
-    m_uiActive = true;
-
-    BlackBoxManager::Get()->m_pMessagingManager->EnqueueMessage( kMessageUIOpen, m_pOwner);
-    BlackBoxManager::Get()->m_pAudioManager->PlaySound( "../Assets/Audio/32DragonQuest1-MenuButton.wav"  , 0.2f );
-
-    m_pCommandMenuRootNode.AddToScreen();
-
-    auto* input = BlackBoxManager::Get()->m_pInputManager;
-    input->SwapInputTargetToInterface( &m_pCommandMenuRootNode );
-}
-
-void InteractionComponent::CloseUI()
-{
-    m_pCommandMenuRootNode.RemoveFromScreen();
-    m_messageRoot.RemoveFromScreen();
-
-    BlackBoxManager::Get()->m_pInputManager->SwapInputToGame();
-
-    m_uiActive = false;
-    m_messageActive = false;
-    m_messageNode = nullptr;
-
-    BlackBoxManager::Get()->m_pMessagingManager->EnqueueMessage( kMessageUIClosed, m_pOwner );
-}
-
-
-// -------------------------------------------------------------
-// UI: Selection Menu
+// Creating UI 
 // -------------------------------------------------------------
 bool InteractionComponent::CreateCommandMenuUI()
 {
     using enum Direction;
 
-    static constexpr float kButtonWidth = 42.f;
-    static constexpr float kButtonHeight = 7.f;
-    static constexpr float kYPad = 3.f;
-    static constexpr float kXPad = 3.f;
+    static constexpr float kButtonWidth = 50.f;
+    static constexpr float kButtonHeight = 14.f;
+    static constexpr float kXStart = 16.f;
+    static constexpr float kYStart = 16.f;
+    static constexpr float kYPad = 16.f;
+    static constexpr float kXPad = 0.f;
     static constexpr int kButtonCount = 4;
     static constexpr int kButtonGridWidth = 2;
     static constexpr int kButtonGridHeight = kButtonCount / kButtonGridWidth;
@@ -146,7 +129,7 @@ bool InteractionComponent::CreateCommandMenuUI()
     auto gridIndex = []( int x, int y ) { return x + (y * kButtonGridHeight); };
 
     // Offset menu
-    m_pCommandMenuRootNode.GetRoot()->SetOffset( 88, 16 );
+    m_pCommandMenuRootNode.GetRoot()->SetOffset( 80, 16 );
 
     // Highlighter
     auto* highlighter = m_pCommandMenuRootNode.GetHighlight();
@@ -184,7 +167,7 @@ bool InteractionComponent::CreateCommandMenuUI()
     // Text labels
     InterfaceText::Paremeters textParams{
         .pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf",
-        .textSize = 16,
+        .textSize = kStandardUITextSize,
         .color = ColorPresets::white
     };
 
@@ -202,8 +185,8 @@ bool InteractionComponent::CreateCommandMenuUI()
         std::string name = actions[i];
         name += +"_button";
 
-        rect.x = kXPad + x * (kXPad + kButtonWidth);
-        rect.y = kYPad + y * (kYPad + kButtonHeight);
+        rect.x = kXStart + x * (kXPad + kButtonWidth);
+        rect.y = kYStart + y * (kYPad + kButtonHeight);
         btnParams.callbackFunction = [this, i, actionStr = actions[i]]() { OnButtonPressed( actionStr ); };
         nodes[i] = pBackground->MakeChildNode<InterfaceButton>( name.c_str(), rect, btnParams );
 
@@ -230,15 +213,80 @@ bool InteractionComponent::CreateCommandMenuUI()
         }
     }
 
-    m_pCommandMenuRootNode.SetInterfaceKeys( kCommandKeys );
+    m_pCommandMenuRootNode.SetInterfaceKeys( UserInterface::InterfaceKeys{
+            .select = kSelectkey
+    } );
 
     highlighter->SetTarget( nodes[0] );
     m_pCommandMenuRootNode.SetCursorTarget( nodes[0] );
 
     auto* inputTarget = m_pCommandMenuRootNode.GetInputTarget();
-    inputTarget->m_keyDown.RegisterListener( KeyCode::kZ, [this]() { CloseUI(); } );
+    inputTarget->m_keyDown.RegisterListener( kBackKey, [this]() { CloseCommandUI(); } );
 
     return true;
+}
+
+bool InteractionComponent::CreateMessageLogBox()
+{
+    static constexpr float kMessageBoxStartX = 2 * 16;
+    static constexpr float kMessageBoxStartY = 9 * 16;
+
+    static constexpr BB_FRectangle bgRect{0, 0, kMessageBoxWidth, kMessageBoxHeight};
+    static constexpr InterfaceTexture::TextureInfo bgInfo{
+        .pTextureFile = "../Assets/UI/BottomTextBox.png",
+        .useFullImage = true
+    };
+    m_messageRootInterface.SetInterfaceKeys( UserInterface::InterfaceKeys{
+        .select = kSelectkey
+     } );
+    
+    m_messageRootInterface.GetRoot()->SetOffset( kMessageBoxStartX, kMessageBoxStartY );
+
+    m_pMessageBackgroundNode = m_messageRootInterface.AddNode<InterfaceTexture>( "ActionMessage_BG", bgRect, bgInfo );
+
+    InterfaceButton::ButtonParams button{
+        .usable = true,
+        .color = {0,0,0,0},
+        .targetedColor = {0,0,0,0},
+        .interactColor = {0,0,0,0},
+        .callbackFunction = [this]() {  DismissActionMessage(); }
+    };
+    auto* pButton = m_messageRootInterface.AddNode<InterfaceButton>( "RemoveMessageButton", {0,0,0,0}, button );
+
+    m_messageRootInterface.SetCursorTarget( pButton );
+
+    return true;
+}
+
+// -------------------------------------------------------------
+// UI: Open/Close
+// -------------------------------------------------------------
+void InteractionComponent::OpenCommandUI()
+{
+    if ( m_commandMenuActive )
+        return;
+    m_commandMenuActive = true;
+
+    BlackBoxManager::Get()->m_pAudioManager->PlaySound( "../Assets/Audio/32DragonQuest1-MenuButton.wav", 0.2f );
+
+    m_pCommandMenuRootNode.AddToScreen();
+
+    auto* input = BlackBoxManager::Get()->m_pInputManager;
+    input->SwapInputTargetToInterface( &m_pCommandMenuRootNode );
+    BlackBoxManager::Get()->m_pMessagingManager->EnqueueMessage( kMessageUIOpen, m_pOwner );
+}
+
+void InteractionComponent::CloseCommandUI()
+{
+    m_pCommandMenuRootNode.RemoveFromScreen();
+    m_messageRootInterface.RemoveFromScreen();
+
+    BlackBoxManager::Get()->m_pInputManager->SwapInputToGame();
+
+    m_commandMenuActive = false;
+    m_messageActive = false;
+
+    BlackBoxManager::Get()->m_pMessagingManager->EnqueueMessage( kMessageUIClosed, m_pOwner );
 }
 
 // -------------------------------------------------------------
@@ -246,36 +294,42 @@ bool InteractionComponent::CreateCommandMenuUI()
 // -------------------------------------------------------------
 void InteractionComponent::ShowActionMessage(const std::string& text)
 {
-    if (m_messageActive) return;
-
+    if (m_messageActive)
+        return;
     m_messageActive = true;
 
-    constexpr BB_FRectangle bgRect{ 60, 60, 104, 24 };
-    InterfaceTexture::TextureInfo bgInfo{
-        .pTextureFile = "../Assets/UI/BottomTextBox.png",
-        .spriteDimensions = {16, 16},
-        .useFullImage = true
+    m_pMessageBackgroundNode->RemoveAllChildNodes();
+
+    BB_FRectangle txtRect{ 16, 8, kMessageBoxWidth - 16, kMessageBoxHeight - 16};
+    InterfaceText::Paremeters params
+    {
+        .pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf",
+        .pText = text.c_str(),
+        .textSize = kStandardUITextSize,
+        .color = ColorPresets::white,
     };
-    m_messageRoot.AddNode<InterfaceTexture>("ActionMessage_BG", bgRect, bgInfo);
-
-    BB_FRectangle txtRect{ 72.f, 70.f, 100.f, 20.f };
-    InterfaceText::Paremeters params; // create default struct
-
-    params.pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf";
-    params.textSize = 16;
-    params.color = ColorPresets::white;
-    params.pText = text.c_str();
-
-    m_messageNode = m_messageRoot.AddNode<InterfaceText>("ActionMessage_Text", txtRect, params);
-    m_messageRoot.AddToScreen();
+    m_pMessageBackgroundNode->MakeChildNode<InterfaceText>( "message_log_text", txtRect, params );
+    
+    m_messageRootInterface.AddToScreen();
+    BlackBoxManager::Get()->m_pInputManager->SwapInputTargetToInterface( &m_messageRootInterface );
+    BlackBoxManager::Get()->m_pMessagingManager->EnqueueMessage( kMessageUIOpen, m_pOwner );
 }
 
 void InteractionComponent::DismissActionMessage()
 {
-    if (!m_messageActive) return;
-    m_messageRoot.RemoveFromScreen();
-    m_messageNode = nullptr;
+    if (!m_messageActive) 
+        return;
+
+    m_pMessageBackgroundNode->RemoveAllChildNodes();
+    m_messageRootInterface.RemoveFromScreen();
+
+    if ( m_commandMenuActive )
+        BlackBoxManager::Get()->m_pInputManager->SwapInputTargetToInterface( &m_pCommandMenuRootNode );
+    else
+        BlackBoxManager::Get()->m_pInputManager->SwapInputToGame();
+
     m_messageActive = false;
+    BlackBoxManager::Get()->m_pMessagingManager->EnqueueMessage( kMessageUIClosed, m_pOwner );
 }
 
 // -------------------------------------------------------------
@@ -293,27 +347,27 @@ void InteractionComponent::OnButtonPressed(const std::string& action)
     if (it != kActionMap.end())
         (this->*(it->second))();
     else
-        ShowActionMessage("Unknown action.");
+        ShowActionMessage("\'Unknown action.\'");
 }
 
 void InteractionComponent::HandleTalk()
 {
     if (m_pCurrentTalk)
-        ShowActionMessage("Trading with Inn.");
+        ShowActionMessage("\'Trading with Inn.\'");
     else
-        ShowActionMessage("There is no one there.");
+        ShowActionMessage("\'There is no one there.\'");
 }
 
 void InteractionComponent::HandleStair()
 {
     if (m_pCurrentStair)
     {
-        CloseUI();
+        CloseCommandUI();
         m_didMove = true;
         m_pCurrentStair->OnStairUsed(m_playerActor);
     }
     else
-        ShowActionMessage("Thou canst not go down.");
+        ShowActionMessage("\'Thou canst not go down.\'");
 }
 
 void InteractionComponent::HandleTake()
@@ -322,10 +376,10 @@ void InteractionComponent::HandleTake()
     {
         //CloseUI();
         //m_didMove = true;
-        ShowActionMessage("You found a key.");
+        ShowActionMessage("\'You found a key.\'");
     }
     else
-        ShowActionMessage("There is nothing to take here.");
+        ShowActionMessage("\'There is nothing to take here.\'");
 }
 
 // -------------------------------------------------------------
