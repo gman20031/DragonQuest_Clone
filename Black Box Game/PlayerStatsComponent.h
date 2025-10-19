@@ -18,6 +18,7 @@ class BlackBoxGame;
 class PlayerStatsComponent : public BlackBoxEngine::Component
 {
     GENERATE_ID("PlayerStatsComponent");
+    friend class InteractionComponent;
 
     //THIS NEEDS TO BE SET UP ACCORDINGLY 
     int m_playerLevel = 0;

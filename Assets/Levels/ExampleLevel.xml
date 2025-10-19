@@ -93,7 +93,7 @@
     </Component>
 	<Component Name="MusicPlayer">
 		<RunOnStart>true</RunOnStart>
-		<Volume>0.2</Volume>
+		<Volume>0.4</Volume>
 		<AudioFile>../Assets/Audio/05DragonQuest1-KingdomofAlefgard.wav</AudioFile>
 	</Component>
 </Actor>

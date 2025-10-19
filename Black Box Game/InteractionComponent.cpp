@@ -1,21 +1,35 @@
 ﻿#include "InteractionComponent.h"
-#include "../Black Box Engine/Actors/ActorManager.h"
-#include "../Black Box Engine/BlackBoxManager.h"
-#include "../Black Box Engine/System/Delay.h"
+
+#include <Actors/ActorManager.h>
+#include <BlackBoxManager.h>
+#include <System/Delay.h>
+
 #include "BlackBoxGame.h"
 #include "PlayerMovementComponent.h"
 #include "StairComponent.h"
 #include "TileSystem/EncounterComponent.h"
 #include "PlayerStatsComponent.h"
+#include "GameMessages.h"
 
 using namespace BlackBoxEngine;
 
+InteractionComponent::InteractionComponent( BlackBoxEngine::Actor* pOwner )
+    : Component(pOwner)
+{
+    bool good = CreateCommandMenuUI();
+    if ( !good )
+    {
+        BB_LOG( LogType::kError, "Failed to create command menu ui" );
+    }
+
+}
+
 InteractionComponent::~InteractionComponent()
 {
-    auto* input = BlackBoxManager::Get()->m_pInputManager;
+    auto* pInput = BlackBoxManager::Get()->m_pInputManager;
     using enum InputManager::InputType;
-    for (auto id : m_keyDownCodes)
-        input->UnsubscribeKey(id, kKeyDown);
+    for ( auto id : m_keyDownCodes )
+        pInput->UnsubscribeKey( id, kKeyDown );
 }
 
 // -------------------------------------------------------------
@@ -27,14 +41,12 @@ void InteractionComponent::Start()
     using enum InputManager::InputType;
 
     // X = open UI
-    m_keyDownCodes.emplace_back(
-        input->SubscribeToKey(KeyCode::kX, kKeyDown, [this]() { if (!m_uiActive) OpenUI(); })
-    );
+    m_keyDownCodes[0] = 
+        input->SubscribeToKey( KeyCode::kX, kKeyDown, [this]() { if ( !m_uiActive ) OpenUI(); } );
 
     // Z = close UI
-    m_keyDownCodes.emplace_back(
-        input->SubscribeToKey(KeyCode::kZ, kKeyDown, [this]() { if (m_uiActive) CloseUI(); })
-    );
+    m_keyDownCodes[1] =
+        input->SubscribeToKey( KeyCode::kZ, kKeyDown, [this]() { if ( m_uiActive ) CloseUI(); } );
 }
 
 // -------------------------------------------------------------
@@ -86,22 +98,22 @@ void InteractionComponent::OnCollide(Actor* other)
 // -------------------------------------------------------------
 void InteractionComponent::OpenUI()
 {
-    auto* playerHUD = m_pOwner->GetComponent<PlayerStatsComponent>();
-    if (!playerHUD) return;
-
-    if (playerHUD->m_hudVisible)
-        playerHUD->HideHUD();
-
-    SelectionMenu();
+    if ( m_uiActive )
+        return;
     m_uiActive = true;
 
-    if (auto* player = m_pOwner->GetComponent<PlayerMovementComponent>())
-        player->SetAnimationPaused(true);
+    BlackBoxManager::Get()->m_pMessagingManager->EnqueueMessage( kMessageUIOpen, m_pOwner);
+    BlackBoxManager::Get()->m_pAudioManager->PlaySound( "../Assets/Audio/32DragonQuest1-MenuButton.wav"  , 0.2f );
+
+    m_pCommandMenuRootNode.AddToScreen();
+
+    auto* input = BlackBoxManager::Get()->m_pInputManager;
+    input->SwapInputTargetToInterface( &m_pCommandMenuRootNode );
 }
 
 void InteractionComponent::CloseUI()
 {
-    m_interfaceRoot.RemoveFromScreen();
+    m_pCommandMenuRootNode.RemoveFromScreen();
     m_messageRoot.RemoveFromScreen();
 
     BlackBoxManager::Get()->m_pInputManager->SwapInputToGame();
@@ -110,108 +122,123 @@ void InteractionComponent::CloseUI()
     m_messageActive = false;
     m_messageNode = nullptr;
 
-    if (auto* player = m_pOwner->GetComponent<PlayerMovementComponent>())
-        player->SetAnimationPaused(false);
+    BlackBoxManager::Get()->m_pMessagingManager->EnqueueMessage( kMessageUIClosed, m_pOwner );
 }
+
 
 // -------------------------------------------------------------
 // UI: Selection Menu
 // -------------------------------------------------------------
-void InteractionComponent::SelectionMenu()
+bool InteractionComponent::CreateCommandMenuUI()
 {
-    using namespace BlackBoxEngine;
     using enum Direction;
 
-    constexpr float kButtonW = 64.f;
-    constexpr float kButtonH = 7.f;
-    constexpr float kYPad = 1.f;
-    constexpr int kButtonCount = 4;
+    static constexpr float kButtonWidth = 42.f;
+    static constexpr float kButtonHeight = 7.f;
+    static constexpr float kYPad = 3.f;
+    static constexpr float kXPad = 3.f;
+    static constexpr int kButtonCount = 4;
+    static constexpr int kButtonGridWidth = 2;
+    static constexpr int kButtonGridHeight = kButtonCount / kButtonGridWidth;
+
+    auto gridX = []( int i ) { return i % kButtonGridWidth; };
+    auto gridY = []( int i ) { return i / kButtonGridWidth; };
+    auto gridIndex = []( int x, int y ) { return x + (y * kButtonGridHeight); };
 
     // Offset menu
-    m_interfaceRoot.GetRoot()->SetOffset(20, 20);
+    m_pCommandMenuRootNode.GetRoot()->SetOffset( 88, 16 );
 
     // Highlighter
-    auto* highlighter = m_interfaceRoot.GetHighlight();
-    highlighter->SetParameters({
+    auto* highlighter = m_pCommandMenuRootNode.GetHighlight();
+    if ( !highlighter )
+    {
+        BB_LOG( LogType::kError, "UI highlighter not found" );
+        return false;
+    }
+
+    highlighter->SetParameters( {
         .mode = InterfaceHighlighter::kModeIcon,
         .pSpriteFile = "../Assets/UI/Icons/IconSpriteFile.xml",
         .iconOffset{-5, -2},
         .iconSize{4, 7}
-        });
+        } );
 
     // Background box
-    BB_FRectangle bgRect{ -5, -5, kButtonW, (kButtonH + kYPad) * kButtonCount + 10 };
+    static constexpr int kBackgroundWidth = 8 * 16;
+    static constexpr int kBackgroundHeight = 6 * 16;
+    BB_FRectangle bgRect{0, 0 , kBackgroundWidth, kBackgroundHeight};
     InterfaceTexture::TextureInfo bgInfo{
         .pTextureFile = "../Assets/UI/SelectionBox.png",
-        .spriteDimensions = {16, 16},
+        .spriteDimensions = {kBackgroundWidth, kBackgroundHeight},
         .useFullImage = true
     };
-    m_interfaceRoot.AddNode<InterfaceTexture>("UI_Background", bgRect, bgInfo);
+    auto* pBackground = m_pCommandMenuRootNode.AddNode<InterfaceTexture>( "UI_Background", bgRect, bgInfo );
 
     // Button setup
     InterfaceButton::ButtonParams btnParams{
         .usable = true,
-        .color = ColorValue(0, 0, 0, 0),
-        .targetedColor = ColorValue(0, 0, 0, 0),
-        .interactColor = ColorValue(0, 0, 0, 0)
+        .color = ColorValue( 0, 0, 0, 0 ),
+        .targetedColor = ColorValue( 0, 0, 0, 0 ),
+        .interactColor = ColorValue( 0, 0, 0, 0 )
     };
-
-    const char* actions[kButtonCount] = { "talk", "stair", "take", "item" };
-    InterfaceNode* nodes[kButtonCount] = {};
-
-    BB_FRectangle rect{ 0, 0, kButtonW, kButtonH };
-
-    for (int i = 0; i < kButtonCount; ++i)
-    {
-        rect.y = i * (kButtonH + kYPad);
-        btnParams.callbackFunction = [this, i, actions]() { OnButtonPressed(actions[i]); };
-
-        auto* btn = m_interfaceRoot.AddNode<InterfaceButton>(
-            ("button_" + std::to_string(i)).c_str(), rect, btnParams
-        );
-        nodes[i] = btn;
-
-        if (i > 0)
-        {
-            btn->SetAdjacentNode(kUp, nodes[i - 1]);
-            nodes[i - 1]->SetAdjacentNode(kDown, btn);
-        }
-    }
-
-    // Wrap navigation
-    nodes[0]->SetAdjacentNode(kUp, nodes[kButtonCount - 1]);
-    nodes[kButtonCount - 1]->SetAdjacentNode(kDown, nodes[0]);
-
-    // Add text labels
+    // Text labels
     InterfaceText::Paremeters textParams{
         .pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf",
         .textSize = 16,
         .color = ColorPresets::white
     };
 
-    const char* labels[kButtonCount] = { "Talk", "Stair", "Take", "Item" };
-    rect.x = rect.y = 0;
-    for (int i = 0; i < kButtonCount; ++i)
+    static constexpr const char* labels[kButtonCount] = {"Talk", "Stair", "Take", "Item"};
+    static constexpr const char* actions[kButtonCount] = {"talk", "stair", "take", "item"};
+    InterfaceNode* nodes[kButtonCount] = {};
+
+    BB_FRectangle rect{0, 0, kButtonWidth, kButtonHeight};
+
+    for ( int i = 0; i < kButtonCount; ++i )
     {
+        int x = gridX( i );
+        int y = gridY( i );
+
+        std::string name = actions[i];
+        name += +"_button";
+
+        rect.x = kXPad + x * (kXPad + kButtonWidth);
+        rect.y = kYPad + y * (kYPad + kButtonHeight);
+        btnParams.callbackFunction = [this, i, actionStr = actions[i]]() { OnButtonPressed( actionStr ); };
+        nodes[i] = pBackground->MakeChildNode<InterfaceButton>( name.c_str(), rect, btnParams );
+
+        rect.x = 0;
+        rect.y = 0;
+        name += "_label";
         textParams.pText = labels[i];
-        nodes[i]->MakeChildNode<InterfaceText>(
-            ("button_text_" + std::to_string(i)).c_str(), rect, textParams
-        );
+        nodes[i]->MakeChildNode<InterfaceText>(name.c_str(), rect, textParams);
+
+        if ( i > 0 )
+        {
+            if ( x > 0 )
+            {
+                int leftNodeIndex = gridIndex( x - 1, y );
+                nodes[i]->SetAdjacentNode( kLeft, nodes[leftNodeIndex] );
+                nodes[leftNodeIndex]->SetAdjacentNode( kRight, nodes[i] );
+            }
+            if ( y > 0 )
+            {
+                int aboveIndex = gridIndex( x, y - 1 );
+                nodes[i]->SetAdjacentNode( kUp, nodes[aboveIndex] );
+                nodes[aboveIndex]->SetAdjacentNode( kDown, nodes[i] );
+            }
+        }
     }
 
-    highlighter->SetTarget(nodes[0]);
-    m_interfaceRoot.SetCursorTarget(nodes[0]);
-    m_interfaceRoot.AddToScreen();
+    m_pCommandMenuRootNode.SetInterfaceKeys( kCommandKeys );
 
-    auto* input = BlackBoxManager::Get()->m_pInputManager;
-    input->SwapInputTargetToInterface(&m_interfaceRoot);
+    highlighter->SetTarget( nodes[0] );
+    m_pCommandMenuRootNode.SetCursorTarget( nodes[0] );
 
-    auto* inputTarget = m_interfaceRoot.GetInputTarget();
-    inputTarget->m_keyDown.RegisterListener(KeyCode::kZ, [this]() { CloseUI(); });
-    inputTarget->m_keyDown.RegisterListener(KeyCode::kX, [this]() {
-        if (m_messageActive) DismissActionMessage();
-        else if (!m_uiActive) OpenUI();
-        });
+    auto* inputTarget = m_pCommandMenuRootNode.GetInputTarget();
+    inputTarget->m_keyDown.RegisterListener( KeyCode::kZ, [this]() { CloseUI(); } );
+
+    return true;
 }
 
 // -------------------------------------------------------------
@@ -272,11 +299,7 @@ void InteractionComponent::OnButtonPressed(const std::string& action)
 void InteractionComponent::HandleTalk()
 {
     if (m_pCurrentTalk)
-    {
-        //CloseUI();
-        //m_didMove = true;
         ShowActionMessage("Trading with Inn.");
-    }
     else
         ShowActionMessage("There is no one there.");
 }
@@ -314,7 +337,8 @@ void InteractionComponent::OnLevelTransitionStart()
     if (!player) return;
 
     m_isChangingLevel = true;
-    if (player->m_hudVisible) player->HideHUD();
+    if (player->m_hudVisible) 
+        player->HideHUD();
 
     if (m_delayedDisplayId != 0)
     {

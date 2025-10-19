@@ -1,10 +1,12 @@
 #include "PlayerMovementComponent.h"
-#include "../Black Box Engine/BlackBoxManager.h"
 
-#include "../Black Box Engine/Actors/Collision/CollisionManager.h"
-#include "../Black Box Engine/Actors/EngineComponents/MovementBlocker.h"
+#include <BlackBoxManager.h>
+#include <Actors/Collision/CollisionManager.h>
+#include <Actors/EngineComponents/MovementBlocker.h>
+
 #include "TileSystem/TileInfoComponent.h"
 #include "TileSystem/EncounterComponent.h"
+#include "GameMessages.h"
 
 using namespace BlackBoxEngine;
 
@@ -32,6 +34,8 @@ void PlayerMovementComponent::Start()
 {
     m_pTransform = m_pOwner->GetComponent<TransformComponent>();
     m_pMover = m_pOwner->GetComponent<MoverComponent>();
+
+    AddUIMessageCallbacks();
 
     m_pAnimatedSprite = m_pOwner->GetComponent<AnimatedSpriteComponent>();
     if (!m_pAnimatedSprite)
@@ -141,7 +145,6 @@ void PlayerMovementComponent::SetAnimationPaused(bool paused)
 {
     if (paused)
         m_pAnimatedSprite->Sprite().StopAnimating();
-
     else
         m_pAnimatedSprite->Sprite().AnimateSprite(2, 1);
 }
@@ -224,6 +227,30 @@ void PlayerMovementComponent::CheckForEncounters()
 
 }
 
+void PlayerMovementComponent::AddUIMessageCallbacks()
+{
+    BlackBoxManager::Get()->m_pMessagingManager->RegisterListener( kMessageUIOpen,
+        [this]( [[maybe_unused]]Message& message )
+        {
+            StopMoving();
+            ++m_uiCount;
+            m_pAnimatedSprite->Sprite().StopAnimating();
+        }
+    );
+
+    BlackBoxManager::Get()->m_pMessagingManager->RegisterListener( kMessageUIClosed,
+        [this]( [[maybe_unused]] Message& message )
+        {
+            --m_uiCount;
+            if ( m_uiCount <= 0 )
+            {
+                m_uiCount = 0;
+                SetAnimationPaused( false );
+            }
+        }
+    );
+}
+
 void PlayerMovementComponent::SetTargetTile()
 {
     if (!m_pTileMap)
@@ -262,5 +289,4 @@ void PlayerMovementComponent::SetTargetTile()
 void PlayerMovementComponent::StopMoving()
 {
     m_stopMoving = true;
-    
 }

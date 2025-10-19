@@ -207,6 +207,7 @@ copy "$(solutiondir)Black Box Engine\libraries\SDL3-3.3\lib\x64\SDL3_mixer.dll" 
   <ItemGroup>
     <ClInclude Include="BlackBoxGame.h" />
     <ClInclude Include="ExampleComponent.h" />
+    <ClInclude Include="GameMessages.h" />
     <ClInclude Include="InteractionComponent.h" />
     <ClInclude Include="InventoryComponent.h" />
     <ClInclude Include="PlayerMovementComponent.h" />

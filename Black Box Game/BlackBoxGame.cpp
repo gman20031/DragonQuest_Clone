@@ -12,8 +12,8 @@ void BlackBoxGame::InitGame()
     m_pEngineManager->m_pActorManager->LoadLevel("../Assets/Levels/ExampleLevel.xml");
 
     auto* pTransform = m_pEngineManager->m_pActorManager->GetActor(3)->GetComponent<TransformComponent>();
-    pTransform->m_position.x = 800;
-    pTransform->m_position.y = 688;
+    pTransform->m_position.x = 832;
+    pTransform->m_position.y = 816;
 
     m_pEngineManager->SetGameUpdate( [this]() { GameUpdate(); } );
 }

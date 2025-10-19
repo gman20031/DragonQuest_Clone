@@ -26,6 +26,8 @@ namespace BlackBoxEngine
         : InterfaceNode(pParent, pName, dimensions)
         , m_params(params)
     {
+        assert( params.pText );
+        assert( params.pFontFile );
         m_pText = ResourceManager::GetText(params.pText, params.pFontFile, params.textSize);
         auto zoom = BlackBoxManager::Get()->m_pMainCamera->GetCameraWindowZoom(BlackBoxManager::Get()->GetWindow());
         m_pText->SetTextWrapWidthPixels(static_cast<int>(dimensions.w * zoom.x));

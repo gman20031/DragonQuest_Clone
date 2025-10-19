@@ -11,6 +11,8 @@
 class PlayerMovementComponent : public BlackBoxEngine::Component
 {
     GENERATE_ID("PlayerMovementComponent");
+    friend class PlayerStatsComponent;
+    friend class EncounterComponent;
 
     BlackBoxEngine::MoverComponent* m_pMover = nullptr;
     BlackBoxEngine::TransformComponent* m_pTransform = nullptr;
@@ -30,7 +32,6 @@ class PlayerMovementComponent : public BlackBoxEngine::Component
     bool m_isMoving = false;
     bool m_stopMoving = false;
     BlackBoxEngine::FVector2 m_direction{ 0, 0 };
-    BlackBoxEngine::FVector2 m_lastDirection{ 0, 0 };
     BlackBoxEngine::FVector2 m_targetPosition; // in world coordinates
 
     bool m_isContinuous = false;
@@ -39,6 +40,7 @@ class PlayerMovementComponent : public BlackBoxEngine::Component
 
     BlackBoxEngine::AnimatedSpriteComponent* m_pAnimatedSprite = nullptr;
 
+    int32_t m_uiCount = 0;
 
 private:
     void SetTargetTile();
@@ -46,7 +48,8 @@ private:
     void TryMove(const BlackBoxEngine::FVector2& direction);
     void SetTextureForDirection(const BlackBoxEngine::FVector2& direction);
     void CheckForEncounters();
-   
+    void AddUIMessageCallbacks();
+
 public:
     PlayerMovementComponent(BlackBoxEngine::Actor* pOwner);
     virtual ~PlayerMovementComponent();

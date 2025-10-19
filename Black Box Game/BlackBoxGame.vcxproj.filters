@@ -35,5 +35,6 @@
     <ClInclude Include="TileSystem\EncounterComponent.h" />
     <ClInclude Include="PlayerStatsComponent.h" />
     <ClInclude Include="InventoryComponent.h" />
+    <ClInclude Include="GameMessages.h" />
   </ItemGroup>
 </Project>

@@ -24,27 +24,38 @@ class BlackBoxGame;
 class InteractionComponent : public BlackBoxEngine::Component
 {
     GENERATE_ID("InteractionComponent");
+    friend class PlayerStatsComponent;
+    friend class EncounterComponent;
+
+    static constexpr BlackBoxEngine::UserInterface::InterfaceKeys kCommandKeys
+    {
+        .m_select = BlackBoxEngine::KeyCode::kX,
+    };
+
+    // -- Open / Close UI keyCodes;
+    uint64_t m_keyDownCodes[2];
 
     // --- UI Roots ---
-    BlackBoxEngine::UserInterface m_interfaceRoot;
+    BlackBoxEngine::UserInterface m_pCommandMenuRootNode;
     BlackBoxEngine::UserInterface m_messageRoot;
     BlackBoxEngine::UserInterface m_hudRoot;
     BlackBoxEngine::InterfaceText* m_hudStatsText = nullptr;
-
-
   
     BlackBoxEngine::InterfaceText* m_hudHeaderText = nullptr;
-
     BlackBoxEngine::InterfaceNode* m_hudStatsNode = nullptr;
-    // --- Message Box ---
+
     BlackBoxEngine::InterfaceText* m_messageNode = nullptr;
+
+    BlackBoxEngine::InterfaceText* m_hudText_Level = nullptr;
+    BlackBoxEngine::InterfaceText* m_hudText_HP = nullptr;
+    BlackBoxEngine::InterfaceText* m_hudText_MP = nullptr;
+    BlackBoxEngine::InterfaceText* m_hudText_Gold = nullptr;
+    BlackBoxEngine::InterfaceText* m_hudText_Energy = nullptr;
+
+    // --- Message Box ---
     bool m_messageActive = false;
 
-    // --- HUD ---
-    //bool m_hudVisible = false;
-
     // --- Actor references ---
-    BlackBoxEngine::Actor* m_currentActor = nullptr;
     BlackBoxEngine::Actor* m_playerActor = nullptr;
 
     // --- Interaction targets ---
@@ -59,20 +70,11 @@ class InteractionComponent : public BlackBoxEngine::Component
     bool m_needsHUDRefresh = false;
     bool m_forceHUDVisible = false;
 
-    bool m_isCombatActive = false;
-
     uint64_t m_delayedDisplayId = 0;
-    std::vector<uint64_t> m_keyDownCodes;
 
-
-    BlackBoxEngine::InterfaceText* m_hudText_Level = nullptr;
-    BlackBoxEngine::InterfaceText* m_hudText_HP = nullptr;
-    BlackBoxEngine::InterfaceText* m_hudText_MP = nullptr;
-    BlackBoxEngine::InterfaceText* m_hudText_Gold = nullptr;
-    BlackBoxEngine::InterfaceText* m_hudText_Energy = nullptr;
 
 public:
-    InteractionComponent(BlackBoxEngine::Actor* pOwner) : Component(pOwner) {}
+    InteractionComponent( BlackBoxEngine::Actor* pOwner );
     virtual ~InteractionComponent();
 
     // --- Engine Overrides ---
@@ -84,7 +86,6 @@ public:
     void Load(const BlackBoxEngine::XMLElementParser parser) override;
 
     // --- Player Linking ---
-    void SetCurrentActor(BlackBoxEngine::Actor* actor) { m_currentActor = actor; }
     void SetPlayerActor(BlackBoxEngine::Actor* actor) { m_playerActor = actor; }
 
     // --- Interaction Hooks ---
@@ -98,7 +99,7 @@ public:
 
     //void HideHUD();
 
-    bool IsCombatActive() const { return m_isCombatActive; }
+    //bool IsCombatActive() const { return m_isCombatActive; }
     //void RefreshHUD();
     //void UpdateHUDNumbers();
 
@@ -107,7 +108,7 @@ private:
     // --- UI helpers ---
     void OpenUI();
     void CloseUI();
-    void SelectionMenu();
+    bool CreateCommandMenuUI();
 
     //void DisplayHUD();
 

@@ -28,6 +28,8 @@ namespace BlackBoxEngine
         void Stop( int64_t fadeOutFrames = 0);
         void SetVolume( float newVolume );
 
+        int64_t RemainingMiliseconds();
+
         void Resume();
         void Pause();
     };
@@ -46,7 +48,7 @@ namespace BlackBoxEngine
         AudioManager();
         ~AudioManager();
         
-        bool PlaySound(const char* pFilePath);
+        bool PlaySound(const char* pFilePath , float volumeOverride = -1, uint64_t milisecondLengthOverride = 0);
 
         AudioTrack* AddAudioTrack( const char* pAudioFile );
         AudioTrack* AddAudioTrack();

@@ -17,6 +17,7 @@ namespace BlackBoxEngine
             float textSize;
             ColorValue color = ColorPresets::white;
         };
+
     private:
         Paremeters m_params;
         std::shared_ptr<BB_Text> m_pText;

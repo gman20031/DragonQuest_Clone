@@ -1,6 +1,7 @@
 #include "AudioManager.h"
 
 #include <SDL3_mixer/SDL_mixer.h>
+#include "../System/Delay.h"
 
 namespace BlackBoxEngine
 {
@@ -71,6 +72,11 @@ namespace BlackBoxEngine
         MIX_SetTrackGain( m_pTrack, newVolume );
     }
 
+    int64_t AudioTrack::RemainingMiliseconds()
+    {
+        return MIX_TrackFramesToMS( m_pTrack , MIX_GetTrackRemaining( m_pTrack ) );
+    }
+
     void AudioTrack::Resume()
     {
         MIX_ResumeTrack( m_pTrack );
@@ -104,10 +110,28 @@ namespace BlackBoxEngine
         SDL_QuitSubSystem( SDL_INIT_AUDIO );
     }
 
-    bool AudioManager::PlaySound( const char* pFilePath )
+    bool AudioManager::PlaySound( const char* pFilePath , float volumeOverride, uint64_t milisecondLengthOverride )
     {
-        MIX_Audio* pAudio = MIX_LoadAudio( m_pAudioMixer, pFilePath, true );
-        return MIX_PlayAudio( m_pAudioMixer, pAudio );
+        AudioTrack* pSoundEffect = new AudioTrack( 0, m_pAudioMixer );
+        pSoundEffect->SetAudioFile( pFilePath );
+        pSoundEffect->Play();
+        
+        uint64_t milisecondCallback = pSoundEffect->RemainingMiliseconds();
+        if ( milisecondLengthOverride > 0 )
+            milisecondCallback = milisecondLengthOverride;
+        if ( volumeOverride >= 0 )
+            pSoundEffect->SetVolume( volumeOverride );
+
+        DelayedCallbackManager::AddCallback( 
+            [pSoundEffect ]()
+            {
+                pSoundEffect->Stop();
+                delete pSoundEffect;
+            }
+            , std::chrono::milliseconds(milisecondCallback)
+        );
+
+        return true;
     }
 
     AudioTrack* AudioManager::SetMusicTrack( const char* pAudioFile )

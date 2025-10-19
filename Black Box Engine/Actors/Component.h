@@ -54,6 +54,6 @@ namespace BlackBoxEngine
 #define GENERATE_ID(name_c_string)	\
 public: static inline constexpr Component::Id s_id = BlackBoxEngine::StringHash(name_c_string);\
         static inline constexpr const char* s_name = name_c_string;\
-        virtual const char* Name() const override {return name_c_string;}
+        virtual const char* Name() const override {return name_c_string;} private:
 
 };

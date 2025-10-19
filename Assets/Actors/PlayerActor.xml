@@ -1,6 +1,6 @@
 <Actor Name="PlayerActor">
     <Component Name="PlayerMovementComponent">
-        <Speed>90</Speed>
+        <Speed>60</Speed>
         <TileMapID>0</TileMapID>
     </Component>
     <Component Name="TransformComponent">
