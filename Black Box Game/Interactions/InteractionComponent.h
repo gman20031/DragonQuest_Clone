@@ -6,17 +6,19 @@
 #include <vector>
 #include <array>
 
-#include "../Black Box Engine/BlackBoxManager.h"
-#include "../Black Box Engine/Input/InputManager.h"
-#include "../Black Box Engine/Math/FVector2.h"
+#include <BlackBoxManager.h>
+#include <Input/InputManager.h>
+#include <Math/FVector2.h>
 #include <Interface/UserInterface.h>
 #include <Interface/InterfaceButton.h>
 #include <Interface/InterfaceText.h>
 #include <Interface/InterfaceTexture.h>
+
 #include "StairComponent.h"
 #include "TalkComponent.h"
 #include "TakeComponent.h"
-#include "PlayerStatsComponent.h"
+
+#include "../PlayerStatsComponent.h"
 
 class BlackBoxGame;
 

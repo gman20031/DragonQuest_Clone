@@ -1,36 +1,15 @@
 #pragma once
 
+#include <BlackBoxManager.h>
 #include <Actors/Component.h>
 #include <Actors/Actor.h>
-#include <BlackBoxManager.h>
 #include <Interface/UserInterface.h>
 #include <Interface/InterfaceButton.h>
 #include <Interface/InterfaceText.h>
 #include <Interface/InterfaceTexture.h>
-#include "../Black Box Game/PlayerStatsComponent.h"
+#include <Math/Random.h>
 
-
-enum class EnemyType
-{
-    Slime,
-    RedSlime,
-    Drakee,
-    Ghost,
-    Magician,
-    Unknown
-};
-
-enum class BattleState
-{
-    WaitingForPlayer,
-    PlayerActing,
-    EnemyActing,
-    Victory,
-    Defeat,
-    Flee
-};
-
-class BlackBoxGame;
+#include "../PlayerStatsComponent.h"
 
 using namespace BlackBoxEngine;
 
@@ -38,38 +17,65 @@ class EncounterComponent : public BlackBoxEngine::Component
 {
     GENERATE_ID( "EncounterComponent" );
 
-    //bool m_render;
-
-    bool m_inEncounter = false;
-    BlackBoxEngine::Actor* m_currentEnemy = nullptr;
+    enum class EnemyType
+    {
+        Slime,
+        RedSlime,
+        Drakee,
+        Ghost,
+        Magician,
+        Unknown
+    };
+    enum class BattleState
+    {
+        WaitingForPlayer,
+        PlayerActing,
+        EnemyActing,
+        Victory,
+        Defeat,
+        Flee
+    };
 
     EnemyType m_type = EnemyType::Unknown;
+    BlackBoxEngine::Random::MachineXoshiro256 m_randomMachine;
+    
     BlackBoxEngine::UserInterface m_combatRoot;
-
+    BlackBoxEngine::InterfaceTexture* m_pMessageBackground = nullptr;
+    BlackBoxEngine::Actor* m_currentEnemy = nullptr;
     BlackBoxEngine::Actor* m_pPlayer = nullptr;
-public:
 
+    std::string m_spriteFile;
+    std::string m_name;
+    int m_hp = 10;
+    int m_attack = 2;
+    int m_defense = 1;
+    int m_xpReward = 3;
+    int m_goldReward = 2;
+    int m_agility = 0;
+
+    float m_patrolRadius = 0.0f;
+
+    bool m_inBattle = false;
+    bool m_inEncounter = false;
+    bool m_waitingForExit = false;
+    bool m_messageActive = false;
+public:
     BattleState m_battleState = BattleState::WaitingForPlayer;
 
-    void SetPlayer(BlackBoxEngine::Actor* pActor) { m_pPlayer = pActor; }
-
 public:
-    EncounterComponent( BlackBoxEngine::Actor* pOwner ) : Component( pOwner ) {};
+    EncounterComponent( BlackBoxEngine::Actor* pOwner );
     virtual ~EncounterComponent() = default;
 
     void StartEncounter(Actor* pOtherActor);
     void EndEncounter();
 
-    void Start() override;
     void Update() override;
     void Render() override {}
     void OnCollide([[maybe_unused]] BlackBoxEngine::Actor* pOtherActor) override {}
     void Load([[maybe_unused]] const BlackBoxEngine::XMLElementParser parser) override;
     void Save([[maybe_unused]] BlackBoxEngine::XMLElementParser parser) override;
 
-    // Enemy properties
-    //void Init(EnemyType type);
-
+private:
     const std::string& GetName() const { return m_name; }
     int GetHP() const { return m_hp; }
     int GetAttack() const { return m_attack; }
@@ -88,34 +94,13 @@ public:
     void TryToFlee();
 
     void StartCombatUI();
+    void CreateCommandButtons( InterfaceTexture* pBackground );
     void EndCombatUI();
     void OnCombatButtonPressed(const std::string& action);
-    float RandomFloat();
-
+    
     void ShowActionMessage(const std::string& text);
     void DismissActionMessage();
     void RespawnPlayer();
-private:
-
-    BlackBoxEngine::InterfaceText* m_messageNode = nullptr;
-    bool m_messageActive = false;
-    BlackBoxEngine::UserInterface m_messageRoot;
-    //thing should be based on the different type of enemies
-
-    //should i have also a variable for the percentage of encountering depending on are
-    std::string m_name;
-    int m_hp = 10;
-    int m_attack = 2;
-    int m_defense = 1;
-    int m_xpReward = 3;
-    int m_goldReward = 2;
-    int m_agility = 0;
-
-    std::string m_spriteFile;
-    float m_patrolRadius = 0.0f;
-
-    bool m_inBattle = false;
-    bool m_waitingForExit = false;
 
 
 };

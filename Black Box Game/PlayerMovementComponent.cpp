@@ -1,12 +1,16 @@
 #include "PlayerMovementComponent.h"
 
 #include <BlackBoxManager.h>
+#include <Actors/Actor.h>
 #include <Actors/Collision/CollisionManager.h>
 #include <Actors/EngineComponents/MovementBlocker.h>
 
 #include "TileSystem/TileInfoComponent.h"
-#include "TileSystem/EncounterComponent.h"
+#include "TileSystem/TileMapComponent.h"
+#include "interactions/InteractionComponent.h"
+#include "Encounters/EncounterComponent.h"
 #include "GameMessages.h"
+
 
 using namespace BlackBoxEngine;
 
@@ -151,17 +155,12 @@ void PlayerMovementComponent::SetAnimationPaused(bool paused)
 
 void PlayerMovementComponent::TryMove(const FVector2& direction)
 {
-    if (m_isMoving)
+    if ( m_isMoving )
         return; // Already moving; ignore input
-
-    // Block movement if combat UI is active
-    //if (m_pInteraction && m_pInteraction->IsCombatActive())
-    //    return;
 
     m_stopMoving = false;
     m_direction = direction;
     SetTargetTile();
-
 }
 
 void PlayerMovementComponent::SetTextureForDirection([[maybe_unused]]const BlackBoxEngine::FVector2& direction)

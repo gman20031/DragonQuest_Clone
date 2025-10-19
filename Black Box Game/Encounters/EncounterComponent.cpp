@@ -1,32 +1,61 @@
 ﻿#include "EncounterComponent.h"
 #include <Resources/ResourceManager.h>
 
-#include "EncounterHandler.h"
-#include "../Black Box Engine/Actors/ActorManager.h"
-#include "../Black Box Engine/BlackBoxManager.h"
-#include "../Black Box Engine/Actors/EngineComponents/SpriteComponent.h"
-#include "../Black Box Game/InteractionComponent.h"
-#include "../Black Box Game/PlayerMovementComponent.h"
-#include <format>
-
+#include <Actors/ActorManager.h>
+#include <BlackBoxManager.h>
+#include <Actors/EngineComponents/SpriteComponent.h>
 #include <Graphics/ScreenFader.h>
 #include <Actors/EngineComponents/TransformComponent.h>
 #include <System/Delay.h>
+#include <format>
+
+#include "../Interactions/InteractionComponent.h"
+#include "../PlayerMovementComponent.h"
+#include "../GameMessages.h"
+#include "EncounterHandler.h"
+
+static constexpr float kMessageBoxWidth = 12 * 16;
+static constexpr float kMessageBoxHeight = 5 * 16;
+static constexpr float kStandardUITextSize = 28;
+static constexpr KeyCode kSelectkey = KeyCode::kX;
+static constexpr KeyCode kBackKey = KeyCode::kZ;
 
 using namespace BlackBoxEngine;
 
-void EncounterComponent::Start()
+EncounterComponent::EncounterComponent( BlackBoxEngine::Actor* pOwner )
+    : Component( pOwner )
 {
+    m_randomMachine.Reset( std::time( 0 ) );
+
+    static constexpr float kMessageBoxStartX = 2 * 16;
+    static constexpr float kMessageBoxStartY = 9.5 * 16;
+
+    constexpr BB_FRectangle bgRect{kMessageBoxStartX, kMessageBoxStartY, kMessageBoxWidth, kMessageBoxHeight};
+    InterfaceTexture::TextureInfo bgInfo{
+        .pTextureFile = "../Assets/UI/BottomTextBox.png",
+        .useFullImage = true
+    };
+    m_pMessageBackground = m_combatRoot.AddNode<InterfaceTexture>( "ActionMessage_BG", bgRect, bgInfo );
+
+    m_combatRoot.SetInterfaceKeys( UserInterface::InterfaceKeys{
+            .select = kSelectkey
+    } );
 }
 
 void EncounterComponent::StartEncounter(Actor* pOtherActor)
 {
-  
-
     m_inBattle = true;
     BB_LOG(LogType::kMessage, "Enemy '%s' appeared! HP=%d", m_name.c_str(), m_hp);
+    
+    if ( !pOtherActor->GetComponent<PlayerStatsComponent>() )
+    {
+        BB_LOG( LogType::kError, "Actor passed into startEncounter, did not have player stat component" );
+        return;
+    }
 
-    SetPlayer(pOtherActor);
+    BlackBoxManager::Get()->m_pAudioManager->SetMusicTrack( "../Assets/Audio/24DragonQuest1-MonsterBattle.wav" );
+
+    m_pPlayer = pOtherActor;
     StartCombatUI();
 }
 
@@ -38,14 +67,10 @@ void EncounterComponent::EndEncounter()
         playerMove->SetAnimationPaused(false);
         playerMove->m_stopMoving = false;
     }
+    BlackBoxManager::Get()->m_pAudioManager->SetMusicTrack( "../Assets/Audio/05DragonQuest1-KingdomofAlefgard.wav" );
 
     m_inBattle = false;
     BB_LOG(LogType::kMessage, "Encounter ended.");
-}
-
-float EncounterComponent::RandomFloat()
-{
-    return static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
 }
 
 void EncounterComponent::Update()
@@ -74,11 +99,11 @@ void EncounterComponent::EnemyTakeTurn()
         return;
     }
 
-
     auto* pStats = m_pPlayer->GetComponent<PlayerStatsComponent>();
-    if (!pStats) return;
+    if (!pStats) 
+        return;
 
-    float roll = RandomFloat();
+    float roll = m_randomMachine.GetRandomInRange(1.0f);
     if (m_name == "BlueSlime" || m_name == "RedSlime")
     {
         BasicAttack();
@@ -99,7 +124,7 @@ void EncounterComponent::EnemyTakeTurn()
         else
             BasicAttack();
     }
-    else if (m_name == "Magician")
+    else if (m_name == "Spellian")
     {
         if (roll < 0.5f)
             CastSpell("Hurt");
@@ -119,7 +144,7 @@ void EncounterComponent::PlayerAttack()
  
     if (m_name == "Ghost")
     {
-        int roll = rand() % 64;
+        int roll = m_randomMachine.GetRandomInRange(64);
         if (roll < 4)
         {
             ShowActionMessage(std::format("The {} dodges your attack!", m_name.c_str()));
@@ -182,11 +207,11 @@ void EncounterComponent::TryToFlee()
     // --- Optional per-enemy tweak (if you want unique behavior) ---
     if (m_name == "Ghost")
         fleeChance *= 0.8f; // Slightly harder to escape Ghosts (eerie persistence)
-    else if (m_name == "Magician")
-        fleeChance *= 0.9f; // Magicians may try to trap you with magic
+    else if (m_name == "Spellian")
+        fleeChance *= 0.9f; // Spellians may try to trap you with Spell
 
     // --- Roll the outcome ---
-    if (RandomFloat() < fleeChance)
+    if ( m_randomMachine.GetRandomInRange( 1.0f ) < fleeChance)
     {
         EndCombatUI();
         ShowActionMessage("You successfully escaped!");
@@ -244,7 +269,7 @@ void EncounterComponent::CastSpell([[maybe_unused]]const std::string& spellName)
 
     if (spellName == "Hurt")
     {
-        int damage = 8 + rand() % 6; // 8–13 damage
+        int damage = m_randomMachine.GetRandomInRange(8,13); // 8–13 damage
         int currentHP = pStats->GetPlayerHP();
         pStats->SetPlayerHP(std::max(0, currentHP - damage));
 
@@ -289,143 +314,120 @@ void EncounterComponent::Save(XMLElementParser parser)
 void EncounterComponent::StartCombatUI()
 {
     //m_isCombatActive = true; //DONT FORGET TO SET IT TO FALSE WHEN RUN AWAY OR DIE OR WIN
-    if (auto* playerMove = m_pPlayer->GetComponent<PlayerMovementComponent>())
-    {
-        playerMove->SetAnimationPaused(true);
-        playerMove->m_stopMoving = true;
-    }
+    BlackBoxManager::Get()->m_pMessagingManager->EnqueueMessage( kMessageUIOpen, m_pOwner );
+    static constexpr float kEnemyWidth  = 7 * 16;
+    static constexpr float kEnemyHeight = 5 * 16;
+    static constexpr int kCommandWindowStartX = 96;
+    static constexpr int kCommandWindowStartY = 8;
+    static constexpr int kCommandWindowWidth = 8 * 16;
+    static constexpr int kCommandWindowHeight = static_cast<int>(3.5 * 16);
 
-    // --- Enemy background and sprite ---
-    BB_FRectangle bgRect{ 80.f, 80.f, 104.f, 74.f };
-    InterfaceTexture::TextureInfo bgInfo{};
-    bgInfo.pTextureFile = m_spriteFile.c_str();
-    bgInfo.spriteDimensions = { 32, 32 };
-    bgInfo.useFullImage = true;
-    m_combatRoot.AddNode<InterfaceTexture>("Combat_BG", bgRect, bgInfo);
-
-    // Enemy name & HP
-    BB_FRectangle txtRect{ 104.f, 100.f, 100.f, 16.f };
-    InterfaceText::Paremeters textParams{};
-    textParams.pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf";
-    textParams.textSize = 16;
-    textParams.color = ColorValue{ 1, 1, 1, 1 };
-    textParams.pText = m_name.c_str(); //this should be in the text box 
-    m_combatRoot.AddNode<InterfaceText>("EnemyName", txtRect, textParams);
-
-
-    // --- Combat Panel ---
-    constexpr float buttonW = 40.f;
-    constexpr float buttonH = 16.f;
-    constexpr float buttonSpacingX = 2.f;
-    constexpr float buttonSpacingY = 2.f;
-    constexpr int kRows = 2;
-    constexpr int kCols = 2;
-
-    constexpr float panelPaddingX = 6.f;
-    constexpr float panelPaddingY = 8.f;
-    // Panel dimensions based on buttons
+    // Command Panel
     BB_FRectangle panelRect{
-        160.f, 20.f,
-       kCols * buttonW + (kCols - 1) * buttonSpacingX + 2 * panelPaddingX,   // width
-    kRows * buttonH + (kRows - 1) * buttonSpacingY + 2 * panelPaddingY   // height
+        kCommandWindowStartX, kCommandWindowStartY, kCommandWindowWidth, kCommandWindowHeight
     };
-
     InterfaceTexture::TextureInfo panelInfo{};
     panelInfo.pTextureFile = "../Assets/UI/SelectionBox.png";
-    panelInfo.spriteDimensions = { 96, 72 };
     panelInfo.useFullImage = true;
-    m_combatRoot.AddNode<InterfaceTexture>("CommandPanelBG", panelRect, panelInfo);
+    auto* pCommandBackground = m_combatRoot.AddNode<InterfaceTexture>(
+        "CommandPanelBG", panelRect, panelInfo );
 
-    // --- Combat Menu Buttons ---
-    const char* actions[kRows * kCols] = { "Fight", "Magic", "Run", "Item" };
-    InterfaceButton::ButtonParams btnParams{};
-    btnParams.usable = true;
-    btnParams.color = ColorValue{ 0, 0, 0, 0 };
-    btnParams.targetedColor = ColorValue{ 0, 0, 0, 0 };
-    btnParams.interactColor = ColorValue{ 0, 0, 0, 0 };
+    // --- Enemy sprite ---
+    BB_FRectangle bgRect{-16, kCommandWindowHeight, kEnemyWidth, kEnemyHeight};
+    InterfaceTexture::TextureInfo bgInfo{
+        .pTextureFile = m_spriteFile.c_str(),
+        .useFullImage = true,
+    };
+    pCommandBackground->MakeChildNode<InterfaceTexture>( "Combat_BG", bgRect, bgInfo );
 
-    float startX = panelRect.x + panelPaddingX;
-    float startY = panelRect.y + panelPaddingY;
-
-    InterfaceNode* nodes[kRows * kCols]{};
-
-    // Create buttons in 2x2 grid
-    for (int i = 0; i < kRows; ++i)
-    {
-        for (int j = 0; j < kCols; ++j)
-        {
-            int idx = i * kCols + j;
-            BB_FRectangle buttonRect{
-                startX + j * (buttonW + buttonSpacingX),
-            startY + i * (buttonH + buttonSpacingY),
-                buttonW,
-                buttonH
-            };
-
-            btnParams.callbackFunction = [this, idx, actions]() {
-                OnCombatButtonPressed(actions[idx]);
-                };
-
-            nodes[idx] = m_combatRoot.AddNode<InterfaceButton>(
-                ("combat_btn_" + std::to_string(idx)).c_str(),
-                buttonRect,
-                btnParams
-            );
-        }
-    }
-
-    // --- Button Navigation (up/down/left/right) ---
-    for (int i = 0; i < kRows; ++i)
-    {
-        for (int j = 0; j < kCols; ++j)
-        {
-            int idx = i * kCols + j;
-            InterfaceNode* current = nodes[idx];
-
-            int upIdx = ((i - 1 + kRows) % kRows) * kCols + j;
-            int downIdx = ((i + 1) % kRows) * kCols + j;
-            int leftIdx = i * kCols + ((j - 1 + kCols) % kCols);
-            int rightIdx = i * kCols + ((j + 1) % kCols);
-
-            current->SetAdjacentNode(Direction::kUp, nodes[upIdx]);
-            current->SetAdjacentNode(Direction::kDown, nodes[downIdx]);
-            current->SetAdjacentNode(Direction::kLeft, nodes[leftIdx]);
-            current->SetAdjacentNode(Direction::kRight, nodes[rightIdx]);
-        }
-    }
-
-    // --- Button Labels ---
-    InterfaceText::Paremeters labelParams{};
-    labelParams.pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf";
-    labelParams.textSize = 16;
-    labelParams.color = ColorValue{ 1, 1, 1, 1 };
-    BB_FRectangle labelRect{ 4.f, 0.f, buttonW - 8.f, buttonH };
-
-    for (int i = 0; i < kRows * kCols; ++i)
-    {
-        labelParams.pText = actions[i];
-        nodes[i]->MakeChildNode<InterfaceText>(
-            ("combat_btn_text_" + std::to_string(i)).c_str(),
-            labelRect,
-            labelParams
-        );
-    }
-
-    // --- Highlight first button ---
+    // highlighter
     auto* highlighter = m_combatRoot.GetHighlight();
-    highlighter->SetParameters({
+    highlighter->SetParameters( {
         .mode = InterfaceHighlighter::kModeIcon,
         .pSpriteFile = "../Assets/UI/Icons/IconSpriteFile.xml",
         .iconOffset{-5, 0},
         .iconSize{4, 7}
-        });
-    highlighter->SetTarget(nodes[0]);
-    m_combatRoot.SetCursorTarget(nodes[0]);
+        } );
+    CreateCommandButtons( pCommandBackground );
 
     // --- Add to screen ---
     m_combatRoot.AddToScreen();
     BlackBoxManager::Get()->m_pInputManager->SwapInputTargetToInterface(&m_combatRoot);
+}
 
+void EncounterComponent::CreateCommandButtons( InterfaceTexture* pBackground )
+{
+    using enum Direction;
+    static constexpr float kButtonWidth = 50.f;
+    static constexpr float kButtonHeight = 7.f;
+    static constexpr float kXStart = 16.f;
+    static constexpr float kYStart = 16.f;
+    static constexpr float kYPad = 16.f;
+    static constexpr float kXPad = 6.f;
+    static constexpr int kButtonCount = 4;
+    static constexpr int kButtonGridWidth = 2;
+    static constexpr int kButtonGridHeight = kButtonCount / kButtonGridWidth;
+
+    auto gridX = []( int i ) { return i % kButtonGridWidth; };
+    auto gridY = []( int i ) { return i / kButtonGridWidth; };
+    auto gridIndex = []( int x, int y ) { return x + (y * kButtonGridHeight); };
+
+    // --- Combat Menu Buttons ---
+    static constexpr const char* actions[kButtonCount] = {"Fight", "Spell", "Run", "Item"};
+    InterfaceButton::ButtonParams btnParams{
+        .usable = true,
+        .color = ColorValue{ 0, 0, 0, 0 },
+        .targetedColor = ColorValue{ 0, 0, 0, 0 },
+        .interactColor = ColorValue{ 0, 0, 0, 0 },
+    };
+    // Text labels
+    InterfaceText::Paremeters textParams{
+        .pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf",
+        .textSize = kStandardUITextSize,
+        .color = ColorPresets::white
+    };
+
+    InterfaceNode* nodes[kButtonCount]{};
+    BB_FRectangle buttonRect{ 0, 0, kButtonWidth, kButtonHeight};
+
+    // Create buttons in 2x2 grid
+    for ( int index = 0 ; index < kButtonCount; ++index )
+    {
+        int x = gridX( index );
+        int y = gridY( index );
+
+        btnParams.callbackFunction = [this, index, actionStr = actions[index]](){OnCombatButtonPressed( actionStr );};
+
+        std::string name = actions[index];
+        name += "_button";
+        buttonRect.x = kXStart + x * (kButtonWidth + kXPad);
+        buttonRect.y = kYStart + y * (kButtonHeight + kYPad);
+        nodes[index] = pBackground->MakeChildNode<InterfaceButton>( name.c_str(), buttonRect, btnParams);
+
+        name += "_label";
+        buttonRect.x = 0;
+        buttonRect.y = 0;
+        textParams.pText = actions[index];
+        nodes[index]->MakeChildNode<InterfaceText>( name.c_str(), buttonRect, textParams );
+
+        if ( index > 0 )
+        {
+            if ( x > 0 )
+            {
+                int leftNodeIndex = gridIndex( x - 1, y );
+                nodes[index]->SetAdjacentNode( kLeft, nodes[leftNodeIndex] );
+                nodes[leftNodeIndex]->SetAdjacentNode( kRight, nodes[index] );
+            }
+            if ( y > 0 )
+            {
+                int aboveIndex = gridIndex( x, y - 1 );
+                nodes[index]->SetAdjacentNode( kUp, nodes[aboveIndex] );
+                nodes[aboveIndex]->SetAdjacentNode( kDown, nodes[index] );
+            }
+        }
+    }
+    m_combatRoot.GetHighlight()->SetTarget(nodes[0]);
+    m_combatRoot.SetCursorTarget( nodes[0] );
 }
 
 void EncounterComponent::EndCombatUI()
@@ -442,9 +444,9 @@ void EncounterComponent::OnCombatButtonPressed(const std::string& action)
     {
         PlayerAttack();
     }
-    else if (action == "Magic")
+    else if (action == "Spell")
     {
-        ShowActionMessage("You have no magic yet!");
+        ShowActionMessage("You have no Spell yet!");
     }
     else if (action == "Item")
     {
@@ -453,38 +455,27 @@ void EncounterComponent::OnCombatButtonPressed(const std::string& action)
     else if (action == "Run")
     {
         TryToFlee();
-
     }
 }
 
 
 void EncounterComponent::ShowActionMessage(const std::string& text)
 {
-    if (m_messageActive)
+    if ( m_messageActive )
         DismissActionMessage();
 
     m_messageActive = true;
 
-    constexpr BB_FRectangle bgRect{ 60.f, 160.f, 180.f, 48.f };
-    InterfaceTexture::TextureInfo bgInfo{
-        .pTextureFile = "../Assets/UI/BottomTextBox.png",
-        .spriteDimensions = {16, 16},
-        .useFullImage = true
-    };
-    m_messageRoot.AddNode<InterfaceTexture>("ActionMessage_BG", bgRect, bgInfo);
-
     // --- Text parameters ---
-    BB_FRectangle txtRect{ 68.f, 166.f, 164.f, 36.f };
-    InterfaceText::Paremeters params{};
-    params.pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf";
-    params.textSize = 16;
-    params.color = ColorPresets::white;
-    params.pText = text.c_str();
-
-    m_messageNode = m_messageRoot.AddNode<InterfaceText>("ActionMessage_Text", txtRect, params);
-
-    // Add to screen
-    m_messageRoot.AddToScreen();
+    BB_FRectangle txtRect{16, 8, kMessageBoxWidth - 16, kMessageBoxHeight - 16};
+    InterfaceText::Paremeters params
+    {
+        .pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf",
+        .pText = text.c_str(),
+        .textSize = kStandardUITextSize,
+        .color = ColorPresets::white,
+    };
+    m_pMessageBackground->MakeChildNode<InterfaceText>( "message_log_text", txtRect, params );
 }
 
 void EncounterComponent::DismissActionMessage()
@@ -492,9 +483,7 @@ void EncounterComponent::DismissActionMessage()
     if (!m_messageActive) 
         return;
 
-    m_messageRoot.RemoveFromScreen();
-    m_messageNode = nullptr;
-    m_messageActive = false;
+    m_pMessageBackground->RemoveAllChildNodes();
 }
 
 void EncounterComponent::RespawnPlayer()

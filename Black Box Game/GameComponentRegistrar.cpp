@@ -5,12 +5,12 @@
 
 #include "TileSystem/TileInfoComponent.h"
 #include "TileSystem/TileMapComponent.h"
-#include "TileSystem/EncounterComponent.h"
+#include "Encounters/EncounterComponent.h"
+#include "Interactions/InteractionComponent.h"
+#include "Interactions/StairComponent.h"
+#include "Interactions/TalkComponent.h"
+#include "Interactions/TakeComponent.h"
 #include "PlayerMovementComponent.h"
-#include "InteractionComponent.h"
-#include "StairComponent.h"
-#include "TalkComponent.h"
-#include "TakeComponent.h"
 #include "PlayerStatsComponent.h"
 
 using namespace BlackBoxEngine;

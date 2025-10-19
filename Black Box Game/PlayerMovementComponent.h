@@ -1,12 +1,12 @@
 #pragma once
 
+#include <Actors/Component.h>
+#include <Input/InputManager.h>
+#include <Actors/EngineComponents/SpriteComponent.h>
 #include <Actors/EngineComponents/MoverComponent.h>
-#include <Actors/EngineComponents/TransformComponent.h>
-#include "../Black Box Engine/Input/InputManager.h"
-#include "TileSystem/TileMapComponent.h"
-#include "../Black Box Engine/Math/FVector2.h" // why are we using "../" here and not <>
-#include "../Black Box Engine/Actors/EngineComponents/SpriteComponent.h"
-#include "InteractionComponent.h"
+
+class InteractionComponent;
+class TileMapComponent;
 
 class PlayerMovementComponent : public BlackBoxEngine::Component
 {

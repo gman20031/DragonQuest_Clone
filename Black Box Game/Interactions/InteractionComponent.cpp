@@ -4,12 +4,12 @@
 #include <BlackBoxManager.h>
 #include <System/Delay.h>
 
-#include "BlackBoxGame.h"
-#include "PlayerMovementComponent.h"
+#include "../Encounters/EncounterComponent.h"
+#include "../PlayerMovementComponent.h"
+#include "../PlayerStatsComponent.h"
+#include "../BlackBoxGame.h"
+#include "../GameMessages.h"
 #include "StairComponent.h"
-#include "TileSystem/EncounterComponent.h"
-#include "PlayerStatsComponent.h"
-#include "GameMessages.h"
 
 using namespace BlackBoxEngine;
 
@@ -35,7 +35,6 @@ InteractionComponent::InteractionComponent( BlackBoxEngine::Actor* pOwner )
         BB_LOG( LogType::kError, "Failed to create message log menu ui" );
         return;
     }
-
 }
 
 InteractionComponent::~InteractionComponent()

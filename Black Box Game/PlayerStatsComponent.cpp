@@ -1,7 +1,10 @@
 #include "PlayerStatsComponent.h"
+
+#include <System/Delay.h>
+
 #include "PlayerMovementComponent.h"
-#include "../Black Box Engine/System/Delay.h"
-#include "InteractionComponent.h"
+#include "Interactions/InteractionComponent.h"
+
 using namespace BlackBoxEngine;
 
 void PlayerStatsComponent::Start()
@@ -11,44 +14,25 @@ void PlayerStatsComponent::Start()
 void PlayerStatsComponent::Update()
 {
     auto* playerMove = m_pOwner->GetComponent<PlayerMovementComponent>();
-    if (!playerMove) return;
-
-    auto* playerUI = m_pOwner->GetComponent<InteractionComponent>();
-    if (!playerUI) return;
+    if (!playerMove)
+        return;
 
     bool isMoving = playerMove->m_isMoving;
 
     // Show HUD after player stops
-    if (!isMoving && !m_hudVisible && !playerUI->m_uiActive && !playerUI->m_isChangingLevel)
-    {
-        if (playerUI->m_delayedDisplayId == 0)
-        {
-            playerUI->m_delayedDisplayId = DelayedCallbackManager::AddCallback([this]()
-                {
-                    auto* playerUI = m_pOwner->GetComponent<InteractionComponent>();
-                    if (!playerUI) return;
-
-                    auto* pm = m_pOwner->GetComponent<PlayerMovementComponent>();
-                    if (pm && !pm->m_isMoving && !m_hudVisible && !playerUI->m_uiActive && !playerUI->m_isChangingLevel)
-                        DisplayHUD();
-
-                    playerUI->m_delayedDisplayId = 0;
-                }, 1000);
-        }
-    }
-    // Hide HUD if player moves or UI active
-    else if ((isMoving || playerUI->m_uiActive) && m_hudVisible && !playerUI->m_isChangingLevel)
+    if ( isMoving && m_hudVisible )
     {
         HideHUD();
-
-        if (playerUI->m_delayedDisplayId != 0)
+        return;
+    }
+    if (!isMoving && !m_hudVisible)
+    {
+        DelayedCallbackManager::AddCallback([this]()
         {
-            DelayedCallbackManager::RemoveCallback(playerUI->m_delayedDisplayId);
-            playerUI->m_delayedDisplayId = 0;
-        }
+            DisplayHUD();
+        }, 1000);
     }
 }
-
 
 std::string PlayerStatsComponent::BuildStatsString() const
 {
@@ -88,7 +72,8 @@ void PlayerStatsComponent::Save(BlackBoxEngine::XMLElementParser parser)
 
 void PlayerStatsComponent::DisplayHUD()
 {
-    if (m_hudVisible) return;
+    if (m_hudVisible) 
+        return;
     
     m_hudVisible = true;
 

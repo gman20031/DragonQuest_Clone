@@ -10,12 +10,12 @@
     <ClCompile Include="TileSystem\TileActorManager.cpp" />
     <ClCompile Include="TileSystem\TileInfoComponent.cpp" />
     <ClCompile Include="PlayerMovementComponent.cpp" />
-    <ClCompile Include="InteractionComponent.cpp" />
-    <ClCompile Include="StairComponent.cpp" />
-    <ClCompile Include="TalkComponent.cpp" />
-    <ClCompile Include="TakeComponent.cpp" />
-    <ClCompile Include="TileSystem\EncounterHandler.cpp" />
-    <ClCompile Include="TileSystem\EncounterComponent.cpp" />
+    <ClCompile Include="Interactions\InteractionComponent.cpp" />
+    <ClCompile Include="Interactions\StairComponent.cpp" />
+    <ClCompile Include="Interactions\TalkComponent.cpp" />
+    <ClCompile Include="Interactions\TakeComponent.cpp" />
+    <ClCompile Include="Encounters\EncounterHandler.cpp" />
+    <ClCompile Include="Encounters\EncounterComponent.cpp" />
     <ClCompile Include="PlayerStatsComponent.cpp" />
     <ClCompile Include="InventoryComponent.cpp" />
   </ItemGroup>
@@ -27,12 +27,12 @@
     <ClInclude Include="TileSystem\TileInfoComponent.h" />
     <ClInclude Include="TileSystem\TileActorManager.h" />
     <ClInclude Include="PlayerMovementComponent.h" />
-    <ClInclude Include="InteractionComponent.h" />
-    <ClInclude Include="StairComponent.h" />
-    <ClInclude Include="TalkComponent.h" />
-    <ClInclude Include="TakeComponent.h" />
-    <ClInclude Include="TileSystem\EncounterHandler.h" />
-    <ClInclude Include="TileSystem\EncounterComponent.h" />
+    <ClInclude Include="Interactions\InteractionComponent.h" />
+    <ClInclude Include="Interactions\StairComponent.h" />
+    <ClInclude Include="Interactions\TalkComponent.h" />
+    <ClInclude Include="Interactions\TakeComponent.h" />
+    <ClInclude Include="Encounters\EncounterHandler.h" />
+    <ClInclude Include="Encounters\EncounterComponent.h" />
     <ClInclude Include="PlayerStatsComponent.h" />
     <ClInclude Include="InventoryComponent.h" />
     <ClInclude Include="GameMessages.h" />

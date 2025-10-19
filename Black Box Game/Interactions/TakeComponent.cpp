@@ -1,5 +1,6 @@
 #include "TakeComponent.h"
-#include "BlackBoxGame.h"
+
+#include "../BlackBoxGame.h"
 #include "InteractionComponent.h"
 
 using namespace BlackBoxEngine;

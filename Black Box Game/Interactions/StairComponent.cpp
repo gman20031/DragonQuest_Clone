@@ -7,9 +7,9 @@
 #include <Actors/EngineComponents/MoverComponent.h>
 #include <System/Delay.h>
 
-#include "BlackBoxGame.h"
+#include "../BlackBoxGame.h"
+#include "../PlayerStatsComponent.h"
 #include "InteractionComponent.h"
-#include "PlayerStatsComponent.h"
 
 using namespace BlackBoxEngine;
 

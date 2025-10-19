@@ -7,8 +7,8 @@
 #include <BlackBoxManager.h>
 #include <Graphics/RenderingStructs.h>
 
+#include "../Encounters/EncounterHandler.h"
 #include "TileActorManager.h"
-#include "EncounterHandler.h"
 
 class TileMapComponent : public BlackBoxEngine::Component
 {
