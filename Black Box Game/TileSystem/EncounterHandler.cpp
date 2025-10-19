@@ -4,6 +4,7 @@
 #include <BlackBoxManager.h>
 #include <Resources/ResourceManager.h>
 
+
 using namespace BlackBoxEngine;
 
 EncounterHandler::EncounterHandler()

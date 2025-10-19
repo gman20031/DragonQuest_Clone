@@ -1,4 +1,4 @@
-#include "EncounterComponent.h"
+ï»¿#include "EncounterComponent.h"
 #include <Resources/ResourceManager.h>
 
 #include "EncounterHandler.h"
@@ -9,11 +9,14 @@
 #include "../Black Box Game/PlayerMovementComponent.h"
 #include <format>
 
+#include <Graphics/ScreenFader.h>
+#include <Actors/EngineComponents/TransformComponent.h>
+#include <System/Delay.h>
+
 using namespace BlackBoxEngine;
 
 void EncounterComponent::Start()
 {
-    //BB_LOG(LogType::kMessage, "Enemy '%s' spawned with HP=%d", m_name.c_str(), m_hp);
 }
 
 void EncounterComponent::StartEncounter(Actor* pOtherActor)
@@ -51,7 +54,7 @@ void EncounterComponent::Update()
     {
         auto* input = BlackBoxManager::Get()->m_pInputManager;
 
-        if (input->IsKeyDown(KeyCode::kX)) // adjust to your engine’s input API
+        if (input->IsKeyDown(KeyCode::kX)) // adjust to your engineâ€™s input API
         {
             m_waitingForExit = false;
 
@@ -76,10 +79,25 @@ void EncounterComponent::EnemyTakeTurn()
     if (!pStats) return;
 
     float roll = RandomFloat();
-
-    if (m_name == "BlueSlime" || m_name == "RedSlime" || m_name == "Ghost" || m_name == "Drakee")
+    if (m_name == "BlueSlime" || m_name == "RedSlime")
     {
         BasicAttack();
+    }
+    else if (m_name == "Drakee")
+    {
+        if (roll < 0.2f)
+        {
+            ShowActionMessage("The Drakee misses!");
+        }
+        else
+            BasicAttack();
+    }
+    else if (m_name == "Ghost")
+    {
+        if (roll < 0.25f)
+            ShowActionMessage("The Ghost fades away, dodging your strike!");
+        else
+            BasicAttack();
     }
     else if (m_name == "Magician")
     {
@@ -88,6 +106,8 @@ void EncounterComponent::EnemyTakeTurn()
         else
             BasicAttack();
     }
+    else
+        BasicAttack();
 }
 
 
@@ -103,7 +123,11 @@ void EncounterComponent::PlayerAttack()
         if (roll < 4)
         {
             ShowActionMessage(std::format("The {} dodges your attack!", m_name.c_str()));
-            EnemyTakeTurn();
+            auto delayFunc = [this]() -> void {
+                EnemyTakeTurn();
+                };
+            DelayedCallbackManager::AddCallback(delayFunc, std::chrono::milliseconds(1000));
+            return;
             return;
         }
     }
@@ -130,7 +154,11 @@ void EncounterComponent::PlayerAttack()
     }
     else
     {
-        EnemyTakeTurn();
+        auto delayFunc = [this]() -> void {
+            EnemyTakeTurn();
+            };
+        DelayedCallbackManager::AddCallback(delayFunc, std::chrono::milliseconds(1000));
+        return;
     }
 
 }
@@ -144,7 +172,7 @@ void EncounterComponent::TryToFlee()
     if (!pStats) return;
 
     // --- Calculate dynamic flee chance based on agility difference ---
-    // If player Agility is higher than the monster’s, easier to flee; lower makes it harder.
+    // If player Agility is higher than the monsterâ€™s, easier to flee; lower makes it harder.
     // The formula yields roughly:
     //   - 0.9f max chance (easy escape)
     //   - 0.1f min chance (very difficult)
@@ -168,7 +196,10 @@ void EncounterComponent::TryToFlee()
     else
     {
         ShowActionMessage("You cannot escape!");
-        EnemyTakeTurn();
+        auto delayFunc = [this]() -> void {
+            EnemyTakeTurn();
+            };
+        DelayedCallbackManager::AddCallback(delayFunc, std::chrono::milliseconds(800));
     }
 }
 
@@ -195,6 +226,13 @@ void EncounterComponent::BasicAttack()
         EndCombatUI();
         ShowActionMessage("You are defeated!");
         m_waitingForExit = true;
+
+        auto delayFunc = [this]() -> void
+            {
+                RespawnPlayer();
+            };
+
+        DelayedCallbackManager::AddCallback(delayFunc, std::chrono::milliseconds(1500));
       
     }
 }
@@ -206,7 +244,7 @@ void EncounterComponent::CastSpell([[maybe_unused]]const std::string& spellName)
 
     if (spellName == "Hurt")
     {
-        int damage = 8 + rand() % 6; // 8–13 damage
+        int damage = 8 + rand() % 6; // 8â€“13 damage
         int currentHP = pStats->GetPlayerHP();
         pStats->SetPlayerHP(std::max(0, currentHP - damage));
 
@@ -457,4 +495,47 @@ void EncounterComponent::DismissActionMessage()
     m_messageRoot.RemoveFromScreen();
     m_messageNode = nullptr;
     m_messageActive = false;
+}
+
+void EncounterComponent::RespawnPlayer()
+{
+
+    auto* pManager = BlackBoxManager::Get();
+    if (!pManager) return;
+
+    auto* pInteract = m_pPlayer->GetComponent<InteractionComponent>();
+    if (!pInteract) return;
+
+    auto* pTransform = m_pPlayer->GetComponent<TransformComponent>();
+    auto* pStats = m_pPlayer->GetComponent<PlayerStatsComponent>();
+    if (!pTransform || !pStats) return;
+
+    // --- Start fade-out immediately ---
+    ScreenFader::FadeToBlack(1.0f);
+
+    pInteract->OnLevelTransitionStart();
+    pStats->HideHUD();
+
+    // --- Delay the reset until fade is complete ---
+    auto delayFunc = [pManager, pTransform, pStats, pInteract]() -> void
+        {
+            // --- Reset stats ---
+            pStats->SetPlayerLevel(1);
+            pStats->SetPlayerHP(16);
+            pStats->SetPlayerMP(0);
+            pStats->SetPlayerGold(120);
+            pStats->SetPlayerEnergy(10);
+            pStats->SetPlayerStrength(3);
+            pStats->SetPlayerAgility(3);
+
+            // --- Reset player position ---
+            pTransform->m_position = { 832, 816 };
+            pTransform->m_prevPosition = { 832, 816 };
+            // --- Fade back in ---
+            ScreenFader::FadeIn(1.0f);
+            pInteract->OnLevelTransitionEnd();
+        };
+
+    // Run reset AFTER the fade finishes (â‰ˆ 1 second)
+    DelayedCallbackManager::AddCallback(delayFunc, std::chrono::milliseconds(1000));
 }

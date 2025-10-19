@@ -94,6 +94,7 @@ public:
 
     void ShowActionMessage(const std::string& text);
     void DismissActionMessage();
+    void RespawnPlayer();
 private:
 
     BlackBoxEngine::InterfaceText* m_messageNode = nullptr;
