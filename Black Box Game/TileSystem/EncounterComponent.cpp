@@ -96,6 +96,7 @@ void EncounterComponent::PlayerAttack()
     auto* pStats = m_pPlayer->GetComponent<PlayerStatsComponent>();
     if (!pStats) return;
 
+ 
     if (m_name == "Ghost")
     {
         int roll = rand() % 64;
@@ -113,11 +114,15 @@ void EncounterComponent::PlayerAttack()
 
     ShowActionMessage(std::format("You hit the {} for {} damage!", m_name, damage));
 
+    pStats->RefreshHUD();
+
     if (m_hp <= 0)
     {
         //pStats->Set(m_xpReward); //i need the XP
         pStats->SetPlayerGold(pStats->GetPlayerGold() + m_goldReward);
         
+        pStats->RefreshHUD();
+
         EndCombatUI();
         ShowActionMessage(std::format("The {} is defeated!", m_name.c_str()));
         m_waitingForExit = true;
@@ -135,25 +140,35 @@ void EncounterComponent::TryToFlee()
     if (!m_inBattle)
         return;
 
-    float fleeChance = 0.5f;
-    if (m_name == "Drakee" || m_name == "Magician")
-        fleeChance = 0.35f;
-    else if (m_name == "Ghost")
-        fleeChance = 0.25f;
+    auto* pStats = m_pPlayer->GetComponent<PlayerStatsComponent>();
+    if (!pStats) return;
 
+    // --- Calculate dynamic flee chance based on agility difference ---
+    // If player Agility is higher than the monster’s, easier to flee; lower makes it harder.
+    // The formula yields roughly:
+    //   - 0.9f max chance (easy escape)
+    //   - 0.1f min chance (very difficult)
+    float agilityDiff = static_cast<float>(pStats->GetPlayerAgility() - m_agility);
+    float fleeChance = std::clamp(0.5f + agilityDiff * 0.02f, 0.1f, 0.9f);
+
+    // --- Optional per-enemy tweak (if you want unique behavior) ---
+    if (m_name == "Ghost")
+        fleeChance *= 0.8f; // Slightly harder to escape Ghosts (eerie persistence)
+    else if (m_name == "Magician")
+        fleeChance *= 0.9f; // Magicians may try to trap you with magic
+
+    // --- Roll the outcome ---
     if (RandomFloat() < fleeChance)
     {
-        
         EndCombatUI();
         ShowActionMessage("You successfully escaped!");
         m_waitingForExit = true;
         m_inBattle = false;
-
     }
     else
     {
         ShowActionMessage("You cannot escape!");
-        EnemyTakeTurn(); 
+        EnemyTakeTurn();
     }
 }
 
@@ -170,6 +185,7 @@ void EncounterComponent::BasicAttack()
     pStats->SetPlayerHP(currentHP - damage);
 
     pStats->RefreshHUD();
+
     ShowActionMessage(std::format("The {} attacks! You take {} damage!", m_name.c_str(), damage));
 
     // Check if player died
@@ -193,6 +209,7 @@ void EncounterComponent::CastSpell([[maybe_unused]]const std::string& spellName)
         int damage = 8 + rand() % 6; // 8–13 damage
         int currentHP = pStats->GetPlayerHP();
         pStats->SetPlayerHP(std::max(0, currentHP - damage));
+
         pStats->RefreshHUD();
 
         ShowActionMessage(std::format("The {} casts Hurt! You take {} damage!", m_name.c_str(), damage));
@@ -206,17 +223,6 @@ void EncounterComponent::CastSpell([[maybe_unused]]const std::string& spellName)
     }
 }
 
-void EncounterComponent::SwoopAttack()
-{
-    auto* pStats = m_pPlayer->GetComponent<PlayerStatsComponent>();
-    if (!pStats) return;
-
-    //int damage = std::max(1, static_cast<int>(m_attack * 1.2f) - pStats->GetPlayerDefense());
-    //pStats->TakeDamage(damage);
-
-    //BB_LOG(LogType::kMessage, "The %s swoops down and hits for %d damage!", m_name.c_str(), damage);
-}
-
 //to change depending on the enemy
 void EncounterComponent::Load(const XMLElementParser parser)
 {
@@ -226,6 +232,7 @@ void EncounterComponent::Load(const XMLElementParser parser)
     parser.GetChildVariable("Defense", &m_defense);
     parser.GetChildVariable("XPReward", &m_xpReward);
     parser.GetChildVariable("GoldReward", &m_goldReward);
+    parser.GetChildVariable("Agility", &m_agility);
     parser.GetChildVariable("SpriteFile", &m_spriteFile);
 }
 
@@ -237,6 +244,7 @@ void EncounterComponent::Save(XMLElementParser parser)
     parser.NewChildVariable("Defense", m_defense);
     parser.NewChildVariable("XPReward", m_xpReward);
     parser.NewChildVariable("GoldReward", m_goldReward);
+    parser.NewChildVariable("Agility", m_agility);
     parser.NewChildVariable("SpriteFile", m_spriteFile);
 }
 

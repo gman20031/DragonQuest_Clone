@@ -83,9 +83,6 @@ public:
 
     void BasicAttack();
     void CastSpell(const std::string& string);
-    void Taunt(const std::string& enemyName);
-    void Dodge();
-    void SwoopAttack();
 
     void PlayerAttack();
     void TryToFlee();
@@ -111,6 +108,7 @@ private:
     int m_defense = 1;
     int m_xpReward = 3;
     int m_goldReward = 2;
+    int m_agility = 0;
 
     std::string m_spriteFile;
     float m_patrolRadius = 0.0f;

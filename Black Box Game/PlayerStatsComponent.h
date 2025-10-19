@@ -10,6 +10,7 @@
 #include <Interface/InterfaceButton.h>
 #include <Interface/InterfaceText.h>
 #include <Interface/InterfaceTexture.h>
+#include "../Black Box Engine/Graphics/Text Rendering/Text.h"
 
 class BlackBoxGame;
 
@@ -84,5 +85,6 @@ public:
     void HideHUD();
     void RefreshHUD();
     std::string BuildStatsString() const;
+
 };
 
