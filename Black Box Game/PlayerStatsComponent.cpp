@@ -4,6 +4,10 @@
 #include "InteractionComponent.h"
 using namespace BlackBoxEngine;
 
+void PlayerStatsComponent::Start()
+{
+}
+
 void PlayerStatsComponent::Update()
 {
     auto* playerMove = m_pOwner->GetComponent<PlayerMovementComponent>();
@@ -33,7 +37,7 @@ void PlayerStatsComponent::Update()
         }
     }
     // Hide HUD if player moves or UI active
-    else if ((isMoving || playerUI->m_uiActive) && m_hudVisible && !playerUI->m_isChangingLevel && !m_forceHUDVisible)
+    else if ((isMoving || playerUI->m_uiActive) && m_hudVisible && !playerUI->m_isChangingLevel)
     {
         HideHUD();
 
@@ -45,20 +49,6 @@ void PlayerStatsComponent::Update()
     }
 }
 
-
-void PlayerStatsComponent::RefreshHUD()
-{
-    if (!m_hudVisible)
-        return;
-    
-    // Remove the HUD from screen entirely
-    if (m_hudVisible)
-        m_hudRoot.RemoveFromScreen();
-    
-    // Recreate HUD (DisplayHUD) with updated values
-    DisplayHUD();
-
-}
 
 std::string PlayerStatsComponent::BuildStatsString() const
 {
@@ -85,15 +75,15 @@ void PlayerStatsComponent::Load(const BlackBoxEngine::XMLElementParser parser)
 
 void PlayerStatsComponent::Save(BlackBoxEngine::XMLElementParser parser)
 {
-    parser.NewChildVariable("Level", &m_playerLevel);
-    parser.NewChildVariable("HP", &m_playerHP);
-    parser.NewChildVariable("MaxHP", &m_playerMaxHP);
-    parser.NewChildVariable("MP", &m_playerMP);
-    parser.NewChildVariable("MaxMP", &m_playerMaxMP);
-    parser.NewChildVariable("Gold", &m_playerGold);
-    parser.NewChildVariable("Energy", &m_playerEnergy);
-    parser.NewChildVariable("Strength", &m_playerStrength);
-    parser.NewChildVariable("Agility", &m_playerAgility);
+    parser.NewChildVariable("Level", m_playerLevel);
+    parser.NewChildVariable("HP", m_playerHP);
+    parser.NewChildVariable("MaxHP", m_playerMaxHP);
+    parser.NewChildVariable("MP", m_playerMP);
+    parser.NewChildVariable("MaxMP", m_playerMaxMP);
+    parser.NewChildVariable("Gold", m_playerGold);
+    parser.NewChildVariable("Energy", m_playerEnergy);
+    parser.NewChildVariable("Strength", m_playerStrength);
+    parser.NewChildVariable("Agility", m_playerAgility);
 }
 
 void PlayerStatsComponent::DisplayHUD()
@@ -148,3 +138,18 @@ void PlayerStatsComponent::HideHUD()
     m_hudVisible = false;
 }
 
+void PlayerStatsComponent::RefreshHUD()
+{
+    if (!m_hudVisible)
+        return;
+
+    if (m_hudStatsText)
+    {
+        auto textPtr = m_hudStatsText->GetText();
+        if (textPtr)
+        {
+            std::string stats = BuildStatsString();
+            textPtr->SetString(stats.c_str(), stats.size()); // update the stats live
+        }
+    }
+}

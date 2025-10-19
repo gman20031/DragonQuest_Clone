@@ -6,6 +6,7 @@
         <Defense>3</Defense>
         <XPReward>3</XPReward>
         <GoldReward>3</GoldReward>
+        <Agility>8</Agility>
         <SpriteFile>../Assets/Sprites/Ghost.png</SpriteFile>
     </Component>
 </Actor>

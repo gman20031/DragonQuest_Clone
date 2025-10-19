@@ -74,6 +74,11 @@ void BaseStairComponent::OnStairUsed(Actor* pOtherActor)
     auto* pHUD = pOtherActor->GetComponent<PlayerStatsComponent>();
     if (!pHUD) return;
 
+    PlayerRuntimeStats savedStats;
+    savedStats.HP = pHUD->m_playerHP;
+    savedStats.MP = pHUD->m_playerMP;
+    savedStats.Gold = pHUD->m_playerGold;
+    savedStats.Energy = pHUD->m_playerEnergy;
     // Begin transition
     pInteract->OnLevelTransitionStart();
     pManager->m_pInputManager->StopAllInput();
@@ -90,8 +95,9 @@ void BaseStairComponent::OnStairUsed(Actor* pOtherActor)
 
     // Restore position before fade completes
     pTransform->m_position = currentPos;
+    pHUD->m_playerHP = savedStats.HP;
 
-    auto delayFunc = [pManager, pOtherActor, pInteract, data = m_data]() -> void
+    auto delayFunc = [pManager, pOtherActor, pInteract, data = m_data, savedStats]() -> void
         {
             pManager->m_pInputManager->SwapInputToGame();
             pManager->m_pActorManager->LoadLevel(data.targetLevelPath.c_str());

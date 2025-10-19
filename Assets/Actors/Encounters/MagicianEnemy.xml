@@ -6,6 +6,7 @@
         <Defense>4</Defense>
         <XPReward>9</XPReward>
         <GoldReward>11</GoldReward>
+        <Agility>12</Agility>
         <SpriteFile>../Assets/Sprites/Magician.png</SpriteFile> 
     </Component>
 </Actor>

@@ -6,6 +6,7 @@
         <Defense>2</Defense>
         <XPReward>2</XPReward>
         <GoldReward>2</GoldReward>
+        <Agility>6</Agility>
         <SpriteFile>../Assets/Sprites/Drakee.png</SpriteFile> 
     </Component>
 </Actor>
