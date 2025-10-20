@@ -63,16 +63,20 @@ void BaseStairComponent::OnStairUsed(Actor* pOtherActor)
     BB_LOG(LogType::kMessage, "Transitioning to: ", m_data.targetLevelPath );
 
     auto* pInteract = pOtherActor->GetComponent<InteractionComponent>();
-    if (!pInteract) return;
+    if (!pInteract) 
+        return;
 
     auto* pTransform = pOtherActor->GetComponent<TransformComponent>();
-    if (!pTransform) return;
+    if (!pTransform) 
+        return;
 
     auto* pManager = BlackBoxManager::Get();
-    if (!pManager) return;
+    if (!pManager) 
+        return;
 
     auto* pHUD = pOtherActor->GetComponent<PlayerStatsComponent>();
-    if (!pHUD) return;
+    if (!pHUD) 
+        return;
 
     PlayerRuntimeStats savedStats
     {
@@ -99,7 +103,7 @@ void BaseStairComponent::OnStairUsed(Actor* pOtherActor)
     pTransform->m_position = currentPos;
     pHUD->m_playerHP = savedStats.HP;
 
-    auto delayFunc = [pManager, pOtherActor, pInteract, data = m_data, savedStats]() -> void
+    auto delayFunc = [pManager, data = m_data]() -> void
         {
             pManager->m_pInputManager->SwapInputToGame();
             pManager->m_pActorManager->LoadLevel(data.targetLevelPath.c_str());

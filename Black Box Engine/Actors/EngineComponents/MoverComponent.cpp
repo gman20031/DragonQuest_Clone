@@ -9,6 +9,16 @@ BlackBoxEngine::MoverComponent::MoverComponent(Actor* pOwner)
     pTransform = pOwner->GetComponent<TransformComponent>();
 }
 
+void BlackBoxEngine::MoverComponent::SetVelocity( float x, float y )
+{
+    SetVelocity( {x,y} );
+}
+
+void BlackBoxEngine::MoverComponent::SetVelocity( FVector2 velocity )
+{
+    m_velocity = velocity;
+}
+
 void BlackBoxEngine::MoverComponent::Update()
 {
     double deltaTime = BlackBoxManager::Get()->GetDeltaTime();

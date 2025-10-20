@@ -4,6 +4,7 @@
 #include <Actors/Component.h>
 #include <Interface/InterfaceText.h>
 #include <Interface/UserInterface.h>
+#include <Actors/EngineComponents/TransformComponent.h>
 
 class BlackBoxGame;
 
@@ -13,10 +14,14 @@ class PlayerStatsComponent : public BlackBoxEngine::Component
 {
     GENERATE_ID("PlayerStatsComponent");
     friend class InteractionComponent;
+    std::vector<uint64_t> m_messageIds;
 
     bool m_hudVisible = false;
+    bool m_changingLevel = false;
     bool m_callbackActive = false;
     uint64_t m_callbackId = 0;
+
+    BlackBoxEngine::TransformComponent* m_pTransform;
 
     BlackBoxEngine::UserInterface m_hudRoot;
     BlackBoxEngine::InterfaceText* m_hudStatsText = nullptr;
@@ -35,7 +40,7 @@ public:
 
 public:
     PlayerStatsComponent(BlackBoxEngine::Actor* pOwner) : Component(pOwner) {}
-    virtual ~PlayerStatsComponent() {}
+    virtual ~PlayerStatsComponent();
 
     void SetPlayerLevel( int value );
     void SetPlayerHP( int value );

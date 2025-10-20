@@ -5,11 +5,17 @@
 #include <System/Delay.h>
 #include <Interface/InterfaceTexture.h>
 #include <Graphics/Text Rendering/Text.h>
-#include <Actors/EngineComponents/TransformComponent.h>
 
 #include "GameMessages.h"
 
 using namespace BlackBoxEngine;
+
+PlayerStatsComponent::~PlayerStatsComponent()
+{
+    auto* pMessager = BlackBoxManager::Get()->m_pMessagingManager;
+    for ( auto id : m_messageIds )
+        pMessager->RemoveListener( id );
+}
 
 void PlayerStatsComponent::SetPlayerLevel( int value )
 {
@@ -43,12 +49,10 @@ void PlayerStatsComponent::SetPlayerExperience( int value )
 
 void PlayerStatsComponent::Update()
 {
-    auto* pTransform = m_pOwner->GetComponent<TransformComponent>();
-    if (!pTransform)
+    if ( !m_pTransform || m_changingLevel )
         return;
 
-    bool moving = pTransform->m_position != pTransform->m_prevPosition;
-
+    bool moving = m_pTransform->m_position != m_pTransform->m_prevPosition;
 
     if ( moving && m_callbackActive )
         DelayedCallbackManager::RemoveCallback( m_callbackId );
@@ -71,12 +75,19 @@ void PlayerStatsComponent::Update()
 
 void PlayerStatsComponent::Start()
 {
+    m_pTransform = m_pOwner->GetComponent<TransformComponent>();
+    if ( !m_pTransform )
+    {
+        BB_LOG( LogType::kWarning, "attached actor does not have a transform, will never display stats" );
+        return;
+    }
+
     CreateHud();
 
-    BlackBoxManager::Get()->m_pMessagingManager->RegisterListener
+    m_messageIds.emplace_back( BlackBoxManager::Get()->m_pMessagingManager->RegisterListener
     ( 
         kLevelChanging, [this]( [[maybe_unused]] Message& ) { OnLevelChange(); }
-    );
+    ));
 }
 
 std::string PlayerStatsComponent::BuildStatsString() const
@@ -91,6 +102,8 @@ std::string PlayerStatsComponent::BuildStatsString() const
 
 void PlayerStatsComponent::OnLevelChange()
 {
+    m_changingLevel = true;
+    m_hudRoot.SetCursorTarget( nullptr );
     m_hudRoot.RemoveFromScreen();
 }
 

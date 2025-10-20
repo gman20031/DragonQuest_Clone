@@ -22,6 +22,7 @@ class InteractionComponent : public BlackBoxEngine::Component
 
     // -- Open / Close UI keyCodes;
     uint64_t m_keyDownCodes[2];
+    std::vector<uint64_t> m_messageIds;
 
     // --- UI Roots ---
     BlackBoxEngine::UserInterface m_pCommandMenuRootNode;
