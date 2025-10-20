@@ -29,7 +29,7 @@ public:
     int m_playerMaxMP = 0;
     int m_playerMP = 0; // current MP
     int m_playerGold = 120;
-    int m_playerEnergy = 10;
+    int m_playerEXP = 10;
     int m_playerStrength = 3;
     int m_playerAgility = 3;
 
@@ -43,7 +43,7 @@ public:
     void SetPlayerMP( int value );
     void SetPlayerMaxMP( int value ) { m_playerMaxMP = value; };
     void SetPlayerGold( int value );
-    void SetPlayerEnergy( int value );
+    void SetPlayerExperience( int value );
 
     void SetPlayerStrength(int value) { m_playerStrength = value;}
     void SetPlayerAgility(int value) { m_playerAgility = value;}
@@ -54,7 +54,7 @@ public:
     int GetPlayerMaxHP()  const { return m_playerMaxHP; }
     int GetPlayerMaxMP()  const { return m_playerMaxMP; }
     int GetPlayerGold()  const { return m_playerGold; }
-    int GetPlayerEnergy()  const { return m_playerEnergy; }
+    int GetPlayerExperience()  const { return m_playerEXP; }
 
     int GetPlayerStrength() const { return m_playerStrength; }
     int GetPlayerAgility() const { return m_playerAgility; }

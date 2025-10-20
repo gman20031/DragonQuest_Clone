@@ -354,7 +354,9 @@ void InteractionComponent::OnButtonPressed(const std::string& action)
 void InteractionComponent::HandleTalk()
 {
     if (m_pCurrentTalk)
-        ShowActionMessage("\'Trading with Inn.\'");
+    {
+        //ShowActionMessage("\'Trading with Inn.\'");
+    }
     else
         ShowActionMessage("\'There is no one there.\'");
 }
@@ -374,7 +376,7 @@ void InteractionComponent::HandleTake()
 {
     if (m_pCurrentTake)
     {
-        ShowActionMessage("\'You found a key.\'");
+        ShowActionMessage("\'You found a tablet!\'");
     }
     else
         ShowActionMessage("\'There is nothing to take here.\'");

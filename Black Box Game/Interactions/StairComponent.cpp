@@ -79,7 +79,7 @@ void BaseStairComponent::OnStairUsed(Actor* pOtherActor)
         .HP = pHUD->m_playerHP,
         .MP = pHUD->m_playerMP,
         .Gold = pHUD->m_playerGold,
-        .Energy = pHUD->m_playerEnergy,
+        .Energy = pHUD->m_playerEXP,
     };
 
     // Begin transition

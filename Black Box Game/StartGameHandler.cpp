@@ -50,7 +50,7 @@ void GameStarter::SetPlayerStats( BlackBoxEngine::Actor* pPlayer ) const
     pStats->SetPlayerGold( m_gold);
     pStats->SetPlayerStrength( m_strength );
     pStats->SetPlayerAgility( m_agility );
-    pStats->SetPlayerEnergy( m_exp );
+    pStats->SetPlayerExperience( m_exp );
 }
 
 void GameStarter::SetPlayerPosition( BlackBoxEngine::Actor* pPlayer ) const

@@ -35,9 +35,9 @@ void PlayerStatsComponent::SetPlayerGold( int value )
     RefreshHUD();
 }
 
-void PlayerStatsComponent::SetPlayerEnergy( int value )
+void PlayerStatsComponent::SetPlayerExperience( int value )
 {
-    m_playerEnergy = value;
+    m_playerEXP = value;
     RefreshHUD();
 }
 
@@ -86,7 +86,7 @@ std::string PlayerStatsComponent::BuildStatsString() const
         "HP       " + std::to_string(m_playerHP)    + "\n\n" +
         "MP       " + std::to_string(m_playerMP)    + "\n\n" +
         "G        " + std::to_string(m_playerGold)  + "\n\n" +
-        "E        " + std::to_string(m_playerEnergy);
+        "E        " + std::to_string(m_playerEXP);
 }
 
 void PlayerStatsComponent::OnLevelChange()
@@ -102,7 +102,7 @@ void PlayerStatsComponent::Load(const BlackBoxEngine::XMLElementParser parser)
     parser.GetChildVariable("MP", &m_playerMP);
     parser.GetChildVariable("MaxMP", &m_playerMaxMP);
     parser.GetChildVariable("Gold", &m_playerGold);
-    parser.GetChildVariable("Energy", &m_playerEnergy);
+    parser.GetChildVariable("XP", &m_playerEXP);
     parser.GetChildVariable("Strength", &m_playerStrength);
     parser.GetChildVariable("Agility", &m_playerAgility);
 }
@@ -115,7 +115,7 @@ void PlayerStatsComponent::Save(BlackBoxEngine::XMLElementParser parser)
     parser.NewChildVariable("MP", m_playerMP);
     parser.NewChildVariable("MaxMP", m_playerMaxMP);
     parser.NewChildVariable("Gold", m_playerGold);
-    parser.NewChildVariable("Energy", m_playerEnergy);
+    parser.NewChildVariable("XP", m_playerEXP);
     parser.NewChildVariable("Strength", m_playerStrength);
     parser.NewChildVariable("Agility", m_playerAgility);
 }

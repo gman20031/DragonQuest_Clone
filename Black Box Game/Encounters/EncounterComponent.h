@@ -25,11 +25,11 @@ class EncounterComponent : public BlackBoxEngine::Component
 
     std::string m_spriteFile;
     std::string m_name;
-    int m_hp = 10;
-    int m_attack = 2;
-    int m_defense = 1;
-    int m_xpReward = 3;
-    int m_goldReward = 2;
+    int m_hp = 0;
+    int m_attack = 0;
+    int m_defense = 0;
+    int m_xpReward = 0;
+    int m_goldReward = 0;
     int m_agility = 0;
 
 public:

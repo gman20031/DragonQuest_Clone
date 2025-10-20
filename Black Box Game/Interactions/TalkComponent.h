@@ -9,16 +9,26 @@ class TalkComponent: public BlackBoxEngine::Component
 
 
 public:
+
+    struct TalkData
+    {
+        bool requiresItem = false;
+        std::string requiredItemName;
+    };
+
     TalkComponent(BlackBoxEngine::Actor* pOwner) : Component(pOwner) { /*EMPTY*/ }
     virtual ~TalkComponent() override {}
 
     virtual void OnTalkUsed(BlackBoxEngine::Actor* pOtherActor); // all stairs must implement this
 
-    virtual void Start() override {} // only when this is created.
-    virtual void Update() override {} // every tick of the game
-    virtual void Render() override {} // just for rendering stuff
+    void SetTalkData(const TalkData& data) { m_data = data; }
+    const TalkData& GetTalkData() const { return m_data; }
+
     virtual void OnCollide([[maybe_unused]] BlackBoxEngine::Actor* pOtherActor) override; // if this actor has a collider, and walks into another actor with a collider
     virtual void Save([[maybe_unused]] BlackBoxEngine::XMLElementParser parser) override {} // for when this actor is called to be saved
     virtual void Load([[maybe_unused]] const BlackBoxEngine::XMLElementParser parser) override {} // for when this actor is called to be loaded
+
+protected:
+    TalkData m_data;
 };
 

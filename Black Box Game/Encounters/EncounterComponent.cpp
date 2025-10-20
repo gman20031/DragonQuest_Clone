@@ -110,10 +110,13 @@ void EncounterComponent::EndEncounter()
 
 void EncounterComponent::PlayerDies()
 {
+    BlackBoxManager::Get()->m_pAudioManager->PlaySound("../Assets/Audio/20DragonQuest1-ThouHastDied.wav");
+
     ShowActionMessage( "You are defeated!" );
     BlackBoxManager::Get()->m_pInputManager->StopAllInput();
     auto delayFunc = [this]()
         { 
+            EndEncounter();
             BlackBoxManager::Get()->m_pActorManager->DestroyActor( m_pOwner );
             RespawnPlayer();
         };
@@ -147,7 +150,7 @@ void EncounterComponent::EnemyTakeTurn()
         else
             BasicAttack();
     }
-    else if (m_name == "Spellian")
+    else if (m_name == "Magician")
     {
         if (roll < 0.5f)
             CastSpell("Hurt");
@@ -188,6 +191,7 @@ void EncounterComponent::PlayerAttack()
 
     if (m_hp <= 0)
     {
+        pStats->SetPlayerExperience(pStats->GetPlayerExperience() + m_xpReward);
         pStats->SetPlayerGold(pStats->GetPlayerGold() + m_goldReward);
         ShowActionMessage( std::format("The {} is defeated!", m_name) );
         EndEncounter();
@@ -218,7 +222,7 @@ void EncounterComponent::TryToFlee()
 
     if (m_name == "Ghost")
         fleeChance *= 0.8f; // Slightly harder to escape Ghosts (eerie persistence)
-    else if (m_name == "Spellian")
+    else if (m_name == "Magician")
         fleeChance *= 0.9f; // Spellians may try to trap you with Spell
 
     // --- Roll the outcome ---
@@ -240,6 +244,8 @@ void EncounterComponent::TryToFlee()
 
 void EncounterComponent::BasicAttack()
 {
+    
+
     auto* pStats = m_pPlayer->GetComponent<PlayerStatsComponent>();
     if (!pStats) return;
 

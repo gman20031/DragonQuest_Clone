@@ -1,7 +1,7 @@
 <OverworldEncounterInfo>
 	<EncounterAreaStartX>7</EncounterAreaStartX>
 	<EncounterAreaStartY>8</EncounterAreaStartY>
-	<EncounterZoneSize>15</EncounterZoneSize>
+	<EncounterZoneSize>17</EncounterZoneSize>
 	<EncounterWidth>5</EncounterWidth>
 	<EncounterGrid>
 		<element>3</element>  
