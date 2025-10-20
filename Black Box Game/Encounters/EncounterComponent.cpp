@@ -1,24 +1,40 @@
 ﻿#include "EncounterComponent.h"
-#include <Resources/ResourceManager.h>
 
-#include <Actors/ActorManager.h>
 #include <BlackBoxManager.h>
+#include <Actors/ActorManager.h>
 #include <Actors/EngineComponents/SpriteComponent.h>
-#include <Graphics/ScreenFader.h>
 #include <Actors/EngineComponents/TransformComponent.h>
+#include <Graphics/ScreenFader.h>
 #include <System/Delay.h>
 #include <format>
 
+#include <Interface/InterfaceButton.h>
+#include <Interface/InterfaceText.h>
+
+#include "../BlackBoxGame.h"
 #include "../Interactions/InteractionComponent.h"
-#include "../PlayerMovementComponent.h"
 #include "../GameMessages.h"
 #include "EncounterHandler.h"
 
-static constexpr float kMessageBoxWidth = 12 * 16;
-static constexpr float kMessageBoxHeight = 5 * 16;
-static constexpr float kStandardUITextSize = 28;
+static constexpr int kTileSize = 16;
+
+static constexpr float kMessageBoxStartX = 2 * kTileSize;
+static constexpr float kMessageBoxStartY = 9.5 * kTileSize;
+static constexpr float kMessageBoxWidth =  12 * kTileSize;
+static constexpr float kMessageBoxHeight = 5 * kTileSize;
+static constexpr float kStandardUITextSize = 28.f;
 static constexpr KeyCode kSelectkey = KeyCode::kX;
 static constexpr KeyCode kBackKey = KeyCode::kZ;
+
+static constexpr int kCommandWindowStartX   = 6 * kTileSize;
+static constexpr int kCommandWindowStartY   = static_cast<int>(0.5 * kTileSize);
+static constexpr int kCommandWindowWidth    = 8 * kTileSize;
+static constexpr int kCommandWindowHeight   = static_cast<int>(3.5 * kTileSize);
+
+static constexpr float kEnemyXoffset = -kTileSize / 2;
+static constexpr float kEnemyYoffset = kCommandWindowHeight;
+static constexpr float kEnemyWidth  = 7 * kTileSize;
+static constexpr float kEnemyHeight = 5.5 * kTileSize;
 
 using namespace BlackBoxEngine;
 
@@ -27,8 +43,7 @@ EncounterComponent::EncounterComponent( BlackBoxEngine::Actor* pOwner )
 {
     m_randomMachine.Reset( std::time( 0 ) );
 
-    static constexpr float kMessageBoxStartX = 2 * 16;
-    static constexpr float kMessageBoxStartY = 9.5 * 16;
+
 
     constexpr BB_FRectangle bgRect{kMessageBoxStartX, kMessageBoxStartY, kMessageBoxWidth, kMessageBoxHeight};
     InterfaceTexture::TextureInfo bgInfo{
@@ -42,9 +57,15 @@ EncounterComponent::EncounterComponent( BlackBoxEngine::Actor* pOwner )
     } );
 }
 
+EncounterComponent::~EncounterComponent()
+{
+    m_combatRoot.RemoveFromScreen();
+    BlackBoxManager::Get()->m_pInputManager->SwapInputToGame();
+    BlackBoxManager::Get()->m_pMessagingManager->EnqueueMessage( kMessageUIClosed, m_pOwner );
+}
+
 void EncounterComponent::StartEncounter(Actor* pOtherActor)
 {
-    m_inBattle = true;
     BB_LOG(LogType::kMessage, "Enemy '%s' appeared! HP=%d", m_name.c_str(), m_hp);
     
     if ( !pOtherActor->GetComponent<PlayerStatsComponent>() )
@@ -54,51 +75,53 @@ void EncounterComponent::StartEncounter(Actor* pOtherActor)
     }
 
     BlackBoxManager::Get()->m_pAudioManager->SetMusicTrack( "../Assets/Audio/24DragonQuest1-MonsterBattle.wav" );
+    BlackBoxManager::Get()->m_pMessagingManager->EnqueueMessage( kMessageUIOpen, m_pOwner );
+
+    m_combatRoot.AddToScreen();
+    BlackBoxManager::Get()->m_pInputManager->SwapInputTargetToInterface( &m_combatRoot );
 
     m_pPlayer = pOtherActor;
     StartCombatUI();
+    ShowActionMessage( std::format( "Enemy {} appeared! HP: {}\n\nCommand? ", m_name.c_str(), m_hp ) );
 }
 
 void EncounterComponent::EndEncounter()
 {
-
-    if (auto* playerMove = m_pPlayer->GetComponent<PlayerMovementComponent>())
-    {
-        playerMove->SetAnimationPaused(false);
-        playerMove->m_stopMoving = false;
-    }
     BlackBoxManager::Get()->m_pAudioManager->SetMusicTrack( "../Assets/Audio/05DragonQuest1-KingdomofAlefgard.wav" );
 
-    m_inBattle = false;
+    m_combatRoot.GetRoot()->RemoveChildNode( m_pCommandBackground );
+
+    InterfaceButton::ButtonParams btnParams{
+        .usable = true,
+        .color = ColorValue{ 0, 0, 0, 0 },
+        .targetedColor = ColorValue{ 0, 0, 0, 0 },
+        .interactColor = ColorValue{ 0, 0, 0, 0 },
+        .callbackFunction = [this](){BlackBoxManager::Get()->m_pActorManager->DestroyActor( m_pOwner );}
+    };
+
+    auto* pButton = m_pMessageBackground->MakeChildNode<InterfaceButton>( "quitCombat", BB_FRectangle{0,0,0,0},btnParams);
+    m_combatRoot.SetCursorTarget( pButton );
+    m_combatRoot.GetHighlight()->SetParameters( {.mode = 0} );
+
+    DelayedCallbackManager::AddCallback( []() { BlackBoxManager::Get()->m_pInputManager->ResumeInput(); }, 1000 );
+
     BB_LOG(LogType::kMessage, "Encounter ended.");
 }
 
-void EncounterComponent::Update()
+void EncounterComponent::PlayerDies()
 {
-    if (m_waitingForExit)
-    {
-        auto* input = BlackBoxManager::Get()->m_pInputManager;
-
-        if (input->IsKeyDown(KeyCode::kX)) // adjust to your engine’s input API
-        {
-            m_waitingForExit = false;
-
-            DismissActionMessage();
-            EndEncounter(); 
-            BlackBoxManager::Get()->m_pInputManager->SwapInputToGame();
-        }
-    }
+    ShowActionMessage( "You are defeated!" );
+    BlackBoxManager::Get()->m_pInputManager->StopAllInput();
+    auto delayFunc = [this]()
+        { 
+            BlackBoxManager::Get()->m_pActorManager->DestroyActor( m_pOwner );
+            RespawnPlayer();
+        };
+    DelayedCallbackManager::AddCallback( delayFunc, std::chrono::milliseconds( 1500 ) );
 }
 
 void EncounterComponent::EnemyTakeTurn()
 {
-    //check if the enemy won
-    if (m_hp <= 0)
-    {
-        m_battleState = BattleState::Victory;
-        return;
-    }
-
     auto* pStats = m_pPlayer->GetComponent<PlayerStatsComponent>();
     if (!pStats) 
         return;
@@ -133,26 +156,25 @@ void EncounterComponent::EnemyTakeTurn()
     }
     else
         BasicAttack();
+
+    BlackBoxManager::Get()->m_pInputManager->ResumeInput();
 }
 
 
 void EncounterComponent::PlayerAttack()
 {
     auto* pStats = m_pPlayer->GetComponent<PlayerStatsComponent>();
-    if (!pStats) return;
+    if (!pStats) 
+        return;
 
- 
     if (m_name == "Ghost")
     {
         int roll = m_randomMachine.GetRandomInRange(64);
         if (roll < 4)
         {
-            ShowActionMessage(std::format("The {} dodges your attack!", m_name.c_str()));
-            auto delayFunc = [this]() -> void {
-                EnemyTakeTurn();
-                };
+            ShowActionMessage(std::format("The {} dodges your attack!", m_name));
+            auto delayFunc = [this](){ EnemyTakeTurn(); };
             DelayedCallbackManager::AddCallback(delayFunc, std::chrono::milliseconds(1000));
-            return;
             return;
         }
     }
@@ -163,19 +185,12 @@ void EncounterComponent::PlayerAttack()
 
     ShowActionMessage(std::format("You hit the {} for {} damage!", m_name, damage));
 
-    pStats->RefreshHUD();
 
     if (m_hp <= 0)
     {
-        //pStats->Set(m_xpReward); //i need the XP
         pStats->SetPlayerGold(pStats->GetPlayerGold() + m_goldReward);
-        
-        pStats->RefreshHUD();
-
-        EndCombatUI();
-        ShowActionMessage(std::format("The {} is defeated!", m_name.c_str()));
-        m_waitingForExit = true;
-        
+        ShowActionMessage( std::format("The {} is defeated!", m_name) );
+        EndEncounter();
     }
     else
     {
@@ -190,9 +205,6 @@ void EncounterComponent::PlayerAttack()
 
 void EncounterComponent::TryToFlee()
 {
-    if (!m_inBattle)
-        return;
-
     auto* pStats = m_pPlayer->GetComponent<PlayerStatsComponent>();
     if (!pStats) return;
 
@@ -204,7 +216,6 @@ void EncounterComponent::TryToFlee()
     float agilityDiff = static_cast<float>(pStats->GetPlayerAgility() - m_agility);
     float fleeChance = std::clamp(0.5f + agilityDiff * 0.02f, 0.1f, 0.9f);
 
-    // --- Optional per-enemy tweak (if you want unique behavior) ---
     if (m_name == "Ghost")
         fleeChance *= 0.8f; // Slightly harder to escape Ghosts (eerie persistence)
     else if (m_name == "Spellian")
@@ -213,17 +224,15 @@ void EncounterComponent::TryToFlee()
     // --- Roll the outcome ---
     if ( m_randomMachine.GetRandomInRange( 1.0f ) < fleeChance)
     {
-        EndCombatUI();
+        BlackBoxManager::Get()->m_pInputManager->StopAllInput();
         ShowActionMessage("You successfully escaped!");
-        m_waitingForExit = true;
-        m_inBattle = false;
+        EndEncounter();
     }
     else
     {
         ShowActionMessage("You cannot escape!");
-        auto delayFunc = [this]() -> void {
-            EnemyTakeTurn();
-            };
+        BlackBoxManager::Get()->m_pInputManager->StopAllInput();
+        auto delayFunc = [this](){ EnemyTakeTurn(); };
         DelayedCallbackManager::AddCallback(delayFunc, std::chrono::milliseconds(800));
     }
 }
@@ -240,26 +249,11 @@ void EncounterComponent::BasicAttack()
     int currentHP = pStats->GetPlayerHP();
     pStats->SetPlayerHP(currentHP - damage);
 
-    pStats->RefreshHUD();
-
     ShowActionMessage(std::format("The {} attacks! You take {} damage!", m_name.c_str(), damage));
 
     // Check if player died
     if (pStats->GetPlayerHP() <= 0)
-    {
-        
-        EndCombatUI();
-        ShowActionMessage("You are defeated!");
-        m_waitingForExit = true;
-
-        auto delayFunc = [this]() -> void
-            {
-                RespawnPlayer();
-            };
-
-        DelayedCallbackManager::AddCallback(delayFunc, std::chrono::milliseconds(1500));
-      
-    }
+        PlayerDies();
 }
 
 void EncounterComponent::CastSpell([[maybe_unused]]const std::string& spellName)
@@ -273,15 +267,12 @@ void EncounterComponent::CastSpell([[maybe_unused]]const std::string& spellName)
         int currentHP = pStats->GetPlayerHP();
         pStats->SetPlayerHP(std::max(0, currentHP - damage));
 
-        pStats->RefreshHUD();
 
         ShowActionMessage(std::format("The {} casts Hurt! You take {} damage!", m_name.c_str(), damage));
 
         if (pStats->GetPlayerHP() <= 0)
         {
-            EndCombatUI();
             ShowActionMessage("You are defeated!");
-            m_waitingForExit = true;
         }
     }
 }
@@ -314,13 +305,6 @@ void EncounterComponent::Save(XMLElementParser parser)
 void EncounterComponent::StartCombatUI()
 {
     //m_isCombatActive = true; //DONT FORGET TO SET IT TO FALSE WHEN RUN AWAY OR DIE OR WIN
-    BlackBoxManager::Get()->m_pMessagingManager->EnqueueMessage( kMessageUIOpen, m_pOwner );
-    static constexpr float kEnemyWidth  = 7 * 16;
-    static constexpr float kEnemyHeight = 5 * 16;
-    static constexpr int kCommandWindowStartX = 96;
-    static constexpr int kCommandWindowStartY = 8;
-    static constexpr int kCommandWindowWidth = 8 * 16;
-    static constexpr int kCommandWindowHeight = static_cast<int>(3.5 * 16);
 
     // Command Panel
     BB_FRectangle panelRect{
@@ -329,16 +313,16 @@ void EncounterComponent::StartCombatUI()
     InterfaceTexture::TextureInfo panelInfo{};
     panelInfo.pTextureFile = "../Assets/UI/SelectionBox.png";
     panelInfo.useFullImage = true;
-    auto* pCommandBackground = m_combatRoot.AddNode<InterfaceTexture>(
+    m_pCommandBackground = m_combatRoot.AddNode<InterfaceTexture>(
         "CommandPanelBG", panelRect, panelInfo );
 
     // --- Enemy sprite ---
-    BB_FRectangle bgRect{-16, kCommandWindowHeight, kEnemyWidth, kEnemyHeight};
+    BB_FRectangle bgRect{ kEnemyXoffset, kEnemyYoffset, kEnemyWidth, kEnemyHeight};
     InterfaceTexture::TextureInfo bgInfo{
         .pTextureFile = m_spriteFile.c_str(),
         .useFullImage = true,
     };
-    pCommandBackground->MakeChildNode<InterfaceTexture>( "Combat_BG", bgRect, bgInfo );
+    m_pCommandBackground->MakeChildNode<InterfaceTexture>( "Combat_BG", bgRect, bgInfo );
 
     // highlighter
     auto* highlighter = m_combatRoot.GetHighlight();
@@ -348,11 +332,7 @@ void EncounterComponent::StartCombatUI()
         .iconOffset{-5, 0},
         .iconSize{4, 7}
         } );
-    CreateCommandButtons( pCommandBackground );
-
-    // --- Add to screen ---
-    m_combatRoot.AddToScreen();
-    BlackBoxManager::Get()->m_pInputManager->SwapInputTargetToInterface(&m_combatRoot);
+    CreateCommandButtons( m_pCommandBackground );
 }
 
 void EncounterComponent::CreateCommandButtons( InterfaceTexture* pBackground )
@@ -430,12 +410,6 @@ void EncounterComponent::CreateCommandButtons( InterfaceTexture* pBackground )
     m_combatRoot.SetCursorTarget( nodes[0] );
 }
 
-void EncounterComponent::EndCombatUI()
-{
-    m_combatRoot.RemoveFromScreen();
-    m_pPlayer->GetComponent<InteractionComponent>()->m_commandMenuActive = false;   
-}
-
 void EncounterComponent::OnCombatButtonPressed(const std::string& action)
 {
     //DismissActionMessage();
@@ -458,13 +432,9 @@ void EncounterComponent::OnCombatButtonPressed(const std::string& action)
     }
 }
 
-
 void EncounterComponent::ShowActionMessage(const std::string& text)
 {
-    if ( m_messageActive )
-        DismissActionMessage();
-
-    m_messageActive = true;
+    DismissActionMessage();
 
     // --- Text parameters ---
     BB_FRectangle txtRect{16, 8, kMessageBoxWidth - 16, kMessageBoxHeight - 16};
@@ -475,55 +445,32 @@ void EncounterComponent::ShowActionMessage(const std::string& text)
         .textSize = kStandardUITextSize,
         .color = ColorPresets::white,
     };
+
     m_pMessageBackground->MakeChildNode<InterfaceText>( "message_log_text", txtRect, params );
+
 }
 
 void EncounterComponent::DismissActionMessage()
 {
-    if (!m_messageActive) 
-        return;
-
     m_pMessageBackground->RemoveAllChildNodes();
 }
 
 void EncounterComponent::RespawnPlayer()
 {
-
-    auto* pManager = BlackBoxManager::Get();
-    if (!pManager) return;
-
-    auto* pInteract = m_pPlayer->GetComponent<InteractionComponent>();
-    if (!pInteract) return;
-
-    auto* pTransform = m_pPlayer->GetComponent<TransformComponent>();
-    auto* pStats = m_pPlayer->GetComponent<PlayerStatsComponent>();
-    if (!pTransform || !pStats) return;
-
     // --- Start fade-out immediately ---
     ScreenFader::FadeToBlack(1.0f);
 
-    pInteract->OnLevelTransitionStart();
-    pStats->HideHUD();
+    BlackBoxManager::Get()->m_pMessagingManager->EnqueueMessage( kLevelChanging, m_pOwner );
 
     // --- Delay the reset until fade is complete ---
-    auto delayFunc = [pManager, pTransform, pStats, pInteract]() -> void
-        {
-            // --- Reset stats ---
-            pStats->SetPlayerLevel(1);
-            pStats->SetPlayerHP(16);
-            pStats->SetPlayerMP(0);
-            pStats->SetPlayerGold(120);
-            pStats->SetPlayerEnergy(10);
-            pStats->SetPlayerStrength(3);
-            pStats->SetPlayerAgility(3);
+    auto delayFunc = [pPlayer = m_pPlayer]() -> void
+    {
+        BlackBoxGame::Get()->GetGameStarter().StartGamePlayer( pPlayer );
 
-            // --- Reset player position ---
-            pTransform->m_position = { 832, 816 };
-            pTransform->m_prevPosition = { 832, 816 };
-            // --- Fade back in ---
-            ScreenFader::FadeIn(1.0f);
-            pInteract->OnLevelTransitionEnd();
-        };
+        // --- Fade back in ---
+        ScreenFader::FadeIn(1.0f);
+        BlackBoxManager::Get()->m_pMessagingManager->EnqueueMessage( kLevelChangEnd, nullptr );
+    };
 
     // Run reset AFTER the fade finishes (≈ 1 second)
     DelayedCallbackManager::AddCallback(delayFunc, std::chrono::milliseconds(1000));

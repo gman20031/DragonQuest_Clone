@@ -25,7 +25,7 @@
         <filePath>../Assets/Tiles/FullTileSheet.png</filePath>
     </Component>
     <Component type="BaseStairComponent">
-        <TargetLevel>../Assets/Levels/ExampleLevel.xml</TargetLevel>
+        <TargetLevel>../Assets/Levels/Overworld.xml</TargetLevel>
         <SpawnX>576</SpawnX>
         <SpawnY>336</SpawnY>
         <Fade>1.0</Fade>

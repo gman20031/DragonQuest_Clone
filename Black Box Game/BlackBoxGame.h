@@ -2,6 +2,7 @@
 
 #include <BlackBoxManager.h>
 
+#include "StartGameHandler.h"
 #include "TileSystem/TileActorManager.h"
 
 class BlackBoxGame
@@ -11,6 +12,8 @@ class BlackBoxGame
 private:
     inline static BlackBoxGame* s_pBlackBoxGame = nullptr;
     
+    GameStarter m_gameStarter;
+
     TileActorManager* m_pTileActorManager = nullptr;
 
     inline static constexpr int kDefaultXPos = 100;
@@ -27,6 +30,8 @@ public:
 
     void Launch();
     void GameUpdate();
+
+    const GameStarter& GetGameStarter() const { return m_gameStarter; }
 private:
     void InitGame();
 

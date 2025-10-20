@@ -4,8 +4,7 @@
 #include <Actors/Component.h>
 #include <Actors/Actor.h>
 #include <Interface/UserInterface.h>
-#include <Interface/InterfaceButton.h>
-#include <Interface/InterfaceText.h>
+
 #include <Interface/InterfaceTexture.h>
 #include <Math/Random.h>
 
@@ -17,31 +16,11 @@ class EncounterComponent : public BlackBoxEngine::Component
 {
     GENERATE_ID( "EncounterComponent" );
 
-    enum class EnemyType
-    {
-        Slime,
-        RedSlime,
-        Drakee,
-        Ghost,
-        Magician,
-        Unknown
-    };
-    enum class BattleState
-    {
-        WaitingForPlayer,
-        PlayerActing,
-        EnemyActing,
-        Victory,
-        Defeat,
-        Flee
-    };
-
-    EnemyType m_type = EnemyType::Unknown;
     BlackBoxEngine::Random::MachineXoshiro256 m_randomMachine;
     
     BlackBoxEngine::UserInterface m_combatRoot;
     BlackBoxEngine::InterfaceTexture* m_pMessageBackground = nullptr;
-    BlackBoxEngine::Actor* m_currentEnemy = nullptr;
+    BlackBoxEngine::InterfaceTexture* m_pCommandBackground = nullptr;
     BlackBoxEngine::Actor* m_pPlayer = nullptr;
 
     std::string m_spriteFile;
@@ -53,23 +32,13 @@ class EncounterComponent : public BlackBoxEngine::Component
     int m_goldReward = 2;
     int m_agility = 0;
 
-    float m_patrolRadius = 0.0f;
-
-    bool m_inBattle = false;
-    bool m_inEncounter = false;
-    bool m_waitingForExit = false;
-    bool m_messageActive = false;
-public:
-    BattleState m_battleState = BattleState::WaitingForPlayer;
-
 public:
     EncounterComponent( BlackBoxEngine::Actor* pOwner );
-    virtual ~EncounterComponent() = default;
+    virtual ~EncounterComponent();
 
     void StartEncounter(Actor* pOtherActor);
     void EndEncounter();
 
-    void Update() override;
     void Render() override {}
     void OnCollide([[maybe_unused]] BlackBoxEngine::Actor* pOtherActor) override {}
     void Load([[maybe_unused]] const BlackBoxEngine::XMLElementParser parser) override;
@@ -84,23 +53,19 @@ private:
     int GetGold() const { return m_goldReward; }
     const std::string& GetSpritePath() const { return m_spriteFile; }
 
-    void SetActiveInBattle(bool active) { m_inBattle = active; }
-    void EnemyTakeTurn();
-
-    void BasicAttack();
-    void CastSpell(const std::string& string);
-
+    void PlayerDies();
     void PlayerAttack();
     void TryToFlee();
 
+    void EnemyTakeTurn();
+    void BasicAttack();
+    void CastSpell(const std::string& string);
+
     void StartCombatUI();
     void CreateCommandButtons( InterfaceTexture* pBackground );
-    void EndCombatUI();
     void OnCombatButtonPressed(const std::string& action);
     
     void ShowActionMessage(const std::string& text);
     void DismissActionMessage();
     void RespawnPlayer();
-
-
 };

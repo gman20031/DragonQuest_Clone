@@ -2,6 +2,8 @@
 
 using namespace BlackBoxEngine;
 
+#include "LevelFilePaths.h"
+
 #include <cassert>
 
 void BlackBoxGame::InitGame()
@@ -9,11 +11,12 @@ void BlackBoxGame::InitGame()
 	BB_LOG(LogType::kMessage, "Game starting");
     m_pEngineManager->GetWindow()->SetWindowIcon("../Assets/Sprites/DragonQuestIcon.png");
 
-    m_pEngineManager->m_pActorManager->LoadLevel("../Assets/Levels/ExampleLevel.xml");
+    m_pEngineManager->m_pActorManager->LoadLevel(kOverworldLevel);
 
-    auto* pTransform = m_pEngineManager->m_pActorManager->GetActor(3)->GetComponent<TransformComponent>();
-    pTransform->m_position.x = 832;
-    pTransform->m_position.y = 816;
+    m_gameStarter.Start();
+    //auto* pTransform = m_pEngineManager->m_pActorManager->GetActor(3)->GetComponent<TransformComponent>();
+    //pTransform->m_position.x = 832;
+    //pTransform->m_position.y = 816;
 
     m_pEngineManager->SetGameUpdate( [this]() { GameUpdate(); } );
 }
@@ -21,6 +24,7 @@ void BlackBoxGame::InitGame()
 BlackBoxGame::BlackBoxGame()
     : m_pEngineManager(BlackBoxManager::NewSingleton())
     , m_pTileActorManager(new TileActorManager)
+    , m_gameStarter("../Assets/Actors/StartingPlayerInformation.xml")
 {
     m_pEngineManager->CreateWindow(
         "Dragon Quest Clone", kDefaultXPos, kDefaultYPos, kDefaultWidth, kDefaultHeight,

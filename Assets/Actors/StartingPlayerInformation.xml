@@ -1,0 +1,15 @@
+<root>
+	<PlayerLevel>1</PlayerLevel>
+	<PlayerExp>0</PlayerExp>
+	<PlayerHP>16</PlayerHP>
+	<PlayerMaxHP>16</PlayerMaxHP>
+	<PlayerMP>0</PlayerMP>
+	<PlayerMaxMP>0</PlayerMaxMP>
+	<PlayerGold>0</PlayerGold>
+	<PlayerAgility>3</PlayerAgility>
+	<PlayerStrength>3</PlayerStrength>
+	<PlayerStartPosition>
+		<Xpos>832</Xpos>
+		<Ypos>816</Ypos>
+	</PlayerStartPosition>
+</root>

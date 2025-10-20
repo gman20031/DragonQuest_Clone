@@ -4,12 +4,12 @@
 #include <BlackBoxManager.h>
 #include <Graphics/ScreenFader.h>
 #include <Actors/EngineComponents/TransformComponent.h>
-#include <Actors/EngineComponents/MoverComponent.h>
 #include <System/Delay.h>
 
 #include "../BlackBoxGame.h"
 #include "../PlayerStatsComponent.h"
 #include "InteractionComponent.h"
+#include "../GameMessages.h"
 
 using namespace BlackBoxEngine;
 
@@ -60,7 +60,7 @@ void BaseStairComponent::OnStairUsed(Actor* pOtherActor)
     if (!pOtherActor)
         return;
 
-    BB_LOG(LogType::kMessage, "Transitioning to: %s", m_data.targetLevelPath.c_str());
+    BB_LOG(LogType::kMessage, "Transitioning to: ", m_data.targetLevelPath );
 
     auto* pInteract = pOtherActor->GetComponent<InteractionComponent>();
     if (!pInteract) return;
@@ -74,15 +74,17 @@ void BaseStairComponent::OnStairUsed(Actor* pOtherActor)
     auto* pHUD = pOtherActor->GetComponent<PlayerStatsComponent>();
     if (!pHUD) return;
 
-    PlayerRuntimeStats savedStats;
-    savedStats.HP = pHUD->m_playerHP;
-    savedStats.MP = pHUD->m_playerMP;
-    savedStats.Gold = pHUD->m_playerGold;
-    savedStats.Energy = pHUD->m_playerEnergy;
+    PlayerRuntimeStats savedStats
+    {
+        .HP = pHUD->m_playerHP,
+        .MP = pHUD->m_playerMP,
+        .Gold = pHUD->m_playerGold,
+        .Energy = pHUD->m_playerEnergy,
+    };
+
     // Begin transition
-    pInteract->OnLevelTransitionStart();
+    BlackBoxManager::Get()->m_pMessagingManager->EnqueueMessage( kLevelChanging, m_pOwner );
     pManager->m_pInputManager->StopAllInput();
-    pHUD->HideHUD();
 
     ScreenFader::FadeToBlack(m_data.fadeDuration);
 
@@ -104,7 +106,7 @@ void BaseStairComponent::OnStairUsed(Actor* pOtherActor)
             pManager->m_pInputManager->ResumeInput();
 
             ScreenFader::FadeIn(data.fadeDuration);
-            pInteract->OnLevelTransitionEnd();
+            BlackBoxManager::Get()->m_pMessagingManager->EnqueueMessage( kLevelChangEnd, nullptr);
         };
 
     DelayedCallbackManager::AddCallback(delayFunc, std::chrono::milliseconds(int(m_data.fadeDuration * 1000)));

@@ -11,7 +11,7 @@ namespace BlackBoxEngine
     {
         using Callback = std::function<void()>;
 
-        uint64_t id;
+        uint64_t id = 0;
         Callback callback;
         double callTimeSeconds;
         double repeatTime = 0;
@@ -31,6 +31,7 @@ namespace BlackBoxEngine
         static uint64_t AddCallback( DelayedCallback::Callback&& callback, double delayMS, double repeatMS = 0 );
         
         static bool RemoveCallback( uint64_t id );
+
     private:
         static bool HeapCompare(
             const DelayedCallback& left,

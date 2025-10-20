@@ -200,6 +200,7 @@ copy "$(solutiondir)Black Box Engine\libraries\SDL3-3.3\lib\x64\SDL3_mixer.dll" 
     <ClCompile Include="Interactions\TalkComponent.cpp" />
     <ClCompile Include="Encounters\EncounterComponent.cpp" />
     <ClCompile Include="Encounters\EncounterHandler.cpp" />
+    <ClCompile Include="StartGameHandler.cpp" />
     <ClCompile Include="TileSystem\TileActorManager.cpp" />
     <ClCompile Include="TileSystem\TileInfoComponent.cpp" />
     <ClCompile Include="TileSystem\TileMapComponent.cpp" />
@@ -210,6 +211,7 @@ copy "$(solutiondir)Black Box Engine\libraries\SDL3-3.3\lib\x64\SDL3_mixer.dll" 
     <ClInclude Include="GameMessages.h" />
     <ClInclude Include="Interactions\InteractionComponent.h" />
     <ClInclude Include="InventoryComponent.h" />
+    <ClInclude Include="LevelFilePaths.h" />
     <ClInclude Include="PlayerMovementComponent.h" />
     <ClInclude Include="PlayerStatsComponent.h" />
     <ClInclude Include="ScreenCentered.h" />
@@ -218,6 +220,7 @@ copy "$(solutiondir)Black Box Engine\libraries\SDL3-3.3\lib\x64\SDL3_mixer.dll" 
     <ClInclude Include="Interactions\TalkComponent.h" />
     <ClInclude Include="Encounters\EncounterComponent.h" />
     <ClInclude Include="Encounters\EncounterHandler.h" />
+    <ClInclude Include="StartGameHandler.h" />
     <ClInclude Include="TileSystem\TileActorManager.h" />
     <ClInclude Include="TileSystem\TileInfoComponent.h" />
     <ClInclude Include="TileSystem\TileMapComponent.h" />

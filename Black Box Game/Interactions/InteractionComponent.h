@@ -1,17 +1,11 @@
 #pragma once
 #include <Actors/Component.h>
 
-#include <cstdint>
 #include <string>
 #include <vector>
-#include <array>
 
-#include <BlackBoxManager.h>
 #include <Input/InputManager.h>
-#include <Math/FVector2.h>
 #include <Interface/UserInterface.h>
-#include <Interface/InterfaceButton.h>
-#include <Interface/InterfaceText.h>
 #include <Interface/InterfaceTexture.h>
 
 #include "StairComponent.h"
@@ -22,12 +16,9 @@
 
 class BlackBoxGame;
 
-
 class InteractionComponent : public BlackBoxEngine::Component
 {
     GENERATE_ID("InteractionComponent");
-    friend class PlayerStatsComponent;
-    friend class EncounterComponent;
 
     // -- Open / Close UI keyCodes;
     uint64_t m_keyDownCodes[2];
@@ -50,10 +41,6 @@ class InteractionComponent : public BlackBoxEngine::Component
 
     // --- State ---
     bool m_commandMenuActive = false;
-    bool m_didMove = false;
-    bool m_isChangingLevel = false;
-    bool m_needsHUDRefresh = false;
-    bool m_forceHUDVisible = false;
 
     uint64_t m_delayedDisplayId = 0;
 
@@ -63,19 +50,13 @@ public:
 
     // --- Engine Overrides ---
     void Start() override;
-    void Update() override;
-    void Render() override;
     void OnCollide(BlackBoxEngine::Actor* pOtherActor) override;
-    void Save(BlackBoxEngine::XMLElementParser parser) override;
-    void Load(const BlackBoxEngine::XMLElementParser parser) override;
 
     // --- Player Linking ---
     void SetPlayerActor(BlackBoxEngine::Actor* actor) { m_playerActor = actor; }
 
     // --- Interaction Hooks ---
     void OnButtonPressed(const std::string& action);
-    void OnLevelTransitionStart();
-    void OnLevelTransitionEnd();
 
     void SetCurrentStair(BaseStairComponent* stair) { m_pCurrentStair = stair; }
     void SetCurrentTalk(TalkComponent* talk) { m_pCurrentTalk = talk; }
@@ -97,4 +78,5 @@ private:
     void HandleStair();
     void HandleTake();
 
+    void OnLevelChanging();
 };

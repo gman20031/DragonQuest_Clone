@@ -89,7 +89,7 @@ namespace BlackBoxEngine
 
         void Reset() const;
         void WriteNode(std::ostream& os, QuadTreeNode* pNode, int depth); // for debugging
-        bool AtMaxDepth(const QuadTreeNode* pNode);
+        bool AtMaxDepth(const QuadTreeNode* pNode) const;
         const BoundingBox& GetBorderBox() const { return m_pRootNode->m_boundingBox; }
         void SetDimensions(BB_FRectangle rect);
     public:

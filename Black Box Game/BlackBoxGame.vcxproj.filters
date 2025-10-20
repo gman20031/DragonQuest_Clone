@@ -18,6 +18,7 @@
     <ClCompile Include="Encounters\EncounterComponent.cpp" />
     <ClCompile Include="PlayerStatsComponent.cpp" />
     <ClCompile Include="InventoryComponent.cpp" />
+    <ClCompile Include="StartGameHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BlackBoxGame.h" />
@@ -36,5 +37,7 @@
     <ClInclude Include="PlayerStatsComponent.h" />
     <ClInclude Include="InventoryComponent.h" />
     <ClInclude Include="GameMessages.h" />
+    <ClInclude Include="StartGameHandler.h" />
+    <ClInclude Include="LevelFilePaths.h" />
   </ItemGroup>
 </Project>

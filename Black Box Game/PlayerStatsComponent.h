@@ -1,16 +1,9 @@
 #pragma once
-#include <Actors/Component.h>
-#include <functional>
+
 #include <string>
-#include <vector>
-#include "../Black Box Engine/BlackBoxManager.h"
-#include "../Black Box Engine/Input/InputManager.h"
-#include "../Black Box Engine/Math/FVector2.h"
-#include <Interface/UserInterface.h>
-#include <Interface/InterfaceButton.h>
+#include <Actors/Component.h>
 #include <Interface/InterfaceText.h>
-#include <Interface/InterfaceTexture.h>
-#include "../Black Box Engine/Graphics/Text Rendering/Text.h"
+#include <Interface/UserInterface.h>
 
 class BlackBoxGame;
 
@@ -22,8 +15,8 @@ class PlayerStatsComponent : public BlackBoxEngine::Component
     friend class InteractionComponent;
 
     bool m_hudVisible = false;
-    bool m_needsHUDRefresh = false;
-    bool m_forceHUDVisible = false;
+    bool m_callbackActive = false;
+    uint64_t m_callbackId = 0;
 
     BlackBoxEngine::UserInterface m_hudRoot;
     BlackBoxEngine::InterfaceText* m_hudStatsText = nullptr;
@@ -40,52 +33,43 @@ public:
     int m_playerStrength = 3;
     int m_playerAgility = 3;
 
-    void Initialize() {
-        m_playerHP = m_playerMaxHP;  // start full HP
-        m_playerMP = m_playerMaxMP;  // start full MP
-    }
-
-    //spells?
-    //strengh and agility 
-    //ned xp
 public:
     PlayerStatsComponent(BlackBoxEngine::Actor* pOwner) : Component(pOwner) {}
     virtual ~PlayerStatsComponent() {}
 
-    //std::function<void()> OnStatsChanged = []() {};
-
-    void SetPlayerLevel(int value) { m_playerLevel = value;
-    }
-    void SetPlayerHP(int value) { m_playerHP = value; 
-    }
-    void SetPlayerMP(int value) { m_playerMP = value;
-    }
-    void SetPlayerGold(int value) { m_playerGold = value; 
-    }
-    void SetPlayerEnergy(int value) { m_playerEnergy = value;
-    }
+    void SetPlayerLevel( int value );
+    void SetPlayerHP( int value );
+    void SetPlayerMaxHP( int value ) { m_playerMaxHP = value; };
+    void SetPlayerMP( int value );
+    void SetPlayerMaxMP( int value ) { m_playerMaxMP = value; };
+    void SetPlayerGold( int value );
+    void SetPlayerEnergy( int value );
 
     void SetPlayerStrength(int value) { m_playerStrength = value;}
     void SetPlayerAgility(int value) { m_playerAgility = value;}
 
-    int GetPlayerLevel() { return m_playerLevel; }
-    int GetPlayerHP() { return m_playerHP; }
-    int GetPlayerMP() { return m_playerMP; }
-    int GetPlayerGold() { return m_playerGold; }
-    int GetPlayerEnergy() { return m_playerEnergy; }
+    int GetPlayerLevel() const { return m_playerLevel; }
+    int GetPlayerHP()  const { return m_playerHP; }
+    int GetPlayerMP()  const { return m_playerMP; }
+    int GetPlayerMaxHP()  const { return m_playerMaxHP; }
+    int GetPlayerMaxMP()  const { return m_playerMaxMP; }
+    int GetPlayerGold()  const { return m_playerGold; }
+    int GetPlayerEnergy()  const { return m_playerEnergy; }
 
-    int GetPlayerStrength() { return m_playerStrength; }
-    int GetPlayerAgility() { return m_playerAgility; }
+    int GetPlayerStrength() const { return m_playerStrength; }
+    int GetPlayerAgility() const { return m_playerAgility; }
 
-    void Start() override;
-    void Update() override;
-    void Load([[maybe_unused]] const BlackBoxEngine::XMLElementParser parser) override;
-    void Save([[maybe_unused]] BlackBoxEngine::XMLElementParser parser) override;
-   
+    virtual void Update() override;
+    virtual void Start() override;
+    virtual void Load( [[maybe_unused]] const BlackBoxEngine::XMLElementParser parser ) override;
+    virtual void Save([[maybe_unused]] BlackBoxEngine::XMLElementParser parser) override;
+private:
+    void CreateHud();
     void DisplayHUD(); 
     void HideHUD();
     void RefreshHUD();
     std::string BuildStatsString() const;
 
+    void OnLevelChange();
 };
 

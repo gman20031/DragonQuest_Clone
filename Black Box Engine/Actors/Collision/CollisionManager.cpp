@@ -323,7 +323,7 @@ namespace BlackBoxEngine
         os << '\n';
     }
 
-    bool CollisionManager::AtMaxDepth(const QuadTreeNode* pNode)
+    bool CollisionManager::AtMaxDepth(const QuadTreeNode* pNode) const
     {
         return (
             pNode->m_boundingBox.m_rect.w < m_minimumWidth &&

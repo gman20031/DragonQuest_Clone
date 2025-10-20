@@ -11,8 +11,6 @@ class TileMapComponent;
 class PlayerMovementComponent : public BlackBoxEngine::Component
 {
     GENERATE_ID("PlayerMovementComponent");
-    friend class PlayerStatsComponent;
-    friend class EncounterComponent;
 
     BlackBoxEngine::MoverComponent* m_pMover = nullptr;
     BlackBoxEngine::TransformComponent* m_pTransform = nullptr;

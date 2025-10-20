@@ -4,6 +4,9 @@
 #include <BlackBoxManager.h>
 #include <System/Delay.h>
 
+#include <Interface/InterfaceButton.h>
+#include <Interface/InterfaceText.h>
+
 #include "../Encounters/EncounterComponent.h"
 #include "../PlayerMovementComponent.h"
 #include "../PlayerStatsComponent.h"
@@ -15,6 +18,14 @@ using namespace BlackBoxEngine;
 
 static constexpr float kMessageBoxWidth = 12 * 16;
 static constexpr float kMessageBoxHeight = 5 * 16;
+static constexpr float kMessageBoxStartX = 2 * 16;
+static constexpr float kMessageBoxStartY = 10 * 16;
+
+static constexpr float kCommandBoxStartX = 7 * 16;
+static constexpr float kCommandBoxStartY = 1 * 16;
+static constexpr int   kCommandBoxWidth  = 8 * 16;
+static constexpr int   kCommandBoxHeight = 6 * 16;
+
 static constexpr float kStandardUITextSize = 28;
 
 static constexpr KeyCode kSelectkey = KeyCode::kX;
@@ -60,13 +71,8 @@ void InteractionComponent::Start()
     // Z = close UI
     m_keyDownCodes[1] =
         input->SubscribeToKey( KeyCode::kZ, kKeyDown, [this]() { if ( m_commandMenuActive ) CloseCommandUI(); } );
-}
 
-// -------------------------------------------------------------
-// Update
-// -------------------------------------------------------------
-void InteractionComponent::Update()
-{
+    BlackBoxManager::Get()->m_pMessagingManager->RegisterListener( kLevelChanging, [this]( [[maybe_unused]]Message& ) {OnLevelChanging();} );
 }
 
 // -------------------------------------------------------------
@@ -128,7 +134,7 @@ bool InteractionComponent::CreateCommandMenuUI()
     auto gridIndex = []( int x, int y ) { return x + (y * kButtonGridHeight); };
 
     // Offset menu
-    m_pCommandMenuRootNode.GetRoot()->SetOffset( 80, 16 );
+    m_pCommandMenuRootNode.GetRoot()->SetOffset( kCommandBoxStartX, kCommandBoxStartY );
 
     // Highlighter
     auto* highlighter = m_pCommandMenuRootNode.GetHighlight();
@@ -146,12 +152,11 @@ bool InteractionComponent::CreateCommandMenuUI()
         } );
 
     // Background box
-    static constexpr int kBackgroundWidth = 8 * 16;
-    static constexpr int kBackgroundHeight = 6 * 16;
-    BB_FRectangle bgRect{0, 0 , kBackgroundWidth, kBackgroundHeight};
+
+    BB_FRectangle bgRect{0, 0 , kCommandBoxWidth, kCommandBoxHeight};
     InterfaceTexture::TextureInfo bgInfo{
         .pTextureFile = "../Assets/UI/SelectionBox.png",
-        .spriteDimensions = {kBackgroundWidth, kBackgroundHeight},
+        .spriteDimensions = {kCommandBoxWidth, kCommandBoxHeight},
         .useFullImage = true
     };
     auto* pBackground = m_pCommandMenuRootNode.AddNode<InterfaceTexture>( "UI_Background", bgRect, bgInfo );
@@ -227,9 +232,6 @@ bool InteractionComponent::CreateCommandMenuUI()
 
 bool InteractionComponent::CreateMessageLogBox()
 {
-    static constexpr float kMessageBoxStartX = 2 * 16;
-    static constexpr float kMessageBoxStartY = 9 * 16;
-
     static constexpr BB_FRectangle bgRect{0, 0, kMessageBoxWidth, kMessageBoxHeight};
     static constexpr InterfaceTexture::TextureInfo bgInfo{
         .pTextureFile = "../Assets/UI/BottomTextBox.png",
@@ -362,7 +364,6 @@ void InteractionComponent::HandleStair()
     if (m_pCurrentStair)
     {
         CloseCommandUI();
-        m_didMove = true;
         m_pCurrentStair->OnStairUsed(m_playerActor);
     }
     else
@@ -373,38 +374,16 @@ void InteractionComponent::HandleTake()
 {
     if (m_pCurrentTake)
     {
-        //CloseUI();
-        //m_didMove = true;
         ShowActionMessage("\'You found a key.\'");
     }
     else
         ShowActionMessage("\'There is nothing to take here.\'");
 }
 
-// -------------------------------------------------------------
-// Level Transition
-// -------------------------------------------------------------
-void InteractionComponent::OnLevelTransitionStart()
+void InteractionComponent::OnLevelChanging()
 {
-    auto* player = m_pOwner->GetComponent<PlayerStatsComponent>();
-    if (!player) return;
-
-    m_isChangingLevel = true;
-    if (player->m_hudVisible) 
-        player->HideHUD();
-
-    if (m_delayedDisplayId != 0)
-    {
-        DelayedCallbackManager::RemoveCallback(m_delayedDisplayId);
-        m_delayedDisplayId = 0;
-    }
+    m_messageRootInterface.RemoveFromScreen();
+    m_pCommandMenuRootNode.RemoveFromScreen();
+    BlackBoxManager::Get()->m_pInputManager->SwapInputToGame();
 }
 
-void InteractionComponent::OnLevelTransitionEnd()
-{
-    m_isChangingLevel = false;
-}
-
-void InteractionComponent::Render() {}
-void InteractionComponent::Save(BlackBoxEngine::XMLElementParser) {}
-void InteractionComponent::Load(const BlackBoxEngine::XMLElementParser) {}

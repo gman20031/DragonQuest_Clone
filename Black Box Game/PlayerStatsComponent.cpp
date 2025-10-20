@@ -1,47 +1,97 @@
 #include "PlayerStatsComponent.h"
 
+#include <BlackBoxManager.h>
+#include <Actors/Actor.h>
 #include <System/Delay.h>
+#include <Interface/InterfaceTexture.h>
+#include <Graphics/Text Rendering/Text.h>
+#include <Actors/EngineComponents/TransformComponent.h>
 
-#include "PlayerMovementComponent.h"
-#include "Interactions/InteractionComponent.h"
+#include "GameMessages.h"
 
 using namespace BlackBoxEngine;
 
-void PlayerStatsComponent::Start()
+void PlayerStatsComponent::SetPlayerLevel( int value )
 {
+    m_playerLevel = value;
+    RefreshHUD();
+}
+
+void PlayerStatsComponent::SetPlayerHP( int value )
+{
+    m_playerHP = value;
+    RefreshHUD();
+}
+
+void PlayerStatsComponent::SetPlayerMP( int value )
+{
+    m_playerMP = value;
+    RefreshHUD();
+}
+
+void PlayerStatsComponent::SetPlayerGold( int value )
+{
+    m_playerGold = value;
+    RefreshHUD();
+}
+
+void PlayerStatsComponent::SetPlayerEnergy( int value )
+{
+    m_playerEnergy = value;
+    RefreshHUD();
 }
 
 void PlayerStatsComponent::Update()
 {
-    auto* playerMove = m_pOwner->GetComponent<PlayerMovementComponent>();
-    if (!playerMove)
+    auto* pTransform = m_pOwner->GetComponent<TransformComponent>();
+    if (!pTransform)
         return;
 
-    bool isMoving = playerMove->m_isMoving;
+    bool moving = pTransform->m_position != pTransform->m_prevPosition;
+
+
+    if ( moving && m_callbackActive )
+        DelayedCallbackManager::RemoveCallback( m_callbackId );
 
     // Show HUD after player stops
-    if ( isMoving && m_hudVisible )
+    if ( moving && m_hudVisible )
     {
         HideHUD();
         return;
     }
-    if (!isMoving && !m_hudVisible)
+    else
     {
-        DelayedCallbackManager::AddCallback([this]()
+        m_callbackActive = true;
+        m_callbackId = DelayedCallbackManager::AddCallback([this]()
         {
             DisplayHUD();
         }, 1000);
     }
 }
 
+void PlayerStatsComponent::Start()
+{
+    CreateHud();
+
+    BlackBoxManager::Get()->m_pMessagingManager->RegisterListener
+    ( 
+        kLevelChanging, [this]( [[maybe_unused]] Message& ) { OnLevelChange(); }
+    );
+}
+
 std::string PlayerStatsComponent::BuildStatsString() const
 {
     return
-        "  LV       " + std::to_string(m_playerLevel) + "\n\n" +
-        "  HP       " + std::to_string(m_playerHP) + "\n\n" +
-        "  MP       " + std::to_string(m_playerMP) + "\n\n" +
-        "  G        " + std::to_string(m_playerGold) + "\n\n" +
-        "  E        " + std::to_string(m_playerEnergy);
+        "LV       " + std::to_string(m_playerLevel) + "\n\n" +
+        "HP       " + std::to_string(m_playerHP)    + "\n\n" +
+        "MP       " + std::to_string(m_playerMP)    + "\n\n" +
+        "G        " + std::to_string(m_playerGold)  + "\n\n" +
+        "E        " + std::to_string(m_playerEnergy);
+}
+
+void PlayerStatsComponent::OnLevelChange()
+{
+    m_hudRoot.RemoveFromScreen();
 }
 
 void PlayerStatsComponent::Load(const BlackBoxEngine::XMLElementParser parser)
@@ -70,55 +120,63 @@ void PlayerStatsComponent::Save(BlackBoxEngine::XMLElementParser parser)
     parser.NewChildVariable("Agility", m_playerAgility);
 }
 
+void PlayerStatsComponent::CreateHud()
+{
+    static constexpr float kTileSize         = 16;
+    static constexpr float kHudPosX          = 0.5 * kTileSize;
+    static constexpr float kHudPosY          = 1.5 * kTileSize;
+    static constexpr float kBackgroundWidth  = 5 * kTileSize;
+    static constexpr float kBackgroundHeight = 7 * kTileSize;
+    static constexpr float kTextSize         = 28;
+    static constexpr float kNameTextSize     = kTextSize * 2 / 3;
+
+    static constexpr float kStatsXOff = 0.5 * kTileSize;
+    static constexpr float kStatsYOff = 1 * kTileSize;
+
+    m_hudRoot.GetRoot()->SetOffset( kHudPosX, kHudPosY );
+
+    constexpr BB_FRectangle bgRect{0, 0, kBackgroundWidth, kBackgroundHeight};
+    InterfaceTexture::TextureInfo bgInfo{
+        .pTextureFile = "../Assets/UI/StatsInfoBox.png",
+        .useFullImage = true
+    };
+    auto* pBackgroundTexture = m_hudRoot.AddNode<InterfaceTexture>( "HUD_Background", bgRect, bgInfo );
+
+    InterfaceText::Paremeters textParams{
+        .pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf",
+        .textSize = kTextSize,
+        .color = ColorPresets::white
+    };
+
+    // PlayerNameTextElement
+    textParams.textSize = kNameTextSize;
+    BB_FRectangle nameRect = {kBackgroundWidth / 4, 0, kBackgroundWidth, 28};
+    textParams.pText = "PLAYER";
+    pBackgroundTexture->MakeChildNode<InterfaceText>( "HUD_Header", nameRect, textParams );
+
+    // Stats
+    textParams.textSize = kTextSize;
+    BB_FRectangle statsRect = {kStatsXOff, kStatsYOff, kBackgroundWidth, kBackgroundHeight};
+    std::string stats = BuildStatsString();
+    textParams.pText = stats.c_str();
+    m_hudStatsText = pBackgroundTexture->MakeChildNode<InterfaceText>( "HUD_Stats", statsRect, textParams );
+
+}
+
 void PlayerStatsComponent::DisplayHUD()
 {
     if (m_hudVisible) 
         return;
     
-    m_hudVisible = true;
-
-    m_hudRoot.RemoveFromScreen();
-    
-    constexpr BB_FRectangle bgRect{ 10, 10, 50, 70 };
-    InterfaceTexture::TextureInfo bgInfo{
-        .pTextureFile = "../Assets/UI/StatsInfoBox.png",
-        .spriteDimensions = {16, 16},
-        .useFullImage = true
-    };
-    m_hudRoot.AddNode<InterfaceTexture>("HUD_Background", bgRect, bgInfo);
-    
-    InterfaceText::Paremeters textParams{
-        .pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf",
-        .textSize = 16,
-        .color = ColorPresets::white
-    };
-    
-    // Header
-    BB_FRectangle headerRect = bgRect;
-    headerRect.h = 15;
-    textParams.pText = "     PLAYER";
-    m_hudRoot.AddNode<InterfaceText>("HUD_Header", headerRect, textParams);
-    
-    //auto* playerStats = m_pOwner->GetComponent<PlayerStatsComponent>();
-    // Stats
-    BB_FRectangle statsRect = bgRect;
-    statsRect.y += 12;
-    std::string stats =
-        "  LV       " + std::to_string(m_playerLevel) + "\n\n" +
-        "  HP       " + std::to_string(m_playerHP) + "\n\n" +
-        "  MP       " + std::to_string(m_playerMP) + "\n\n" +
-        "  G        " + std::to_string(m_playerGold) + "\n\n" +
-        "  E        " + std::to_string(m_playerEnergy);
-    textParams.pText = stats.c_str();
-    m_hudStatsText = m_hudRoot.AddNode<InterfaceText>("HUD_Stats", statsRect, textParams);
-    
     m_hudRoot.AddToScreen();
-
+    m_hudVisible = true;
 }
 
 void PlayerStatsComponent::HideHUD()
 {
-    if (!m_hudVisible) return;
+    if (!m_hudVisible) 
+        return;
+
     m_hudRoot.RemoveFromScreen();
     m_hudVisible = false;
 }

@@ -35,7 +35,7 @@ namespace BlackBoxEngine
     bool operator==(const Message& left, const Message& right);
     bool operator!=(const Message& left, const Message& right);
 
-    class MessagingManager : public BB_Observer< std::function<void(Message&)>, MessageIdType >
+    class MessagingManager : public BB_Observer< std::function<void(Message&)>, MessageIdType , MessageIdType >
     {
         friend class BlackBoxManager;
         std::vector<Message> m_eventQueue;

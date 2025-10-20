@@ -120,6 +120,7 @@ void PlayerMovementComponent::Update()
     {
         // Snap position to target tile exactly
         position = m_targetPosition;
+
         CheckForEncounters();
 
         // Stop movement
@@ -210,20 +211,25 @@ void PlayerMovementComponent::SetTextureForDirection([[maybe_unused]]const Black
 void PlayerMovementComponent::CheckForEncounters()
 {
     auto* pInfo = m_pTileMap->GetTileAtGamePosition( m_targetPosition )->GetComponent<TileInfoComponent>();
+
     bool encounter = pInfo->CheckEncounter();
     if ( !encounter )
         return;
-    auto& pActor = m_pTileMap->GetEncounterAtGame( m_targetPosition );
 
-    if (!pActor) return;
+    StopMoving();
+    m_pMover->m_velocity = {0,0};
+
+    auto& pActor = m_pTileMap->GetEncounterAtGame( m_targetPosition );
+    if (!pActor)
+        return;
 
     // Get the EncounterComponent from the actor
     auto* pEncounter = pActor->GetComponent<EncounterComponent>();
-    if (!pEncounter) return;
+    if (!pEncounter) 
+        return;
 
     // Start the encounter
     pEncounter->StartEncounter(m_pOwner);
-
 }
 
 void PlayerMovementComponent::AddUIMessageCallbacks()
@@ -231,6 +237,7 @@ void PlayerMovementComponent::AddUIMessageCallbacks()
     BlackBoxManager::Get()->m_pMessagingManager->RegisterListener( kMessageUIOpen,
         [this]( [[maybe_unused]]Message& message )
         {
+            m_pMover->m_velocity = {0,0};
             StopMoving();
             ++m_uiCount;
             m_pAnimatedSprite->Sprite().StopAnimating();
@@ -269,6 +276,8 @@ void PlayerMovementComponent::SetTargetTile()
 
     if (!pTileInfo || !pTileInfo->IsWalkable())
     {
+        BlackBoxManager::Get()->m_pAudioManager->PlaySound( "../Assets/Audio/42DragonQuest1-BumpingintoWalls.wav" );
+
         m_isMoving = false;
         m_targetPosition = m_pTransform->m_position;
         m_pMover->m_velocity = { 0,0 };
