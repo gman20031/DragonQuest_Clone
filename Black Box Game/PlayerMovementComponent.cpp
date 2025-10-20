@@ -28,10 +28,14 @@ PlayerMovementComponent::~PlayerMovementComponent()
     using enum InputManager::InputType;
     // bad and annoying - remembering codes suck
     auto* pInputManager = BlackBoxManager::Get()->m_pInputManager;
+    auto* pMessager = BlackBoxManager::Get()->m_pMessagingManager;
+
     for(auto id : m_keyDownCodes)
         pInputManager->UnsubscribeKey(id, kKeyDown);
     for (auto id : m_keyUpCodes)
         pInputManager->UnsubscribeKey(id, kKeyUp);
+    for ( auto id : m_messageCallbackIds )
+        pMessager->RemoveListener( id );
 }
 
 void PlayerMovementComponent::Start()
@@ -108,12 +112,12 @@ void PlayerMovementComponent::SetInteractionComponent(InteractionComponent* inte
 
 void PlayerMovementComponent::Update()
 {
+    if ( !m_isMoving )
+        return;
+
     float deltaTime = static_cast<float>(BlackBoxManager::Get()->GetDeltaTime());
     FVector2& position = m_pTransform->m_position;
     const FVector2 toTarget = m_targetPosition - position;
-
-    if (!m_isMoving)
-        return;
 
     // Check if we've reached or passed the target tile (allow some floating point tolerance)
     if (toTarget.GetLength() <= m_playerSpeed * deltaTime)
@@ -126,7 +130,7 @@ void PlayerMovementComponent::Update()
         // Stop movement
         if(m_stopMoving)
         {
-            m_pMover->m_velocity = FVector2(0, 0);
+            m_pMover->StopVelocity();
             m_isMoving = false;
         }
         else
@@ -216,8 +220,8 @@ void PlayerMovementComponent::CheckForEncounters()
     if ( !encounter )
         return;
 
-    StopMoving();
-    m_pMover->m_velocity = {0,0};
+    m_stopMoving = true;
+    m_pMover->StopVelocity();
 
     auto& pActor = m_pTileMap->GetEncounterAtGame( m_targetPosition );
     if (!pActor)
@@ -234,16 +238,17 @@ void PlayerMovementComponent::CheckForEncounters()
 
 void PlayerMovementComponent::AddUIMessageCallbacks()
 {
-    BlackBoxManager::Get()->m_pMessagingManager->RegisterListener( kMessageUIOpen,
+    m_messageCallbackIds.emplace_back( 
+        BlackBoxManager::Get()->m_pMessagingManager->RegisterListener( kMessageUIOpen,
         [this]( [[maybe_unused]]Message& message )
         {
-            m_pMover->m_velocity = {0,0};
             StopMoving();
             ++m_uiCount;
             m_pAnimatedSprite->Sprite().StopAnimating();
         }
-    );
+    ));
 
+    m_messageCallbackIds.emplace_back(
     BlackBoxManager::Get()->m_pMessagingManager->RegisterListener( kMessageUIClosed,
         [this]( [[maybe_unused]] Message& message )
         {
@@ -254,7 +259,7 @@ void PlayerMovementComponent::AddUIMessageCallbacks()
                 SetAnimationPaused( false );
             }
         }
-    );
+    ));
 }
 
 void PlayerMovementComponent::SetTargetTile()
@@ -280,7 +285,7 @@ void PlayerMovementComponent::SetTargetTile()
 
         m_isMoving = false;
         m_targetPosition = m_pTransform->m_position;
-        m_pMover->m_velocity = { 0,0 };
+        m_pMover->StopVelocity();
         return;
     }
 
@@ -291,7 +296,7 @@ void PlayerMovementComponent::SetTargetTile()
     // Set velocity toward the target position
     FVector2 toTarget = m_targetPosition - currentPos;
     FVector2 normalizedDirection = toTarget.GetNormalizedVector();
-    m_pMover->m_velocity = normalizedDirection * m_playerSpeed;
+    m_pMover->SetVelocity( normalizedDirection * m_playerSpeed );
 }
 
 void PlayerMovementComponent::StopMoving()

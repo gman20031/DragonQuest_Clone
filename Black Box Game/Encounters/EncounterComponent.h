@@ -26,6 +26,7 @@ class EncounterComponent : public BlackBoxEngine::Component
     std::string m_spriteFile;
     std::string m_name;
     int m_hp = 0;
+    int m_dodgeChance = 0;
     int m_attack = 0;
     int m_defense = 0;
     int m_xpReward = 0;
@@ -39,24 +40,16 @@ public:
     void StartEncounter(Actor* pOtherActor);
     void EndEncounter();
 
-    void Render() override {}
-    void OnCollide([[maybe_unused]] BlackBoxEngine::Actor* pOtherActor) override {}
+    void Start() override;
     void Load([[maybe_unused]] const BlackBoxEngine::XMLElementParser parser) override;
     void Save([[maybe_unused]] BlackBoxEngine::XMLElementParser parser) override;
 
 private:
-    const std::string& GetName() const { return m_name; }
-    int GetHP() const { return m_hp; }
-    int GetAttack() const { return m_attack; }
-    int GetDefense() const { return m_defense; }
-    int GetXP() const { return m_xpReward; }
-    int GetGold() const { return m_goldReward; }
-    const std::string& GetSpritePath() const { return m_spriteFile; }
-
     void PlayerDies();
     void PlayerAttack();
     void TryToFlee();
 
+    void DoEnemyAction();
     void EnemyTakeTurn();
     void BasicAttack();
     void CastSpell(const std::string& string);

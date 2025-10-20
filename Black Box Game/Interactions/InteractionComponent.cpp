@@ -51,9 +51,12 @@ InteractionComponent::InteractionComponent( BlackBoxEngine::Actor* pOwner )
 InteractionComponent::~InteractionComponent()
 {
     auto* pInput = BlackBoxManager::Get()->m_pInputManager;
+    auto* pMessager = BlackBoxManager::Get()->m_pMessagingManager;
     using enum InputManager::InputType;
     for ( auto id : m_keyDownCodes )
         pInput->UnsubscribeKey( id, kKeyDown );
+    for ( auto id : m_messageIds )
+        pMessager->RemoveListener( id );
 }
 
 // -------------------------------------------------------------
@@ -72,7 +75,25 @@ void InteractionComponent::Start()
     m_keyDownCodes[1] =
         input->SubscribeToKey( KeyCode::kZ, kKeyDown, [this]() { if ( m_commandMenuActive ) CloseCommandUI(); } );
 
-    BlackBoxManager::Get()->m_pMessagingManager->RegisterListener( kLevelChanging, [this]( [[maybe_unused]]Message& ) {OnLevelChanging();} );
+    m_messageIds.emplace_back(
+        BlackBoxManager::Get()->m_pMessagingManager->RegisterListener
+        ( 
+            kMessageUIOpen, [this]( [[maybe_unused]] Message& )  {
+                m_pCommandMenuRootNode.GetHighlight()->GetSprite()->StopAnimating(); 
+            } 
+    ));
+    m_messageIds.emplace_back(
+    BlackBoxManager::Get()->m_pMessagingManager->RegisterListener
+    (
+        kMessageUIClosed, [this]( [[maybe_unused]] Message& )
+        {
+            m_pCommandMenuRootNode.GetHighlight()->GetSprite()->AnimateSprite();
+        }
+    ));
+    m_messageIds.emplace_back(
+    BlackBoxManager::Get()->m_pMessagingManager->RegisterListener( 
+        kLevelChanging, [this]( [[maybe_unused]]Message& ) {OnLevelChanging();} 
+    ));
 }
 
 // -------------------------------------------------------------

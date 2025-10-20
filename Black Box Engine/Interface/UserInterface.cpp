@@ -174,6 +174,7 @@ namespace BlackBoxEngine
     UserInterface::~UserInterface()
     {
         assert(m_pRootNode);
+        BlackBoxManager::Get()->m_pInterfaceManager->RemoveInterface( m_managerId );
         delete m_pRootNode;
     }
 
@@ -207,6 +208,8 @@ namespace BlackBoxEngine
     void UserInterface::SetCursorTarget(InterfaceNode* pNode)
     {
         m_pCursorPosition = pNode;
+        if ( !pNode )
+            return;
         pNode->OnTargeted();
         m_highlighter.SetTarget(pNode);
     }

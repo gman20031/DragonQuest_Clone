@@ -12,11 +12,17 @@ namespace BlackBoxEngine
     private:
         TransformComponent* pTransform;
 
+        FVector2 m_velocity = {0,0};
+
     public:
         MoverComponent(Actor* pOwner);
         virtual ~MoverComponent() = default;
 
-        FVector2 m_velocity = { 0,0 };
+        void StopVelocity() { m_velocity = {0,0}; }
+
+        void SetVelocity( float x, float y );
+        void SetVelocity( FVector2 velocity );
+        FVector2 GetVelocity() const { return m_velocity; }
 
         virtual void Update() override;
 

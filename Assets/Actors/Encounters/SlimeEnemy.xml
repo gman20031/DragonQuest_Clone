@@ -7,6 +7,7 @@
         <XPReward>1</XPReward>
         <GoldReward>1</GoldReward>
         <Agility>3</Agility>
+		<Dodge>1</Dodge>
         <SpriteFile>../Assets/Sprites/BlueSlime.png</SpriteFile>
     </Component>
 </Actor>

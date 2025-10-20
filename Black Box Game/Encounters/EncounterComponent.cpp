@@ -43,8 +43,6 @@ EncounterComponent::EncounterComponent( BlackBoxEngine::Actor* pOwner )
 {
     m_randomMachine.Reset( std::time( 0 ) );
 
-
-
     constexpr BB_FRectangle bgRect{kMessageBoxStartX, kMessageBoxStartY, kMessageBoxWidth, kMessageBoxHeight};
     InterfaceTexture::TextureInfo bgInfo{
         .pTextureFile = "../Assets/UI/BottomTextBox.png",
@@ -73,12 +71,12 @@ void EncounterComponent::StartEncounter(Actor* pOtherActor)
         BB_LOG( LogType::kError, "Actor passed into startEncounter, did not have player stat component" );
         return;
     }
-
+    
+    BlackBoxManager::Get()->m_pInputManager->SwapInputTargetToInterface( &m_combatRoot );
     BlackBoxManager::Get()->m_pAudioManager->SetMusicTrack( "../Assets/Audio/24DragonQuest1-MonsterBattle.wav" );
     BlackBoxManager::Get()->m_pMessagingManager->EnqueueMessage( kMessageUIOpen, m_pOwner );
 
     m_combatRoot.AddToScreen();
-    BlackBoxManager::Get()->m_pInputManager->SwapInputTargetToInterface( &m_combatRoot );
 
     m_pPlayer = pOtherActor;
     StartCombatUI();
@@ -89,7 +87,6 @@ void EncounterComponent::EndEncounter()
 {
     BlackBoxManager::Get()->m_pAudioManager->SetMusicTrack( "../Assets/Audio/05DragonQuest1-KingdomofAlefgard.wav" );
 
-    m_combatRoot.GetRoot()->RemoveChildNode( m_pCommandBackground );
 
     InterfaceButton::ButtonParams btnParams{
         .usable = true,
@@ -123,7 +120,48 @@ void EncounterComponent::PlayerDies()
     DelayedCallbackManager::AddCallback( delayFunc, std::chrono::milliseconds( 1500 ) );
 }
 
+void EncounterComponent::Start()
+{
+
+}
+
+//to change depending on the enemy
+void EncounterComponent::Load( const XMLElementParser parser )
+{
+    parser.GetChildVariable( "Name", &m_name );
+    parser.GetChildVariable( "HP", &m_hp );
+    parser.GetChildVariable( "Attack", &m_attack );
+    parser.GetChildVariable( "Defense", &m_defense );
+    parser.GetChildVariable( "XPReward", &m_xpReward );
+    parser.GetChildVariable( "GoldReward", &m_goldReward );
+    parser.GetChildVariable( "Agility", &m_agility );
+    parser.GetChildVariable( "Dodge", &m_dodgeChance );
+    parser.GetChildVariable( "SpriteFile", &m_spriteFile );
+}
+
+void EncounterComponent::Save( XMLElementParser parser )
+{
+    parser.NewChildVariable( "Name", m_name );
+    parser.NewChildVariable( "HP", m_hp );
+    parser.NewChildVariable( "Attack", m_attack );
+    parser.NewChildVariable( "Defense", m_defense );
+    parser.NewChildVariable( "XPReward", m_xpReward );
+    parser.NewChildVariable( "GoldReward", m_goldReward );
+    parser.NewChildVariable( "Agility", m_agility );
+    parser.NewChildVariable( "Dodge", m_dodgeChance );
+    parser.NewChildVariable( "SpriteFile", m_spriteFile );
+}
+
 void EncounterComponent::EnemyTakeTurn()
+{
+    BlackBoxManager::Get()->m_pInputManager->StopAllInput();
+    DelayedCallbackManager::AddCallback( 
+        [this]() { DoEnemyAction(); }
+        , std::chrono::milliseconds( 1000 ) 
+    );
+}
+
+void EncounterComponent::DoEnemyAction()
 {
     auto* pStats = m_pPlayer->GetComponent<PlayerStatsComponent>();
     if (!pStats) 
@@ -137,9 +175,7 @@ void EncounterComponent::EnemyTakeTurn()
     else if (m_name == "Drakee")
     {
         if (roll < 0.2f)
-        {
             ShowActionMessage("The Drakee misses!");
-        }
         else
             BasicAttack();
     }
@@ -163,23 +199,18 @@ void EncounterComponent::EnemyTakeTurn()
     BlackBoxManager::Get()->m_pInputManager->ResumeInput();
 }
 
-
 void EncounterComponent::PlayerAttack()
 {
     auto* pStats = m_pPlayer->GetComponent<PlayerStatsComponent>();
     if (!pStats) 
         return;
 
-    if (m_name == "Ghost")
+    int roll = m_randomMachine.GetRandomInRange(64);
+    if (roll < m_dodgeChance )
     {
-        int roll = m_randomMachine.GetRandomInRange(64);
-        if (roll < 4)
-        {
-            ShowActionMessage(std::format("The {} dodges your attack!", m_name));
-            auto delayFunc = [this](){ EnemyTakeTurn(); };
-            DelayedCallbackManager::AddCallback(delayFunc, std::chrono::milliseconds(1000));
-            return;
-        }
+        ShowActionMessage(std::format("The {} dodges your attack!", m_name));
+        EnemyTakeTurn();
+        return;
     }
 
     int playerAtk = pStats->GetPlayerStrength();
@@ -187,7 +218,6 @@ void EncounterComponent::PlayerAttack()
     m_hp -= damage;
 
     ShowActionMessage(std::format("You hit the {} for {} damage!", m_name, damage));
-
 
     if (m_hp <= 0)
     {
@@ -198,10 +228,7 @@ void EncounterComponent::PlayerAttack()
     }
     else
     {
-        auto delayFunc = [this]() -> void {
-            EnemyTakeTurn();
-            };
-        DelayedCallbackManager::AddCallback(delayFunc, std::chrono::milliseconds(1000));
+        EnemyTakeTurn();
         return;
     }
 
@@ -235,17 +262,13 @@ void EncounterComponent::TryToFlee()
     else
     {
         ShowActionMessage("You cannot escape!");
-        BlackBoxManager::Get()->m_pInputManager->StopAllInput();
-        auto delayFunc = [this](){ EnemyTakeTurn(); };
-        DelayedCallbackManager::AddCallback(delayFunc, std::chrono::milliseconds(800));
+        EnemyTakeTurn();
     }
 }
 
 
 void EncounterComponent::BasicAttack()
 {
-    
-
     auto* pStats = m_pPlayer->GetComponent<PlayerStatsComponent>();
     if (!pStats) return;
 
@@ -262,7 +285,7 @@ void EncounterComponent::BasicAttack()
         PlayerDies();
 }
 
-void EncounterComponent::CastSpell([[maybe_unused]]const std::string& spellName)
+void EncounterComponent::CastSpell( const std::string& spellName)
 {
     auto* pStats = m_pPlayer->GetComponent<PlayerStatsComponent>();
     if (!pStats) return;
@@ -273,45 +296,15 @@ void EncounterComponent::CastSpell([[maybe_unused]]const std::string& spellName)
         int currentHP = pStats->GetPlayerHP();
         pStats->SetPlayerHP(std::max(0, currentHP - damage));
 
-
         ShowActionMessage(std::format("The {} casts Hurt! You take {} damage!", m_name.c_str(), damage));
 
         if (pStats->GetPlayerHP() <= 0)
-        {
-            ShowActionMessage("You are defeated!");
-        }
+            PlayerDies();
     }
-}
-
-//to change depending on the enemy
-void EncounterComponent::Load(const XMLElementParser parser)
-{
-    parser.GetChildVariable("Name", &m_name);
-    parser.GetChildVariable("HP", &m_hp);
-    parser.GetChildVariable("Attack", &m_attack);
-    parser.GetChildVariable("Defense", &m_defense);
-    parser.GetChildVariable("XPReward", &m_xpReward);
-    parser.GetChildVariable("GoldReward", &m_goldReward);
-    parser.GetChildVariable("Agility", &m_agility);
-    parser.GetChildVariable("SpriteFile", &m_spriteFile);
-}
-
-void EncounterComponent::Save(XMLElementParser parser)
-{
-    parser.NewChildVariable("Name", m_name);
-    parser.NewChildVariable("HP", m_hp);
-    parser.NewChildVariable("Attack", m_attack);
-    parser.NewChildVariable("Defense", m_defense);
-    parser.NewChildVariable("XPReward", m_xpReward);
-    parser.NewChildVariable("GoldReward", m_goldReward);
-    parser.NewChildVariable("Agility", m_agility);
-    parser.NewChildVariable("SpriteFile", m_spriteFile);
 }
 
 void EncounterComponent::StartCombatUI()
 {
-    //m_isCombatActive = true; //DONT FORGET TO SET IT TO FALSE WHEN RUN AWAY OR DIE OR WIN
-
     // Command Panel
     BB_FRectangle panelRect{
         kCommandWindowStartX, kCommandWindowStartY, kCommandWindowWidth, kCommandWindowHeight
@@ -418,8 +411,6 @@ void EncounterComponent::CreateCommandButtons( InterfaceTexture* pBackground )
 
 void EncounterComponent::OnCombatButtonPressed(const std::string& action)
 {
-    //DismissActionMessage();
-
     if (action == "Fight")
     {
         PlayerAttack();
@@ -443,7 +434,7 @@ void EncounterComponent::ShowActionMessage(const std::string& text)
     DismissActionMessage();
 
     // --- Text parameters ---
-    BB_FRectangle txtRect{16, 8, kMessageBoxWidth - 16, kMessageBoxHeight - 16};
+    BB_FRectangle txtRect{kTileSize, kTileSize / 2, kMessageBoxWidth - kTileSize, kMessageBoxHeight - kTileSize};
     InterfaceText::Paremeters params
     {
         .pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf",

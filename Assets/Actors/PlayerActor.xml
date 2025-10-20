@@ -1,13 +1,13 @@
 <Actor Name="PlayerActor">
     <Component Name="TransformComponent">
         <Position>
-            <X>16</X>
-            <Y>16</Y>
+            <X>576</X>
+            <Y>336</Y>
         </Position>
         <Rotation>0</Rotation>
         <PreviousPos>
-            <X>16</X>
-            <Y>16</Y>
+            <X>576</X>
+            <Y>336</Y>
         </PreviousPos>
     </Component>
     <Component Name="PlayerMovementComponent">
@@ -54,12 +54,12 @@
     <Component Name="InteractionComponent"/>
     <Component Name="PlayerStatsComponent">
         <Level>1</Level>
-        <HP>4</HP>
+        <HP>8</HP>
         <MaxHP>16</MaxHP>
         <MP>0</MP>
         <MaxMP>0</MaxMP>
-        <Gold>0</Gold>
-        <XP>0</XP>
+        <Gold>4</Gold>
+        <XP>2</XP>
         <Strength>3</Strength>
         <Agility>3</Agility>
     </Component>
