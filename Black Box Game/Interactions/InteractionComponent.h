@@ -36,7 +36,7 @@ class InteractionComponent : public BlackBoxEngine::Component
 
     // --- Interaction targets ---
     BaseStairComponent* m_pCurrentStair = nullptr;
-    TalkComponent* m_pCurrentTalk = nullptr;
+    BaseTalkComponent* m_pCurrentTalk = nullptr;
     TakeComponent* m_pCurrentTake = nullptr;
 
     // --- State ---
@@ -59,7 +59,7 @@ public:
     void OnButtonPressed(const std::string& action);
 
     void SetCurrentStair(BaseStairComponent* stair) { m_pCurrentStair = stair; }
-    void SetCurrentTalk(TalkComponent* talk) { m_pCurrentTalk = talk; }
+    void SetCurrentTalk(BaseTalkComponent* talk) { m_pCurrentTalk = talk; }
     void SetCurrentTake(TakeComponent* take) { m_pCurrentTake = take; }
 
 private:

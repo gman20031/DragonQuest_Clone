@@ -4,18 +4,55 @@
 
 using namespace BlackBoxEngine;
 
-void TalkComponent::OnTalkUsed([[maybe_unused]] BlackBoxEngine::Actor* pOtherActor)
+void BaseTalkComponent::OnCollide(BlackBoxEngine::Actor* pOtherActor)
 {
-    BB_LOG(LogType::kMessage, "do somehting with inn hahaha");
+    if (!pOtherActor)
+        return;
+
+    if (auto* pInteract = pOtherActor->GetComponent<InteractionComponent>())
+    {
+        pInteract->SetCurrentTalk(this);
+        pInteract->SetPlayerActor(pOtherActor);
+
+    }
 }
 
-void TalkComponent::OnCollide([[maybe_unused]] BlackBoxEngine::Actor* pOtherActor)
+void BaseTalkComponent::Save(BlackBoxEngine::XMLElementParser parser)
 {
-    if (auto* player = pOtherActor->GetComponent<InteractionComponent>())
-    {
-        player->SetCurrentTalk(this);
-        player->SetPlayerActor(pOtherActor);
+    parser.NewChildVariable("RequiresItem", m_data.requiresItem);
+    parser.NewChildVariable("RequiredItemName", m_data.requiredItemName);
+}
 
-        BB_LOG(LogType::kMessage, "Player is now on town.");
-    }
+void BaseTalkComponent::Load(const BlackBoxEngine::XMLElementParser parser)
+{
+    TalkData data;
+    parser.GetChildVariable("RequiresItem", &data.requiresItem);
+    parser.GetChildVariable("RequiredItemName", &data.requiredItemName);
+    SetTalkData(data);
+}
+
+void InnTalkComponent::OnTalkUsed([[maybe_unused]] BlackBoxEngine::Actor* pOtherActor)
+{
+    BB_LOG(LogType::kMessage, "Innkeeper: 'Welcome traveler! Rest and recover.'");
+}
+
+void CastleTalkComponent::OnTalkUsed([[maybe_unused]] BlackBoxEngine::Actor* pOtherActor)
+{
+
+    BB_LOG(LogType::kMessage, "Guard: 'Halt! You need the Royal Pass.'");
+    //if (auto* inventory = pOtherActor->GetComponent<InventoryComponent>())
+    //{
+    //    if (inventory->HasItem("RoyalPass"))
+    //    {
+    //        BB_LOG(LogType::kMessage, "Guard: 'You may enter, my lord.'");
+    //    }
+    //    else
+    //    {
+    //        BB_LOG(LogType::kMessage, "Guard: 'Halt! You need the Royal Pass.'");
+    //    }
+    //}
+    //else
+    //{
+    //    BB_LOG(LogType::kMessage, "Guard: 'You shouldn't be here.'");
+    //}
 }

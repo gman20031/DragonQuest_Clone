@@ -75,6 +75,7 @@ void InteractionComponent::Start()
     BlackBoxManager::Get()->m_pMessagingManager->RegisterListener( kLevelChanging, [this]( [[maybe_unused]]Message& ) {OnLevelChanging();} );
 }
 
+
 // -------------------------------------------------------------
 // OnCollide
 // -------------------------------------------------------------
@@ -90,7 +91,7 @@ void InteractionComponent::OnCollide(Actor* other)
         return;
     }
 
-    if (auto* talk = other->GetComponent<TalkComponent>())
+    if (auto* talk = other->GetComponent<BaseTalkComponent>())
     {
         m_pCurrentTalk = talk;
         m_pCurrentStair = nullptr;
@@ -279,6 +280,10 @@ void InteractionComponent::OpenCommandUI()
 
 void InteractionComponent::CloseCommandUI()
 {
+    m_pCurrentStair = nullptr;
+    m_pCurrentTalk = nullptr;
+    m_pCurrentTake = nullptr;
+
     m_pCommandMenuRootNode.RemoveFromScreen();
     m_messageRootInterface.RemoveFromScreen();
 
@@ -355,10 +360,11 @@ void InteractionComponent::HandleTalk()
 {
     if (m_pCurrentTalk)
     {
-        //ShowActionMessage("\'Trading with Inn.\'");
+        m_pCurrentTalk->OnTalkUsed(m_pOwner);
     }
     else
         ShowActionMessage("\'There is no one there.\'");
+
 }
 
 void InteractionComponent::HandleStair()
@@ -370,6 +376,7 @@ void InteractionComponent::HandleStair()
     }
     else
         ShowActionMessage("\'Thou canst not go down.\'");
+
 }
 
 void InteractionComponent::HandleTake()
@@ -380,6 +387,7 @@ void InteractionComponent::HandleTake()
     }
     else
         ShowActionMessage("\'There is nothing to take here.\'");
+
 }
 
 void InteractionComponent::OnLevelChanging()

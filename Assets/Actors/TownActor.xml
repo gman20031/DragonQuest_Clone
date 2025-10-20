@@ -24,5 +24,8 @@
         </TextureOffset>
         <filePath>../Assets/Tiles/FullTileSheet.png</filePath>
     </Component>
-    <Component Name="TalkComponent"/>
+    <Component Name="InnTalkComponent">
+        <RequiresItem>false</RequiresItem>
+        <RequiredItemName>none</RequiredItemName>
+    </Component>
 </Actor>

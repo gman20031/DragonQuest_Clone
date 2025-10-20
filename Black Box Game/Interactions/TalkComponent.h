@@ -3,32 +3,51 @@
 #include <../Black Box Engine/Math/FVector2.h>
 class BlackBoxGame;
 
-class TalkComponent: public BlackBoxEngine::Component
+class BaseTalkComponent : public BlackBoxEngine::Component
 {
-    GENERATE_ID("TalkComponent");
-
+    GENERATE_ID("BaseTalkComponent");
 
 public:
-
     struct TalkData
     {
         bool requiresItem = false;
         std::string requiredItemName;
     };
 
-    TalkComponent(BlackBoxEngine::Actor* pOwner) : Component(pOwner) { /*EMPTY*/ }
-    virtual ~TalkComponent() override {}
-
-    virtual void OnTalkUsed(BlackBoxEngine::Actor* pOtherActor); // all stairs must implement this
+    explicit BaseTalkComponent(BlackBoxEngine::Actor* pOwner)
+        : Component(pOwner) {
+    }
+    virtual ~BaseTalkComponent() override = default;
 
     void SetTalkData(const TalkData& data) { m_data = data; }
     const TalkData& GetTalkData() const { return m_data; }
 
-    virtual void OnCollide([[maybe_unused]] BlackBoxEngine::Actor* pOtherActor) override; // if this actor has a collider, and walks into another actor with a collider
-    virtual void Save([[maybe_unused]] BlackBoxEngine::XMLElementParser parser) override {} // for when this actor is called to be saved
-    virtual void Load([[maybe_unused]] const BlackBoxEngine::XMLElementParser parser) override {} // for when this actor is called to be loaded
+    virtual void OnCollide([[maybe_unused]] BlackBoxEngine::Actor* pOtherActor) override;
+    virtual void OnTalkUsed([[maybe_unused]] BlackBoxEngine::Actor* pOtherActor) {}
+    virtual void Save([[maybe_unused]] BlackBoxEngine::XMLElementParser parser) override;
+    virtual void Load(const [[maybe_unused]]BlackBoxEngine::XMLElementParser parser) override;
 
 protected:
     TalkData m_data;
 };
 
+
+class InnTalkComponent : public BaseTalkComponent
+{
+    GENERATE_ID("InnTalkComponent");
+
+public:
+    using BaseTalkComponent::BaseTalkComponent;
+
+    void OnTalkUsed([[maybe_unused]]BlackBoxEngine::Actor* pOtherActor) override; 
+};
+
+class CastleTalkComponent : public BaseTalkComponent
+{
+    GENERATE_ID("CastleTalkComponent");
+
+public:
+    using BaseTalkComponent::BaseTalkComponent;
+
+    void OnTalkUsed([[maybe_unused]] BlackBoxEngine::Actor* pOtherActor) override;
+};
