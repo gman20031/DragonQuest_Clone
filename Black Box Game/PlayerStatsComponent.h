@@ -64,6 +64,7 @@ public:
     int GetPlayerStrength() const { return m_playerStrength; }
     int GetPlayerAgility() const { return m_playerAgility; }
 
+    void CalculatePlayerXP(); 
     virtual void Update() override;
     virtual void Start() override;
     virtual void Load( [[maybe_unused]] const BlackBoxEngine::XMLElementParser parser ) override;

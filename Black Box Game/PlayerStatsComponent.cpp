@@ -47,6 +47,11 @@ void PlayerStatsComponent::SetPlayerExperience( int value )
     RefreshHUD();
 }
 
+void PlayerStatsComponent::CalculatePlayerXP()
+{
+
+}
+
 void PlayerStatsComponent::Update()
 {
     if ( !m_pTransform || m_changingLevel )
@@ -65,6 +70,7 @@ void PlayerStatsComponent::Update()
     }
     else
     {
+        //THE DELAY DO NOT WORK ANYMORE
         m_callbackActive = true;
         m_callbackId = DelayedCallbackManager::AddCallback([this]()
         {

@@ -1,8 +1,8 @@
-<Actor Name="TownActor">
+<Actor Name="Castle1Actor">
     <Component Name="TransformComponent">
         <Position>
-            <X>896</X>
-            <Y>784</Y>
+            <X>832</X>
+            <Y>816</Y>
         </Position>
         <Rotation>0</Rotation>
     </Component>
@@ -17,15 +17,15 @@
         <height>16</height>
         <UseFullImage>false</UseFullImage>
         <TextureOffset>
-            <X>17</X>
+            <X>0</X>
             <Y>17</Y>
             <W>16</W>
             <H>16</H>
         </TextureOffset>
         <filePath>../Assets/Tiles/FullTileSheet.png</filePath>
     </Component>
-    <Component Name="InnTalkComponent">
-        <RequiresItem>false</RequiresItem>
-        <RequiredItemName>none</RequiredItemName>
+    <Component Name="CastleTalkComponent">
+        <RequiresItem>true</RequiresItem>
+        <RequiredItemName>tablet</RequiredItemName>
     </Component>
 </Actor>
