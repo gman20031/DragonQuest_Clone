@@ -53,7 +53,7 @@
     </Component>
     <Component Name="PlayerStatsComponent">
         <Level>1</Level>
-        <HP>16</HP>
+        <HP>4</HP>
         <MaxHP>16</MaxHP>
         <MP>0</MP>
         <MaxMP>0</MaxMP>
