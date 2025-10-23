@@ -103,7 +103,15 @@
 <Actor SeperateFile = "true">
     <FilePath>../Assets/Actors/TownActor.xml</FilePath>
 </Actor>
-  <!-- Cabe Entrance -->
+  <!-- Castle1 -->
+<Actor SeperateFile = "true">
+    <FilePath>../Assets/Actors/Castle1Actor.xml</FilePath>
+</Actor>
+  <!-- Castle2 -->
+<Actor SeperateFile = "true">
+    <FilePath>../Assets/Actors/Castle2Actor.xml</FilePath>
+</Actor>
+  <!-- Cave Entrance -->
 <Actor SeperateFile = "true">
     <FilePath>../Assets/Actors/CaveEntranceActor.xml</FilePath>
 </Actor>

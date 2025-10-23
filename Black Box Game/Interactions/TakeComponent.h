@@ -7,6 +7,7 @@ class TakeComponent: public BlackBoxEngine::Component
 {
     GENERATE_ID("TakeComponent");
 
+    bool m_hasTablet = false;
 
 public:
     TakeComponent(BlackBoxEngine::Actor* pOwner) : Component(pOwner) { /*EMPTY*/ }

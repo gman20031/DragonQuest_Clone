@@ -13,6 +13,7 @@
 #include "../BlackBoxGame.h"
 #include "../GameMessages.h"
 #include "StairComponent.h"
+#include "../Black Box Game/InventoryComponent.h"
 
 using namespace BlackBoxEngine;
 
@@ -57,6 +58,9 @@ InteractionComponent::~InteractionComponent()
         pInput->UnsubscribeKey( id, kKeyDown );
     for ( auto id : m_messageIds )
         pMessager->RemoveListener( id );
+
+
+    
 }
 
 // -------------------------------------------------------------
@@ -301,7 +305,6 @@ void InteractionComponent::OpenCommandUI()
 
 void InteractionComponent::CloseCommandUI()
 {
-    m_pCurrentStair = nullptr;
     m_pCurrentTalk = nullptr;
     m_pCurrentTake = nullptr;
 
@@ -381,7 +384,20 @@ void InteractionComponent::HandleTalk()
 {
     if (m_pCurrentTalk)
     {
+        
+
         m_pCurrentTalk->OnTalkUsed(m_pOwner);
+        if (m_pCurrentTalk->GetValue() == true)
+        {
+            ShowActionMessage("\'Guard: 'You may enter, my lord.' YOU WIN\'");
+            //pInventory->SetHasTablet(false);
+
+            //TEMP ->WHEN RESTARTING USED GAME DONE SO NO MORE TABLET?
+            auto* pInventory = m_pOwner->GetComponent<InventoryComponent>();
+            pInventory->SetHasTablet(false);
+        }
+        else
+            ShowActionMessage("\'Guard: 'Halt! You need the Royal Pass.'\'");
     }
     else
         ShowActionMessage("\'There is no one there.\'");
@@ -404,6 +420,7 @@ void InteractionComponent::HandleTake()
 {
     if (m_pCurrentTake)
     {
+        m_pCurrentTake->OnTakeUsed(m_pOwner);
         ShowActionMessage("\'You found a tablet!\'");
     }
     else

@@ -39,6 +39,7 @@ BlackBoxGame::~BlackBoxGame()
         m_pEngineManager->DeleteSingleton();
     if (m_pTileActorManager)
         delete m_pTileActorManager;
+
 }
 
 void BlackBoxGame::Launch()

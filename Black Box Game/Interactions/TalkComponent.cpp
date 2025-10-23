@@ -1,6 +1,7 @@
 #include "TalkComponent.h"
 #include <BlackBoxManager.h>
 #include "InteractionComponent.h"
+#include "../Black Box Game/InventoryComponent.h"
 
 using namespace BlackBoxEngine;
 
@@ -38,21 +39,21 @@ void InnTalkComponent::OnTalkUsed([[maybe_unused]] BlackBoxEngine::Actor* pOther
 
 void CastleTalkComponent::OnTalkUsed([[maybe_unused]] BlackBoxEngine::Actor* pOtherActor)
 {
-
-    BB_LOG(LogType::kMessage, "Guard: 'Halt! You need the Royal Pass.'");
-    //if (auto* inventory = pOtherActor->GetComponent<InventoryComponent>())
-    //{
-    //    if (inventory->HasItem("RoyalPass"))
-    //    {
-    //        BB_LOG(LogType::kMessage, "Guard: 'You may enter, my lord.'");
-    //    }
-    //    else
-    //    {
-    //        BB_LOG(LogType::kMessage, "Guard: 'Halt! You need the Royal Pass.'");
-    //    }
-    //}
-    //else
-    //{
-    //    BB_LOG(LogType::kMessage, "Guard: 'You shouldn't be here.'");
-    //}
+    if (auto* inventory = pOtherActor->GetComponent<InventoryComponent>())
+    {
+        if (inventory->GetHasTablet())
+        {
+            BB_LOG(LogType::kMessage, "Guard: 'You may enter, my lord.' YOU WIN");
+            m_hasTablet = true;
+        }
+        else
+        {
+            BB_LOG(LogType::kMessage, "Guard: 'Halt! You need the Royal Pass.'");
+            m_hasTablet = false;
+        }
+    }
+    else
+    {
+        BB_LOG(LogType::kMessage, "Guard: 'You shouldn't be here.'");
+    }
 }

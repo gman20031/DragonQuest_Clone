@@ -27,6 +27,9 @@ public:
     virtual void Save([[maybe_unused]] BlackBoxEngine::XMLElementParser parser) override;
     virtual void Load(const [[maybe_unused]]BlackBoxEngine::XMLElementParser parser) override;
 
+
+    virtual void SetHasTablet([[maybe_unused]] bool value) {}
+    virtual bool GetValue() { return false; }
 protected:
     TalkData m_data;
 };
@@ -46,8 +49,13 @@ class CastleTalkComponent : public BaseTalkComponent
 {
     GENERATE_ID("CastleTalkComponent");
 
+    bool m_hasTablet = false;
+
 public:
     using BaseTalkComponent::BaseTalkComponent;
 
     void OnTalkUsed([[maybe_unused]] BlackBoxEngine::Actor* pOtherActor) override;
+
+    void SetHasTablet(bool value) override { m_hasTablet = value; }
+    bool GetValue() override { return m_hasTablet; }
 };

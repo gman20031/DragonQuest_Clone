@@ -1,0 +1,31 @@
+<Actor Name="Castle2Actor">
+    <Component Name="TransformComponent">
+        <Position>
+            <X>160</X>
+            <Y>160</Y>
+        </Position>
+        <Rotation>0</Rotation>
+    </Component>
+    <Component Name="AABBColliderComponent">
+        <width>0</width>
+        <height>0</height>
+        <blockable>false</blockable>
+        <enabled>true</enabled>
+    </Component>
+    <Component Name="SpriteComponent">
+        <width>16</width>
+        <height>16</height>
+        <UseFullImage>false</UseFullImage>
+        <TextureOffset>
+            <X>0</X>
+            <Y>17</Y>
+            <W>16</W>
+            <H>16</H>
+        </TextureOffset>
+        <filePath>../Assets/Tiles/FullTileSheet.png</filePath>
+    </Component>
+    <Component Name="CastleTalkComponent">
+        <RequiresItem>true</RequiresItem>
+        <RequiredItemName>tablet</RequiredItemName>
+    </Component>
+</Actor>
