@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 #include <Actors/Component.h>
 #include <Interface/InterfaceText.h>
 #include <Interface/UserInterface.h>
@@ -25,6 +26,8 @@ class PlayerStatsComponent : public BlackBoxEngine::Component
 
     BlackBoxEngine::UserInterface m_hudRoot;
     BlackBoxEngine::InterfaceText* m_hudStatsText = nullptr;
+
+    std::vector<uint64_t> m_keyDownCodes;
 
 public:
     //i need to check how they change depending on XP!!!

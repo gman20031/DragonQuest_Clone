@@ -8,6 +8,8 @@ class InventoryComponent : public BlackBoxEngine::Component
 
     bool m_hasTablet = false;
     bool m_hasTorch = true;
+   //bool m_hasClub = true;
+   //bool m_hasClothes = true;
 
 public:
     InventoryComponent(BlackBoxEngine::Actor* pOwner) : Component(pOwner) {}
