@@ -78,6 +78,7 @@ private:
     void HandleTalk();
     void HandleStair();
     void HandleTake();
+    void HandleItem();
 
     void OnLevelChanging();
 };

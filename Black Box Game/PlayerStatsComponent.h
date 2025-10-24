@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 #include <Actors/Component.h>
 #include <Interface/InterfaceText.h>
 #include <Interface/UserInterface.h>
@@ -21,10 +22,12 @@ class PlayerStatsComponent : public BlackBoxEngine::Component
     bool m_callbackActive = false;
     uint64_t m_callbackId = 0;
 
-    BlackBoxEngine::TransformComponent* m_pTransform;
+    BlackBoxEngine::TransformComponent* m_pTransform = nullptr;
 
     BlackBoxEngine::UserInterface m_hudRoot;
     BlackBoxEngine::InterfaceText* m_hudStatsText = nullptr;
+
+    std::vector<uint64_t> m_keyDownCodes;
 
 public:
     //i need to check how they change depending on XP!!!

@@ -371,6 +371,7 @@ void InteractionComponent::OnButtonPressed(const std::string& action)
         {"talk", &InteractionComponent::HandleTalk},
         {"stair", &InteractionComponent::HandleStair},
         {"take", &InteractionComponent::HandleTake},
+        {"item", &InteractionComponent::HandleItem},
     };
 
     auto it = kActionMap.find(action);
@@ -393,8 +394,8 @@ void InteractionComponent::HandleTalk()
             //pInventory->SetHasTablet(false);
 
             //TEMP ->WHEN RESTARTING USED GAME DONE SO NO MORE TABLET?
-            auto* pInventory = m_pOwner->GetComponent<InventoryComponent>();
-            pInventory->SetHasTablet(false);
+            //auto* pInventory = m_pOwner->GetComponent<InventoryComponent>();
+            //pInventory->SetHasTablet(false);
         }
         else
             ShowActionMessage("\'Guard: 'Halt! You need the Royal Pass.'\'");
@@ -425,6 +426,23 @@ void InteractionComponent::HandleTake()
     }
     else
         ShowActionMessage("\'There is nothing to take here.\'");
+
+}
+
+void InteractionComponent::HandleItem()
+{
+    auto* pInventory = m_pOwner->GetComponent<InventoryComponent>();
+
+    if (pInventory->GetHasTorch() == true && pInventory->GetHasTablet() != true)
+    {
+        ShowActionMessage("\'You have a torch\'");
+    }
+    if (pInventory->GetHasTorch() == true && pInventory->GetHasTablet() == true)
+    {
+        ShowActionMessage("\'You have a torch and a tablet\'");
+    }
+    else
+        ShowActionMessage("\'You have nothing in your bag\'");
 
 }
 

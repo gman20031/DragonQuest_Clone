@@ -5,6 +5,8 @@
 #include <System/Delay.h>
 #include <Interface/InterfaceTexture.h>
 #include <Graphics/Text Rendering/Text.h>
+#include <Input/InputManager.h>
+
 
 #include "GameMessages.h"
 
@@ -15,6 +17,12 @@ PlayerStatsComponent::~PlayerStatsComponent()
     auto* pMessager = BlackBoxManager::Get()->m_pMessagingManager;
     for ( auto id : m_messageIds )
         pMessager->RemoveListener( id );
+
+    auto* pInput = BlackBoxManager::Get()->m_pInputManager;
+    using enum InputManager::InputType;
+    for (auto id : m_keyDownCodes)
+        pInput->UnsubscribeKey(id, kKeyDown);
+
 }
 
 void PlayerStatsComponent::SetPlayerLevel( int value )
@@ -99,7 +107,10 @@ void PlayerStatsComponent::Update()
                 m_callbackActive = false; // reset flag after shown
             }, std::chrono::milliseconds(1000));
     }
+
+
 }
+
 
 void PlayerStatsComponent::Start()
 {
@@ -116,6 +127,32 @@ void PlayerStatsComponent::Start()
     ( 
         kLevelChanging, [this]( [[maybe_unused]] Message& ) { OnLevelChange(); }
     ));
+
+    // -------------------------------------------------------------
+   // Cheat Keys
+   // -------------------------------------------------------------
+    auto* input = BlackBoxManager::Get()->m_pInputManager;
+    using enum InputManager::InputType;
+
+    // G = Add gold
+    m_keyDownCodes.emplace_back(
+        input->SubscribeToKey(KeyCode::kG, kKeyDown, [this]()
+            {
+                m_playerGold += 500;
+                RefreshHUD();
+            })
+    );
+
+    // E = Add XP
+    m_keyDownCodes.emplace_back(
+        input->SubscribeToKey(KeyCode::kE, kKeyDown, [this]()
+            {
+                m_playerEXP += 1000;
+                CalculatePlayerXP();
+                RefreshHUD();
+            })
+    );
+
 }
 
 std::string PlayerStatsComponent::BuildStatsString() const
