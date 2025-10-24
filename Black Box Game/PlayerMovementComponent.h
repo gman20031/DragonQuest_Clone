@@ -44,6 +44,7 @@ class PlayerMovementComponent : public BlackBoxEngine::Component
 private:
     void SetTargetTile();
     void StopMoving();
+    void TrueStopAll();
     void TryMove(const BlackBoxEngine::FVector2& direction);
     void SetTextureForDirection(const BlackBoxEngine::FVector2& direction);
     void CheckForEncounters();

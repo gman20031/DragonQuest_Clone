@@ -303,3 +303,11 @@ void PlayerMovementComponent::StopMoving()
 {
     m_stopMoving = true;
 }
+
+void PlayerMovementComponent::TrueStopAll()
+{
+    m_pMover->StopVelocity();
+    m_direction = {0,0};
+    m_targetPosition = m_pTransform->m_position;
+    m_stopMoving = true;
+}

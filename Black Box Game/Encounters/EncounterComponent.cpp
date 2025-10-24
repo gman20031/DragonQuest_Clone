@@ -4,6 +4,7 @@
 #include <Actors/ActorManager.h>
 #include <Actors/EngineComponents/SpriteComponent.h>
 #include <Actors/EngineComponents/TransformComponent.h>
+#include <Actors/EngineComponents/MoverComponent.h>
 #include <Graphics/ScreenFader.h>
 #include <System/Delay.h>
 #include <format>
@@ -71,7 +72,14 @@ void EncounterComponent::StartEncounter(Actor* pOtherActor)
         BB_LOG( LogType::kError, "Actor passed into startEncounter, did not have player stat component" );
         return;
     }
-    
+
+    auto* pMover = pOtherActor->GetComponent<MoverComponent>();
+    if ( pMover )
+    {
+        pMover->StopVelocity();
+        pMover->Disable();
+    }
+
     BlackBoxManager::Get()->m_pInputManager->SwapInputTargetToInterface( &m_combatRoot );
     BlackBoxManager::Get()->m_pAudioManager->SetMusicTrack( "../Assets/Audio/24DragonQuest1-MonsterBattle.wav" );
     BlackBoxManager::Get()->m_pMessagingManager->EnqueueMessage( kMessageUIOpen, m_pOwner );
@@ -79,6 +87,7 @@ void EncounterComponent::StartEncounter(Actor* pOtherActor)
     m_combatRoot.AddToScreen();
 
     m_pPlayer = pOtherActor;
+    m_playerDead = false;
     StartCombatUI();
     ShowActionMessage( std::format( "Enemy {} appeared! HP: {}\n\nCommand? ", m_name.c_str(), m_hp ) );
 }
@@ -86,7 +95,6 @@ void EncounterComponent::StartEncounter(Actor* pOtherActor)
 void EncounterComponent::EndEncounter()
 {
     BlackBoxManager::Get()->m_pAudioManager->SetMusicTrack( "../Assets/Audio/05DragonQuest1-KingdomofAlefgard.wav" );
-
 
     InterfaceButton::ButtonParams btnParams{
         .usable = true,
@@ -100,6 +108,10 @@ void EncounterComponent::EndEncounter()
     m_combatRoot.SetCursorTarget( pButton );
     m_combatRoot.GetHighlight()->SetParameters( {.mode = 0} );
 
+    auto* pMover = m_pPlayer->GetComponent<MoverComponent>();
+    if ( pMover )
+        pMover->Enable();
+
     DelayedCallbackManager::AddCallback( []() { BlackBoxManager::Get()->m_pInputManager->ResumeInput(); }, 1000 );
 
     BB_LOG(LogType::kMessage, "Encounter ended.");
@@ -107,7 +119,10 @@ void EncounterComponent::EndEncounter()
 
 void EncounterComponent::PlayerDies()
 {
+    BlackBoxManager::Get()->m_pAudioManager->RemoveMusicTrack();
     BlackBoxManager::Get()->m_pAudioManager->PlaySound("../Assets/Audio/20DragonQuest1-ThouHastDied.wav");
+
+    m_playerDead = true;
 
     ShowActionMessage( "You are defeated!" );
     BlackBoxManager::Get()->m_pInputManager->StopAllInput();
@@ -196,7 +211,8 @@ void EncounterComponent::DoEnemyAction()
     else
         BasicAttack();
 
-    BlackBoxManager::Get()->m_pInputManager->ResumeInput();
+    if ( !m_playerDead )
+        BlackBoxManager::Get()->m_pInputManager->ResumeInput();
 }
 
 void EncounterComponent::PlayerAttack()
@@ -231,7 +247,6 @@ void EncounterComponent::PlayerAttack()
         EnemyTakeTurn();
         return;
     }
-
 }
 
 void EncounterComponent::TryToFlee()

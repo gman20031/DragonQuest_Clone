@@ -33,6 +33,8 @@ class EncounterComponent : public BlackBoxEngine::Component
     int m_goldReward = 0;
     int m_agility = 0;
 
+    bool m_playerDead = false;
+
 public:
     EncounterComponent( BlackBoxEngine::Actor* pOwner );
     virtual ~EncounterComponent();

@@ -13,6 +13,7 @@ namespace BlackBoxEngine
         TransformComponent* pTransform;
 
         FVector2 m_velocity = {0,0};
+        bool m_active = true;
 
     public:
         MoverComponent(Actor* pOwner);
@@ -23,6 +24,9 @@ namespace BlackBoxEngine
         void SetVelocity( float x, float y );
         void SetVelocity( FVector2 velocity );
         FVector2 GetVelocity() const { return m_velocity; }
+
+        void Disable() { m_active = false; };
+        void Enable() { m_active = true; };
 
         virtual void Update() override;
 

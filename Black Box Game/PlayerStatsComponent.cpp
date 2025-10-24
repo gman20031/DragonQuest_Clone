@@ -94,6 +94,10 @@ void PlayerStatsComponent::Start()
     ( 
         kLevelChanging, [this]( [[maybe_unused]] Message& ) { OnLevelChange(); }
     ));
+    m_messageIds.emplace_back( BlackBoxManager::Get()->m_pMessagingManager->RegisterListener
+    (
+        kLevelChangEnd, [this]( [[maybe_unused]] Message& ) { m_changingLevel = false; }
+    ) );
 }
 
 std::string PlayerStatsComponent::BuildStatsString() const

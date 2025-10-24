@@ -175,7 +175,7 @@
       </Command>
     </PostBuildEvent>
     <Lib>
-      <AdditionalDependencies>SDL3.lib;SDL3_mixer.lib;SDL3_image.lib;SDL3_ttf.lib;zlibstat.lib;SDL3_mixer.lib;SDL3_image.lib;SDL3_ttf.lib;zlibstat.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL3.lib;SDL3_mixer.lib;SDL3_image.lib;SDL3_ttf.lib;zlibstat.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(solutiondir)Black Box Engine\libraries\SDL3-3.3\lib\x64;$(solutiondir)Black Box Engine\libraries\zlib-1.3.1\x64\$(configuration)</AdditionalLibraryDirectories>
       <Name>BlackBox</Name>
     </Lib>
@@ -206,7 +206,7 @@
       </Command>
     </PostBuildEvent>
     <Lib>
-      <AdditionalDependencies>SDL3.lib;SDL3_mixer.lib;SDL3_image.lib;SDL3_ttf.lib;zlibstat.lib;SDL3_mixer.lib;SDL3_image.lib;SDL3_ttf.lib;zlibstat.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL3.lib;SDL3_mixer.lib;SDL3_image.lib;SDL3_ttf.lib;zlibstat.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(solutiondir)Black Box Engine\libraries\SDL3-3.3\lib\x64;$(solutiondir)Black Box Engine\libraries\zlib-1.3.1\x64\$(configuration)</AdditionalLibraryDirectories>
       <Name>BlackBox</Name>
     </Lib>
