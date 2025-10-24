@@ -107,6 +107,8 @@ namespace BlackBoxEngine
 
     void UserInterface::MoveCursor(Direction dir)
     {
+        if ( !m_pCursorPosition )
+            return;
         auto* pNode = m_pCursorPosition->GetAdjacentNode(dir);
         if (!pNode)
             return;
