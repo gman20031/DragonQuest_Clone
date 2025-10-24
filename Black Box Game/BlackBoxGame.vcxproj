@@ -187,6 +187,7 @@ copy "$(solutiondir)Black Box Engine\libraries\SDL3-3.3\lib\x64\SDL3_mixer.dll" 
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BlackBoxGame.cpp" />
+    <ClCompile Include="CheatComponent.cpp" />
     <ClCompile Include="ExampleComponent.cpp" />
     <ClCompile Include="GameComponentRegistrar.cpp" />
     <ClCompile Include="Interactions\InteractionComponent.cpp" />
@@ -207,6 +208,7 @@ copy "$(solutiondir)Black Box Engine\libraries\SDL3-3.3\lib\x64\SDL3_mixer.dll" 
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BlackBoxGame.h" />
+    <ClInclude Include="CheatComponent.h" />
     <ClInclude Include="ExampleComponent.h" />
     <ClInclude Include="GameMessages.h" />
     <ClInclude Include="Interactions\InteractionComponent.h" />

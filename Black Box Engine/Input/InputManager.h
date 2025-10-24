@@ -18,6 +18,7 @@ namespace BlackBoxEngine
     class InputManager
     {
     public:
+        friend class BlackBoxManager;
         friend class UserInterface;
         enum class InputType
         {
@@ -48,9 +49,6 @@ namespace BlackBoxEngine
     public:
         InputManager();
 
-        void AddKeyDown(KeyCode key);
-        void RemoveKeyDown(KeyCode key);
-
         bool IsKeyDown(KeyCode key) const;
         FVector2 GetMousePosition() const;
 
@@ -64,5 +62,9 @@ namespace BlackBoxEngine
         void ResumeInput()  { std::unique_lock lock(m_inputMutex); m_inputCanOccur = true; } 
         void SwapInputTargetToInterface( UserInterface* pInterface);
         void SwapInputToGame();
+    
+    private:
+        void AddKeyDown( KeyCode key );
+        void RemoveKeyDown( KeyCode key );
     };
 };

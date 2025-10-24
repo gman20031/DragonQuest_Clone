@@ -13,6 +13,7 @@
 #include "PlayerMovementComponent.h"
 #include "PlayerStatsComponent.h"
 #include "InventoryComponent.h"
+#include "CheatComponent.h"
 
 using namespace BlackBoxEngine;
 
@@ -30,6 +31,6 @@ static std::tuple
     ComponentFactory::Registrar<EncounterComponent>,
     ComponentFactory::Registrar<BaseStairComponent>,
     ComponentFactory::Registrar<PlayerStatsComponent>,
-    ComponentFactory::Registrar<InventoryComponent>
-
+    ComponentFactory::Registrar<InventoryComponent>,
+    ComponentFactory::Registrar<PlayerCheatComponent>
 > GameComponentRegistrar;

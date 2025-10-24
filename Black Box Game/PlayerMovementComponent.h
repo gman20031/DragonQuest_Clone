@@ -35,20 +35,12 @@ class PlayerMovementComponent : public BlackBoxEngine::Component
 
     bool m_isContinuous = false;
     bool m_waitingForTap = false;
+    bool m_encountersEnabled = true;
     BlackBoxEngine::KeyCode m_lastKeyCode{};
 
     BlackBoxEngine::AnimatedSpriteComponent* m_pAnimatedSprite = nullptr;
 
     int32_t m_uiCount = 0;
-
-private:
-    void SetTargetTile();
-    void StopMoving();
-    void TrueStopAll();
-    void TryMove(const BlackBoxEngine::FVector2& direction);
-    void SetTextureForDirection(const BlackBoxEngine::FVector2& direction);
-    void CheckForEncounters();
-    void AddUIMessageCallbacks();
 
 public:
     PlayerMovementComponent(BlackBoxEngine::Actor* pOwner);
@@ -56,10 +48,20 @@ public:
 
     virtual void Start() override; // only when this is created.
     virtual void Update() override; // every tick of the game
-    virtual void Save([[maybe_unused]] BlackBoxEngine::XMLElementParser parser) override; // for when this actor is called to be saved
-    virtual void Load([[maybe_unused]] const BlackBoxEngine::XMLElementParser parser) override; // for when this actor is called to be loaded
+    virtual void Save(BlackBoxEngine::XMLElementParser parser) override; // for when this actor is called to be saved
+    virtual void Load(const BlackBoxEngine::XMLElementParser parser) override; // for when this actor is called to be loaded
 
     void SetInteractionComponent(InteractionComponent* interaction);
     void SetAnimationPaused(bool paused);
+    void ToggleEncounters();
+
+private:
+    void SetTargetTile();
+    void StopMoving();
+    void TrueStopAll();
+    void TryMove( const BlackBoxEngine::FVector2& direction );
+    void SetTextureForDirection( const BlackBoxEngine::FVector2& direction );
+    void CheckForEncounters();
+    void AddUIMessageCallbacks();
 };
 

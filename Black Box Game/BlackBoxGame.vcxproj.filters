@@ -19,6 +19,7 @@
     <ClCompile Include="PlayerStatsComponent.cpp" />
     <ClCompile Include="InventoryComponent.cpp" />
     <ClCompile Include="StartGameHandler.cpp" />
+    <ClCompile Include="CheatComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BlackBoxGame.h" />
@@ -39,5 +40,6 @@
     <ClInclude Include="GameMessages.h" />
     <ClInclude Include="StartGameHandler.h" />
     <ClInclude Include="LevelFilePaths.h" />
+    <ClInclude Include="CheatComponent.h" />
   </ItemGroup>
 </Project>

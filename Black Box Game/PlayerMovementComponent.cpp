@@ -138,13 +138,13 @@ void PlayerMovementComponent::Update()
     }
 }   
 
-void PlayerMovementComponent::Save([[maybe_unused]] BlackBoxEngine::XMLElementParser parser)
+void PlayerMovementComponent::Save(BlackBoxEngine::XMLElementParser parser)
 {
     parser.NewChildVariable("Speed", m_playerSpeed);
     parser.NewChildVariable("TileMapID", 0);
 }
 
-void PlayerMovementComponent::Load([[maybe_unused]] const BlackBoxEngine::XMLElementParser parser)
+void PlayerMovementComponent::Load(const BlackBoxEngine::XMLElementParser parser)
 {
     parser.GetChildVariable("Speed", &m_playerSpeed);
     parser.GetChildVariable("TileMapID", &m_tileMapId);
@@ -156,6 +156,12 @@ void PlayerMovementComponent::SetAnimationPaused(bool paused)
         m_pAnimatedSprite->Sprite().StopAnimating();
     else
         m_pAnimatedSprite->Sprite().AnimateSprite(2, 1);
+}
+
+void PlayerMovementComponent::ToggleEncounters()
+{
+    m_encountersEnabled = !m_encountersEnabled;
+    BB_LOG( LogType::kMessage, "Encounters are now ", m_encountersEnabled ? "enabled" : "disabled" );
 }
 
 void PlayerMovementComponent::TryMove(const FVector2& direction)
@@ -214,6 +220,9 @@ void PlayerMovementComponent::SetTextureForDirection([[maybe_unused]]const Black
 
 void PlayerMovementComponent::CheckForEncounters()
 {
+    if ( !m_encountersEnabled )
+        return;
+
     auto* pInfo = m_pTileMap->GetTileAtGamePosition( m_targetPosition )->GetComponent<TileInfoComponent>();
 
     bool encounter = pInfo->CheckEncounter();
