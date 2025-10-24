@@ -44,38 +44,60 @@ void PlayerStatsComponent::SetPlayerGold( int value )
 void PlayerStatsComponent::SetPlayerExperience( int value )
 {
     m_playerEXP = value;
+    CalculatePlayerXP();
     RefreshHUD();
 }
 
 void PlayerStatsComponent::CalculatePlayerXP()
 {
+    static const std::vector<int> levelThresholds = {
+        0, 7, 23, 47, 110, 220, 450, 800, 1300, 2000,
+        2900, 4000, 5500, 7500, 10000, 13000, 16000, 19000, 22000, 26000,
+        30000, 34000, 38000, 42000, 46000, 50000, 54000, 58000, 62000, 65535
+    };
 
+    int newLevel = 1;
+    for (int i = 0; i < static_cast<int>(levelThresholds.size()); ++i)
+    {
+        if (m_playerEXP >= levelThresholds[i])
+            newLevel = i + 1;
+        else
+            break;
+    }
+
+    if (newLevel != m_playerLevel)
+    {
+        SetPlayerLevel(newLevel);
+    }
 }
 
 void PlayerStatsComponent::Update()
 {
-    if ( !m_pTransform || m_changingLevel )
+    if (!m_pTransform || m_changingLevel)
         return;
 
     bool moving = m_pTransform->m_position != m_pTransform->m_prevPosition;
 
-    if ( moving && m_callbackActive )
-        DelayedCallbackManager::RemoveCallback( m_callbackId );
-
-    // Show HUD after player stops
-    if ( moving && m_hudVisible )
+    // When player starts moving, hide HUD
+    if (moving && m_hudVisible)
     {
         HideHUD();
-        return;
+        if (m_callbackActive)
+        {
+            DelayedCallbackManager::RemoveCallback(m_callbackId);
+            m_callbackActive = false;
+        }
     }
-    else
+
+    // When player stops moving, show HUD after delay (once)
+    if (!moving && !m_hudVisible && !m_callbackActive)
     {
-        //THE DELAY DO NOT WORK ANYMORE
         m_callbackActive = true;
         m_callbackId = DelayedCallbackManager::AddCallback([this]()
-        {
-            DisplayHUD();
-        }, 1000);
+            {
+                DisplayHUD();
+                m_callbackActive = false; // reset flag after shown
+            }, std::chrono::milliseconds(1000));
     }
 }
 
