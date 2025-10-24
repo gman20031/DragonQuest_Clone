@@ -149,7 +149,12 @@ namespace BlackBoxEngine
         {
             ActorPtr pActor = std::move( it->second );
             pActor->Start();
-            m_activeActors.emplace( it->first, std::move( pActor ) );
+            const auto& pair = m_activeActors.emplace( it->first, std::move( pActor ) );
+            if ( !pair.second && pActor )
+            {
+                BB_LOG( LogType::kError, "Transfer of new actors failed, new actor id " , pActor->GetId() 
+                , ", ret actor id " , pair.first->second->GetId() );
+            }
         }
         m_newActors.clear();
     }
