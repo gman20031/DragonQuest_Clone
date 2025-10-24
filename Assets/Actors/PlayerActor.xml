@@ -33,7 +33,7 @@
         <xOffset>0</xOffset>
         <yOffset>0</yOffset>
         <SpriteInfo>
-            <startingSpriteIndex>4</startingSpriteIndex>
+            <startingSpriteIndex>1</startingSpriteIndex>
             <UseFullImage>false</UseFullImage>
             <spriteDimensions>
                 <width>16</width>
@@ -44,8 +44,8 @@
             <sprite_y_count>1</sprite_y_count>
             <sprite_x_pad>0</sprite_x_pad>
             <sprite_y_pad>0</sprite_y_pad>
-            <anim_start_index>4</anim_start_index>
-            <anim_end_index>5</anim_end_index>
+            <anim_start_index>0</anim_start_index>
+            <anim_end_index>1</anim_end_index>
             <frames_per_second>2</frames_per_second>
             <looping>true</looping>
             <animated_on_start>true</animated_on_start>

@@ -47,6 +47,9 @@ InteractionComponent::InteractionComponent( BlackBoxEngine::Actor* pOwner )
         BB_LOG( LogType::kError, "Failed to create message log menu ui" );
         return;
     }
+
+    good = CreateItemBox();
+    if (!good) { BB_LOG(LogType::kError, "Failed to create item menu ui"); }
 }
 
 InteractionComponent::~InteractionComponent()
@@ -431,18 +434,39 @@ void InteractionComponent::HandleTake()
 
 void InteractionComponent::HandleItem()
 {
-    auto* pInventory = m_pOwner->GetComponent<InventoryComponent>();
+    //auto* pInventory = m_pOwner->GetComponent<InventoryComponent>();
+    //
+    //if (pInventory->GetHasTorch() == true && pInventory->GetHasTablet() != true)
+    //{
+    //    ShowActionMessage("\'You have a torch\'");
+    //}
+    //if (pInventory->GetHasTorch() == true && pInventory->GetHasTablet() == true)
+    //{
+    //    ShowActionMessage("\'You have a torch and a tablet\'");
+    //}
+    //else
+    //    ShowActionMessage("\'Nothing of use has yet been given to thee\'");
+    //
 
-    if (pInventory->GetHasTorch() == true && pInventory->GetHasTablet() != true)
+    auto* pInventory = m_pOwner->GetComponent<InventoryComponent>();
+    if (!pInventory)
     {
-        ShowActionMessage("\'You have a torch\'");
+        ShowActionMessage("\'Nothing of use has yet been given to thee\'");
+        return;
     }
-    if (pInventory->GetHasTorch() == true && pInventory->GetHasTablet() == true)
+
+    std::vector<std::pair<std::string, int>> items;
+
+    // Example inventory queries — adapt to your InventoryComponent
+    if (pInventory->GetHasTorch())   items.push_back({ "Torch", 1 });
+    if (pInventory->GetHasTablet())  items.push_back({ "Tablet", 1 });
+    if (items.empty())
     {
-        ShowActionMessage("\'You have a torch and a tablet\'");
+        ShowActionMessage("'Nothing of use has yet been given to thee'");
+        return;
     }
-    else
-        ShowActionMessage("\'You have nothing in your bag\'");
+
+    ShowItemMenu(items);
 
 }
 
@@ -453,3 +477,110 @@ void InteractionComponent::OnLevelChanging()
     BlackBoxManager::Get()->m_pInputManager->SwapInputToGame();
 }
 
+bool InteractionComponent::CreateItemBox()
+{
+    static constexpr float kItemBoxStartX = 10 * 16;  // right side of the screen
+    static constexpr float kItemBoxStartY = 3 * 16;
+    static constexpr float kItemBoxWidth = 6 * 16;
+    static constexpr float kItemBoxPadding = 8.f;
+
+    m_itemMenuInterface.SetInterfaceKeys({ .select = kSelectkey });
+    m_itemMenuInterface.GetRoot()->SetOffset(kItemBoxStartX, kItemBoxStartY);
+
+    // Start with an empty box
+    BB_FRectangle bgRect{ 0, 0, kItemBoxWidth, 16 };  // Height will expand later
+    InterfaceTexture::TextureInfo bgInfo{
+        .pTextureFile = "../Assets/UI/BottomTextBox.png",
+        .useFullImage = true
+    };
+    m_pItemBackgroundNode = m_itemMenuInterface.AddNode<InterfaceTexture>("ItemMenu_BG", bgRect, bgInfo);
+
+    InterfaceButton::ButtonParams closeBtn{
+        .usable = true,
+        .color = {0,0,0,0},
+        .targetedColor = {0,0,0,0},
+        .interactColor = {0,0,0,0},
+        .callbackFunction = [this]() { CloseItemMenu(); }
+    };
+    auto* pCloseBtn = m_itemMenuInterface.AddNode<InterfaceButton>("CloseItemButton", { 0,0,0,0 }, closeBtn);
+    m_itemMenuInterface.SetCursorTarget(pCloseBtn);
+
+    return true;
+}
+
+void InteractionComponent::ShowItemMenu(const std::vector<std::pair<std::string, int>>& items)
+{
+    if (m_itemMenuActive)
+        return;
+    m_itemMenuActive = true;
+
+    // Clear any existing UI nodes
+    m_itemMenuInterface.GetRoot()->RemoveAllChildNodes();
+
+    static constexpr float kItemBoxWidth = 6 * 16;
+    static constexpr float kLineHeight = 20.f;
+    static constexpr float kTextStartX = 10.f;
+    static constexpr float kTextStartY = 10.f;
+
+    // Compute height dynamically
+    float totalHeight = (items.size() * kLineHeight) + 20.f;
+
+    // Recreate background texture with new height
+    BB_FRectangle bgRect{ 0, 0, kItemBoxWidth, totalHeight };
+    InterfaceTexture::TextureInfo bgInfo{
+        .pTextureFile = "../Assets/UI/BottomTextBox.png",
+        .useFullImage = true
+    };
+    m_pItemBackgroundNode = m_itemMenuInterface.AddNode<InterfaceTexture>("ItemMenu_BG", bgRect, bgInfo);
+
+    // Add text for each item
+    InterfaceText::Paremeters textParams{
+        .pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf",
+        .textSize = kStandardUITextSize,
+        .color = ColorPresets::white
+    };
+
+    int index = 0;
+    for (auto& [name, count] : items)
+    {
+        std::string text = name + "   " + std::to_string(count);
+        BB_FRectangle txtRect{ kTextStartX, kTextStartY + (index * kLineHeight), 100, kLineHeight };
+        textParams.pText = text.c_str();
+        m_pItemBackgroundNode->MakeChildNode<InterfaceText>(
+            ("Item_" + name).c_str(), txtRect, textParams);
+        index++;
+    }
+
+    // Add invisible close button for exiting
+    InterfaceButton::ButtonParams closeBtn{
+        .usable = true,
+        .color = {0,0,0,0},
+        .targetedColor = {0,0,0,0},
+        .interactColor = {0,0,0,0},
+        .callbackFunction = [this]() { CloseItemMenu(); }
+    };
+    auto* pCloseBtn = m_itemMenuInterface.AddNode<InterfaceButton>("CloseItemButton", { 0,0,0,0 }, closeBtn);
+    m_itemMenuInterface.SetCursorTarget(pCloseBtn);
+
+    // Add to screen
+    m_itemMenuInterface.AddToScreen();
+    BlackBoxManager::Get()->m_pInputManager->SwapInputTargetToInterface(&m_itemMenuInterface);
+    BlackBoxManager::Get()->m_pMessagingManager->EnqueueMessage(kMessageUIOpen, m_pOwner);
+}
+
+void InteractionComponent::CloseItemMenu()
+{
+    if (!m_itemMenuActive) return;
+
+    m_pItemBackgroundNode->RemoveAllChildNodes();
+    m_itemMenuInterface.RemoveFromScreen();
+    m_itemMenuActive = false;
+
+    // Return control to command menu
+    if (m_commandMenuActive)
+        BlackBoxManager::Get()->m_pInputManager->SwapInputTargetToInterface(&m_pCommandMenuRootNode);
+    else
+        BlackBoxManager::Get()->m_pInputManager->SwapInputToGame();
+
+    BlackBoxManager::Get()->m_pMessagingManager->EnqueueMessage(kMessageUIClosed, m_pOwner);
+}
