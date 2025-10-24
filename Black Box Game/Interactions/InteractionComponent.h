@@ -45,6 +45,11 @@ class InteractionComponent : public BlackBoxEngine::Component
 
     uint64_t m_delayedDisplayId = 0;
 
+    // --Item menu--
+    UserInterface m_itemMenuInterface;
+    InterfaceTexture* m_pItemBackgroundNode = nullptr;
+    bool m_itemMenuActive = false;
+
 public:
     InteractionComponent( BlackBoxEngine::Actor* pOwner );
     virtual ~InteractionComponent();
@@ -81,4 +86,7 @@ private:
     void HandleItem();
 
     void OnLevelChanging();
+    bool CreateItemBox(); 
+    void ShowItemMenu(const std::vector<std::pair<std::string, int>>& items); 
+    void CloseItemMenu();
 };
