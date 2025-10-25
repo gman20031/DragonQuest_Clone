@@ -35,6 +35,11 @@ class EncounterComponent : public BlackBoxEngine::Component
 
     bool m_playerDead = false;
 
+    // --Item menu--
+    UserInterface m_itemMenuInterface;
+    InterfaceTexture* m_pItemBackgroundNode = nullptr;
+    bool m_itemMenuActive = false;
+
 public:
     EncounterComponent( BlackBoxEngine::Actor* pOwner );
     virtual ~EncounterComponent();
@@ -63,4 +68,10 @@ private:
     void ShowActionMessage(const std::string& text);
     void DismissActionMessage();
     void RespawnPlayer();
+
+
+    bool CreateItemBox();
+    void ShowItemMenu(const std::vector<std::pair<std::string, int>>& items);
+    void CloseItemMenu();
 };
+ 

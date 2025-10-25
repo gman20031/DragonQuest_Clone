@@ -67,5 +67,7 @@
     <Component Name="InventoryComponent">
         <HasScroll>false</HasScroll>
         <HasTorch>true</HasTorch>
+        <HasClub>false</HasClub>
+        <HasClothes>false</HasClothes>
     </Component>
 </Actor>

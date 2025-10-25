@@ -460,6 +460,8 @@ void InteractionComponent::HandleItem()
     // Example inventory queries — adapt to your InventoryComponent
     if (pInventory->GetHasTorch())   items.push_back({ "Torch", 1 });
     if (pInventory->GetHasTablet())  items.push_back({ "Tablet", 1 });
+    if (pInventory->GetHasClub())   items.push_back({ "Club", 1 });
+    if (pInventory->GetHasLeatherClothes())  items.push_back({ "Leather Armor", 1 });
     if (items.empty())
     {
         ShowActionMessage("'Nothing of use has yet been given to thee'");
