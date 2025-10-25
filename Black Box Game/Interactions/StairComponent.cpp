@@ -40,6 +40,8 @@ void BaseStairComponent::Save(XMLElementParser parser)
     parser.NewChildVariable("SpawnY", m_data.newPosition.y);
     parser.NewChildVariable("Fade", m_data.fadeDuration);
     parser.NewChildVariable("AutoUse", m_data.autoUse);
+
+    parser.NewChildVariable("MusicTrack", m_data.musicTrackPath);
 }
 
 void BaseStairComponent::Load(const XMLElementParser parser)
@@ -51,6 +53,7 @@ void BaseStairComponent::Load(const XMLElementParser parser)
     parser.GetChildVariable("SpawnY", &data.newPosition.y);
     parser.GetChildVariable("Fade", &data.fadeDuration);
     parser.GetChildVariable("AutoUse", &data.autoUse);
+    parser.GetChildVariable("MusicTrack", &data.musicTrackPath);
 
     SetTransitionData(data);
 }
@@ -109,9 +112,13 @@ void BaseStairComponent::OnStairUsed(Actor* pOtherActor)
             pManager->m_pActorManager->LoadLevel(data.targetLevelPath.c_str());
             pManager->m_pInputManager->ResumeInput();
 
+            BlackBoxManager::Get()->m_pAudioManager->SetMusicTrack(data.musicTrackPath.c_str());
+
             ScreenFader::FadeIn(data.fadeDuration);
             BlackBoxManager::Get()->m_pMessagingManager->EnqueueMessage( kLevelChangEnd, nullptr);
         };
 
     DelayedCallbackManager::AddCallback(delayFunc, std::chrono::milliseconds(int(m_data.fadeDuration * 1000)));
+
+    //BlackBoxManager::Get()->m_pAudioManager->SetMusicTrack("../Assets/Audio/06DragonQuest1-DarkDungeon~Floor1.wav");
 }

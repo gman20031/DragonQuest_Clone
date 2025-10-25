@@ -14,6 +14,7 @@ void BaseTalkComponent::OnCollide(BlackBoxEngine::Actor* pOtherActor)
     {
         pInteract->SetCurrentTalk(this);
         pInteract->SetPlayerActor(pOtherActor);
+        
 
     }
 }
@@ -39,21 +40,5 @@ void InnTalkComponent::OnTalkUsed([[maybe_unused]] BlackBoxEngine::Actor* pOther
 
 void CastleTalkComponent::OnTalkUsed([[maybe_unused]] BlackBoxEngine::Actor* pOtherActor)
 {
-    if (auto* inventory = pOtherActor->GetComponent<InventoryComponent>())
-    {
-        if (inventory->GetHasTablet())
-        {
-            BB_LOG(LogType::kMessage, "Guard: 'You may enter, my lord.' YOU WIN");
-            m_hasTablet = true;
-        }
-        else
-        {
-            BB_LOG(LogType::kMessage, "Guard: 'Halt! You need the Royal Pass.'");
-            m_hasTablet = false;
-        }
-    }
-    else
-    {
-        BB_LOG(LogType::kMessage, "Guard: 'You shouldn't be here.'");
-    }
+    BB_LOG(LogType::kMessage, "Welcome to castle'");
 }

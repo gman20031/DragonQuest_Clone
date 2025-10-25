@@ -40,6 +40,8 @@ class EncounterComponent : public BlackBoxEngine::Component
     InterfaceTexture* m_pItemBackgroundNode = nullptr;
     bool m_itemMenuActive = false;
 
+    std::vector<std::string> m_itemTextStorage;
+
 public:
     EncounterComponent( BlackBoxEngine::Actor* pOwner );
     virtual ~EncounterComponent();

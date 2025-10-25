@@ -29,6 +29,9 @@ static constexpr int   kCommandBoxHeight = 6 * 16;
 
 static constexpr float kStandardUITextSize = 28;
 
+static constexpr float kItemBoxStartX = 10 * 16;  // right side of the screen
+static constexpr float kItemBoxStartY = 3 * 16;
+
 static constexpr KeyCode kSelectkey = KeyCode::kX;
 static constexpr KeyCode kBackKey = KeyCode::kZ;
 
@@ -103,43 +106,6 @@ void InteractionComponent::Start()
     ));
 }
 
-
-// -------------------------------------------------------------
-// OnCollide
-// -------------------------------------------------------------
-void InteractionComponent::OnCollide(Actor* other)
-{
-    if (!other) return;
-
-    if (auto* stair = other->GetComponent<BaseStairComponent>())
-    {
-        m_pCurrentStair = stair;
-        m_pCurrentTalk = nullptr;
-        m_pCurrentTake = nullptr;
-        return;
-    }
-
-    if (auto* talk = other->GetComponent<BaseTalkComponent>())
-    {
-        m_pCurrentTalk = talk;
-        m_pCurrentStair = nullptr;
-        m_pCurrentTake = nullptr;
-        return;
-    }
-
-    if (auto* take = other->GetComponent<TakeComponent>())
-    {
-        m_pCurrentTake = take;
-        m_pCurrentStair = nullptr;
-        m_pCurrentTalk = nullptr;
-        return;
-    }
-
-    // None found
-    m_pCurrentStair = nullptr;
-    m_pCurrentTalk = nullptr;
-    m_pCurrentTake = nullptr;
-}
 
 // -------------------------------------------------------------
 // Creating UI 
@@ -293,6 +259,7 @@ bool InteractionComponent::CreateMessageLogBox()
 // -------------------------------------------------------------
 void InteractionComponent::OpenCommandUI()
 {
+
     if ( m_commandMenuActive )
         return;
     m_commandMenuActive = true;
@@ -331,6 +298,7 @@ void InteractionComponent::ShowActionMessage(const std::string& text)
         return;
     m_messageActive = true;
 
+
     m_pMessageBackgroundNode->RemoveAllChildNodes();
 
     BB_FRectangle txtRect{ 16, 8, kMessageBoxWidth - 16, kMessageBoxHeight - 16};
@@ -356,7 +324,24 @@ void InteractionComponent::DismissActionMessage()
     m_pMessageBackgroundNode->RemoveAllChildNodes();
     m_messageRootInterface.RemoveFromScreen();
 
-    if ( m_commandMenuActive )
+    
+    if (m_messageFromItemMenu)
+    {
+        // Close item menu only when X pressed
+        CloseItemMenu();
+        m_messageFromItemMenu = false;
+
+        // Return control to command menu if active
+        if (m_commandMenuActive)
+            BlackBoxManager::Get()->m_pInputManager->SwapInputTargetToInterface(&m_pCommandMenuRootNode);
+        else
+            BlackBoxManager::Get()->m_pInputManager->SwapInputToGame();
+    }
+    else if (m_itemMenuActive)
+    {
+        BlackBoxManager::Get()->m_pInputManager->SwapInputTargetToInterface(&m_itemMenuInterface);
+    }
+    else if (m_commandMenuActive)
         BlackBoxManager::Get()->m_pInputManager->SwapInputTargetToInterface( &m_pCommandMenuRootNode );
     else
         BlackBoxManager::Get()->m_pInputManager->SwapInputToGame();
@@ -386,25 +371,25 @@ void InteractionComponent::OnButtonPressed(const std::string& action)
 
 void InteractionComponent::HandleTalk()
 {
-    if (m_pCurrentTalk)
+
+    auto* pInventory = m_pOwner->GetComponent<InventoryComponent>();
+
+    if (!m_pCurrentTalk)
     {
-        
-
-        m_pCurrentTalk->OnTalkUsed(m_pOwner);
-        if (m_pCurrentTalk->GetValue() == true)
-        {
-            ShowActionMessage("\'Guard: 'You may enter, my lord.' YOU WIN\'");
-            //pInventory->SetHasTablet(false);
-
-            //TEMP ->WHEN RESTARTING USED GAME DONE SO NO MORE TABLET?
-            //auto* pInventory = m_pOwner->GetComponent<InventoryComponent>();
-            //pInventory->SetHasTablet(false);
-        }
-        else
-            ShowActionMessage("\'Guard: 'Halt! You need the Royal Pass.'\'");
+        ShowActionMessage("'There is no one here.'");
+        return;
     }
+
+    if(m_pCurrentTalk == m_pCurrentTalk->GetOwner()->GetComponent<CastleTalkComponent>())
+    {
+        if (pInventory->GetHasTablet())
+            ShowActionMessage("'Guard: 'You may enter, my lord.' YOU WIN'");
+        else
+            ShowActionMessage("'Guard: 'Halt! You need the Royal Pass.'");
+    }
+
     else
-        ShowActionMessage("\'There is no one there.\'");
+        m_pCurrentTalk->OnTalkUsed(m_pOwner);
 
 }
 
@@ -416,7 +401,7 @@ void InteractionComponent::HandleStair()
         m_pCurrentStair->OnStairUsed(m_playerActor);
     }
     else
-        ShowActionMessage("\'Thou canst not go down.\'");
+        ShowActionMessage("\'There are no stairs herex.\'");
 
 }
 
@@ -425,7 +410,7 @@ void InteractionComponent::HandleTake()
     if (m_pCurrentTake)
     {
         m_pCurrentTake->OnTakeUsed(m_pOwner);
-        ShowActionMessage("\'You found a tablet!\'");
+        ShowActionMessage("\'Fortune smiles upon thee. Thou hast found the Tablet.\'");
     }
     else
         ShowActionMessage("\'There is nothing to take here.\'");
@@ -434,19 +419,6 @@ void InteractionComponent::HandleTake()
 
 void InteractionComponent::HandleItem()
 {
-    //auto* pInventory = m_pOwner->GetComponent<InventoryComponent>();
-    //
-    //if (pInventory->GetHasTorch() == true && pInventory->GetHasTablet() != true)
-    //{
-    //    ShowActionMessage("\'You have a torch\'");
-    //}
-    //if (pInventory->GetHasTorch() == true && pInventory->GetHasTablet() == true)
-    //{
-    //    ShowActionMessage("\'You have a torch and a tablet\'");
-    //}
-    //else
-    //    ShowActionMessage("\'Nothing of use has yet been given to thee\'");
-    //
 
     auto* pInventory = m_pOwner->GetComponent<InventoryComponent>();
     if (!pInventory)
@@ -479,92 +451,135 @@ void InteractionComponent::OnLevelChanging()
     BlackBoxManager::Get()->m_pInputManager->SwapInputToGame();
 }
 
+
 bool InteractionComponent::CreateItemBox()
 {
-    static constexpr float kItemBoxStartX = 10 * 16;  // right side of the screen
-    static constexpr float kItemBoxStartY = 3 * 16;
-    static constexpr float kItemBoxWidth = 6 * 16;
-    static constexpr float kItemBoxPadding = 8.f;
+    static constexpr float kItemBoxWidth = 120.f;     // wider to fit text
 
+    // --- Setup interface keys ---
     m_itemMenuInterface.SetInterfaceKeys({ .select = kSelectkey });
     m_itemMenuInterface.GetRoot()->SetOffset(kItemBoxStartX, kItemBoxStartY);
 
-    // Start with an empty box
-    BB_FRectangle bgRect{ 0, 0, kItemBoxWidth, 16 };  // Height will expand later
+    // --- Background box (persistent) ---
+    BB_FRectangle bgRect{ 0, 0, kItemBoxWidth, 16 };  // temporary height, will expand
     InterfaceTexture::TextureInfo bgInfo{
         .pTextureFile = "../Assets/UI/BottomTextBox.png",
         .useFullImage = true
     };
     m_pItemBackgroundNode = m_itemMenuInterface.AddNode<InterfaceTexture>("ItemMenu_BG", bgRect, bgInfo);
 
-    InterfaceButton::ButtonParams closeBtn{
-        .usable = true,
-        .color = {0,0,0,0},
-        .targetedColor = {0,0,0,0},
-        .interactColor = {0,0,0,0},
-        .callbackFunction = [this]() { CloseItemMenu(); }
-    };
-    auto* pCloseBtn = m_itemMenuInterface.AddNode<InterfaceButton>("CloseItemButton", { 0,0,0,0 }, closeBtn);
-    m_itemMenuInterface.SetCursorTarget(pCloseBtn);
+    // --- Setup highlight like combat menu ---
+    auto* highlight = m_itemMenuInterface.GetHighlight();
+    highlight->SetParameters({
+        .mode = InterfaceHighlighter::kModeIcon,
+        .pSpriteFile = "../Assets/UI/Icons/IconSpriteFile.xml",
+        .iconOffset{-5, 0},  // same arrow offset
+        .iconSize{4, 7}
+        });
 
     return true;
 }
 
 void InteractionComponent::ShowItemMenu(const std::vector<std::pair<std::string, int>>& items)
 {
-    if (m_itemMenuActive)
-        return;
+    if (m_itemMenuActive) return;
     m_itemMenuActive = true;
 
-    // Clear any existing UI nodes
-    m_itemMenuInterface.GetRoot()->RemoveAllChildNodes();
+    // Clear previous nodes and storage
+    m_pItemBackgroundNode->RemoveAllChildNodes();
+    m_itemTextStorage.clear();
 
-    static constexpr float kItemBoxWidth = 6 * 16;
     static constexpr float kLineHeight = 20.f;
-    static constexpr float kTextStartX = 10.f;
     static constexpr float kTextStartY = 10.f;
+    static constexpr float kItemBoxWidth = 96.f;
 
-    // Compute height dynamically
-    float totalHeight = (items.size() * kLineHeight) + 20.f;
+    // Resize background to fit items
+    float totalHeight = items.size() * kLineHeight + 2 * kTextStartY;
+    m_pItemBackgroundNode->SetSize(kItemBoxWidth, totalHeight);
 
-    // Recreate background texture with new height
-    BB_FRectangle bgRect{ 0, 0, kItemBoxWidth, totalHeight };
-    InterfaceTexture::TextureInfo bgInfo{
-        .pTextureFile = "../Assets/UI/BottomTextBox.png",
-        .useFullImage = true
-    };
-    m_pItemBackgroundNode = m_itemMenuInterface.AddNode<InterfaceTexture>("ItemMenu_BG", bgRect, bgInfo);
-
-    // Add text for each item
     InterfaceText::Paremeters textParams{
         .pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf",
         .textSize = kStandardUITextSize,
         .color = ColorPresets::white
     };
 
-    int index = 0;
-    for (auto& [name, count] : items)
-    {
-        std::string text = name + "   " + std::to_string(count);
-        BB_FRectangle txtRect{ kTextStartX, kTextStartY + (index * kLineHeight), 100, kLineHeight };
-        textParams.pText = text.c_str();
-        m_pItemBackgroundNode->MakeChildNode<InterfaceText>(
-            ("Item_" + name).c_str(), txtRect, textParams);
-        index++;
-    }
-
-    // Add invisible close button for exiting
-    InterfaceButton::ButtonParams closeBtn{
+    InterfaceButton::ButtonParams btnParams{
         .usable = true,
         .color = {0,0,0,0},
         .targetedColor = {0,0,0,0},
         .interactColor = {0,0,0,0},
-        .callbackFunction = [this]() { CloseItemMenu(); }
     };
-    auto* pCloseBtn = m_itemMenuInterface.AddNode<InterfaceButton>("CloseItemButton", { 0,0,0,0 }, closeBtn);
-    m_itemMenuInterface.SetCursorTarget(pCloseBtn);
 
-    // Add to screen
+    std::vector<InterfaceNode*> itemButtons;
+    int index = 0;
+
+    for (auto& [name, count] : items)
+    {
+        BB_FRectangle buttonRect{ 0, kTextStartY + index * kLineHeight, kItemBoxWidth, kLineHeight };
+        std::string btnName = "ItemBtn_" + name;
+
+        // Store the string so c_str() pointer is valid
+        std::string itemLabelText = name + "  " + std::to_string(count);
+        m_itemTextStorage.push_back(itemLabelText);
+
+        // Button callback now only shows a message, does NOT close item menu
+        btnParams.callbackFunction = [this, name]()
+            {
+                auto* pInventory = m_pOwner->GetComponent<InventoryComponent>();
+                if (!pInventory) return;
+
+                std::string message;
+                if ((name == "Torch" && pInventory->GetHasTorch()) ||
+                    (name == "Tablet" && pInventory->GetHasTablet()) ||
+                    (name == "Club" && pInventory->GetHasClub()))
+                {
+                    message = std::format("Thou canst use the {}!", name);
+                }
+                else
+                {
+                    message = std::format("Thou cannot use the {} now.", name);
+                }
+
+                // Show the message **first** without closing the item menu yet
+                m_messageFromItemMenu = true;  // indicate message came from item menu
+                ShowActionMessage(message);
+            };
+
+        InterfaceNode* btnNode = m_pItemBackgroundNode->MakeChildNode<InterfaceButton>(btnName.c_str(), buttonRect, btnParams);
+
+        // Text relative to button
+        BB_FRectangle txtRect{ 16, 0, buttonRect.w - 20, buttonRect.h };
+        textParams.pText = m_itemTextStorage.back().c_str(); // safe pointer
+        btnNode->MakeChildNode<InterfaceText>((btnName + "_Label").c_str(), txtRect, textParams);
+
+        itemButtons.push_back(btnNode);
+        index++;
+    }
+
+    // Link buttons for up/down navigation
+    for (int i = 0; i < itemButtons.size(); ++i)
+    {
+        if (i > 0) itemButtons[i]->SetAdjacentNode(Direction::kUp, itemButtons[i - 1]);
+        if (i < itemButtons.size() - 1) itemButtons[i]->SetAdjacentNode(Direction::kDown, itemButtons[i + 1]);
+    }
+
+    // Highlight first item with arrow
+    if (!itemButtons.empty())
+    {
+        m_itemMenuInterface.SetCursorTarget(itemButtons[0]);
+        auto* highlighter = m_itemMenuInterface.GetHighlight();
+
+        highlighter->SetParameters({
+            .mode = InterfaceHighlighter::kModeIcon,
+            .pSpriteFile = "../Assets/UI/Icons/IconSpriteFile.xml",
+            .iconOffset = {5, 0},
+            .iconSize = {4, 7}
+            });
+
+        highlighter->SetTarget(itemButtons[0]);
+    }
+
+    // Add menu to screen
     m_itemMenuInterface.AddToScreen();
     BlackBoxManager::Get()->m_pInputManager->SwapInputTargetToInterface(&m_itemMenuInterface);
     BlackBoxManager::Get()->m_pMessagingManager->EnqueueMessage(kMessageUIOpen, m_pOwner);

@@ -37,6 +37,7 @@ class InteractionComponent : public BlackBoxEngine::Component
 
     // --- Interaction targets ---
     BaseStairComponent* m_pCurrentStair = nullptr;
+
     BaseTalkComponent* m_pCurrentTalk = nullptr;
     TakeComponent* m_pCurrentTake = nullptr;
 
@@ -49,6 +50,8 @@ class InteractionComponent : public BlackBoxEngine::Component
     UserInterface m_itemMenuInterface;
     InterfaceTexture* m_pItemBackgroundNode = nullptr;
     bool m_itemMenuActive = false;
+    std::vector<std::string> m_itemTextStorage;
+    bool m_messageFromItemMenu = false;
 
 public:
     InteractionComponent( BlackBoxEngine::Actor* pOwner );
@@ -56,7 +59,6 @@ public:
 
     // --- Engine Overrides ---
     void Start() override;
-    void OnCollide(BlackBoxEngine::Actor* pOtherActor) override;
 
     // --- Player Linking ---
     void SetPlayerActor(BlackBoxEngine::Actor* actor) { m_playerActor = actor; }

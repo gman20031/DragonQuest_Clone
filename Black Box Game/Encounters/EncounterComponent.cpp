@@ -17,6 +17,7 @@
 #include "../GameMessages.h"
 #include "EncounterHandler.h"
 #include "../Black Box Game/InventoryComponent.h"
+#include "../Black Box Engine/Graphics/Text Rendering/Text.h"
 
 static constexpr int kTileSize = 16;
 
@@ -37,6 +38,10 @@ static constexpr float kEnemyXoffset = -kTileSize / 2;
 static constexpr float kEnemyYoffset = kCommandWindowHeight;
 static constexpr float kEnemyWidth  = 7 * kTileSize;
 static constexpr float kEnemyHeight = 5.5 * kTileSize;
+
+static constexpr float kItemBoxStartX = 10 * 16;  // right side of the screen
+static constexpr float kItemBoxStartY = 3 * 16;
+
 
 using namespace BlackBoxEngine;
 
@@ -92,7 +97,7 @@ void EncounterComponent::StartEncounter(Actor* pOtherActor)
     m_pPlayer = pOtherActor;
     m_playerDead = false;
     StartCombatUI();
-    ShowActionMessage( std::format( "Enemy {} appeared! HP: {}\n\nCommand? ", m_name.c_str(), m_hp ) );
+    ShowActionMessage( std::format( "A {} draws near! \n\nCommand? ", m_name.c_str(), m_hp ) );
 }
 
 void EncounterComponent::EndEncounter()
@@ -127,7 +132,7 @@ void EncounterComponent::PlayerDies()
 
     m_playerDead = true;
 
-    ShowActionMessage( "You are defeated!" );
+    ShowActionMessage( "Thou art dead." );
     BlackBoxManager::Get()->m_pInputManager->StopAllInput();
     auto delayFunc = [this]()
         { 
@@ -225,25 +230,41 @@ void EncounterComponent::PlayerAttack()
         return;
 
     int roll = m_randomMachine.GetRandomInRange(64);
-    if (roll < m_dodgeChance )
+    if (roll < m_dodgeChance)
     {
-        ShowActionMessage(std::format("The {} dodges your attack!", m_name));
+        ShowActionMessage(std::format("Thou attack! \n The attack failed and there was no loss of Hit Points!"));
         EnemyTakeTurn();
         return;
     }
 
-    int playerAtk = pStats->GetPlayerStrength();
+    auto* pInventory = m_pPlayer->GetComponent<InventoryComponent>();
+
+    int playerAtk;
+
+    if (pInventory->GetHasClub() == true)
+    {
+        playerAtk = pStats->GetPlayerStrength() + 4;
+    }
+    else
+        playerAtk = pStats->GetPlayerStrength();
+
     int damage = std::max(1, playerAtk - m_defense);
     m_hp -= damage;
 
-    ShowActionMessage(std::format("You hit the {} for {} damage!", m_name, damage));
+    ShowActionMessage(std::format("Thou attack!\nThe {}'s Hit Point have been reduced by {}.", m_name, damage));
 
     if (m_hp <= 0)
     {
-        pStats->SetPlayerExperience(pStats->GetPlayerExperience() + m_xpReward);
-        pStats->SetPlayerGold(pStats->GetPlayerGold() + m_goldReward);
-        ShowActionMessage( std::format("The {} is defeated!", m_name) );
-        EndEncounter();
+        // Delay the "defeated" message slightly to allow the player to see the damage we made to the enemy
+        DelayedCallbackManager::AddCallback([this]() {
+            auto* pStats = m_pPlayer->GetComponent<PlayerStatsComponent>();
+            if (!pStats) return;
+
+            pStats->SetPlayerExperience(pStats->GetPlayerExperience() + m_xpReward);
+            pStats->SetPlayerGold(pStats->GetPlayerGold() + m_goldReward);
+            ShowActionMessage(std::format("Thou hast done well in defeating the {}.\n\nThy Experience increases by {}. Thy gold increases by {}.", m_name, m_xpReward, m_goldReward));
+            EndEncounter();
+            }, std::chrono::milliseconds(1000)); 
     }
     else
     {
@@ -274,12 +295,12 @@ void EncounterComponent::TryToFlee()
     if ( m_randomMachine.GetRandomInRange( 1.0f ) < fleeChance)
     {
         BlackBoxManager::Get()->m_pInputManager->StopAllInput();
-        ShowActionMessage("You successfully escaped!");
+        ShowActionMessage("Thou started to run away.");
         EndEncounter();
     }
     else
     {
-        ShowActionMessage("You cannot escape!");
+        ShowActionMessage("Thou started to run away.\nBut was blocked in front.");
         EnemyTakeTurn();
     }
 }
@@ -296,7 +317,7 @@ void EncounterComponent::BasicAttack()
     int currentHP = pStats->GetPlayerHP();
     pStats->SetPlayerHP(currentHP - damage);
 
-    ShowActionMessage(std::format("The {} attacks! You take {} damage!", m_name.c_str(), damage));
+    ShowActionMessage(std::format("The {} attacks! \nThy Hit decreased by {}.\n\nCommand?", m_name.c_str(), damage));
 
     // Check if player died
     if (pStats->GetPlayerHP() <= 0)
@@ -435,7 +456,7 @@ void EncounterComponent::OnCombatButtonPressed(const std::string& action)
     }
     else if (action == "Spell")
     {
-        ShowActionMessage("You have no Spell yet!");
+        ShowActionMessage("You cannot yet use the spell. \n \n Command?");
     }
     else if (action == "Item")
     {
@@ -480,9 +501,63 @@ void EncounterComponent::ShowActionMessage(const std::string& text)
         .textSize = kStandardUITextSize,
         .color = ColorPresets::white,
     };
-
+    
     m_pMessageBackground->MakeChildNode<InterfaceText>( "message_log_text", txtRect, params );
 
+    //BB_FRectangle txtRect{
+    //   kTileSize,
+    //   kTileSize / 2,
+    //   kMessageBoxWidth - kTileSize,
+    //   kMessageBoxHeight  // make sure this is 3–5 lines tall
+    //};
+    //
+    //InterfaceText::Paremeters params{
+    //    .pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf",
+    //    .pText = "",
+    //    .textSize = kStandardUITextSize,
+    //    .color = ColorPresets::white,
+    //};
+    //
+    //auto* pTextNode = m_pMessageBackground->MakeChildNode<InterfaceText>(
+    //    "message_log_text", txtRect, params);
+    //
+    //std::shared_ptr<BB_Text> bbText = pTextNode->GetText();
+    //if (!bbText)
+    //    return;
+    //
+    //
+    //struct ScrollState
+    //{
+    //    std::shared_ptr<BB_Text> bbText;
+    //    std::string fullText;
+    //    size_t index = 0;
+    //};
+    //
+    //auto state = std::make_shared<ScrollState>();
+    //state->bbText = bbText;
+    //state->fullText = text;
+    //
+    //// --- Recursive lambda via shared_ptr ---
+    ////std::shared_ptr<std::function<void()>> revealFunc = std::make_shared<std::function<void()>>();
+    //
+    //auto revealFunc = std::make_shared<std::function<void()>>();
+    //*revealFunc = [state, revealFunc]() {
+    //    if (!state->bbText) return;
+    //
+    //    if (state->index < state->fullText.size())
+    //    {
+    //        std::string visible = state->fullText.substr(0, state->index + 1);
+    //        state->bbText->SetString(visible.c_str(), static_cast<int>(visible.size()));
+    //        state->index++;
+    //
+    //        DelayedCallbackManager::AddCallback([revealFunc]() { (*revealFunc)(); },
+    //            std::chrono::milliseconds(50));  // slower for visibility
+    //    }
+    //    };
+    //
+    //// Start animation
+    //DelayedCallbackManager::AddCallback([revealFunc]() { (*revealFunc)(); },
+    //    std::chrono::milliseconds(50));
 }
 
 void EncounterComponent::DismissActionMessage()
@@ -511,98 +586,134 @@ void EncounterComponent::RespawnPlayer()
     DelayedCallbackManager::AddCallback(delayFunc, std::chrono::milliseconds(1000));
 }
 
-
 bool EncounterComponent::CreateItemBox()
 {
-    static constexpr float kItemBoxStartX = 10 * 16;  // right side of the screen
-    static constexpr float kItemBoxStartY = 3 * 16;
-    static constexpr float kItemBoxWidth = 6 * 16;
-    static constexpr float kItemBoxPadding = 8.f;
+    static constexpr float kItemBoxWidth = 120.f;     // wider to fit text
 
+    // --- Setup interface keys ---
     m_itemMenuInterface.SetInterfaceKeys({ .select = kSelectkey });
     m_itemMenuInterface.GetRoot()->SetOffset(kItemBoxStartX, kItemBoxStartY);
 
-    // Start with an empty box
-    BB_FRectangle bgRect{ 0, 0, kItemBoxWidth, 16 };  // Height will expand later
+    // --- Background box (persistent) ---
+    BB_FRectangle bgRect{ 0, 0, kItemBoxWidth, 16 };  // temporary height, will expand
     InterfaceTexture::TextureInfo bgInfo{
         .pTextureFile = "../Assets/UI/BottomTextBox.png",
         .useFullImage = true
     };
     m_pItemBackgroundNode = m_itemMenuInterface.AddNode<InterfaceTexture>("ItemMenu_BG", bgRect, bgInfo);
 
-    InterfaceButton::ButtonParams closeBtn{
-        .usable = true,
-        .color = {0,0,0,0},
-        .targetedColor = {0,0,0,0},
-        .interactColor = {0,0,0,0},
-        .callbackFunction = [this]() { CloseItemMenu(); }
-    };
-    auto* pCloseBtn = m_itemMenuInterface.AddNode<InterfaceButton>("CloseItemButton", { 0,0,0,0 }, closeBtn);
-    m_itemMenuInterface.SetCursorTarget(pCloseBtn);
+    // --- Setup highlight like combat menu ---
+    auto* highlight = m_itemMenuInterface.GetHighlight();
+    highlight->SetParameters({
+        .mode = InterfaceHighlighter::kModeIcon,
+        .pSpriteFile = "../Assets/UI/Icons/IconSpriteFile.xml",
+        .iconOffset{-5, 0},  // same arrow offset
+        .iconSize{4, 7}
+        });
 
     return true;
 }
 
 void EncounterComponent::ShowItemMenu(const std::vector<std::pair<std::string, int>>& items)
 {
-    if (m_itemMenuActive)
-        return;
+    if (m_itemMenuActive) return;
     m_itemMenuActive = true;
 
-    // Clear any existing UI nodes
-    m_itemMenuInterface.GetRoot()->RemoveAllChildNodes();
+    // Clear previous nodes and storage
+    m_pItemBackgroundNode->RemoveAllChildNodes();
+    m_itemTextStorage.clear(); // member: std::vector<std::string> m_itemTextStorage;
 
-    static constexpr float kItemBoxWidth = 6 * 16;
     static constexpr float kLineHeight = 20.f;
-    static constexpr float kTextStartX = 10.f;
     static constexpr float kTextStartY = 10.f;
+    static constexpr float kItemBoxWidth = 96.f;
 
-    // Compute height dynamically
-    float totalHeight = (items.size() * kLineHeight) + 20.f;
+    // Resize background to fit items
+    float totalHeight = items.size() * kLineHeight + 2 * kTextStartY;
+    m_pItemBackgroundNode->SetSize(kItemBoxWidth, totalHeight);
 
-    // Recreate background texture with new height
-    BB_FRectangle bgRect{ 0, 0, kItemBoxWidth, totalHeight };
-    InterfaceTexture::TextureInfo bgInfo{
-        .pTextureFile = "../Assets/UI/BottomTextBox.png",
-        .useFullImage = true
-    };
-    m_pItemBackgroundNode = m_itemMenuInterface.AddNode<InterfaceTexture>("ItemMenu_BG", bgRect, bgInfo);
-
-    // Add text for each item
     InterfaceText::Paremeters textParams{
         .pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf",
         .textSize = kStandardUITextSize,
         .color = ColorPresets::white
     };
 
-    int index = 0;
-    for (auto& [name, count] : items)
-    {
-        std::string text = name + "   " + std::to_string(count);
-        BB_FRectangle txtRect{ kTextStartX, kTextStartY + (index * kLineHeight), 100, kLineHeight };
-        textParams.pText = text.c_str();
-        m_pItemBackgroundNode->MakeChildNode<InterfaceText>(
-            ("Item_" + name).c_str(), txtRect, textParams);
-        index++;
-    }
-
-    // Add invisible close button for exiting
-    InterfaceButton::ButtonParams closeBtn{
+    InterfaceButton::ButtonParams btnParams{
         .usable = true,
         .color = {0,0,0,0},
         .targetedColor = {0,0,0,0},
         .interactColor = {0,0,0,0},
-        .callbackFunction = [this]() { CloseItemMenu(); }
     };
-    auto* pCloseBtn = m_itemMenuInterface.AddNode<InterfaceButton>("CloseItemButton", { 0,0,0,0 }, closeBtn);
-    m_itemMenuInterface.SetCursorTarget(pCloseBtn);
 
-    // Add to screen
+    std::vector<InterfaceNode*> itemButtons;
+    int index = 0;
+
+    for (auto& [name, count] : items)
+    {
+        BB_FRectangle buttonRect{ 0, kTextStartY + index * kLineHeight, kItemBoxWidth, kLineHeight };
+        std::string btnName = "ItemBtn_" + name;
+
+        // Store the string so c_str() pointer is valid
+        std::string itemLabelText = name + "  " + std::to_string(count);
+        m_itemTextStorage.push_back(itemLabelText);
+
+        btnParams.callbackFunction = [this, name]()
+            {
+                auto* pInventory = m_pPlayer->GetComponent<InventoryComponent>();
+                if (!pInventory) return;
+
+                if ((name == "Torch" && pInventory->GetHasTorch()) ||
+                    (name == "Tablet" && pInventory->GetHasTablet()) ||
+                    (name == "Club" && pInventory->GetHasClub()))
+                {
+                    ShowActionMessage(std::format("Thou canst use the {}!", name));
+                }
+                else
+                {
+                    ShowActionMessage(std::format("Thou cannot use the {} now.", name));
+                }
+
+                CloseItemMenu(); // Return to combat menu
+            };
+
+        InterfaceNode* btnNode = m_pItemBackgroundNode->MakeChildNode<InterfaceButton>(btnName.c_str(), buttonRect, btnParams);
+
+        // Text relative to button
+        BB_FRectangle txtRect{ 16, 0, buttonRect.w - 20, buttonRect.h };
+        textParams.pText = m_itemTextStorage.back().c_str(); // safe pointer
+        btnNode->MakeChildNode<InterfaceText>((btnName + "_Label").c_str(), txtRect, textParams);
+
+        itemButtons.push_back(btnNode);
+        index++;
+    }
+
+    // Link buttons for up/down navigation
+    for (int i = 0; i < itemButtons.size(); ++i)
+    {
+        if (i > 0) itemButtons[i]->SetAdjacentNode(Direction::kUp, itemButtons[i - 1]);
+        if (i < itemButtons.size() - 1) itemButtons[i]->SetAdjacentNode(Direction::kDown, itemButtons[i + 1]);
+    }
+
+    // Highlight first item with arrow
+    if (!itemButtons.empty())
+    {
+        m_itemMenuInterface.SetCursorTarget(itemButtons[0]);
+        auto* highlighter = m_itemMenuInterface.GetHighlight();
+
+        highlighter->SetParameters({
+            .mode = InterfaceHighlighter::kModeIcon,
+            .pSpriteFile = "../Assets/UI/Icons/IconSpriteFile.xml",
+            .iconOffset = {5, 0},
+            .iconSize = {4, 7}
+            });
+
+        highlighter->SetTarget(itemButtons[0]);
+    }
+
+    // Add menu to screen
     m_itemMenuInterface.AddToScreen();
     BlackBoxManager::Get()->m_pInputManager->SwapInputTargetToInterface(&m_itemMenuInterface);
     BlackBoxManager::Get()->m_pMessagingManager->EnqueueMessage(kMessageUIOpen, m_pOwner);
 }
-
 void EncounterComponent::CloseItemMenu()
 {
     if (!m_itemMenuActive) return;

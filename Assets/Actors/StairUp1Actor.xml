@@ -30,5 +30,6 @@
         <SpawnY>336</SpawnY>
         <Fade>1.0</Fade>
         <AutoUse>false</AutoUse>
+        <MusicTrack>../Assets/Audio/05DragonQuest1-KingdomofAlefgard.wav</MusicTrack>
     </Component>
 </Actor>

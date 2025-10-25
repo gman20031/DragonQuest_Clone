@@ -132,30 +132,7 @@ void PlayerStatsComponent::Start()
         kLevelChangEnd, [this]( [[maybe_unused]] Message& ) { m_changingLevel = false; }
     ) );
 
-    // -------------------------------------------------------------
-   // Cheat Keys
-   // -------------------------------------------------------------
-    auto* input = BlackBoxManager::Get()->m_pInputManager;
-    using enum InputManager::InputType;
-
-    // G = Add gold
-    m_keyDownCodes.emplace_back(
-        input->SubscribeToKey(KeyCode::kG, kKeyDown, [this]()
-            {
-                m_playerGold += 500;
-                RefreshHUD();
-            })
-    );
-
-    // E = Add XP
-    m_keyDownCodes.emplace_back(
-        input->SubscribeToKey(KeyCode::kE, kKeyDown, [this]()
-            {
-                m_playerEXP += 1000;
-                CalculatePlayerXP();
-                RefreshHUD();
-            })
-    );
+   
 
 }
 

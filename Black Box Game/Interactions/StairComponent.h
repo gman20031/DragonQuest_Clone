@@ -17,6 +17,7 @@ public:
         FVector2 newPosition{ 0,0 };
         float fadeDuration = 1.0f;
         bool autoUse = false;
+        std::string musicTrackPath;
     };
 
     struct PlayerRuntimeStats {

@@ -30,5 +30,6 @@
         <SpawnY>16</SpawnY>
         <Fade>1.0</Fade>
         <AutoUse>true</AutoUse>
+        <MusicTrack>../Assets/Audio/06DragonQuest1-DarkDungeon~Floor1.wav</MusicTrack>
     </Component>
 </Actor>
