@@ -99,7 +99,12 @@ namespace BlackBoxEngine
     void ActorManager::DestroyActor( Actor::Id id )
     {
         std::unique_lock lock( m_actorMutex );
-        m_destroyQueue.emplace_back( id );
+        auto it = m_activeActors.find( id );
+        if ( it == m_activeActors.end() )
+            return;
+        
+        m_deletedActors.emplace( id, std::move( it->second ) );
+        m_activeActors.erase( it );
         m_unusedIds.emplace_back( id );
     }
 
@@ -112,13 +117,15 @@ namespace BlackBoxEngine
     void ActorManager::DestoryAllActors()
     {
         std::unique_lock lock( m_actorMutex );
-        for ( auto& [id, actor] : m_activeActors )
-            DestroyActor( id );
+        while ( !m_activeActors.empty() )
+            DestroyActor( m_activeActors.begin()->first );
         m_unusedIds.clear();
         m_highestId = 0;
     }
 
-    ///// private
+    ////////////////////////////////////////////////////////////////////////////// 
+    /// private
+    //////////////////////////////////////////////////////////////////////////////
 
     Actor::Id ActorManager::NextId()
     {
@@ -135,12 +142,7 @@ namespace BlackBoxEngine
 
     void ActorManager::RemoveQueuedActors()
     {
-        for (auto id : m_destroyQueue)
-        {
-            m_activeActors.erase(id);
-            m_unusedIds.push_back(id);
-        }
-        m_destroyQueue.clear();
+        m_deletedActors.clear();
     }
 
     void ActorManager::MakeNewActorsActive()

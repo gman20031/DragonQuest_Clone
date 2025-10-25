@@ -9,11 +9,10 @@
 
 namespace BlackBoxEngine
 {
-    class ActorManager;
-	
     class Actor
 	{
         friend class ActorXMLParser;
+        friend class ActorManager;
         inline static constexpr bool kLogSuccess = false;
 	public:
 		friend bool operator==(const Actor& lhs, const Actor& rhs);

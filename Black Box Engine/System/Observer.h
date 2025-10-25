@@ -1,16 +1,17 @@
 #pragma once
+/*
+General Idea of this pattern:
+    Be able to hold and remember many different listeners and what they are listening for.
+    when the thing they are listening for occurs, call the listeners to tell them it occured.
+
+    In specifics of the engine, this forms the basis of both the input and messaging system.
+*/
 
 #include <concepts>
 #include <unordered_map>
 
 #include "Log.h"
 
-/*
-General Idea of this pattern:
-    Be able to hold and remember many different listeners and what they are listening for.
-    when the thing they are listening for occurs, call the listeners to tell them it occured.
-
-*/
 
 namespace BlackBoxEngine
 {
@@ -67,6 +68,7 @@ namespace BlackBoxEngine
 
         // Checking 
         bool IsListeningFor(const Event& event);
+        bool ContainsCallback( const CallbackId );
 
         // Sending
         /**
@@ -89,7 +91,6 @@ namespace BlackBoxEngine
         return m_currentId++;
     }
 
-
     template<class Listener, Comparable Event, std::integral CallbackId>
     inline void BB_Observer<Listener, Event, CallbackId>::RemoveListener(CallbackId callbackId)
     {
@@ -101,7 +102,7 @@ namespace BlackBoxEngine
             map.erase(it);
             return;
         }
-        BB_LOG(LogType::kWarning, "Attempted to remove listener that doesnt exist ID: ", callbackId);
+        //BB_LOG(LogType::kWarning, "Attempted to remove listener that doesnt exist ID: ", callbackId);
     }
 
     template<class Listener, Comparable Event, std::integral CallbackId>
@@ -135,9 +136,7 @@ namespace BlackBoxEngine
         if (it == m_eventMap.end())
             return;
         for (auto& [id, invocableObject] : it->second)
-        {
             invocableObject();
-        }
     }
 
     template<class Listener, Comparable Event, std::integral CallbackId>
@@ -148,9 +147,7 @@ namespace BlackBoxEngine
         if (it == m_eventMap.end())
             return;
         for (auto& [id, function] : it->second)
-        {
             function(std::forward<Args>(args)...);
-        }
     }
 
     template<class Listener, Comparable Event, std::integral CallbackId>

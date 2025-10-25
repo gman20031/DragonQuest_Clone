@@ -22,6 +22,7 @@ namespace BlackBoxEngine
         XMLElementParser CreateXMLFile(const char* pFilePath);
 
         void ClearCache();
+        void RemoveFromCache(const char* pFilePath);
     };
 
 }

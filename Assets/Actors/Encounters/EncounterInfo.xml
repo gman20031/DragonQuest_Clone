@@ -27,6 +27,12 @@
 		<element>1</element>
 		<element>0</element>
 		<element>3</element>
+		<!-- row 5 -->
+		<element>1</element>
+		<element>1</element>
+		<element>1</element>
+		<element>1</element>
+		<element>1</element>
 	</EncounterGrid>
 	<EncounterMap>
 		<encounterKey>

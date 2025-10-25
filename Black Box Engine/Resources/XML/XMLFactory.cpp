@@ -44,11 +44,11 @@ namespace BlackBoxEngine
         HashType hash = StringHash(pFilePath);
 
         //// find if already in cache
-        //auto it = m_XMLDocMap.find(hash);
-        //if (it != m_XMLDocMap.end())
-        //{
-        //    return ActorXMLParser(it->second);
-        //}
+        auto it = m_XMLDocMap.find(hash);
+        if (it != m_XMLDocMap.end())
+        {
+            return ActorXMLParser(it->second);
+        }
 
         return ActorXMLParser(CreateNewXMLFile(hash, pFilePath));
     }
@@ -57,12 +57,12 @@ namespace BlackBoxEngine
     {
         HashType hash = StringHash(pFilePath);
 
-        //// find if already in cache
-        //auto it = m_XMLDocMap.find(hash);
-        //if (it != m_XMLDocMap.end())
-        //{
-        //    return XMLElementParser(it->second->RootElement());
-        //}
+        // find if already in cache
+        auto it = m_XMLDocMap.find(hash);
+        if (it != m_XMLDocMap.end())
+        {
+            return XMLElementParser(it->second->RootElement());
+        }
 
         auto* pDoc = CreateNewXMLFile(hash, pFilePath);
         return XMLElementParser(pDoc->RootElement());
@@ -71,11 +71,16 @@ namespace BlackBoxEngine
     void XMLFactory::ClearCache()
     {
         for (auto& [id, ptr] : m_XMLDocMap)
-        {
-            if (ptr)
-                delete ptr;
-        }
+            delete ptr;
         m_XMLDocMap.clear();
+    }
+    void XMLFactory::RemoveFromCache( const char* pFilePath )
+    {
+        auto id = StringHash( pFilePath );
+        auto it = m_XMLDocMap.find( id );
+        if ( it == m_XMLDocMap.end() )
+            return;
+        m_XMLDocMap.erase( it );
     }
 }
 

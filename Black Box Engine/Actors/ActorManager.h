@@ -14,9 +14,10 @@ namespace BlackBoxEngine
         using ActorPtr = std::unique_ptr<Actor>;
     protected:
         std::unordered_map<Actor::Id, ActorPtr> m_activeActors;
-        std::unordered_map<Actor::Id , ActorPtr> m_newActors;
+        std::unordered_map<Actor::Id, ActorPtr> m_newActors;
+        std::unordered_map<Actor::Id, ActorPtr> m_deletedActors;
+
         std::vector<Actor::Id> m_unusedIds;
-        std::vector<Actor::Id> m_destroyQueue;
         std::recursive_mutex m_actorMutex;
 
         Actor::Id m_highestId = 0;
@@ -25,6 +26,7 @@ namespace BlackBoxEngine
         Actor::Id NextId();
         void RemoveQueuedActors();
         void MakeNewActorsActive();
+
     public:
         const ActorPtr& NewActor();
         const ActorPtr& MakeActor(ActorXMLParser actorParser );

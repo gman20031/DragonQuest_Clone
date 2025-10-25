@@ -36,6 +36,7 @@ PlayerMovementComponent::~PlayerMovementComponent()
         pInputManager->UnsubscribeKey(id, kKeyUp);
     for ( auto id : m_messageCallbackIds )
         pMessager->RemoveListener( id );
+    StopMovementCallbacks();
 }
 
 void PlayerMovementComponent::Start()
@@ -75,12 +76,15 @@ void PlayerMovementComponent::Start()
         {
             SetTextureForDirection({x,y});
 
-            DelayedCallbackManager::AddCallback([this, keyCode, x, y]()
+            m_inputCallbackCodes.emplace_back
+            ( 
+                DelayedCallbackManager::AddCallback([this, keyCode, x, y]()
                 {
                     auto* pInput = BlackBoxManager::Get()->m_pInputManager;
                     if (pInput->IsKeyDown(keyCode))
                         TryMove({ x, y });
-                } , 200);
+                } , 200) 
+            );
         } );
         m_keyDownCodes.emplace_back(id);
     };
@@ -229,8 +233,7 @@ void PlayerMovementComponent::CheckForEncounters()
     if ( !encounter )
         return;
 
-    m_stopMoving = true;
-    m_pMover->StopVelocity();
+    TrueStopAll();
 
     auto& pActor = m_pTileMap->GetEncounterAtGame( m_targetPosition );
     if (!pActor)
@@ -251,7 +254,8 @@ void PlayerMovementComponent::AddUIMessageCallbacks()
         BlackBoxManager::Get()->m_pMessagingManager->RegisterListener( kMessageUIOpen,
         [this]( [[maybe_unused]]Message& message )
         {
-            StopMoving();
+            StopMoving(); // dont call TrueStopAll because that would stop in place middle of two tile.
+            StopMovementCallbacks();
             ++m_uiCount;
             m_pAnimatedSprite->Sprite().StopAnimating();
         }
@@ -269,6 +273,12 @@ void PlayerMovementComponent::AddUIMessageCallbacks()
             }
         }
     ));
+}
+
+void PlayerMovementComponent::StopMovementCallbacks()
+{
+    for ( auto id : m_inputCallbackCodes )
+        DelayedCallbackManager::RemoveCallback( id );
 }
 
 void PlayerMovementComponent::SetTargetTile()
@@ -316,6 +326,7 @@ void PlayerMovementComponent::StopMoving()
 void PlayerMovementComponent::TrueStopAll()
 {
     m_pMover->StopVelocity();
+    StopMovementCallbacks();
     m_direction = {0,0};
     m_targetPosition = m_pTransform->m_position;
     m_stopMoving = true;

@@ -55,10 +55,13 @@ namespace BlackBoxEngine
         int64_t startMiliseconds
     )
     {
-        SDL_PropertiesID id = 0;
-        SDL_SetNumberProperty( id, MIX_PROP_PLAY_LOOPS_NUMBER, loopCount );
-        SDL_SetNumberProperty( id, MIX_PROP_PLAY_FADE_IN_MILLISECONDS_NUMBER, fadeInMiliseconds );
-        SDL_SetNumberProperty( id, MIX_PROP_PLAY_START_MILLISECOND_NUMBER, startMiliseconds );
+        SDL_PropertiesID id = MIX_GetTrackProperties(m_pTrack);
+        if ( !SDL_SetNumberProperty( id, MIX_PROP_PLAY_LOOPS_NUMBER, loopCount ) )
+            BB_LOG( LogType::kWarning, "error setting loop count ", SDL_GetError() );
+        if ( ! SDL_SetNumberProperty( id, MIX_PROP_PLAY_FADE_IN_MILLISECONDS_NUMBER, fadeInMiliseconds ) )
+            BB_LOG( LogType::kWarning, "error setting fade in time ", SDL_GetError() );
+        if ( ! SDL_SetNumberProperty( id, MIX_PROP_PLAY_START_MILLISECOND_NUMBER, startMiliseconds ) )
+            BB_LOG( LogType::kWarning, "error setting start time ", SDL_GetError() );
         MIX_PlayTrack( m_pTrack, id );
     }
 

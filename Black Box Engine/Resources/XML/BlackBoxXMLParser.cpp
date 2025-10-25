@@ -108,6 +108,8 @@ namespace BlackBoxEngine
         if constexpr ( kPrintSavedActors )
             saveDoc.Print();
 
+        ResourceManager::RemoveXMLFromCache( filePath.string().c_str() );
+
         int errCode = saveDoc.SaveFile( filePath.string().c_str() );
         if ( errCode == tinyxml2::XML_SUCCESS )
         {

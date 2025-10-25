@@ -22,6 +22,7 @@ class PlayerMovementComponent : public BlackBoxEngine::Component
     std::vector<uint64_t> m_keyDownCodes;
     std::vector<uint64_t> m_keyUpCodes;
     std::vector<uint64_t> m_messageCallbackIds;
+    std::vector<uint64_t> m_inputCallbackCodes;
     static constexpr BlackBoxEngine::KeyCode kUpKey = BlackBoxEngine::KeyCode::kUp;
     static constexpr BlackBoxEngine::KeyCode kLeftKey = BlackBoxEngine::KeyCode::kLeft;
     static constexpr BlackBoxEngine::KeyCode kDownKey = BlackBoxEngine::KeyCode::kDown;
@@ -63,5 +64,6 @@ private:
     void SetTextureForDirection( const BlackBoxEngine::FVector2& direction );
     void CheckForEncounters();
     void AddUIMessageCallbacks();
+    void StopMovementCallbacks();
 };
 

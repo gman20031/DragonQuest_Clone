@@ -60,6 +60,11 @@ namespace BlackBoxEngine
         return GetXMLFactory()->CreateXMLFile(pFilePath);
     }
 
+    void ResourceManager::RemoveXMLFromCache( const char* pFilePath )
+    {
+        GetXMLFactory()->RemoveFromCache( pFilePath );
+    }
+
     std::shared_ptr<BB_Font> ResourceManager::GetFont(const char* pFilePath, float size)
     {
         return GetTextFactory()->CreateFont(pFilePath, size);

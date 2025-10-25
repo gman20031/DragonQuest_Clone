@@ -40,6 +40,8 @@ namespace BlackBoxEngine
         static ActorXMLParser GetActorXMLData(const char* pFilePath);
         static LevelXMLParser GetLevelXMLData(const char* pFilePath);
         static XMLElementParser GetRawXMLDATA(const char* pFilePath);
+
+        static void RemoveXMLFromCache( const char* pFilePath );
     };
 
 
