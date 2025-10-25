@@ -8,8 +8,8 @@ class InventoryComponent : public BlackBoxEngine::Component
 
     bool m_hasTablet = false;
     bool m_hasTorch = true;
-   //bool m_hasClub = true;
-   //bool m_hasClothes = true;
+    bool m_hasClub = false;
+    bool m_hasLeatherClothes = false;
 
 public:
     InventoryComponent(BlackBoxEngine::Actor* pOwner) : Component(pOwner) {}
@@ -26,5 +26,10 @@ public:
     void SetHasTorch(bool value) { m_hasTorch = value; }
     bool GetHasTorch() { return m_hasTorch; }
 
+    void SetHasClub(bool value) { m_hasClub = value; }
+    bool GetHasClub() { return m_hasClub; }
+
+    void SetHasLeatherClothes(bool value) { m_hasLeatherClothes = value; }
+    bool GetHasLeatherClothes() { return m_hasLeatherClothes; }
 };
 
