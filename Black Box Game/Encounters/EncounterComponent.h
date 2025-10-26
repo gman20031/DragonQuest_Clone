@@ -9,7 +9,6 @@
 #include <Math/Random.h>
 
 #include "../PlayerStatsComponent.h"
-
 using namespace BlackBoxEngine;
 
 class EncounterComponent : public BlackBoxEngine::Component
@@ -42,6 +41,20 @@ class EncounterComponent : public BlackBoxEngine::Component
 
     std::vector<std::string> m_itemTextStorage;
 
+    InterfaceText* m_activeScrollingText = nullptr;
+    std::string m_pendingMessage;        // full message to display
+    std::vector<std::string> m_messageLines; // split message lines
+    size_t m_currentLineIndex = 0;      // which line we're showing
+    size_t m_maxLines = 0;              // how many lines fit in box
+    float m_charDelayMs = 50.f;
+
+    std::string m_currentLine;      // current line being displayed char by char
+    size_t m_currentCharIndex = 0;  // which char of current line
+    bool m_isScrolling = false;
+
+    std::vector<std::string> m_visibleLines;  // Currently shown lines in the text box
+    int m_lineDelayMs = 500;
+
 public:
     EncounterComponent( BlackBoxEngine::Actor* pOwner );
     virtual ~EncounterComponent();
@@ -49,7 +62,6 @@ public:
     void StartEncounter(Actor* pOtherActor);
     void EndEncounter();
 
-    void Start() override;
     void Load([[maybe_unused]] const BlackBoxEngine::XMLElementParser parser) override;
     void Save([[maybe_unused]] BlackBoxEngine::XMLElementParser parser) override;
 
@@ -71,9 +83,14 @@ private:
     void DismissActionMessage();
     void RespawnPlayer();
 
-
     bool CreateItemBox();
     void ShowItemMenu(const std::vector<std::pair<std::string, int>>& items);
     void CloseItemMenu();
+
+    void CreateTextNode(const std::string& text);
+    void ScrollNextLine();
+
+
+   
 };
  

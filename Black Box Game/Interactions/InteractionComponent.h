@@ -53,6 +53,8 @@ class InteractionComponent : public BlackBoxEngine::Component
     std::vector<std::string> m_itemTextStorage;
     bool m_messageFromItemMenu = false;
 
+    bool m_choiceMenuActive = false;
+    std::function<void(const std::string&)> m_choiceCallback;
 public:
     InteractionComponent( BlackBoxEngine::Actor* pOwner );
     virtual ~InteractionComponent();
@@ -91,4 +93,9 @@ private:
     bool CreateItemBox(); 
     void ShowItemMenu(const std::vector<std::pair<std::string, int>>& items); 
     void CloseItemMenu();
+
+    void DismissChoiceMenu();
+    void ShowChoiceMenu(const std::vector<std::pair<std::string, int>>& choices,
+        std::function<void(const std::string&)> callback);
+    void SleepAtInn();
 };

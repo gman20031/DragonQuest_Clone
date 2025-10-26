@@ -19,6 +19,7 @@
 #include "../Black Box Game/InventoryComponent.h"
 #include "../Black Box Engine/Graphics/Text Rendering/Text.h"
 
+
 static constexpr int kTileSize = 16;
 
 static constexpr float kMessageBoxStartX = 2 * kTileSize;
@@ -80,6 +81,7 @@ void EncounterComponent::StartEncounter(Actor* pOtherActor)
         BB_LOG( LogType::kError, "Actor passed into startEncounter, did not have player stat component" );
         return;
     }
+
 
     auto* pMover = pOtherActor->GetComponent<MoverComponent>();
     if ( pMover )
@@ -143,10 +145,6 @@ void EncounterComponent::PlayerDies()
     DelayedCallbackManager::AddCallback( delayFunc, std::chrono::milliseconds( 1500 ) );
 }
 
-void EncounterComponent::Start()
-{
-
-}
 
 //to change depending on the enemy
 void EncounterComponent::Load( const XMLElementParser parser )
@@ -311,7 +309,16 @@ void EncounterComponent::BasicAttack()
     auto* pStats = m_pPlayer->GetComponent<PlayerStatsComponent>();
     if (!pStats) return;
 
-    int defense = pStats->GetPlayerStrength();  // use real defense
+    auto* pInventory = m_pPlayer->GetComponent<InventoryComponent>();
+    int defense;
+
+    if (pInventory->GetHasLeatherClothes() == true)
+    {
+        defense = pStats->GetPlayerStrength() + 2;
+    }
+    else
+        defense = pStats->GetPlayerStrength();  // use real defense
+
     int damage = std::max(1, m_attack - defense);
 
     int currentHP = pStats->GetPlayerHP();
@@ -490,79 +497,39 @@ void EncounterComponent::OnCombatButtonPressed(const std::string& action)
 
 void EncounterComponent::ShowActionMessage(const std::string& text)
 {
-    DismissActionMessage();
-
-    // --- Text parameters ---
-    BB_FRectangle txtRect{kTileSize, kTileSize / 2, kMessageBoxWidth - kTileSize, kMessageBoxHeight - kTileSize};
-    InterfaceText::Paremeters params
-    {
-        .pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf",
-        .pText = text.c_str(),
-        .textSize = kStandardUITextSize,
-        .color = ColorPresets::white,
-    };
-    
-    m_pMessageBackground->MakeChildNode<InterfaceText>( "message_log_text", txtRect, params );
-
-    //BB_FRectangle txtRect{
-    //   kTileSize,
-    //   kTileSize / 2,
-    //   kMessageBoxWidth - kTileSize,
-    //   kMessageBoxHeight  // make sure this is 3–5 lines tall
-    //};
-    //
-    //InterfaceText::Paremeters params{
-    //    .pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf",
-    //    .pText = "",
-    //    .textSize = kStandardUITextSize,
-    //    .color = ColorPresets::white,
-    //};
-    //
-    //auto* pTextNode = m_pMessageBackground->MakeChildNode<InterfaceText>(
-    //    "message_log_text", txtRect, params);
-    //
-    //std::shared_ptr<BB_Text> bbText = pTextNode->GetText();
-    //if (!bbText)
-    //    return;
-    //
-    //
-    //struct ScrollState
-    //{
-    //    std::shared_ptr<BB_Text> bbText;
-    //    std::string fullText;
-    //    size_t index = 0;
-    //};
-    //
-    //auto state = std::make_shared<ScrollState>();
-    //state->bbText = bbText;
-    //state->fullText = text;
-    //
-    //// --- Recursive lambda via shared_ptr ---
-    ////std::shared_ptr<std::function<void()>> revealFunc = std::make_shared<std::function<void()>>();
-    //
-    //auto revealFunc = std::make_shared<std::function<void()>>();
-    //*revealFunc = [state, revealFunc]() {
-    //    if (!state->bbText) return;
-    //
-    //    if (state->index < state->fullText.size())
-    //    {
-    //        std::string visible = state->fullText.substr(0, state->index + 1);
-    //        state->bbText->SetString(visible.c_str(), static_cast<int>(visible.size()));
-    //        state->index++;
-    //
-    //        DelayedCallbackManager::AddCallback([revealFunc]() { (*revealFunc)(); },
-    //            std::chrono::milliseconds(50));  // slower for visibility
-    //    }
-    //    };
-    //
-    //// Start animation
-    //DelayedCallbackManager::AddCallback([revealFunc]() { (*revealFunc)(); },
-    //    std::chrono::milliseconds(50));
+   DismissActionMessage();
+   
+   // --- Text parameters ---
+   BB_FRectangle txtRect{kTileSize, kTileSize / 2, kMessageBoxWidth - kTileSize, kMessageBoxHeight - kTileSize};
+   InterfaceText::Paremeters params
+   {
+       .pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf",
+       .pText = text.c_str(),
+       .textSize = kStandardUITextSize,
+       .color = ColorPresets::white,
+   };
+   
+   m_pMessageBackground->MakeChildNode<InterfaceText>( "message_log_text", txtRect, params );
+   
+   //m_pendingMessage = text;
+   //m_messageLines.clear();
+   //m_visibleLines.clear();
+   //m_currentLineIndex = 0;
+   //
+   //std::string line;
+   //std::stringstream ss(m_pendingMessage);
+   //while (std::getline(ss, line, '\n'))
+   //    m_messageLines.push_back(line);
+   //
+   //m_maxLines = static_cast<size_t>(kMessageBoxHeight / kStandardUITextSize);
+   //
+   //ScrollNextLine();
 }
 
 void EncounterComponent::DismissActionMessage()
 {
     m_pMessageBackground->RemoveAllChildNodes();
+
 }
 
 void EncounterComponent::RespawnPlayer()
@@ -729,4 +696,53 @@ void EncounterComponent::CloseItemMenu()
         BlackBoxManager::Get()->m_pInputManager->SwapInputToGame();
 
     BlackBoxManager::Get()->m_pMessagingManager->EnqueueMessage(kMessageUIClosed, m_pOwner);
+}
+
+
+
+void EncounterComponent::CreateTextNode(const std::string& text)
+{
+    m_pMessageBackground->RemoveAllChildNodes();
+
+    BB_FRectangle txtRect{ kTileSize, kTileSize / 2, kMessageBoxWidth - kTileSize, kMessageBoxHeight - kTileSize };
+    InterfaceText::Paremeters params{
+        .pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf",
+        .pText = text.c_str(),
+        .textSize = kStandardUITextSize,
+        .color = ColorPresets::white,
+    };
+
+    m_activeScrollingText = m_pMessageBackground->MakeChildNode<InterfaceText>("message_log_text", txtRect, params);
+}
+
+
+void EncounterComponent::ScrollNextLine()
+{
+    if (m_currentLineIndex >= m_messageLines.size())
+        return; // done scrolling
+
+    // Add next line to visible lines
+    if (m_visibleLines.size() < m_maxLines)
+    {
+        // Still space in box, just append
+        m_visibleLines.push_back(m_messageLines[m_currentLineIndex]);
+    }
+    else
+    {
+        // Box full, remove top line and append new line
+        m_visibleLines.erase(m_visibleLines.begin());
+        m_visibleLines.push_back(m_messageLines[m_currentLineIndex]);
+    }
+
+    // Rebuild text
+    std::string textToShow;
+    for (const auto& line : m_visibleLines)
+        textToShow += line + "\n";
+
+    CreateTextNode(textToShow);
+
+    m_currentLineIndex++;
+
+    // Schedule next line
+    DelayedCallbackManager::AddCallback([this]() { ScrollNextLine(); }, std::chrono::milliseconds(static_cast<int>(m_lineDelayMs)));
 }

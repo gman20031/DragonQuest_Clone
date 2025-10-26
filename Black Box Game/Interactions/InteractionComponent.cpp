@@ -3,6 +3,7 @@
 #include <Actors/ActorManager.h>
 #include <BlackBoxManager.h>
 #include <System/Delay.h>
+#include <Graphics/ScreenFader.h>
 
 #include <Interface/InterfaceButton.h>
 #include <Interface/InterfaceText.h>
@@ -389,7 +390,17 @@ void InteractionComponent::HandleTalk()
     }
 
     else
-        m_pCurrentTalk->OnTalkUsed(m_pOwner);
+    {
+        ShowActionMessage("'Would you like to sleep for 6 gold?'");
+
+        std::vector<std::pair<std::string, int>> choices = { {"Yes", 0}, {"No", 0} };
+        ShowChoiceMenu(choices, [this](const std::string& choice) {
+            if (choice == "Yes")
+                SleepAtInn();
+            else
+                DismissChoiceMenu();
+            });
+    }
 
 }
 
@@ -531,7 +542,7 @@ void InteractionComponent::ShowItemMenu(const std::vector<std::pair<std::string,
                 std::string message;
                 if ((name == "Torch" && pInventory->GetHasTorch()) ||
                     (name == "Tablet" && pInventory->GetHasTablet()) ||
-                    (name == "Club" && pInventory->GetHasClub()))
+                    (name == "Club" && pInventory->GetHasClub()) || (pInventory->GetHasLeatherClothes()))
                 {
                     message = std::format("Thou canst use the {}!", name);
                 }
@@ -594,6 +605,156 @@ void InteractionComponent::CloseItemMenu()
     m_itemMenuActive = false;
 
     // Return control to command menu
+    if (m_commandMenuActive)
+        BlackBoxManager::Get()->m_pInputManager->SwapInputTargetToInterface(&m_pCommandMenuRootNode);
+    else
+        BlackBoxManager::Get()->m_pInputManager->SwapInputToGame();
+
+    BlackBoxManager::Get()->m_pMessagingManager->EnqueueMessage(kMessageUIClosed, m_pOwner);
+}
+
+void InteractionComponent::ShowChoiceMenu(
+    const std::vector<std::pair<std::string, int>>& choices,
+    std::function<void(const std::string&)> callback)
+{
+    if (m_choiceMenuActive) return;
+    m_choiceMenuActive = true;
+
+    m_choiceCallback = callback; // store callback
+
+    m_pItemBackgroundNode->RemoveAllChildNodes();
+    m_itemTextStorage.clear();
+
+    static constexpr float kLineHeight = 20.f;
+    static constexpr float kItemBoxWidth = 60.f;
+    float totalHeight = choices.size() * kLineHeight + 8.f;
+
+    constexpr float kChoiceBoxStartX = -60.f; // far left
+    constexpr float kChoiceBoxStartY = -16.f; // top of the screen
+
+    m_pItemBackgroundNode->SetOffset(kChoiceBoxStartX, kChoiceBoxStartY);
+    m_pItemBackgroundNode->SetSize(kItemBoxWidth, totalHeight);
+
+    // --- Background texture ---
+    BB_FRectangle bgRect{ 0, 0, kItemBoxWidth, totalHeight };
+    InterfaceTexture::TextureInfo bgInfo{
+        .pTextureFile = "../Assets/UI/Yes_No_Menu.png",
+        .useFullImage = true
+    };
+    InterfaceNode* boxNode = m_pItemBackgroundNode->MakeChildNode<InterfaceTexture>("ChoiceMenu_BG", bgRect, bgInfo);
+
+    InterfaceText::Paremeters textParams{
+        .pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf",
+        .textSize = kStandardUITextSize,
+        .color = ColorPresets::white
+    };
+
+    InterfaceButton::ButtonParams btnParams{
+        .usable = true,
+        .color = {0,0,0,0},
+        .targetedColor = {0,0,0,0},
+        .interactColor = {0,0,0,0},
+    };
+
+    std::vector<InterfaceNode*> buttons;
+    for (int i = 0; i < choices.size(); ++i)
+    {
+        const auto& label = choices[i].first;
+        constexpr float kPaddingX = 12.f;  // space from left/right
+        constexpr float kPaddingY = 4.f;  // space from top/bottom
+        constexpr float kLineSpacing = 2.f; // space between buttons
+
+        BB_FRectangle btnRect{
+            kPaddingX,
+            kPaddingY + i * (kLineHeight + kLineSpacing), // vertical spacing
+            kItemBoxWidth - 2 * kPaddingX,
+            kLineHeight
+        };
+        std::string btnName = "ChoiceBtn_" + label;
+
+        // Store label text
+        m_itemTextStorage.push_back(label);
+        std::string textPtr = m_itemTextStorage.back();
+
+        btnParams.callbackFunction = [this, textPtr]() {
+            if (m_choiceCallback) m_choiceCallback(textPtr);
+            };
+
+        InterfaceNode* btnNode = boxNode->MakeChildNode<InterfaceButton>(btnName.c_str(), btnRect, btnParams);
+
+        BB_FRectangle txtRect{ 0, 0, btnRect.w, btnRect.h };
+        textParams.pText = textPtr.c_str();
+        btnNode->MakeChildNode<InterfaceText>((btnName + "_Label").c_str(), txtRect, textParams);
+
+        buttons.push_back(btnNode);
+    }
+
+    // Link buttons
+    for (int i = 0; i < buttons.size(); ++i)
+    {
+        if (i > 0) buttons[i]->SetAdjacentNode(Direction::kUp, buttons[i - 1]);
+        if (i < buttons.size() - 1) buttons[i]->SetAdjacentNode(Direction::kDown, buttons[i + 1]);
+    }
+
+    // Highlight first button
+    if (!buttons.empty())
+    {
+        m_itemMenuInterface.SetCursorTarget(buttons[0]);
+        m_itemMenuInterface.GetHighlight()->SetTarget(buttons[0]);
+    }
+
+    m_itemMenuInterface.AddToScreen();
+    BlackBoxManager::Get()->m_pInputManager->SwapInputTargetToInterface(&m_itemMenuInterface);
+    BlackBoxManager::Get()->m_pMessagingManager->EnqueueMessage(kMessageUIOpen, m_pOwner);
+}
+
+void InteractionComponent::SleepAtInn()
+{
+    auto* pStats = m_pOwner->GetComponent<PlayerStatsComponent>();
+    if (!pStats) return;
+
+    if (pStats->GetPlayerGold() < 6)
+    {
+        ShowActionMessage("'You don't have enough gold.'");
+        DismissChoiceMenu();
+        return;
+    }
+
+    int gold = pStats->GetPlayerGold() - 6;
+
+    pStats->SetPlayerGold(gold);
+    pStats->SetPlayerHP(pStats->GetPlayerMaxHP());
+
+    DismissChoiceMenu();
+
+    ScreenFader::FadeToBlack(1.0f);
+
+    // Step 2: Delay until fade is done
+    auto fadeInAndShowMessage = [this]()
+        {
+            // Step 3: Fade back in
+            ScreenFader::FadeIn(1.0f);
+
+            // Step 4: Show the message after fade-in
+            DelayedCallbackManager::AddCallback([this]()
+                {
+                    ShowActionMessage("'You have rested and restored your health.'");
+                }, std::chrono::milliseconds(1000)); // match fade-in duration
+        };
+
+    DelayedCallbackManager::AddCallback(fadeInAndShowMessage, std::chrono::milliseconds(1000)); // match fade-out duration
+}
+
+void InteractionComponent::DismissChoiceMenu()
+{
+    if (!m_choiceMenuActive) return;
+
+    m_pItemBackgroundNode->RemoveAllChildNodes();
+    m_itemMenuInterface.RemoveFromScreen();
+    m_choiceMenuActive = false;
+    m_choiceCallback = nullptr;
+
+    // Return control to command menu or game
     if (m_commandMenuActive)
         BlackBoxManager::Get()->m_pInputManager->SwapInputTargetToInterface(&m_pCommandMenuRootNode);
     else

@@ -58,16 +58,16 @@
         <MaxHP>16</MaxHP>
         <MP>0</MP>
         <MaxMP>0</MaxMP>
-        <Gold>120</Gold>
+        <Gold>40</Gold>
         <XP>0</XP>
         <Strength>3</Strength>
         <Agility>3</Agility>
     </Component>
     <Component Name="PlayerCheatComponent"/>
     <Component Name="InventoryComponent">
-        <HasScroll>true</HasScroll>
+        <HasScroll>false</HasScroll>
         <HasTorch>true</HasTorch>
-        <HasClub>false</HasClub>
-        <HasClothes>false</HasClothes>
+        <HasClub>true</HasClub>
+        <HasClothes>true</HasClothes>
     </Component>
 </Actor>
