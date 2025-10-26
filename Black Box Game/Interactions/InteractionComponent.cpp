@@ -105,6 +105,8 @@ void InteractionComponent::Start()
     BlackBoxManager::Get()->m_pMessagingManager->RegisterListener( 
         kLevelChanging, [this]( [[maybe_unused]]Message& ) {OnLevelChanging();} 
     ));
+
+    m_pCurrentTalk = nullptr;
 }
 
 
@@ -298,8 +300,8 @@ void InteractionComponent::ShowActionMessage(const std::string& text)
     if (m_messageActive)
         return;
     m_messageActive = true;
-
-
+    
+    
     m_pMessageBackgroundNode->RemoveAllChildNodes();
 
     BB_FRectangle txtRect{ 16, 8, kMessageBoxWidth - 16, kMessageBoxHeight - 16};
@@ -381,7 +383,7 @@ void InteractionComponent::HandleTalk()
         return;
     }
 
-    if(m_pCurrentTalk == m_pCurrentTalk->GetOwner()->GetComponent<CastleTalkComponent>())
+    else if(m_pCurrentTalk == m_pCurrentTalk->GetOwner()->GetComponent<CastleTalkComponent>())
     {
         if (pInventory->GetHasTablet())
             ShowActionMessage("'Guard: 'You may enter, my lord.' YOU WIN'");
@@ -389,16 +391,27 @@ void InteractionComponent::HandleTalk()
             ShowActionMessage("'Guard: 'Halt! You need the Royal Pass.'");
     }
 
-    else
+    else if (m_pCurrentTalk == m_pCurrentTalk->GetOwner()->GetComponent<InnTalkComponent>())
     {
-        ShowActionMessage("'Would you like to sleep for 6 gold?'");
+        ShowActionMessage("'Welcome to the traverler's Inn.\nRoom and board is 6 Gold per night.\nDost thou want a room?'");
 
         std::vector<std::pair<std::string, int>> choices = { {"Yes", 0}, {"No", 0} };
         ShowChoiceMenu(choices, [this](const std::string& choice) {
             if (choice == "Yes")
-                SleepAtInn();
+            {
+                DismissActionMessage();
+                ShowActionMessage("'Good night.'");
+                DelayedCallbackManager::AddCallback([this]()
+                    {
+                        SleepAtInn();
+                    }, std::chrono::milliseconds(1000));
+            }
             else
+            {
+                DismissActionMessage();
+                ShowActionMessage("'Okay.\nGood-bye, traveler.'");
                 DismissChoiceMenu();
+            }
             });
     }
 
@@ -445,6 +458,7 @@ void InteractionComponent::HandleItem()
     if (pInventory->GetHasTablet())  items.push_back({ "Tablet", 1 });
     if (pInventory->GetHasClub())   items.push_back({ "Club", 1 });
     if (pInventory->GetHasLeatherClothes())  items.push_back({ "Leather Armor", 1 });
+    
     if (items.empty())
     {
         ShowActionMessage("'Nothing of use has yet been given to thee'");
@@ -540,13 +554,15 @@ void InteractionComponent::ShowItemMenu(const std::vector<std::pair<std::string,
                 if (!pInventory) return;
 
                 std::string message;
-                if ((name == "Torch" && pInventory->GetHasTorch()) ||
-                    (name == "Tablet" && pInventory->GetHasTablet()) ||
-                    (name == "Club" && pInventory->GetHasClub()) || (pInventory->GetHasLeatherClothes()))
+                if (name == "Torch" && pInventory->GetHasTorch())
                 {
-                    message = std::format("Thou canst use the {}!", name);
+                    message = std::format("A torch can be used only in dark places.", name);
                 }
-                else
+                else if (name == "Tablet" && pInventory->GetHasTablet())
+                {
+                    message = std::format("Give thee to the Castle for permission to enter!", name);
+                }
+                else if(name == "Club" && pInventory->GetHasClub() || name == "Leather Armor" && (pInventory->GetHasLeatherClothes()))
                 {
                     message = std::format("Thou cannot use the {} now.", name);
                 }
@@ -710,12 +726,14 @@ void InteractionComponent::ShowChoiceMenu(
 
 void InteractionComponent::SleepAtInn()
 {
+    DismissActionMessage();
+
     auto* pStats = m_pOwner->GetComponent<PlayerStatsComponent>();
     if (!pStats) return;
 
     if (pStats->GetPlayerGold() < 6)
     {
-        ShowActionMessage("'You don't have enough gold.'");
+        ShowActionMessage("'Thou hast not enough gold.'");
         DismissChoiceMenu();
         return;
     }
@@ -738,7 +756,7 @@ void InteractionComponent::SleepAtInn()
             // Step 4: Show the message after fade-in
             DelayedCallbackManager::AddCallback([this]()
                 {
-                    ShowActionMessage("'You have rested and restored your health.'");
+                    ShowActionMessage("'Good morning.\nThou seems to have spent a good night.\n\nI shall see thee again.'");
                 }, std::chrono::milliseconds(1000)); // match fade-in duration
         };
 

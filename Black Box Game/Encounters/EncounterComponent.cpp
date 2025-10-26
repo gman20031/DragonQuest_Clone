@@ -324,7 +324,7 @@ void EncounterComponent::BasicAttack()
     int currentHP = pStats->GetPlayerHP();
     pStats->SetPlayerHP(currentHP - damage);
 
-    ShowActionMessage(std::format("The {} attacks! \nThy Hit decreased by {}.\n\nCommand?", m_name.c_str(), damage));
+    ShowActionMessage(std::format("The {} attacks!\nThy Hit decreased by {}.\n\nCommand?", m_name.c_str(), damage));
 
     // Check if player died
     if (pStats->GetPlayerHP() <= 0)
@@ -463,7 +463,7 @@ void EncounterComponent::OnCombatButtonPressed(const std::string& action)
     }
     else if (action == "Spell")
     {
-        ShowActionMessage("You cannot yet use the spell. \n \n Command?");
+        ShowActionMessage("Thou cannot yet use the spell.\n\nCommand?");
     }
     else if (action == "Item")
     {
@@ -630,13 +630,10 @@ void EncounterComponent::ShowItemMenu(const std::vector<std::pair<std::string, i
 
                 if ((name == "Torch" && pInventory->GetHasTorch()) ||
                     (name == "Tablet" && pInventory->GetHasTablet()) ||
-                    (name == "Club" && pInventory->GetHasClub()))
+                    (name == "Club" && pInventory->GetHasClub()) ||
+                    (name == "Leather Armor" && pInventory->GetHasLeatherClothes()))
                 {
-                    ShowActionMessage(std::format("Thou canst use the {}!", name));
-                }
-                else
-                {
-                    ShowActionMessage(std::format("Thou cannot use the {} now.", name));
+                    ShowActionMessage(std::format("Thou canst not use it in battle."));
                 }
 
                 CloseItemMenu(); // Return to combat menu
