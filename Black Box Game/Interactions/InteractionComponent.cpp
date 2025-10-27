@@ -75,8 +75,6 @@ InteractionComponent::~InteractionComponent()
 // -------------------------------------------------------------
 void InteractionComponent::Start()
 {
-    
-
     auto* input = BlackBoxManager::Get()->m_pInputManager;
     using enum InputManager::InputType;
 
@@ -103,6 +101,18 @@ void InteractionComponent::Start()
             m_pCommandMenuRootNode.GetHighlight()->GetSprite()->AnimateSprite();
         }
     ));
+
+    // encounter starts, then we need to make sure this ui closes 
+    m_messageIds.emplace_back(
+        BlackBoxManager::Get()->m_pMessagingManager->RegisterListener
+        (
+            kEncounterStarted, [this]( [[maybe_unused]] Message& )
+            {
+                if ( m_commandMenuActive )
+                    CloseCommandUI();
+            }
+        ) );
+
     m_messageIds.emplace_back(
     BlackBoxManager::Get()->m_pMessagingManager->RegisterListener( 
         kLevelChanging, [this]( [[maybe_unused]]Message& ) {OnLevelChanging();} 

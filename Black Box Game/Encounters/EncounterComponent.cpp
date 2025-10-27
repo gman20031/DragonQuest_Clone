@@ -296,7 +296,7 @@ void EncounterComponent::PlayerAttack()
                             m_name, m_xpReward, m_goldReward),
                         [this]() { EndEncounter(); }
                     );
-                    }, std::chrono::milliseconds(500));
+                }, std::chrono::milliseconds(500));
             }
             else
             {
@@ -509,10 +509,10 @@ void EncounterComponent::CreateCommandButtons( InterfaceTexture* pBackground )
 
 void EncounterComponent::OnCombatButtonPressed(const std::string& action)
 {
-    BlackBoxManager::Get()->m_pAudioManager->PlaySound("../Assets/Audio/32DragonQuest1-MenuButton.wav", 0.4f);
-
     if ( m_pTextBox && m_pTextBox->IsAnimating())
         return;
+
+    BlackBoxManager::Get()->m_pAudioManager->PlaySound("../Assets/Audio/32DragonQuest1-MenuButton.wav", 0.4f);
 
     if (action == "Fight")
     {

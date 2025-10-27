@@ -11,7 +11,6 @@
 #include "Encounters/EncounterComponent.h"
 #include "GameMessages.h"
 
-
 using namespace BlackBoxEngine;
 
 #include <System/Delay.h>
@@ -233,6 +232,8 @@ void PlayerMovementComponent::CheckForEncounters()
     if ( !encounter )
         return;
 
+    
+    BlackBoxManager::Get()->m_pMessagingManager->EnqueueMessage( kEncounterStarted, m_pOwner );
     TrueStopAll();
 
     auto& pActor = m_pTileMap->GetEncounterAtGame( m_targetPosition );
