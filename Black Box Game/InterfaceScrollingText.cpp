@@ -26,7 +26,19 @@ void BlackBoxEngine::ScrollingTextBox::SetText( const std::string& text, std::fu
     else
         m_fullText += text;
 
-    m_params.onComplete = onComplete;
+    //m_params.onComplete = onComplete;
+
+
+    m_params.onComplete = [onComplete]() {
+        // Resume input after text completes
+        BlackBoxManager::Get()->m_pInputManager->ResumeInput();
+        if (onComplete)
+            onComplete();
+        };
+
+    // Lock input during scrolling
+    BlackBoxManager::Get()->m_pInputManager->StopAllInput();
+
     m_lines.push_back( "" );
     m_isComplete = false;
 }

@@ -33,7 +33,7 @@
         <xOffset>0</xOffset>
         <yOffset>0</yOffset>
         <SpriteInfo>
-            <startingSpriteIndex>3</startingSpriteIndex>
+            <startingSpriteIndex>2</startingSpriteIndex>
             <UseFullImage>false</UseFullImage>
             <spriteDimensions>
                 <width>16</width>
@@ -52,13 +52,13 @@
         </SpriteInfo>
     </Component>
     <Component Name="PlayerStatsComponent">
-        <Level>12</Level>
+        <Level>1</Level>
         <HP>16</HP>
         <MaxHP>16</MaxHP>
         <MP>0</MP>
         <MaxMP>0</MaxMP>
         <Gold>40</Gold>
-        <XP>4000</XP>
+        <XP>0</XP>
         <Strength>3</Strength>
         <Agility>3</Agility>
     </Component>

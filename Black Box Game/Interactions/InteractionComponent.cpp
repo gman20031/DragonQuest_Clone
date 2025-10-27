@@ -417,15 +417,15 @@ void InteractionComponent::HandleTalk()
         if (pInventory->GetHasTablet())
         {
             BlackBoxManager::Get()->m_pAudioManager->PlaySound("../Assets/Audio/25DragonQuest1-Victory.wav", 0.4f);
-            ShowActionMessage("'Guard: 'You may enter, my lord.' YOU WIN'");
+            ShowActionMessage("'Guard: \n'You may enter, my lord.' YOU WIN'");
         }
         else
-            ShowActionMessage("'Guard: 'Halt! You need the Royal Pass.'");
+            ShowActionMessage("'Guard: \n'Halt! You need the Royal Pass.'");
     }
 
     else if (m_pCurrentTalk == m_pCurrentTalk->GetOwner()->GetComponent<InnTalkComponent>())
     {
-        ShowActionMessage("'Welcome to the traverler's Inn.\nRoom and board is 6 Gold per night.\nDost thou want a room?'");
+        ShowActionMessage("'Welcome to the \ntraverler's Inn.\n\nRoom and board is \n6 Gold per night.\n\nDost thou want \na room?'");
 
         BlackBoxManager::Get()->m_pAudioManager->PlaySound("../Assets/Audio/33DragonQuest1-Confirmation.wav", 0.2f);
 
@@ -446,9 +446,10 @@ void InteractionComponent::HandleTalk()
             else
             {
                 BlackBoxManager::Get()->m_pAudioManager->PlaySound("../Assets/Audio/32DragonQuest1-MenuButton.wav", 0.2f);
-                DismissActionMessage();
+                
                 ShowActionMessage("'Okay.\nGood-bye, traveler.'");
                 DismissChoiceMenu();
+                DismissActionMessage();
             }
             });
     }
@@ -463,7 +464,7 @@ void InteractionComponent::HandleStair()
         m_pCurrentStair->OnStairUsed(m_playerActor);
     }
     else
-        ShowActionMessage("\'There are no stairs herex.\'");
+        ShowActionMessage("\'There are no stair here.\'");
 
 }
 
@@ -472,10 +473,10 @@ void InteractionComponent::HandleTake()
     if (m_pCurrentTake)
     {
         m_pCurrentTake->OnTakeUsed(m_pOwner);
-        ShowActionMessage("\'Fortune smiles upon thee. Thou hast found the Tablet.\'");
+        ShowActionMessage("\'Fortune smiles \nupon thee. \nThou hast found the Tablet.\'");
     }
     else
-        ShowActionMessage("\'There is nothing to take here.\'");
+        ShowActionMessage("\'There is nothing \nto take here.\'");
 
 }
 
@@ -596,15 +597,15 @@ void InteractionComponent::ShowItemMenu(const std::vector<std::pair<std::string,
                 std::string message;
                 if (name == "Torch" && pInventory->GetHasTorch())
                 {
-                    message = std::format("A torch can be used only in dark places.", name);
+                    message = std::format("'A torch can be \nused only in dark \nplaces.'", name);
                 }
                 else if (name == "Tablet" && pInventory->GetHasTablet())
                 {
-                    message = std::format("Give thee to the Castle for permission to enter!", name);
+                    message = std::format("'Give thee to the Castle \nfor permission to enter!'", name);
                 }
                 else if(name == "Club" && pInventory->GetHasClub() || name == "Leather Armor" && (pInventory->GetHasLeatherClothes()))
                 {
-                    message = std::format("Thou cannot use the {} now.", name);
+                    message = std::format("'Thou cannot use \nthe {} \nnow.'", name);
                 }
 
                 // Show the message **first** without closing the item menu yet
@@ -767,6 +768,7 @@ void InteractionComponent::ShowChoiceMenu(
 void InteractionComponent::SleepAtInn()
 {
     DismissActionMessage();
+    BlackBoxManager::Get()->m_pInputManager->StopAllInput();
 
     auto* pStats = m_pOwner->GetComponent<PlayerStatsComponent>();
     if (!pStats) return;
@@ -796,7 +798,7 @@ void InteractionComponent::SleepAtInn()
             // Step 4: Show the message after fade-in
             DelayedCallbackManager::AddCallback([this]()
                 {
-                    ShowActionMessage("'Good morning.\nThou seems to have spent a good night.\n\nI shall see thee again.'");
+                    ShowActionMessage("'Good morning.\nThou seems to have spent a good night.\n\nI shall see \nthee again.'");
                 }, std::chrono::milliseconds(1000)); // match fade-in duration
         };
 
