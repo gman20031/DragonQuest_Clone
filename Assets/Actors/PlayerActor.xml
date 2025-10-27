@@ -54,18 +54,18 @@
     <Component Name="InteractionComponent"/>
     <Component Name="PlayerStatsComponent">
         <Level>1</Level>
-        <HP>2</HP>
+        <HP>16</HP>
         <MaxHP>16</MaxHP>
         <MP>0</MP>
         <MaxMP>0</MaxMP>
-        <Gold>40</Gold>
-        <XP>0</XP>
+        <Gold>41</Gold>
+        <XP>4</XP>
         <Strength>3</Strength>
         <Agility>3</Agility>
     </Component>
     <Component Name="PlayerCheatComponent"/>
     <Component Name="InventoryComponent">
-        <HasScroll>false</HasScroll>
+        <HasScroll>true</HasScroll>
         <HasTorch>true</HasTorch>
         <HasClub>true</HasClub>
         <HasClothes>true</HasClothes>

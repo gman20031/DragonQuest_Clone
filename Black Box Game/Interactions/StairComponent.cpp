@@ -13,6 +13,21 @@
 
 using namespace BlackBoxEngine;
 
+BaseStairComponent::~BaseStairComponent()
+{
+    BlackBoxManager::Get()->m_pMessagingManager->RemoveListener( m_messageId );
+}
+
+void BaseStairComponent::Start()
+{
+    m_messageId = BlackBoxManager::Get()->m_pMessagingManager->RegisterListener( kPlayerMoveStarted,
+        [this](Message& message)
+        {
+            if ( auto* pInteract = message.pSender->GetComponent<InteractionComponent>() )
+                pInteract->SetCurrentStair( nullptr );
+        });
+}
+
 void BaseStairComponent::OnCollide(Actor* pOtherActor)
 {
     if (!pOtherActor)
@@ -22,12 +37,12 @@ void BaseStairComponent::OnCollide(Actor* pOtherActor)
     {
         pInteract->SetCurrentStair(this);
         pInteract->SetPlayerActor(pOtherActor);
-        BB_LOG(LogType::kMessage, "Player collided with a stair leading to %s",
+        BB_LOG(LogType::kMessage, "Player collided with a stair leading to ",
             m_data.targetLevelPath.c_str());
 
         if (m_data.autoUse)
         {
-            BB_LOG(LogType::kMessage, "Auto-using stair to %s", m_data.targetLevelPath.c_str());
+            BB_LOG(LogType::kMessage, "Auto-using stair to ", m_data.targetLevelPath.c_str());
             OnStairUsed(pOtherActor);
         }
     }
@@ -119,6 +134,4 @@ void BaseStairComponent::OnStairUsed(Actor* pOtherActor)
         };
 
     DelayedCallbackManager::AddCallback(delayFunc, std::chrono::milliseconds(int(m_data.fadeDuration * 1000)));
-
-    //BlackBoxManager::Get()->m_pAudioManager->SetMusicTrack("../Assets/Audio/06DragonQuest1-DarkDungeon~Floor1.wav");
 }

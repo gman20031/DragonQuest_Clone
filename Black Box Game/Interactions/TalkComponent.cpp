@@ -1,9 +1,17 @@
 #include "TalkComponent.h"
+
 #include <BlackBoxManager.h>
+
 #include "InteractionComponent.h"
-#include "../Black Box Game/InventoryComponent.h"
+#include "../InventoryComponent.h"
+#include "../GameMessages.h"
 
 using namespace BlackBoxEngine;
+
+BaseTalkComponent::~BaseTalkComponent()
+{
+    BlackBoxManager::Get()->m_pMessagingManager->RemoveListener( m_messageId );
+}
 
 void BaseTalkComponent::OnCollide(BlackBoxEngine::Actor* pOtherActor)
 {
@@ -14,8 +22,6 @@ void BaseTalkComponent::OnCollide(BlackBoxEngine::Actor* pOtherActor)
     {
         pInteract->SetCurrentTalk(this);
         pInteract->SetPlayerActor(pOtherActor);
-        
-
     }
 }
 
@@ -31,6 +37,16 @@ void BaseTalkComponent::Load(const BlackBoxEngine::XMLElementParser parser)
     parser.GetChildVariable("RequiresItem", &data.requiresItem);
     parser.GetChildVariable("RequiredItemName", &data.requiredItemName);
     SetTalkData(data);
+}
+
+void BaseTalkComponent::Start()
+{
+    m_messageId = BlackBoxManager::Get()->m_pMessagingManager->RegisterListener( kPlayerMoveStarted,
+        [this]( Message& message )
+        {
+            if ( auto* pInteract = message.pSender->GetComponent<InteractionComponent>() )
+                pInteract->SetCurrentTalk( nullptr );
+        } );
 }
 
 void InnTalkComponent::OnTalkUsed([[maybe_unused]] BlackBoxEngine::Actor* pOtherActor)

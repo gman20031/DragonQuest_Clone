@@ -7,6 +7,7 @@ class BaseTalkComponent : public BlackBoxEngine::Component
 {
     GENERATE_ID("BaseTalkComponent");
 
+    uint64_t m_messageId = 0;
 public:
     struct TalkData
     {
@@ -15,20 +16,21 @@ public:
     };
 
     explicit BaseTalkComponent(BlackBoxEngine::Actor* pOwner)
-        : Component(pOwner) {
-    }
-    virtual ~BaseTalkComponent() override = default;
+        : Component(pOwner) {}
+
+    virtual ~BaseTalkComponent();
 
     void SetTalkData(const TalkData& data) { m_data = data; }
     const TalkData& GetTalkData() const { return m_data; }
 
-    virtual void OnCollide([[maybe_unused]] BlackBoxEngine::Actor* pOtherActor) override;
-    virtual void OnTalkUsed([[maybe_unused]] BlackBoxEngine::Actor* pOtherActor) {}
-    virtual void Save([[maybe_unused]] BlackBoxEngine::XMLElementParser parser) override;
-    virtual void Load(const [[maybe_unused]]BlackBoxEngine::XMLElementParser parser) override;
+    virtual void OnCollide(BlackBoxEngine::Actor* pOtherActor) override;
+    virtual void OnTalkUsed( [[maybe_unused]]BlackBoxEngine::Actor* pOtherActor) {}
+    virtual void Save(BlackBoxEngine::XMLElementParser parser) override;
+    virtual void Load(const BlackBoxEngine::XMLElementParser parser) override;
 
+    virtual void Start() override;
 
-    virtual void SetHasTablet([[maybe_unused]] bool value) {}
+    virtual void SetHasTablet( [[maybe_unused]] bool value) {}
     virtual bool GetValue() { return false; }
 protected:
     TalkData m_data;
@@ -42,7 +44,7 @@ class InnTalkComponent : public BaseTalkComponent
 public:
     using BaseTalkComponent::BaseTalkComponent;
 
-    void OnTalkUsed([[maybe_unused]]BlackBoxEngine::Actor* pOtherActor) override; 
+    void OnTalkUsed(BlackBoxEngine::Actor* pOtherActor) override; 
 };
 
 class CastleTalkComponent : public BaseTalkComponent
@@ -54,7 +56,7 @@ class CastleTalkComponent : public BaseTalkComponent
 public:
     using BaseTalkComponent::BaseTalkComponent;
 
-    void OnTalkUsed([[maybe_unused]] BlackBoxEngine::Actor* pOtherActor) override;
+    void OnTalkUsed(BlackBoxEngine::Actor* pOtherActor) override;
 
     void SetHasTablet(bool value) override { m_hasTablet = value; }
     bool GetValue() override { return m_hasTablet; }

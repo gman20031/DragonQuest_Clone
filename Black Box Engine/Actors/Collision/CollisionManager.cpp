@@ -427,7 +427,7 @@ namespace BlackBoxEngine
             }
         }
 
-        // Now we know exactly where the actor has moved too, move the actor to the correct spot. amd dp cp;;osopm
+        // Now we know exactly where the actor has moved too, move the actor to the correct spot.
         pNewOwningNode = pNewOwningNode->InsertActor(pActor);
         pNewOwningNode->RunCollisionTests();
     }

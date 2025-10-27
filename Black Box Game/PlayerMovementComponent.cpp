@@ -311,6 +311,7 @@ void PlayerMovementComponent::SetTargetTile()
     // set movement target
     m_targetPosition = desiredTarget;
     m_isMoving = true;
+    BlackBoxManager::Get()->m_pMessagingManager->EnqueueMessage(kPlayerMoveStarted , m_pOwner);
 
     // Set velocity toward the target position
     FVector2 toTarget = m_targetPosition - currentPos;

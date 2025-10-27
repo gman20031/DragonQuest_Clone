@@ -11,6 +11,8 @@ class BaseStairComponent : public Component
 {
     GENERATE_ID("BaseStairComponent");
 
+    uint64_t m_messageId = 0;
+
 public:
     struct TransitionData {
         std::string targetLevelPath;
@@ -28,15 +30,13 @@ public:
     };
     
     explicit BaseStairComponent(Actor* pOwner): Component(pOwner) {}
-    virtual ~BaseStairComponent() override = default;
+    virtual ~BaseStairComponent();
     explicit BaseStairComponent(const TransitionData& data): Component(nullptr), m_data(data) {}
 
     void SetTransitionData(const TransitionData& data) { m_data = data; }
     const TransitionData& GetTransitionData() const { return m_data; }
 
-    virtual void Start() override {}
-    virtual void Update() override {}
-    virtual void Render() override {}
+    virtual void Start() override;
 
     virtual void OnCollide(Actor* pOtherActor) override;
     virtual void Save(XMLElementParser parser) override;
