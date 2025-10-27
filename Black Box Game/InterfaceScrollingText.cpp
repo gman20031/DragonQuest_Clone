@@ -2,7 +2,7 @@
 
 static constexpr float kPadding = 4.f;
 static constexpr int kMaxCharsPerLine = 18;
-static constexpr int kMaxVisibleLines = 6;
+static constexpr int kMaxVisibleLines = 7;
 
 BlackBoxEngine::ScrollingTextBox::ScrollingTextBox(
     InterfaceNode* pParent, const char* pName,
