@@ -72,7 +72,7 @@ private:
     void CreateCommandButtons( InterfaceTexture* pBackground );
     void OnCombatButtonPressed(const std::string& action);
     
-    void ShowActionMessage(const std::string& text);
+    void ShowActionMessage(const std::string& text, std::function<void()> onComplete = nullptr);
     void DismissActionMessage();
     void RespawnPlayer();
 

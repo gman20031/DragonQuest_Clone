@@ -254,7 +254,13 @@ bool InteractionComponent::CreateMessageLogBox()
         .color = {0,0,0,0},
         .targetedColor = {0,0,0,0},
         .interactColor = {0,0,0,0},
-        .callbackFunction = [this]() {  DismissActionMessage(); }
+        .callbackFunction = [this]() {
+            // Only dismiss if the text has finished scrolling
+            if (!m_activeScrollBox || !m_activeScrollBox->IsAnimating())
+            {
+                DismissActionMessage();
+            }
+        }
     };
     auto* pButton = m_messageRootInterface.AddNode<InterfaceButton>( "RemoveMessageButton", {0,0,0,0}, button );
 
@@ -301,7 +307,7 @@ void InteractionComponent::CloseCommandUI()
 // -------------------------------------------------------------
 // Message Box
 // -------------------------------------------------------------
-void InteractionComponent::ShowActionMessage(const std::string& text)
+void InteractionComponent::ShowActionMessage(const std::string& text, std::function<void()> onComplete)
 {
     if (m_messageActive)
         return;
@@ -311,14 +317,7 @@ void InteractionComponent::ShowActionMessage(const std::string& text)
     m_pMessageBackgroundNode->RemoveAllChildNodes();
 
     BB_FRectangle txtRect{ 16, 8, kMessageBoxWidth - 16, kMessageBoxHeight - 16};
-    //InterfaceText::Paremeters params
-    //{
-    //    .pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf",
-    //    .pText = text.c_str(),
-    //    .textSize = kStandardUITextSize,
-    //    .color = ColorPresets::white,
-    //};
-    //m_pMessageBackgroundNode->MakeChildNode<InterfaceText>( "message_log_text", txtRect, params );
+    
     
     BlackBoxEngine::ScrollingTextBox::Params params;
     params.fontFile = "../Assets/Fonts/dragon-warrior-1.ttf";
@@ -326,9 +325,7 @@ void InteractionComponent::ShowActionMessage(const std::string& text)
     params.charsPerSecond = 40.f;
     params.scrollSpeed = 40.f;
     params.maxVisibleLines = 4;
-    params.onComplete = [this]() {
-        // Optional callback after text finishes
-        };
+    params.onComplete = onComplete;
 
     m_activeScrollBox = m_pMessageBackgroundNode->MakeChildNode<BlackBoxEngine::ScrollingTextBox>("scrolling_text_box", txtRect, params);
     m_activeScrollBox->SetText(text);
@@ -377,6 +374,9 @@ void InteractionComponent::DismissActionMessage()
 // -------------------------------------------------------------
 void InteractionComponent::OnButtonPressed(const std::string& action)
 {
+    if (m_activeScrollBox && m_activeScrollBox->IsAnimating())
+        return;
+
     static const std::unordered_map<std::string, void(InteractionComponent::*)()> kActionMap = {
         {"talk", &InteractionComponent::HandleTalk},
         {"stair", &InteractionComponent::HandleStair},

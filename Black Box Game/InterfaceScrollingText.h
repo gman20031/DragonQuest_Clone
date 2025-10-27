@@ -15,6 +15,9 @@ namespace BlackBoxEngine
     class ScrollingTextBox : public BlackBoxEngine::InterfaceNode
     {
     public:
+
+        bool IsAnimating() const { return !m_isComplete; }
+
         struct Params
         {
             const char* fontFile = "../Assets/Fonts/dragon-warrior-1.ttf";
@@ -68,6 +71,8 @@ namespace BlackBoxEngine
         {
             if (m_isComplete) return;
 
+            
+
             float dt = static_cast<float>(BlackBoxManager::Get()->GetDeltaTime());
 
             // --- Reveal characters over time ---
@@ -88,6 +93,22 @@ namespace BlackBoxEngine
                     m_scrollOffset = targetOffset;
 
                 UpdateDisplay();
+            }
+
+            // --- Completion check ---
+            if (m_currentChar >= m_fullText.size())
+            {
+                m_isComplete = true;
+
+                UpdateDisplay();
+
+                if (!m_callbackFired && m_params.onComplete)
+                {
+                    m_callbackFired = true;
+                    auto cb = m_params.onComplete;
+                    m_params.onComplete = nullptr;
+                    cb();
+                }
             }
         }
 
@@ -168,7 +189,7 @@ namespace BlackBoxEngine
         float m_accumulatedTime = 0.f;
         size_t m_currentChar = 0;
         bool m_isComplete = false;
-
+        bool m_callbackFired = false;
         float m_scrollOffset = 0.f; // current vertical scroll in pixels
     };
 

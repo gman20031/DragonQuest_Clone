@@ -75,7 +75,7 @@ EncounterComponent::~EncounterComponent()
 
 void EncounterComponent::StartEncounter(Actor* pOtherActor)
 {
-    BB_LOG(LogType::kMessage, "Enemy '%s' appeared! HP=%d", m_name.c_str(), m_hp);
+    
     
     if ( !pOtherActor->GetComponent<PlayerStatsComponent>() )
     {
@@ -100,7 +100,7 @@ void EncounterComponent::StartEncounter(Actor* pOtherActor)
     m_pPlayer = pOtherActor;
     m_playerDead = false;
     StartCombatUI();
-    ShowActionMessage( std::format( "A {} draws near! \n\nCommand? ", m_name.c_str(), m_hp ) );
+    ShowActionMessage( std::format( "A {} draws near! \n\nCommand? ", m_name ) );
 }
 
 void EncounterComponent::EndEncounter()
@@ -136,6 +136,7 @@ void EncounterComponent::PlayerDies()
     m_playerDead = true;
 
     ShowActionMessage( "Thou art dead." );
+
     BlackBoxManager::Get()->m_pInputManager->StopAllInput();
     auto delayFunc = [this]()
         { 
@@ -256,26 +257,39 @@ void EncounterComponent::PlayerAttack()
     int damage = std::max(1, playerAtk - m_defense);
     m_hp -= damage;
 
-    ShowActionMessage(std::format("Thou attack!\nThe {}'s Hit Point have been reduced by {}.", m_name, damage));
+    ShowActionMessage(std::format("Thou attack!\nThe {}'s Hit Point have been reduced by {}.", m_name, damage), 
+        [this]()
+        {
+            if (m_hp <= 0)
+            {
+                // Delay the "defeated" message slightly to allow the player to see the damage we made to the enemy
+                DelayedCallbackManager::AddCallback([this]() {
+                    auto* pStats = m_pPlayer->GetComponent<PlayerStatsComponent>();
+                    if (!pStats) return;
 
-    if (m_hp <= 0)
-    {
-        // Delay the "defeated" message slightly to allow the player to see the damage we made to the enemy
-        DelayedCallbackManager::AddCallback([this]() {
-            auto* pStats = m_pPlayer->GetComponent<PlayerStatsComponent>();
-            if (!pStats) return;
+                    pStats->SetPlayerExperience(pStats->GetPlayerExperience() + m_xpReward);
+                    pStats->SetPlayerGold(pStats->GetPlayerGold() + m_goldReward);
+                    ShowActionMessage(
+                        std::format("Thou hast done well in defeating the {}.\n\nThy Experience increases by {}. Thy gold increases by {}.",
+                            m_name, m_xpReward, m_goldReward),
+                        [this]() {
+                            EndEncounter();  // only runs when the text finishes scrolling
+                        }
+                    );
+                  }, std::chrono::milliseconds(500));
+            }
+            else
+            {
+               DelayedCallbackManager::AddCallback([this]() {
+                    EnemyTakeTurn();
 
-            pStats->SetPlayerExperience(pStats->GetPlayerExperience() + m_xpReward);
-            pStats->SetPlayerGold(pStats->GetPlayerGold() + m_goldReward);
-            ShowActionMessage(std::format("Thou hast done well in defeating the {}.\n\nThy Experience increases by {}. Thy gold increases by {}.", m_name, m_xpReward, m_goldReward));
-            EndEncounter();
-            }, std::chrono::milliseconds(1000)); 
-    }
-    else
-    {
-        EnemyTakeTurn();
-        return;
-    }
+                }, std::chrono::milliseconds(500));
+
+                return;
+            }
+        });
+
+   
 }
 
 void EncounterComponent::TryToFlee()
@@ -306,7 +320,9 @@ void EncounterComponent::TryToFlee()
     else
     {
         ShowActionMessage("Thou started to run away.\nBut was blocked in front.");
-        EnemyTakeTurn();
+        DelayedCallbackManager::AddCallback([this]() {
+            EnemyTakeTurn();
+            }, std::chrono::milliseconds(500));
     }
 }
 
@@ -331,7 +347,7 @@ void EncounterComponent::BasicAttack()
     int currentHP = pStats->GetPlayerHP();
     pStats->SetPlayerHP(currentHP - damage);
 
-    ShowActionMessage(std::format("The {} attacks!\nThy Hit decreased by {}.\n\nCommand?", m_name.c_str(), damage));
+    ShowActionMessage(std::format("The {} attacks!\nThy Hit decreased by {}.\n\nCommand?", m_name, damage));
 
     // Check if player died
     if (pStats->GetPlayerHP() <= 0)
@@ -349,7 +365,7 @@ void EncounterComponent::CastSpell( const std::string& spellName)
         int currentHP = pStats->GetPlayerHP();
         pStats->SetPlayerHP(std::max(0, currentHP - damage));
 
-        ShowActionMessage(std::format("The {} casts Hurt! You take {} damage!", m_name.c_str(), damage));
+        ShowActionMessage(std::format("The {} casts Hurt! You take {} damage!", m_name, damage));
 
         if (pStats->GetPlayerHP() <= 0)
             PlayerDies();
@@ -464,6 +480,9 @@ void EncounterComponent::CreateCommandButtons( InterfaceTexture* pBackground )
 
 void EncounterComponent::OnCombatButtonPressed(const std::string& action)
 {
+    if (m_activeScrollBox && m_activeScrollBox->IsAnimating())
+        return;
+
     if (action == "Fight")
     {
         PlayerAttack();
@@ -502,7 +521,7 @@ void EncounterComponent::OnCombatButtonPressed(const std::string& action)
     }
 }
 
-void EncounterComponent::ShowActionMessage(const std::string& text)
+void EncounterComponent::ShowActionMessage(const std::string& text, std::function<void()> onComplete)
 {
    //DismissActionMessage();
    
@@ -517,7 +536,7 @@ void EncounterComponent::ShowActionMessage(const std::string& text)
        .charsPerSecond = 30.f,
        .scrollSpeed = 30.f,
        .maxVisibleLines = 4,
-       .onComplete = nullptr
+       .onComplete = onComplete
    };
   // m_pMessageBackground->MakeChildNode<InterfaceText>( "message_log_text", txtRect, params );
    
