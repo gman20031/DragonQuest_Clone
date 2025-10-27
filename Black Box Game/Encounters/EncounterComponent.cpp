@@ -27,7 +27,7 @@ static constexpr float kMessageBoxStartX = 2 * kTileSize;
 static constexpr float kMessageBoxStartY = 9.5 * kTileSize;
 static constexpr float kMessageBoxWidth =  12 * kTileSize;
 static constexpr float kMessageBoxHeight = 5 * kTileSize;
-static constexpr float kStandardUITextSize = 28.f;
+static constexpr float kStandardUITextSize = 26.f;
 static constexpr KeyCode kSelectkey = KeyCode::kX;
 static constexpr KeyCode kBackKey = KeyCode::kZ;
 
@@ -105,7 +105,7 @@ void EncounterComponent::StartEncounter(Actor* pOtherActor)
 
 void EncounterComponent::EndEncounter()
 {
-    BlackBoxManager::Get()->m_pAudioManager->SetMusicTrack( "../Assets/Audio/05DragonQuest1-KingdomofAlefgard.wav" );
+    BlackBoxManager::Get()->m_pAudioManager->SetMusicTrack("../Assets/Audio/05DragonQuest1-KingdomofAlefgard.wav");
 
     InterfaceButton::ButtonParams btnParams{
         .usable = true,
@@ -131,7 +131,7 @@ void EncounterComponent::EndEncounter()
 void EncounterComponent::PlayerDies()
 {
     BlackBoxManager::Get()->m_pAudioManager->RemoveMusicTrack();
-    BlackBoxManager::Get()->m_pAudioManager->PlaySound("../Assets/Audio/20DragonQuest1-ThouHastDied.wav");
+    BlackBoxManager::Get()->m_pAudioManager->PlaySound("../Assets/Audio/20DragonQuest1-ThouHastDied.wav", 0.4f);
 
     m_playerDead = true;
 
@@ -144,7 +144,7 @@ void EncounterComponent::PlayerDies()
             BlackBoxManager::Get()->m_pActorManager->DestroyActor( m_pOwner );
             RespawnPlayer();
         };
-    DelayedCallbackManager::AddCallback( delayFunc, std::chrono::milliseconds( 1500 ) );
+    DelayedCallbackManager::AddCallback( delayFunc, std::chrono::milliseconds( 3000 ) );
 }
 
 
@@ -204,14 +204,20 @@ void EncounterComponent::DoEnemyAction()
     else if (m_name == "Drakee")
     {
         if (roll < 0.2f)
+        {
+            BlackBoxManager::Get()->m_pAudioManager->PlaySound("../Assets/Audio/40DragonQuest1-Missed!.wav", 0.4f);
             ShowActionMessage("The Drakee misses!");
+        }
         else
             BasicAttack();
     }
     else if (m_name == "Ghost")
     {
         if (roll < 0.25f)
+        {
+            BlackBoxManager::Get()->m_pAudioManager->PlaySound("../Assets/Audio/40DragonQuest1-Missed!.wav", 0.4f);
             ShowActionMessage("The Ghost fades away, dodging your strike!");
+        }
         else
             BasicAttack();
     }
@@ -231,6 +237,7 @@ void EncounterComponent::DoEnemyAction()
 
 void EncounterComponent::PlayerAttack()
 {
+    BlackBoxManager::Get()->m_pAudioManager->PlaySound("../Assets/Audio/36DragonQuest1-Attack.wav", 0.4f);
     auto* pStats = m_pPlayer->GetComponent<PlayerStatsComponent>();
     if (!pStats) 
         return;
@@ -238,6 +245,7 @@ void EncounterComponent::PlayerAttack()
     int roll = m_randomMachine.GetRandomInRange(64);
     if (roll < m_dodgeChance)
     {
+        BlackBoxManager::Get()->m_pAudioManager->PlaySound("../Assets/Audio/40DragonQuest1-Missed!.wav", 0.4f);
         ShowActionMessage(std::format("Thou attack! \n The attack failed and there was no loss of Hit Points!"));
         EnemyTakeTurn();
         return;
@@ -257,13 +265,22 @@ void EncounterComponent::PlayerAttack()
     int damage = std::max(1, playerAtk - m_defense);
     m_hp -= damage;
 
-    ShowActionMessage(std::format("Thou attack!\nThe {}'s Hit Point have been reduced by {}.", m_name, damage), 
+    DelayedCallbackManager::AddCallback([this]() {
+    BlackBoxManager::Get()->m_pAudioManager->PlaySound("../Assets/Audio/37DragonQuest1-ReceiveDamage.wav", 0.4f);
+        }, std::chrono::milliseconds(500));
+    ShowActionMessage(
+        std::format("Thou attack!\nThe {}'s Hit Point have been reduced by {}.", m_name, damage),
         [this]()
         {
+            // Only run after text finishes scrolling
             if (m_hp <= 0)
             {
-                // Delay the "defeated" message slightly to allow the player to see the damage we made to the enemy
+
+
                 DelayedCallbackManager::AddCallback([this]() {
+                    BlackBoxManager::Get()->m_pAudioManager->RemoveMusicTrack();
+                    BlackBoxManager::Get()->m_pAudioManager->PlaySound("../Assets/Audio/25DragonQuest1-Victory.wav", 0.4f);
+
                     auto* pStats = m_pPlayer->GetComponent<PlayerStatsComponent>();
                     if (!pStats) return;
 
@@ -272,28 +289,25 @@ void EncounterComponent::PlayerAttack()
                     ShowActionMessage(
                         std::format("Thou hast done well in defeating the {}.\n\nThy Experience increases by {}. Thy gold increases by {}.",
                             m_name, m_xpReward, m_goldReward),
-                        [this]() {
-                            EndEncounter();  // only runs when the text finishes scrolling
-                        }
+                        [this]() { EndEncounter(); }
                     );
-                  }, std::chrono::milliseconds(500));
+                    }, std::chrono::milliseconds(500));
             }
             else
             {
-               DelayedCallbackManager::AddCallback([this]() {
+                DelayedCallbackManager::AddCallback([this]() {
                     EnemyTakeTurn();
-
-                }, std::chrono::milliseconds(500));
-
-                return;
+                    }, std::chrono::milliseconds(500));
             }
-        });
+        }
+    );
 
    
 }
 
 void EncounterComponent::TryToFlee()
 {
+    BlackBoxManager::Get()->m_pAudioManager->PlaySound("../Assets/Audio/35DragonQuest1-ExcellentMove.wav", 0.4f);
     auto* pStats = m_pPlayer->GetComponent<PlayerStatsComponent>();
     if (!pStats) return;
 
@@ -329,6 +343,7 @@ void EncounterComponent::TryToFlee()
 
 void EncounterComponent::BasicAttack()
 {
+    BlackBoxManager::Get()->m_pAudioManager->PlaySound("../Assets/Audio/36DragonQuest1-Attack.wav", 0.4f);
     auto* pStats = m_pPlayer->GetComponent<PlayerStatsComponent>();
     if (!pStats) return;
 
@@ -347,7 +362,12 @@ void EncounterComponent::BasicAttack()
     int currentHP = pStats->GetPlayerHP();
     pStats->SetPlayerHP(currentHP - damage);
 
-    ShowActionMessage(std::format("The {} attacks!\nThy Hit decreased by {}.\n\nCommand?", m_name, damage));
+    DelayedCallbackManager::AddCallback([this]() {
+        BlackBoxManager::Get()->m_pAudioManager->PlaySound("../Assets/Audio/37DragonQuest1-ReceiveDamage.wav", 0.4f);
+        }, std::chrono::milliseconds(500));
+    ShowActionMessage(
+        std::format("The {} attacks!\nThy Hit decreased by {}.\n\nCommand?", m_name, damage)
+    );
 
     // Check if player died
     if (pStats->GetPlayerHP() <= 0)
@@ -365,7 +385,15 @@ void EncounterComponent::CastSpell( const std::string& spellName)
         int currentHP = pStats->GetPlayerHP();
         pStats->SetPlayerHP(std::max(0, currentHP - damage));
 
-        ShowActionMessage(std::format("The {} casts Hurt! You take {} damage!", m_name, damage));
+        ShowActionMessage(
+            std::format("The {} casts Hurt! You take {} damage!", m_name, damage),
+            [this]() {
+            },
+            [this]() {
+                // Play damage sound immediately
+                BlackBoxManager::Get()->m_pAudioManager->PlaySound("../Assets/Audio/38DragonQuest1-ReceiveDamage(2).wav", 0.4f);
+            }
+        );
 
         if (pStats->GetPlayerHP() <= 0)
             PlayerDies();
@@ -374,6 +402,7 @@ void EncounterComponent::CastSpell( const std::string& spellName)
 
 void EncounterComponent::StartCombatUI()
 {
+    BlackBoxManager::Get()->m_pAudioManager->PlaySound("../Assets/Audio/32DragonQuest1-MenuButton.wav", 0.4f);
     // Command Panel
     BB_FRectangle panelRect{
         kCommandWindowStartX, kCommandWindowStartY, kCommandWindowWidth, kCommandWindowHeight
@@ -480,11 +509,14 @@ void EncounterComponent::CreateCommandButtons( InterfaceTexture* pBackground )
 
 void EncounterComponent::OnCombatButtonPressed(const std::string& action)
 {
+    BlackBoxManager::Get()->m_pAudioManager->PlaySound("../Assets/Audio/32DragonQuest1-MenuButton.wav", 0.4f);
+
     if (m_activeScrollBox && m_activeScrollBox->IsAnimating())
         return;
 
     if (action == "Fight")
     {
+
         PlayerAttack();
     }
     else if (action == "Spell")
@@ -521,27 +553,38 @@ void EncounterComponent::OnCombatButtonPressed(const std::string& action)
     }
 }
 
-void EncounterComponent::ShowActionMessage(const std::string& text, std::function<void()> onComplete)
+void EncounterComponent::ShowActionMessage(const std::string& text, std::function<void()> onComplete, std::function<void()> onStart)
 {
-   //DismissActionMessage();
-   
-   // --- Text parameters ---
-   BB_FRectangle txtRect{kTileSize, kTileSize / 2, kMessageBoxWidth - kTileSize, kMessageBoxHeight - kTileSize};
  
-   ScrollingTextBox::Params params
-   {
-       .fontFile = "../Assets/Fonts/dragon-warrior-1.ttf",
-       .textSize = kStandardUITextSize,
-       .color = ColorPresets::white,
-       .charsPerSecond = 30.f,
-       .scrollSpeed = 30.f,
-       .maxVisibleLines = 4,
-       .onComplete = onComplete
-   };
-  // m_pMessageBackground->MakeChildNode<InterfaceText>( "message_log_text", txtRect, params );
-   
-   m_activeScrollBox = m_pMessageBackground->MakeChildNode<ScrollingTextBox>("scrolling_box", txtRect, params);
-   m_activeScrollBox->SetText(text);
+    if(!m_activeScrollBox)
+    {
+        // --- Text parameters ---
+        BB_FRectangle txtRect{ kTileSize, kTileSize / 2, kMessageBoxWidth - kTileSize, kMessageBoxHeight - kTileSize };
+
+        ScrollingTextBox::Params params
+        {
+            .fontFile = "../Assets/Fonts/dragon-warrior-1.ttf",
+            .textSize = kStandardUITextSize,
+            .color = ColorPresets::white,
+            .charsPerSecond = 30.f,
+            .scrollSpeed = 30.f,
+            .maxVisibleLines = 4,
+            .onComplete = onComplete
+            //.onStart = onStart
+        };
+
+
+        m_activeScrollBox = m_pMessageBackground->MakeChildNode<ScrollingTextBox>("scrolling_box", txtRect, params);
+        m_activeScrollBox->SetText(text);
+    }
+    else
+    {
+        m_activeScrollBox->AppendText(text);
+        
+    }
+
+  
+
 }
 
 void EncounterComponent::DismissActionMessage()

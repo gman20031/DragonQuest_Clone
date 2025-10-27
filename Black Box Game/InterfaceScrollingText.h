@@ -21,13 +21,14 @@ namespace BlackBoxEngine
         struct Params
         {
             const char* fontFile = "../Assets/Fonts/dragon-warrior-1.ttf";
-            float textSize = 28.f;
+            float textSize = 26.f;
             ColorValue color = ColorPresets::white;
             float charsPerSecond = 30.f; // text typing speed
             float scrollSpeed = 50.f;     // pixels per second for smooth scroll
             int maxVisibleLines = 4;
             float charWidth = 5.f;       // fixed-width font assumption
             std::function<void()> onComplete = nullptr;
+            std::function<void()> onStart = nullptr;
         };
 
         ScrollingTextBox(InterfaceNode* pParent, const char* pName, BB_FRectangle rect, const Params& params)
@@ -56,6 +57,8 @@ namespace BlackBoxEngine
 
         void SetText(const std::string& text)
         {
+            m_lineQueue.clear();
+            m_lineQueue.push_back(text);
             m_fullText = text;
             m_currentChar = 0;
             m_accumulatedTime = 0.f;
@@ -64,17 +67,37 @@ namespace BlackBoxEngine
             m_lines.push_back("");
             m_isComplete = false;
 
+
+            if (m_params.onStart)
+                m_params.onStart();
+
             UpdateDisplay();
         }
 
-        void Update()
+        void AppendText(const std::string& newText)
         {
-            if (m_isComplete) return;
+            m_lineQueue.push_back(newText);
+            m_isComplete = false;
+            m_callbackFired = false;
+        }
+        void AppendText(const std::string& newText, std::function<void()> onComplete)
+        {
+            if (!m_lines.empty() && !m_lines.back().empty())
+                m_fullText += "\n";
 
+            m_fullText += newText;
+            m_onComplete = onComplete;
+            m_isComplete = false;
+
+            UpdateDisplay();
+        }
+
+        virtual void UpdateThis() override
+        {
+            if (m_isComplete && m_lineQueue.empty()) return;
             
-
             float dt = static_cast<float>(BlackBoxManager::Get()->GetDeltaTime());
-
+            
             // --- Reveal characters over time ---
             m_accumulatedTime += dt * m_params.charsPerSecond;
             int charsToReveal = static_cast<int>(m_accumulatedTime);
@@ -83,6 +106,8 @@ namespace BlackBoxEngine
                 m_accumulatedTime -= charsToReveal;
                 RevealCharacters(charsToReveal);
             }
+            
+            
 
             // --- Smooth scroll ---
             if (m_lines.size() > m_params.maxVisibleLines)
@@ -91,26 +116,29 @@ namespace BlackBoxEngine
                 m_scrollOffset += m_params.scrollSpeed * dt;
                 if (m_scrollOffset > targetOffset)
                     m_scrollOffset = targetOffset;
-
+            
                 UpdateDisplay();
             }
-
+            
             // --- Completion check ---
-            if (m_currentChar >= m_fullText.size())
-            {
-                m_isComplete = true;
+            //if (m_currentChar >= m_fullText.size())
+            //{
+            //    m_isComplete = true;
+            //
+            //    UpdateDisplay();
+            //
+            //    if (!m_callbackFired && m_params.onComplete)
+            //    {
+            //        m_callbackFired = true;
+            //        auto cb = m_params.onComplete;
+            //        m_params.onComplete = nullptr;
+            //        cb();
+            //    }
+            //}
 
-                UpdateDisplay();
 
-                if (!m_callbackFired && m_params.onComplete)
-                {
-                    m_callbackFired = true;
-                    auto cb = m_params.onComplete;
-                    m_params.onComplete = nullptr;
-                    cb();
-                }
-            }
         }
+
 
     private:
         void RevealCharacters(int count)
@@ -118,49 +146,89 @@ namespace BlackBoxEngine
             for (int i = 0; i < count && m_currentChar < m_fullText.size(); ++i)
             {
                 char c = m_fullText[m_currentChar++];
-
+            
                 if (c == '\n' || m_lines.back().size() >= m_maxCharsPerLine)
                     m_lines.push_back("");
-
+            
                 if (c != '\n')
                     m_lines.back() += c;
-
+            
                 // Do not erase lines immediately; scrolling handled by offset
             }
-
+            
             UpdateDisplay();
-
+            
             if (m_currentChar >= m_fullText.size())
             {
                 m_isComplete = true;
                 if (m_params.onComplete) m_params.onComplete();
             }
+
+            //while (!m_lineQueue.empty() && count > 0)
+            //{
+            //    std::string& currentLine = m_lineQueue.front();
+            //
+            //    while (m_currentChar < currentLine.size() && count > 0)
+            //    {
+            //        char c = currentLine[m_currentChar++];
+            //
+            //        if (c == '\n' || m_lines.back().size() >= m_maxCharsPerLine)
+            //            m_lines.push_back("");
+            //
+            //        if (c != '\n')
+            //            m_lines.back() += c;
+            //
+            //        while (m_lines.size() > m_params.maxVisibleLines)
+            //        {
+            //            m_lines.erase(m_lines.begin());
+            //        }
+            //
+            //        count--;
+            //    }
+            //
+            //    if (m_currentChar >= currentLine.size())
+            //    {
+            //        m_lineQueue.erase(m_lineQueue.begin());
+            //        m_currentChar = 0;
+            //    }
+            //}
+
+            //if (m_lineQueue.empty() && !m_callbackFired)
+            //{
+            //    m_isComplete = true;
+            //    m_callbackFired = true;
+            //    if (m_params.onComplete)
+            //    {
+            //        m_params.onComplete();
+            //    }
+            //}
+            
         }
 
         void UpdateDisplay()
         {
             if (!m_textNode || !m_textNode->GetText())
                 return;
-
+            
             constexpr float kPadding = 4.f;
-
-            // Ensure we keep only the lines that fit in the box
+            //
+            //// Ensure we keep only the lines that fit in the box
             while (m_lines.size() > m_params.maxVisibleLines)
             {
                 m_lines.erase(m_lines.begin()); // remove oldest line
             }
-
+            
             // Build display string with horizontal centering
             std::string display;
             for (auto& line : m_lines)
             {
                 display += line + "\n";
-      
+            
             }
-
+            
             if (!display.empty() && display.back() == '\n')
                 display.pop_back();
-
+            
             // Smooth vertical offset for appearing characters
             float verticalOffset = kPadding;
             if (m_lines.size() >= m_params.maxVisibleLines)
@@ -169,12 +237,16 @@ namespace BlackBoxEngine
                 m_scrollOffset += m_params.scrollSpeed * static_cast<float>(BlackBoxManager::Get()->GetDeltaTime());
                 if (m_scrollOffset > targetOffset)
                     m_scrollOffset = targetOffset;
-
+            
                 verticalOffset -= m_scrollOffset;
             }
-
+            
             m_textNode->SetOffset(0.f, verticalOffset);
             m_textNode->GetText()->SetString(display.c_str(), display.size());
+
+
+
+           
         }
 
     private:
@@ -191,6 +263,11 @@ namespace BlackBoxEngine
         bool m_isComplete = false;
         bool m_callbackFired = false;
         float m_scrollOffset = 0.f; // current vertical scroll in pixels
+
+        std::function<void()> m_onComplete = nullptr;
+
+        std::vector<std::string> m_lineQueue;   // lines waiting to appear
+        std::string m_currentLine;
     };
 
 }

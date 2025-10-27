@@ -28,7 +28,7 @@ static constexpr float kCommandBoxStartY = 1 * 16;
 static constexpr int   kCommandBoxWidth  = 8 * 16;
 static constexpr int   kCommandBoxHeight = 6 * 16;
 
-static constexpr float kStandardUITextSize = 28;
+static constexpr float kStandardUITextSize = 26.f;
 
 static constexpr float kItemBoxStartX = 10 * 16;  // right side of the screen
 static constexpr float kItemBoxStartY = 3 * 16;
@@ -75,6 +75,8 @@ InteractionComponent::~InteractionComponent()
 // -------------------------------------------------------------
 void InteractionComponent::Start()
 {
+    
+
     auto* input = BlackBoxManager::Get()->m_pInputManager;
     using enum InputManager::InputType;
 
@@ -121,6 +123,8 @@ void InteractionComponent::Update()
 // -------------------------------------------------------------
 bool InteractionComponent::CreateCommandMenuUI()
 {
+   
+
     using enum Direction;
 
     static constexpr float kButtonWidth = 50.f;
@@ -374,6 +378,8 @@ void InteractionComponent::DismissActionMessage()
 // -------------------------------------------------------------
 void InteractionComponent::OnButtonPressed(const std::string& action)
 {
+    BlackBoxManager::Get()->m_pAudioManager->PlaySound("../Assets/Audio/32DragonQuest1-MenuButton.wav", 0.2f);
+
     if (m_activeScrollBox && m_activeScrollBox->IsAnimating())
         return;
 
@@ -405,7 +411,10 @@ void InteractionComponent::HandleTalk()
     else if(m_pCurrentTalk == m_pCurrentTalk->GetOwner()->GetComponent<CastleTalkComponent>())
     {
         if (pInventory->GetHasTablet())
+        {
+            BlackBoxManager::Get()->m_pAudioManager->PlaySound("../Assets/Audio/25DragonQuest1-Victory.wav", 0.4f);
             ShowActionMessage("'Guard: 'You may enter, my lord.' YOU WIN'");
+        }
         else
             ShowActionMessage("'Guard: 'Halt! You need the Royal Pass.'");
     }
@@ -414,10 +423,15 @@ void InteractionComponent::HandleTalk()
     {
         ShowActionMessage("'Welcome to the traverler's Inn.\nRoom and board is 6 Gold per night.\nDost thou want a room?'");
 
+        BlackBoxManager::Get()->m_pAudioManager->PlaySound("../Assets/Audio/33DragonQuest1-Confirmation.wav", 0.2f);
+
         std::vector<std::pair<std::string, int>> choices = { {"Yes", 0}, {"No", 0} };
         ShowChoiceMenu(choices, [this](const std::string& choice) {
+            
+
             if (choice == "Yes")
             {
+                BlackBoxManager::Get()->m_pAudioManager->PlaySound("../Assets/Audio/32DragonQuest1-MenuButton.wav", 0.2f);
                 DismissActionMessage();
                 ShowActionMessage("'Good night.'");
                 DelayedCallbackManager::AddCallback([this]()
@@ -427,6 +441,7 @@ void InteractionComponent::HandleTalk()
             }
             else
             {
+                BlackBoxManager::Get()->m_pAudioManager->PlaySound("../Assets/Audio/32DragonQuest1-MenuButton.wav", 0.2f);
                 DismissActionMessage();
                 ShowActionMessage("'Okay.\nGood-bye, traveler.'");
                 DismissChoiceMenu();
@@ -569,6 +584,8 @@ void InteractionComponent::ShowItemMenu(const std::vector<std::pair<std::string,
         // Button callback now only shows a message, does NOT close item menu
         btnParams.callbackFunction = [this, name]()
             {
+                BlackBoxManager::Get()->m_pAudioManager->PlaySound("../Assets/Audio/32DragonQuest1-MenuButton.wav", 0.2f);
+
                 auto* pInventory = m_pOwner->GetComponent<InventoryComponent>();
                 if (!pInventory) return;
 

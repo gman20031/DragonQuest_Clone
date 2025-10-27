@@ -16,6 +16,8 @@ TakeComponent::~TakeComponent()
 
 void TakeComponent::OnTakeUsed(Actor* pOtherActor)
 {
+    BlackBoxManager::Get()->m_pAudioManager->PlaySound("../Assets/Audio/44DragonQuest1-OpenTreasure.wav", 0.2f);
+
 	auto* pInventory = pOtherActor->GetComponent<InventoryComponent>();
     auto* pInteraction = pOtherActor->GetComponent<InteractionComponent>();
     if ( !pInteraction || !pInventory )

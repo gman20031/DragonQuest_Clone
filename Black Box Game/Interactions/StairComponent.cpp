@@ -57,6 +57,8 @@ void BaseStairComponent::Save(XMLElementParser parser)
     parser.NewChildVariable("AutoUse", m_data.autoUse);
 
     parser.NewChildVariable("MusicTrack", m_data.musicTrackPath);
+    parser.NewChildVariable("SoundTrack", m_data.soundTrackPath);
+    parser.NewChildVariable("Volume", m_data.volume);
 }
 
 void BaseStairComponent::Load(const XMLElementParser parser)
@@ -69,12 +71,16 @@ void BaseStairComponent::Load(const XMLElementParser parser)
     parser.GetChildVariable("Fade", &data.fadeDuration);
     parser.GetChildVariable("AutoUse", &data.autoUse);
     parser.GetChildVariable("MusicTrack", &data.musicTrackPath);
-
+    parser.GetChildVariable("SoundTrack", &data.soundTrackPath);
+    parser.GetChildVariable("Volume", &data.volume);
     SetTransitionData(data);
 }
 
 void BaseStairComponent::OnStairUsed(Actor* pOtherActor)
 {
+
+    BlackBoxManager::Get()->m_pAudioManager->PlaySound(m_data.soundTrackPath.c_str(), m_data.volume);
+
     if (!pOtherActor)
         return;
 
