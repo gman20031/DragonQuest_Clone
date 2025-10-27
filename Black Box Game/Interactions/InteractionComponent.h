@@ -13,6 +13,7 @@
 #include "TakeComponent.h"
 
 #include "../PlayerStatsComponent.h"
+#include "../Black Box Game/InterfaceScrollingText.h"
 
 class BlackBoxGame;
 
@@ -55,12 +56,16 @@ class InteractionComponent : public BlackBoxEngine::Component
 
     bool m_choiceMenuActive = false;
     std::function<void(const std::string&)> m_choiceCallback;
+
+    ScrollingTextBox* m_activeScrollBox = nullptr;
+
 public:
     InteractionComponent( BlackBoxEngine::Actor* pOwner );
     virtual ~InteractionComponent();
 
     // --- Engine Overrides ---
     void Start() override;
+    void Update() override;
 
     // --- Player Linking ---
     void SetPlayerActor(BlackBoxEngine::Actor* actor) { m_playerActor = actor; }

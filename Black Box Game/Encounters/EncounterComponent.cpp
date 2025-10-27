@@ -20,6 +20,7 @@
 #include "../Black Box Engine/Graphics/Text Rendering/Text.h"
 
 
+
 static constexpr int kTileSize = 16;
 
 static constexpr float kMessageBoxStartX = 2 * kTileSize;
@@ -145,6 +146,12 @@ void EncounterComponent::PlayerDies()
     DelayedCallbackManager::AddCallback( delayFunc, std::chrono::milliseconds( 1500 ) );
 }
 
+
+void EncounterComponent::Update()
+{
+    if (m_activeScrollBox)
+        m_activeScrollBox->Update();
+}
 
 //to change depending on the enemy
 void EncounterComponent::Load( const XMLElementParser parser )
@@ -497,39 +504,31 @@ void EncounterComponent::OnCombatButtonPressed(const std::string& action)
 
 void EncounterComponent::ShowActionMessage(const std::string& text)
 {
-   DismissActionMessage();
+   //DismissActionMessage();
    
    // --- Text parameters ---
    BB_FRectangle txtRect{kTileSize, kTileSize / 2, kMessageBoxWidth - kTileSize, kMessageBoxHeight - kTileSize};
-   InterfaceText::Paremeters params
+ 
+   ScrollingTextBox::Params params
    {
-       .pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf",
-       .pText = text.c_str(),
+       .fontFile = "../Assets/Fonts/dragon-warrior-1.ttf",
        .textSize = kStandardUITextSize,
        .color = ColorPresets::white,
+       .charsPerSecond = 30.f,
+       .scrollSpeed = 30.f,
+       .maxVisibleLines = 4,
+       .onComplete = nullptr
    };
+  // m_pMessageBackground->MakeChildNode<InterfaceText>( "message_log_text", txtRect, params );
    
-   m_pMessageBackground->MakeChildNode<InterfaceText>( "message_log_text", txtRect, params );
-   
-   //m_pendingMessage = text;
-   //m_messageLines.clear();
-   //m_visibleLines.clear();
-   //m_currentLineIndex = 0;
-   //
-   //std::string line;
-   //std::stringstream ss(m_pendingMessage);
-   //while (std::getline(ss, line, '\n'))
-   //    m_messageLines.push_back(line);
-   //
-   //m_maxLines = static_cast<size_t>(kMessageBoxHeight / kStandardUITextSize);
-   //
-   //ScrollNextLine();
+   m_activeScrollBox = m_pMessageBackground->MakeChildNode<ScrollingTextBox>("scrolling_box", txtRect, params);
+   m_activeScrollBox->SetText(text);
 }
 
 void EncounterComponent::DismissActionMessage()
 {
     m_pMessageBackground->RemoveAllChildNodes();
-
+    m_activeScrollBox = nullptr;
 }
 
 void EncounterComponent::RespawnPlayer()
@@ -697,49 +696,3 @@ void EncounterComponent::CloseItemMenu()
 
 
 
-void EncounterComponent::CreateTextNode(const std::string& text)
-{
-    m_pMessageBackground->RemoveAllChildNodes();
-
-    BB_FRectangle txtRect{ kTileSize, kTileSize / 2, kMessageBoxWidth - kTileSize, kMessageBoxHeight - kTileSize };
-    InterfaceText::Paremeters params{
-        .pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf",
-        .pText = text.c_str(),
-        .textSize = kStandardUITextSize,
-        .color = ColorPresets::white,
-    };
-
-    m_activeScrollingText = m_pMessageBackground->MakeChildNode<InterfaceText>("message_log_text", txtRect, params);
-}
-
-
-void EncounterComponent::ScrollNextLine()
-{
-    if (m_currentLineIndex >= m_messageLines.size())
-        return; // done scrolling
-
-    // Add next line to visible lines
-    if (m_visibleLines.size() < m_maxLines)
-    {
-        // Still space in box, just append
-        m_visibleLines.push_back(m_messageLines[m_currentLineIndex]);
-    }
-    else
-    {
-        // Box full, remove top line and append new line
-        m_visibleLines.erase(m_visibleLines.begin());
-        m_visibleLines.push_back(m_messageLines[m_currentLineIndex]);
-    }
-
-    // Rebuild text
-    std::string textToShow;
-    for (const auto& line : m_visibleLines)
-        textToShow += line + "\n";
-
-    CreateTextNode(textToShow);
-
-    m_currentLineIndex++;
-
-    // Schedule next line
-    DelayedCallbackManager::AddCallback([this]() { ScrollNextLine(); }, std::chrono::milliseconds(static_cast<int>(m_lineDelayMs)));
-}
