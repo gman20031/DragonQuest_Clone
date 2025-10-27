@@ -1,5 +1,7 @@
 #include "Log.h"
 
+
+#ifdef _DEBUG
 BlackBoxEngine::Logger::~Logger()
 {
 	if(m_logFile.is_open())
@@ -14,3 +16,9 @@ void BlackBoxEngine::Logger::AppendToLogFile(const char* str)
 
 	m_logFile << str << '\n';
 }
+
+void BlackBoxEngine::Logger::OpenLog()
+{
+    m_logFile.open( logFilePath, std::ios::out ); // Creates file for first time.;
+}
+#endif

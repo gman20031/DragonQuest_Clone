@@ -28,7 +28,7 @@
 
 namespace BlackBoxEngine
 {
-
+#ifdef _DEBUG
     template<typename Tested_t>
 	concept StreamOverloaded = requires (std::ostream os,const Tested_t& obj)
 	{
@@ -53,7 +53,7 @@ namespace BlackBoxEngine
 		static void AppendToLogFile(const char* str);
 		template<StreamOverloaded ...Args>
 		static void AppendToLogFile(const Args& ...args);
-        static void OpenLog() { m_logFile.open(logFilePath, std::ios::out); } // Creates file for first time.};
+        static void OpenLog();
 	};
 
     /**
@@ -113,6 +113,7 @@ namespace BlackBoxEngine
             OpenLog();
 		(m_logFile << ... << args) << '\n';
 	}
+#endif
 }
 
 

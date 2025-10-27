@@ -6,6 +6,7 @@
 #include <Resources/ResourceManager.h>
 
 #include "PlayerStatsComponent.h"
+#include "InventoryComponent.h"
 
 using namespace BlackBoxEngine;
 
@@ -75,4 +76,5 @@ void GameStarter::Start() const
 {
     auto& pActor = BlackBoxManager::Get()->m_pActorManager->FindActorWithComponent<PlayerStatsComponent>();
     StartGamePlayer( pActor.get() );
+    pActor->GetComponent<InventoryComponent>()->SetHasTablet( false );
 }

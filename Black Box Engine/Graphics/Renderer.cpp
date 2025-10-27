@@ -37,8 +37,8 @@ BlackBoxEngine::BB_Renderer::BB_Renderer(BB_Window* pWindow)
     
     m_pGameCamera = BlackBoxManager::Get()->m_pMainCamera;
 	m_pSdlRenderer = SDL_CreateRenderer(pWindow->m_pSdlWindow, NULL);
-	if (!m_pSdlRenderer)
-		SimpleLog(SDL_GetError());
+    if ( !m_pSdlRenderer )
+        BB_LOG( LogType::kWarning, SDL_GetError() );
 
     SDL_SetRenderDrawBlendMode(m_pSdlRenderer, SDL_BLENDMODE_BLEND);
 	SetDrawColor(kDefaultDrawColor);

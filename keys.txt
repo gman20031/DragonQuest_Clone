@@ -1,0 +1,3 @@
+Movement: arrow keys
+Action  : X
+Back    : Z

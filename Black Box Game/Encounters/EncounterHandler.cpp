@@ -23,7 +23,6 @@ const EncounterHandler::ActorPtr& EncounterHandler::GetEncounterActorAtTile( int
     auto& encounterVector = m_encounterMap[encounterId];
     int encounterIndex = m_randomMachine.GetRandomInRange( 0, (int)encounterVector.size() - 1 );
     ActorXMLParser xml = encounterVector[encounterIndex];
-    std::cout << "Actor should be made and used here\n";
     return BlackBoxManager::Get()->m_pActorManager->MakeActor( xml );
 }
 

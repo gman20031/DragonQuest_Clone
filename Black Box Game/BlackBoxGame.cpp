@@ -12,12 +12,7 @@ void BlackBoxGame::InitGame()
     m_pEngineManager->GetWindow()->SetWindowIcon("../Assets/Sprites/DragonQuestIcon.png");
 
     m_pEngineManager->m_pActorManager->LoadLevel(kOverworldLevel);
-
     m_gameStarter.Start();
-    //auto* pTransform = m_pEngineManager->m_pActorManager->GetActor(3)->GetComponent<TransformComponent>();
-    //pTransform->m_position.x = 832;
-    //pTransform->m_position.y = 816;
-
     m_pEngineManager->SetGameUpdate( [this]() { GameUpdate(); } );
 }
 
@@ -27,8 +22,7 @@ BlackBoxGame::BlackBoxGame()
     , m_gameStarter("../Assets/Actors/StartingPlayerInformation.xml")
 {
     m_pEngineManager->CreateWindow(
-        "Dragon Quest Clone", kDefaultXPos, kDefaultYPos, kDefaultWidth, kDefaultHeight,
-        BB_Window::kWindowFlag_Resizable
+        "Dragon Quest Clone", kDefaultXPos, kDefaultYPos, kDefaultWidth, kDefaultHeight, 0
     );
     BB_LOG(LogType::kMessage, "Window Created");
 }
