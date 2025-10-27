@@ -1,3 +1,8 @@
 Movement: arrow keys
 Action  : X
 Back    : Z
+
+*Cheats 
+toggle encounters : numpad /
+Add gold : G
+Add Exp  : E
