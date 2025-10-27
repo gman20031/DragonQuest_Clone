@@ -311,24 +311,10 @@ void InteractionComponent::ShowActionMessage(const std::string& text)
     m_pMessageBackgroundNode->RemoveAllChildNodes();
 
     BB_FRectangle txtRect{ 16, 8, kMessageBoxWidth - 16, kMessageBoxHeight - 16};
-    //InterfaceText::Paremeters params
-    //{
-    //    .pFontFile = "../Assets/Fonts/dragon-warrior-1.ttf",
-    //    .pText = text.c_str(),
-    //    .textSize = kStandardUITextSize,
-    //    .color = ColorPresets::white,
-    //};
-    //m_pMessageBackgroundNode->MakeChildNode<InterfaceText>( "message_log_text", txtRect, params );
-    
+
     BlackBoxEngine::ScrollingTextBox::Params params;
-    params.fontFile = "../Assets/Fonts/dragon-warrior-1.ttf";
-    params.textSize = kStandardUITextSize;
     params.charsPerSecond = 40.f;
     params.scrollSpeed = 40.f;
-    params.maxVisibleLines = 4;
-    params.onComplete = [this]() {
-        // Optional callback after text finishes
-        };
 
     m_activeScrollBox = m_pMessageBackgroundNode->MakeChildNode<BlackBoxEngine::ScrollingTextBox>("scrolling_text_box", txtRect, params);
     m_activeScrollBox->SetText(text);

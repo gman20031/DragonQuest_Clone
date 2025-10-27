@@ -132,6 +132,8 @@ namespace BlackBoxEngine
         while (m_keepRunning)
         {
             m_deltaTime = timer.GetDeltaTime();
+            if ( m_deltaTime > .250 )
+                m_deltaTime = .250;
             timer.StartTimer();
 
             auto* pRenderer = m_pWindow->GetRenderer();

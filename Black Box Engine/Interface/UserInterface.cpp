@@ -233,7 +233,8 @@ namespace BlackBoxEngine
 
     void UserInterface::Update()
     {
-        m_pRootNode->Update();
+        if(m_pRootNode)
+            m_pRootNode->Update();
     }
 
     void UserInterface::Render([[maybe_unused]]BB_Renderer* pRenderer)

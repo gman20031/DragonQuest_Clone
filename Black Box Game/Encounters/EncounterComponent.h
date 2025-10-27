@@ -21,6 +21,7 @@ class EncounterComponent : public BlackBoxEngine::Component
     BlackBoxEngine::Random::MachineXoshiro256 m_randomMachine;
     
     BlackBoxEngine::UserInterface m_combatRoot;
+    BlackBoxEngine::ScrollingTextBox* m_pTextBox;
     BlackBoxEngine::InterfaceTexture* m_pMessageBackground = nullptr;
     BlackBoxEngine::InterfaceTexture* m_pCommandBackground = nullptr;
     BlackBoxEngine::Actor* m_pPlayer = nullptr;
@@ -43,10 +44,6 @@ class EncounterComponent : public BlackBoxEngine::Component
     bool m_itemMenuActive = false;
 
     std::vector<std::string> m_itemTextStorage;
-    ScrollingTextBox* m_activeScrollBox = nullptr;
-   
-
-
 public:
     EncounterComponent( BlackBoxEngine::Actor* pOwner );
     virtual ~EncounterComponent();
@@ -54,9 +51,9 @@ public:
     void StartEncounter(Actor* pOtherActor);
     void EndEncounter();
 
-    void Update() override;
-    void Load([[maybe_unused]] const BlackBoxEngine::XMLElementParser parser) override;
-    void Save([[maybe_unused]] BlackBoxEngine::XMLElementParser parser) override;
+    virtual void Update() override;
+    void Load(const BlackBoxEngine::XMLElementParser parser) override;
+    void Save(BlackBoxEngine::XMLElementParser parser) override;
 
 private:
     void PlayerDies();

@@ -29,7 +29,6 @@ namespace BlackBoxEngine
         virtual ~InterfaceText();
 
         std::shared_ptr<BB_Text> GetText() { return m_pText; }
-
     };
 
 }

@@ -58,6 +58,12 @@ EncounterComponent::EncounterComponent( BlackBoxEngine::Actor* pOwner )
         .useFullImage = true
     };
     m_pMessageBackground = m_combatRoot.AddNode<InterfaceTexture>( "ActionMessage_BG", bgRect, bgInfo );
+    
+    ScrollingTextBox::Params params{
+        .scrollSpeed = 30.f,
+    };
+    constexpr BB_FRectangle textRect{kTileSize, kTileSize /  2, kMessageBoxWidth - kTileSize, kMessageBoxHeight - kTileSize};
+    m_pTextBox = m_pMessageBackground->MakeChildNode<ScrollingTextBox>( "TextBox", textRect, params );
 
     m_combatRoot.SetInterfaceKeys( UserInterface::InterfaceKeys{
             .select = kSelectkey
@@ -146,11 +152,9 @@ void EncounterComponent::PlayerDies()
     DelayedCallbackManager::AddCallback( delayFunc, std::chrono::milliseconds( 1500 ) );
 }
 
-
 void EncounterComponent::Update()
 {
-    if (m_activeScrollBox)
-        m_activeScrollBox->Update();
+    m_combatRoot.Update();
 }
 
 //to change depending on the enemy
@@ -504,31 +508,13 @@ void EncounterComponent::OnCombatButtonPressed(const std::string& action)
 
 void EncounterComponent::ShowActionMessage(const std::string& text)
 {
-   //DismissActionMessage();
-   
-   // --- Text parameters ---
-   BB_FRectangle txtRect{kTileSize, kTileSize / 2, kMessageBoxWidth - kTileSize, kMessageBoxHeight - kTileSize};
- 
-   ScrollingTextBox::Params params
-   {
-       .fontFile = "../Assets/Fonts/dragon-warrior-1.ttf",
-       .textSize = kStandardUITextSize,
-       .color = ColorPresets::white,
-       .charsPerSecond = 30.f,
-       .scrollSpeed = 30.f,
-       .maxVisibleLines = 4,
-       .onComplete = nullptr
-   };
-  // m_pMessageBackground->MakeChildNode<InterfaceText>( "message_log_text", txtRect, params );
-   
-   m_activeScrollBox = m_pMessageBackground->MakeChildNode<ScrollingTextBox>("scrolling_box", txtRect, params);
-   m_activeScrollBox->SetText(text);
+   m_pTextBox->SetText(text);
 }
 
 void EncounterComponent::DismissActionMessage()
 {
     m_pMessageBackground->RemoveAllChildNodes();
-    m_activeScrollBox = nullptr;
+    m_pTextBox = nullptr;
 }
 
 void EncounterComponent::RespawnPlayer()
