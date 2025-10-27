@@ -14,16 +14,20 @@ namespace BlackBoxEngine
     class ScrollingTextBox : public BlackBoxEngine::InterfaceNode
     {
     public:
+
+        bool IsAnimating() const { return !m_isComplete; }
+
         struct Params
         {
             const char* fontFile = "../Assets/Fonts/dragon-warrior-1.ttf";
-            float textSize = 28.f;
+            float textSize = 26.f;
             ColorValue color = ColorPresets::white;
             float charsPerSecond = 30.f; // text typing speed
             float scrollSpeed = 50.f;     // pixels per second for smooth scroll
             int maxVisibleLines = 4;
             float charWidth = 5.f;       // fixed-width font assumption
             std::function<void()> onComplete = nullptr;
+            std::function<void()> onStart = nullptr;
         };
 
     private:

@@ -20,6 +20,8 @@ public:
         float fadeDuration = 1.0f;
         bool autoUse = false;
         std::string musicTrackPath;
+        std::string soundTrackPath;
+        float volume = 4.0f;
     };
 
     struct PlayerRuntimeStats {

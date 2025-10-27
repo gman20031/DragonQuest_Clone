@@ -31,5 +31,7 @@
         <Fade>1.0</Fade>
         <AutoUse>false</AutoUse>
         <MusicTrack>../Assets/Audio/07DragonQuest1-DarkDungeon~Floor2.wav</MusicTrack>
+        <SoundTrack>../Assets/Audio/30DragonQuest1-StairsDown.wav</SoundTrack>
+        <Volume>0.4</Volume>
     </Component>
 </Actor>
