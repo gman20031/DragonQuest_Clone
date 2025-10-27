@@ -62,7 +62,7 @@ EncounterComponent::EncounterComponent( BlackBoxEngine::Actor* pOwner )
     ScrollingTextBox::Params params{
         .scrollSpeed = 30.f,
     };
-    constexpr BB_FRectangle textRect{kTileSize, kTileSize /  2, 0, -111};
+    constexpr BB_FRectangle textRect{kTileSize, kTileSize /  2, 0, 0};
     m_pTextBox = m_pMessageBackground->MakeChildNode<ScrollingTextBox>( "TextBox", textRect, params );
 
     m_combatRoot.SetInterfaceKeys( UserInterface::InterfaceKeys{

@@ -2,19 +2,13 @@
 
 static constexpr float kPadding = 4.f;
 static constexpr int kMaxCharsPerLine = 18;
+static constexpr int kMaxVisibleLines = 6;
 
 BlackBoxEngine::ScrollingTextBox::ScrollingTextBox(
     InterfaceNode* pParent, const char* pName,
     BB_FRectangle rect, const Params& params )
     : InterfaceNode( pParent, pName, rect ), m_params( params )
 {
-    BB_FRectangle textRect{
-        kPadding,
-        kPadding,
-        rect.w,
-        rect.h
-    };
-
     InterfaceText::Paremeters textParams{
         .pFontFile = m_params.fontFile,
         .pText = "test",
@@ -22,7 +16,7 @@ BlackBoxEngine::ScrollingTextBox::ScrollingTextBox(
         .color = m_params.color
     };
 
-    m_textNode = MakeChildNode<InterfaceText>( "scrolling_text", textRect, textParams );
+    m_textNode = MakeChildNode<InterfaceText>( "scrolling_text", {0,0,0,0}, textParams);
 }
 
 void BlackBoxEngine::ScrollingTextBox::SetText( const std::string& text, std::function<void()> onComplete )
@@ -82,7 +76,7 @@ void BlackBoxEngine::ScrollingTextBox::UpdateDisplay()
     if ( !m_textNode || !m_textNode->GetText() )
         return;
 
-    while ( m_lines.size() > m_params.maxVisibleLines )
+    while ( m_lines.size() > kMaxVisibleLines )
         m_lines.erase( m_lines.begin() ); // remove oldest line
 
     // Build display string with horizontal centering

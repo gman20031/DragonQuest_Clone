@@ -24,7 +24,6 @@ namespace BlackBoxEngine
             ColorValue color = ColorPresets::white;
             float charsPerSecond = 30.f; // text typing speed
             float scrollSpeed = 50.f;     // pixels per second for smooth scroll
-            int maxVisibleLines = 4;
             float charWidth = 5.f;       // fixed-width font assumption
             std::function<void()> onComplete = nullptr;
         };
