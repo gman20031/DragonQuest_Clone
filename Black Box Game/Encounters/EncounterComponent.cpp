@@ -104,7 +104,7 @@ void EncounterComponent::StartEncounter(Actor* pOtherActor)
     m_pPlayer = pOtherActor;
     m_playerDead = false;
     StartCombatUI();
-    ShowActionMessage( std::format( "A {} draws near! \n\nCommand? ", m_name ) );
+    ShowActionMessage( std::format( "A {} draws\nnear!\n\nCommand?", m_name ) );
 }
 
 void EncounterComponent::EndEncounter()
@@ -218,8 +218,8 @@ void EncounterComponent::DoEnemyAction()
         if (roll < 0.25f)
         {
             BlackBoxManager::Get()->m_pAudioManager->PlaySound("../Assets/Audio/40DragonQuest1-Missed!.wav", 0.4f);
-            ShowActionMessage("The Ghost fades away, dodging your strike!");
-        }
+            ShowActionMessage("The Ghost fades \naway, dodging your\nstrike!");
+        }                                        
         else
             BasicAttack();
     }
@@ -248,7 +248,8 @@ void EncounterComponent::PlayerAttack()
     if (roll < m_dodgeChance)
     {
         BlackBoxManager::Get()->m_pAudioManager->PlaySound("../Assets/Audio/40DragonQuest1-Missed!.wav", 0.4f);
-        ShowActionMessage(std::format("Thou attack! \n The attack failed and there was no loss of Hit Points!"));
+                                                                                            
+        ShowActionMessage(std::format("Thou attack!\nThe attack failed \nand there was no \nloss of Hit Points!"));
         EnemyTakeTurn();
         return;
     }
@@ -271,7 +272,8 @@ void EncounterComponent::PlayerAttack()
     BlackBoxManager::Get()->m_pAudioManager->PlaySound("../Assets/Audio/37DragonQuest1-ReceiveDamage.wav", 0.4f);
         }, std::chrono::milliseconds(500));
     ShowActionMessage(
-        std::format("Thou attack!\nThe {}'s Hit Point have been reduced by {}.", m_name, damage),
+                                                       
+        std::format("Thou attack!\nThe {}'s Hit Point\nhave been reduced\nby {}.", m_name, damage),
         [this]()
         {
             // Only run after text finishes scrolling
@@ -290,7 +292,7 @@ void EncounterComponent::PlayerAttack()
                         pStats->SetPlayerGold( pStats->GetPlayerGold() + m_goldReward );
                     }
                     ShowActionMessage(
-                        std::format("Thou hast done well in defeating the {}.\n\nThy Experience \nincreases by {}.\nThy gold increases\nby {}.",
+                        std::format("Thou hast done well\nin defeating the \n{}.\n\nThy Experience \nincreases by {}.\nThy gold increases\nby {}.",
                             m_name, m_xpReward, m_goldReward),
                         [this]() { EndEncounter(); }
                     );
@@ -331,12 +333,12 @@ void EncounterComponent::TryToFlee()
     if ( m_randomMachine.GetRandomInRange( 1.0f ) < fleeChance)
     {
         BlackBoxManager::Get()->m_pInputManager->StopAllInput();
-        ShowActionMessage("Thou started to run away.");
-        EndEncounter();
+        ShowActionMessage("Thou started to \brun away.");
+        EndEncounter();    
     }
     else
-    {
-        ShowActionMessage("Thou started to run away.\nBut was blocked in front.");
+    {                      
+        ShowActionMessage("Thou started to \nrun away.\nBut was blocked in front.");
         DelayedCallbackManager::AddCallback([this]() {
             EnemyTakeTurn();
             }, std::chrono::milliseconds(500));
@@ -369,8 +371,8 @@ void EncounterComponent::BasicAttack()
         BlackBoxManager::Get()->m_pAudioManager->PlaySound("../Assets/Audio/37DragonQuest1-ReceiveDamage.wav", 0.4f);
         }, std::chrono::milliseconds(500));
     ShowActionMessage(
-        std::format("The {} attacks!\nThy Hit decreased by {}.\n\nCommand?", m_name, damage)
-    );
+        std::format("The {} attacks!\nThy Hit decreased \nby {}.\n\nCommand?", m_name, damage)
+    );                                
 
     // Check if player died
     if (pStats->GetPlayerHP() <= 0)
@@ -390,7 +392,7 @@ void EncounterComponent::CastSpell( const std::string& spellName)
 
         BlackBoxManager::Get()->m_pAudioManager->PlaySound( "../Assets/Audio/38DragonQuest1-ReceiveDamage(2).wav", 0.4f );
         ShowActionMessage(
-            std::format("The {} casts Hurt! You take {} damage!", m_name, damage)
+            std::format("The {}\n casts Hurt!\nYou take {} damage!", m_name, damage)
         );
 
         if (pStats->GetPlayerHP() <= 0)
@@ -518,15 +520,15 @@ void EncounterComponent::OnCombatButtonPressed(const std::string& action)
     }
     else if (action == "Spell")
     {
-        ShowActionMessage("Thou cannot yet use the spell.\n\nCommand?");
-    }
+        ShowActionMessage("Thou cannot yet \buse the spell.\n\nCommand?");
+    }                      
     else if (action == "Item")
     {
         auto* pInventory = m_pPlayer->GetComponent<InventoryComponent>();
         if (!pInventory)
         {
-            ShowActionMessage("\'Nothing of use has yet been given to thee\'");
-            return;
+            ShowActionMessage("\'Nothing of use has\nyet been given to\nthee\'");
+            return;              
         }
 
         std::vector<std::pair<std::string, int>> items;
@@ -537,8 +539,8 @@ void EncounterComponent::OnCombatButtonPressed(const std::string& action)
         if (pInventory->GetHasClub())   items.push_back({ "Club", 1 });
         if (pInventory->GetHasLeatherClothes())  items.push_back({ "Leather Armor", 1 });
         if (items.empty())
-        {
-            ShowActionMessage("'Nothing of use has yet been given to thee'");
+        {                                           
+            ShowActionMessage("'Nothing of use has\nyet been given to \nthee'");
             return;
         }
 
@@ -661,8 +663,8 @@ void EncounterComponent::ShowItemMenu(const std::vector<std::pair<std::string, i
                     (name == "Tablet" && pInventory->GetHasTablet()) ||
                     (name == "Club" && pInventory->GetHasClub()) ||
                     (name == "Leather Armor" && pInventory->GetHasLeatherClothes()))
-                {
-                    ShowActionMessage(std::format("Thou canst not use it in battle."));
+                {                                  
+                    ShowActionMessage(std::format("Thou canst not use\nit in battle."));
                 }
 
                 CloseItemMenu(); // Return to combat menu
