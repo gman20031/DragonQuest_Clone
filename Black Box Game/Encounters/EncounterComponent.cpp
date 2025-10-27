@@ -62,11 +62,11 @@ EncounterComponent::EncounterComponent( BlackBoxEngine::Actor* pOwner )
     ScrollingTextBox::Params params{
         .scrollSpeed = 30.f,
     };
-    constexpr BB_FRectangle textRect{kTileSize, kTileSize /  2, kMessageBoxWidth - kTileSize, kMessageBoxHeight - kTileSize};
+    constexpr BB_FRectangle textRect{kTileSize, kTileSize /  2, 0, -111};
     m_pTextBox = m_pMessageBackground->MakeChildNode<ScrollingTextBox>( "TextBox", textRect, params );
 
     m_combatRoot.SetInterfaceKeys( UserInterface::InterfaceKeys{
-            .select = kSelectkey
+        .select = kSelectkey
     } );
 
     CreateItemBox();
@@ -81,8 +81,6 @@ EncounterComponent::~EncounterComponent()
 
 void EncounterComponent::StartEncounter(Actor* pOtherActor)
 {
-    
-    
     if ( !pOtherActor->GetComponent<PlayerStatsComponent>() )
     {
         BB_LOG( LogType::kError, "Actor passed into startEncounter, did not have player stat component" );
@@ -279,19 +277,20 @@ void EncounterComponent::PlayerAttack()
             // Only run after text finishes scrolling
             if (m_hp <= 0)
             {
-
-
                 DelayedCallbackManager::AddCallback([this]() {
                     BlackBoxManager::Get()->m_pAudioManager->RemoveMusicTrack();
                     BlackBoxManager::Get()->m_pAudioManager->PlaySound("../Assets/Audio/25DragonQuest1-Victory.wav", 0.4f);
 
-                    auto* pStats = m_pPlayer->GetComponent<PlayerStatsComponent>();
-                    if (!pStats) return;
+                    if ( m_pPlayer )
+                    {
+                        auto* pStats = m_pPlayer->GetComponent<PlayerStatsComponent>();
+                        if ( !pStats ) return;
 
-                    pStats->SetPlayerExperience(pStats->GetPlayerExperience() + m_xpReward);
-                    pStats->SetPlayerGold(pStats->GetPlayerGold() + m_goldReward);
+                        pStats->SetPlayerExperience( pStats->GetPlayerExperience() + m_xpReward );
+                        pStats->SetPlayerGold( pStats->GetPlayerGold() + m_goldReward );
+                    }
                     ShowActionMessage(
-                        std::format("Thou hast done well in defeating the {}.\n\nThy Experience increases by {}. Thy gold increases by {}.",
+                        std::format("Thou hast done well in defeating the {}.\n\nThy Experience \nincreases by {}.\nThy gold increases\nby {}.",
                             m_name, m_xpReward, m_goldReward),
                         [this]() { EndEncounter(); }
                     );
@@ -389,14 +388,9 @@ void EncounterComponent::CastSpell( const std::string& spellName)
         int currentHP = pStats->GetPlayerHP();
         pStats->SetPlayerHP(std::max(0, currentHP - damage));
 
+        BlackBoxManager::Get()->m_pAudioManager->PlaySound( "../Assets/Audio/38DragonQuest1-ReceiveDamage(2).wav", 0.4f );
         ShowActionMessage(
-            std::format("The {} casts Hurt! You take {} damage!", m_name, damage),
-            [this]() {
-            },
-            [this]() {
-                // Play damage sound immediately
-                BlackBoxManager::Get()->m_pAudioManager->PlaySound("../Assets/Audio/38DragonQuest1-ReceiveDamage(2).wav", 0.4f);
-            }
+            std::format("The {} casts Hurt! You take {} damage!", m_name, damage)
         );
 
         if (pStats->GetPlayerHP() <= 0)
@@ -515,12 +509,11 @@ void EncounterComponent::OnCombatButtonPressed(const std::string& action)
 {
     BlackBoxManager::Get()->m_pAudioManager->PlaySound("../Assets/Audio/32DragonQuest1-MenuButton.wav", 0.4f);
 
-    if (m_activeScrollBox && m_activeScrollBox->IsAnimating())
+    if ( m_pTextBox && m_pTextBox->IsAnimating())
         return;
 
     if (action == "Fight")
     {
-
         PlayerAttack();
     }
     else if (action == "Spell")
@@ -557,9 +550,9 @@ void EncounterComponent::OnCombatButtonPressed(const std::string& action)
     }
 }
 
-void EncounterComponent::ShowActionMessage(const std::string& text, std::function<void()> onComplete, std::function<void()> onStart)
+void EncounterComponent::ShowActionMessage(const std::string& text , std::function<void()> onComplete )
 {
-   m_pTextBox->SetText(text);
+   m_pTextBox->SetText(text , onComplete );
 }
 
 void EncounterComponent::DismissActionMessage()

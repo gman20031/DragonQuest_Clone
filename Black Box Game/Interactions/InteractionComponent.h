@@ -85,7 +85,7 @@ private:
     void OpenCommandUI();
     void CloseCommandUI();
 
-    void ShowActionMessage(const std::string& text, std::function<void()> onComplete = nullptr);
+    void ShowActionMessage(const std::string& text);
     void DismissActionMessage();
 
     // --- Action Handlers ---

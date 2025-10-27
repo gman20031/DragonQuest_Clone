@@ -311,7 +311,7 @@ void InteractionComponent::CloseCommandUI()
 // -------------------------------------------------------------
 // Message Box
 // -------------------------------------------------------------
-void InteractionComponent::ShowActionMessage(const std::string& text, std::function<void()> onComplete)
+void InteractionComponent::ShowActionMessage(const std::string& text )
 {
     if (m_messageActive)
         return;

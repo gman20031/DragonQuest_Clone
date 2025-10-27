@@ -27,7 +27,6 @@ namespace BlackBoxEngine
             int maxVisibleLines = 4;
             float charWidth = 5.f;       // fixed-width font assumption
             std::function<void()> onComplete = nullptr;
-            std::function<void()> onStart = nullptr;
         };
 
     private:
@@ -44,7 +43,7 @@ namespace BlackBoxEngine
 
     public:
         ScrollingTextBox( InterfaceNode* pParent, const char* pName, BB_FRectangle rect, const Params& params );
-        void SetText( const std::string& text );
+        void SetText( const std::string& text , std::function<void()> onComplete = nullptr );
 
     protected:
         virtual void UpdateThis() override;

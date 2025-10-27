@@ -1,7 +1,7 @@
 #include "InterfaceScrollingText.h"
 
 static constexpr float kPadding = 4.f;
-static constexpr int kMaxCharsPerLine = 17;
+static constexpr int kMaxCharsPerLine = 18;
 
 BlackBoxEngine::ScrollingTextBox::ScrollingTextBox(
     InterfaceNode* pParent, const char* pName,
@@ -11,8 +11,8 @@ BlackBoxEngine::ScrollingTextBox::ScrollingTextBox(
     BB_FRectangle textRect{
         kPadding,
         kPadding,
-        rect.w - 2 * kPadding,
-        rect.h - 2 * kPadding
+        rect.w,
+        rect.h
     };
 
     InterfaceText::Paremeters textParams{
@@ -25,13 +25,14 @@ BlackBoxEngine::ScrollingTextBox::ScrollingTextBox(
     m_textNode = MakeChildNode<InterfaceText>( "scrolling_text", textRect, textParams );
 }
 
-void BlackBoxEngine::ScrollingTextBox::SetText( const std::string& text )
+void BlackBoxEngine::ScrollingTextBox::SetText( const std::string& text, std::function<void()> onComplete )
 {
     if ( m_fullText.empty() )
         m_fullText = text;
     else
         m_fullText += text;
 
+    m_params.onComplete = onComplete;
     m_lines.push_back( "" );
     m_isComplete = false;
 }
